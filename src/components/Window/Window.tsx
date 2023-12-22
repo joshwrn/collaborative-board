@@ -3,7 +3,7 @@ import type { FC } from 'react'
 import React from 'react'
 
 import * as x from '@stylexjs/stylex'
-import { PanInfo, useDragControls, motion } from 'framer-motion'
+import { useDragControls, motion } from 'framer-motion'
 
 const styles = x.create({
   wrapper: {
@@ -16,6 +16,7 @@ const styles = x.create({
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
+    position: 'absolute',
   },
   topBar: {
     backgroundColor: '#2B2B2B',
@@ -33,7 +34,6 @@ const styles = x.create({
     borderRadius: '50%',
     width: '10px',
     height: '10px',
-    display: 'inline-block',
   },
   close: {
     backgroundColor: '#F14971',
@@ -41,7 +41,17 @@ const styles = x.create({
   full: {
     backgroundColor: '#3FCD6F',
   },
-  titleBar: {},
+  titleBar: {
+    backgroundColor: '#2B2B2B',
+    borderBottomWidth: '1px',
+    borderBottomStyle: 'solid',
+    borderBottomColor: '#6B6B6B',
+    width: '100%',
+    padding: '15px',
+    display: 'flex',
+    flexDirection: 'column',
+    userSelect: 'none',
+  },
 })
 
 export const Window: FC = () => {
@@ -51,13 +61,19 @@ export const Window: FC = () => {
     dragControls.start(e)
   }
 
+  const scale = 0.5
+  const width = 700
+  const height = 500
+
   return (
     <motion.div
       {...x.props(styles.wrapper)}
       style={{
-        width: '600px',
-        height: '500px',
+        width: `${width}px`,
+        height: `${height}px`,
+        scale,
       }}
+      key={scale}
       drag
       dragElastic={0}
       dragMomentum={false}
@@ -69,7 +85,8 @@ export const Window: FC = () => {
         <button {...x.props(styles.full, styles.windowButton)} />
       </nav>
       <header {...x.props(styles.titleBar)}>
-        <h1>Window</h1>
+        <h3>Bill Gates</h3>
+        <p>bill.gates@microsoft.com</p>
       </header>
     </motion.div>
   )
