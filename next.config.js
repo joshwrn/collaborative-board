@@ -1,12 +1,10 @@
 /** @type {import('next').NextConfig} */
-// const nextConfig = {
-//   transpilePackages: ['@stylexjs'],
-// }
+const nextConfig = {}
 
-// module.exports = nextConfig
+module.exports = nextConfig
 
-const stylexPlugin = require('@stylexjs/nextjs-plugin')
+// const stylexPlugin = require('@stylexjs/nextjs-plugin')
 
-module.exports = stylexPlugin({
-  rootDir: __dirname,
-})({ transpilePackages: ['@stylexjs'] })
+// module.exports = stylexPlugin({
+//   rootDir: __dirname,
+// })({ transpilePackages: ['@stylexjs'] })

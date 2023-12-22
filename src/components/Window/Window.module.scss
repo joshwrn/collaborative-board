@@ -1,0 +1,53 @@
+.wrapper {
+  background-color: #444444;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #6b6b6b;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: absolute;
+}
+
+.topBar {
+  background-color: #2b2b2b;
+  height: 40px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #6b6b6b;
+  width: 100%;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+@mixin windowButton {
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+}
+
+.close {
+  background-color: #f14971;
+  @include windowButton;
+}
+
+.full {
+  background-color: #3fcd6f;
+  @include windowButton;
+}
+
+.titleBar {
+  background-color: #2b2b2b;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #6b6b6b;
+  width: 100%;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  color: #ffffff;
+}
