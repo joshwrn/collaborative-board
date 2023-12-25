@@ -1,15 +1,20 @@
+'use client'
 import { List } from '@/components/List/List'
 import { Space } from '@/components/Space/Space'
-import { Window } from '@/components/Window/Window'
 import styles from './page.module.scss'
+import { Nav } from '@/components/Nav/Nav'
+import { useAppStore } from '@/state/state'
 
 export default function Home() {
+  const { user } = useAppStore((state) => ({ user: state.user }))
   return (
     <main className={styles.wrapper}>
-      <List />
-      <Space>
-        <Window />
-      </Space>
+      <>
+        <Space />
+
+        <List />
+        <Nav />
+      </>
     </main>
   )
 }

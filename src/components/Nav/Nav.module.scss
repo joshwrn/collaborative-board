@@ -1,0 +1,22 @@
+.nav {
+  width: 60px;
+  padding: 20px 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  > section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+}
+
+.icon {
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
