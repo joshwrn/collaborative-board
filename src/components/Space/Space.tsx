@@ -17,6 +17,8 @@ export const Space: FC = () => {
     setZoom: state.setZoom,
     emails: state.emails,
     openEmails: state.openEmails,
+    windowPositions: state.windowPositions,
+    windowSizes: state.windowSizes,
   }))
   useGestures({ wrapperRef })
   return (
@@ -30,7 +32,24 @@ export const Space: FC = () => {
         {state.openEmails.map((id) => {
           const email = state.emails.find((email) => email.id === id)
           if (!email) return null
-          return <Window key={email.id} email={email} />
+          return (
+            <Window
+              key={email.id}
+              email={email}
+              position={
+                state.windowPositions.find((p) => p.id === email.id) || {
+                  x: 0,
+                  y: 0,
+                }
+              }
+              size={
+                state.windowSizes.find((s) => s.id === email.id) || {
+                  width: 100,
+                  height: 100,
+                }
+              }
+            />
+          )
         })}
         {/* <overlay className={styles.overlay} /> */}
       </container>

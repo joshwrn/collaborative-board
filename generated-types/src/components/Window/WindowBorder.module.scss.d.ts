@@ -1,0 +1,15 @@
+export declare const border: string;
+export declare const bottom: string;
+export declare const bottomLeft: string;
+export declare const bottomRight: string;
+export declare const close: string;
+export declare const content: string;
+export declare const full: string;
+export declare const left: string;
+export declare const right: string;
+export declare const titleBar: string;
+export declare const top: string;
+export declare const topBar: string;
+export declare const topLeft: string;
+export declare const topRight: string;
+export declare const wrapper: string;

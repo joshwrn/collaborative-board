@@ -1,4 +1,4 @@
-import { AppStateCreator, StateSetter } from './state'
+import { AppStateCreator, Setter, stateSetter } from './state'
 
 export type UserStore = {
   user: null | {
@@ -6,7 +6,7 @@ export type UserStore = {
     email: string
     image: string
   }
-  setUser: StateSetter<null | {
+  setUser: Setter<null | {
     name: string
     email: string
     image: string
@@ -15,7 +15,5 @@ export type UserStore = {
 
 export const userStore: AppStateCreator<UserStore> = (set) => ({
   user: null,
-  setUser: (callback) => {
-    set((state) => ({ user: callback(state.user) }))
-  },
+  setUser: (setter) => stateSetter(set, setter, `user`),
 })

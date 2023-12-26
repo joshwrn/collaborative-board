@@ -1,27 +1,36 @@
 import type { Mutate, StoreApi, StoreMutatorIdentifier } from 'zustand'
 import { create } from 'zustand'
-import {
-  EmailListStore,
-  OpenEmailsStore,
-  emailListStore,
-  openEmailsStore,
-} from './emails'
-import { SpaceStore, spaceStore } from '@/gestures'
+import { EmailListStore, emailListStore } from './emails'
 import { UserStore, userStore } from './user'
+import { SpaceStore, spaceStore } from './space'
+import {
+  ConnectedWindowsStore,
+  OpenWindowsStore,
+  openWindowsStore,
+  connectedWindowsStore,
+} from './windows'
+import { mountStoreDevtool } from 'simple-zustand-devtools'
 
-export type AppStore = EmailListStore & OpenEmailsStore & SpaceStore & UserStore
+export type AppStore = EmailListStore &
+  OpenWindowsStore &
+  SpaceStore &
+  ConnectedWindowsStore &
+  UserStore
 
 export const useAppStore = create<AppStore>((...operators) => {
   // const stores = [emailListStore, openEmailsStore, spaceStore, userStore]
-
   // return Object.assign({}, ...stores.map((store) => store(...operators)))
   return {
     ...emailListStore(...operators),
-    ...openEmailsStore(...operators),
+    ...openWindowsStore(...operators),
     ...spaceStore(...operators),
+    ...connectedWindowsStore(...operators),
     ...userStore(...operators),
   }
 })
+if (process.env.NODE_ENV === 'development') {
+  mountStoreDevtool('appStore', useAppStore)
+}
 
 type Get<T, K, F> = K extends keyof T ? T[K] : F
 export type AppStateCreator<
@@ -51,20 +60,21 @@ export const stateSetter = <T extends keyof AppStore>(
       | ((state: AppStore) => AppStore | Partial<AppStore>),
     replace?: boolean | undefined,
   ) => void,
-  setter: StateCallback<AppStore[T]>,
+  newValue: StateCallback<AppStore[T]>,
   key: T,
 ) => {
   set((state) => {
     if (!key || !state.hasOwnProperty(key)) {
-      return state
+      throw new Error(`state.${key} does not exist`)
     }
-    if (setter instanceof Function) {
+    if (newValue instanceof Function) {
       return {
-        [key]: setter(state[key]),
+        // @ts-expect-error - expects two arguments
+        [key]: newValue(state[key]),
       }
     }
     return {
-      [key]: setter,
+      [key]: newValue,
     }
   })
 }

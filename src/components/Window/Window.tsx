@@ -12,22 +12,23 @@ import {
   DraggableEvent,
   DraggableEventHandler,
 } from 'react-draggable'
+import { WindowBorder } from './WindowBorder'
 
 export const WindowInternal: FC<{
   email: Email
-}> = ({ email }) => {
-  const { close, zoom } = useAppStore((state) => ({
+  position: { x: number; y: number }
+  size: { width: number; height: number }
+}> = ({ email, position, size }) => {
+  const { close, zoom, setPosition } = useAppStore((state) => ({
     close: state.toggleOpenEmail,
     zoom: state.zoom,
+    setPosition: state.setOneWindowPosition,
+    setSize: state.setOneWindowSize,
   }))
-  const [position, setPosition] = React.useState({
-    x: 0,
-    y: 0,
-  })
-  const nodeRef = React.useRef<HTMLDivElement>(null)
 
-  const width = 700
-  const height = 500
+  const { width, height } = size
+
+  const nodeRef = React.useRef<HTMLDivElement>(null)
 
   const onDrag = (e: DraggableEvent, data: DraggableData) => {
     if (!(e instanceof MouseEvent)) return
@@ -37,10 +38,10 @@ export const WindowInternal: FC<{
       x: movementX / zoom,
       y: movementY / zoom,
     }
-    setPosition((prev) => ({
-      x: prev.x + scaledPosition.x,
-      y: prev.y + scaledPosition.y,
-    }))
+    setPosition(email.id, {
+      x: position.x + scaledPosition.x,
+      y: position.y + scaledPosition.y,
+    })
   }
 
   const onDragStart = (e: DraggableEvent, data: DraggableData) => {
@@ -63,11 +64,17 @@ export const WindowInternal: FC<{
         ref={nodeRef}
         className={styles.wrapper}
         style={{
+          transform: `translate(${position.x}px, ${position.y}px)`,
           width: `${width}px`,
           height: `${height}px`,
-          transform: `translate(${position.x}px, ${position.y}px)`,
         }}
       >
+        <WindowBorder
+          width={width}
+          height={height}
+          id={email.id}
+          position={position}
+        />
         <nav className={`${styles.topBar} handle`}>
           <button className={styles.close} onClick={() => close(email.id)} />
           <button className={styles.full} />

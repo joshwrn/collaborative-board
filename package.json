@@ -32,6 +32,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "sass": "^1.69.5",
+    "simple-zustand-devtools": "^1.1.0",
     "typed-scss-modules": "^8.0.0",
     "typescript": "^5"
   }

@@ -1,0 +1,91 @@
+@use './Window.module.scss' as *;
+
+.border {
+  position: absolute;
+  background-color: #6b6b6b;
+  border-radius: $border-radius;
+  z-index: -1;
+  overflow: hidden;
+}
+
+@mixin border-corner {
+  width: $border-radius;
+  height: $border-radius;
+  // background-color: red;
+}
+
+.topLeft {
+  @include border-corner;
+  cursor: nwse-resize;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.topRight {
+  @include border-corner;
+  cursor: nesw-resize;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.bottomLeft {
+  @include border-corner;
+  cursor: nesw-resize;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.bottomRight {
+  @include border-corner;
+  cursor: nwse-resize;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+@mixin border-side {
+  // background-color: rgb(255, 234, 0);
+}
+
+.top {
+  @include border-side;
+  position: absolute;
+  top: 0;
+  left: $border-radius;
+  right: $border-radius;
+  height: $border-radius;
+  cursor: ns-resize;
+}
+
+.bottom {
+  @include border-side;
+  position: absolute;
+  bottom: 0;
+  left: $border-radius;
+  right: $border-radius;
+  height: $border-radius;
+  cursor: ns-resize;
+}
+
+.left {
+  @include border-side;
+  position: absolute;
+  top: $border-radius;
+  left: 0;
+  bottom: $border-radius;
+  width: $border-radius;
+  cursor: ew-resize;
+}
+
+.right {
+  @include border-side;
+  position: absolute;
+  top: $border-radius;
+  right: 0;
+  bottom: $border-radius;
+  width: $border-radius;
+  cursor: ew-resize;
+}
