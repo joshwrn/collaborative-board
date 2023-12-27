@@ -16,9 +16,7 @@ export const Space: FC = () => {
     setPan: state.setPan,
     setZoom: state.setZoom,
     emails: state.emails,
-    openEmails: state.openEmails,
-    windowPositions: state.windowPositions,
-    windowSizes: state.windowSizes,
+    windows: state.windows,
   }))
   useGestures({ wrapperRef })
   return (
@@ -29,21 +27,21 @@ export const Space: FC = () => {
           transform: `scale(${state.zoom}) translate(${state.pan.x}px, ${state.pan.y}px)`,
         }}
       >
-        {state.openEmails.map((id) => {
-          const email = state.emails.find((email) => email.id === id)
+        {state.windows.map((window) => {
+          const email = state.emails.find((email) => email.id === window.id)
           if (!email) return null
           return (
             <Window
               key={email.id}
               email={email}
               position={
-                state.windowPositions.find((p) => p.id === email.id) || {
+                state.windows.find((p) => p.id === email.id) || {
                   x: 0,
                   y: 0,
                 }
               }
               size={
-                state.windowSizes.find((s) => s.id === email.id) || {
+                state.windows.find((s) => s.id === email.id) || {
                   width: 100,
                   height: 100,
                 }

@@ -5,12 +5,14 @@
   background-color: #6b6b6b;
   border-radius: $border-radius;
   z-index: -1;
-  overflow: hidden;
+  // overflow: hidden;
 }
 
+$handle-offset: -5px;
+
 @mixin border-corner {
-  width: $border-radius;
-  height: $border-radius;
+  width: calc($border-radius - $handle-offset);
+  height: calc($border-radius - $handle-offset);
   // background-color: red;
 }
 
@@ -18,32 +20,32 @@
   @include border-corner;
   cursor: nwse-resize;
   position: absolute;
-  top: 0;
-  left: 0;
+  top: $handle-offset;
+  left: $handle-offset;
 }
 
 .topRight {
   @include border-corner;
   cursor: nesw-resize;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: $handle-offset;
+  right: $handle-offset;
 }
 
 .bottomLeft {
   @include border-corner;
   cursor: nesw-resize;
   position: absolute;
-  bottom: 0;
-  left: 0;
+  bottom: $handle-offset;
+  left: $handle-offset;
 }
 
 .bottomRight {
   @include border-corner;
   cursor: nwse-resize;
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: $handle-offset;
+  right: $handle-offset;
 }
 
 @mixin border-side {
@@ -53,7 +55,7 @@
 .top {
   @include border-side;
   position: absolute;
-  top: 0;
+  top: $handle-offset;
   left: $border-radius;
   right: $border-radius;
   height: $border-radius;
@@ -63,7 +65,7 @@
 .bottom {
   @include border-side;
   position: absolute;
-  bottom: 0;
+  bottom: $handle-offset;
   left: $border-radius;
   right: $border-radius;
   height: $border-radius;
@@ -74,7 +76,7 @@
   @include border-side;
   position: absolute;
   top: $border-radius;
-  left: 0;
+  left: $handle-offset;
   bottom: $border-radius;
   width: $border-radius;
   cursor: ew-resize;
@@ -84,7 +86,7 @@
   @include border-side;
   position: absolute;
   top: $border-radius;
-  right: 0;
+  right: $handle-offset;
   bottom: $border-radius;
   width: $border-radius;
   cursor: ew-resize;

@@ -16,10 +16,9 @@ const borderPositions = [
   'bottom',
   'bottomLeft',
 ] as const
-const cursorsForBorderPositions: Record<
-  (typeof borderPositions)[number],
-  string
-> = {
+
+type BorderPosition = (typeof borderPositions)[number]
+const cursorsForBorderPositions: Record<BorderPosition, string> = {
   left: 'ew-resize',
   topLeft: 'nwse-resize',
   top: 'ns-resize',
@@ -29,7 +28,6 @@ const cursorsForBorderPositions: Record<
   bottom: 'ns-resize',
   bottomLeft: 'nesw-resize',
 }
-type BorderPosition = (typeof borderPositions)[number]
 
 export const WindowBorder: FC<{
   id: string
@@ -37,13 +35,9 @@ export const WindowBorder: FC<{
   height: number
   position: { x: number; y: number }
 }> = ({ width, height, id, position }) => {
-  const { setOneWindowSize, setOneWindowPosition, zoom } = useAppStore(
-    (state) => ({
-      setOneWindowSize: state.setOneWindowSize,
-      setOneWindowPosition: state.setOneWindowPosition,
-      zoom: state.zoom,
-    }),
-  )
+  const { resizeWindow } = useAppStore((state) => ({
+    resizeWindow: state.resizeWindow,
+  }))
 
   const startPosition = React.useRef<{ x: number; y: number } | null>(null)
   const startSize = React.useRef<{ width: number; height: number } | null>(null)
@@ -62,13 +56,6 @@ export const WindowBorder: FC<{
       x: totalMovement.current.x + movementX,
       y: totalMovement.current.y + movementY,
     }
-    const scaledMovement = {
-      x: totalMovement.current.x / zoom,
-      y: totalMovement.current.y / zoom,
-    }
-
-    let newSize = { width, height }
-    let newPosition = { x: position.x, y: position.y }
 
     const start = {
       x: startPosition.current.x,
@@ -77,66 +64,7 @@ export const WindowBorder: FC<{
       height: startSize.current.height,
     }
 
-    const createNewPosition = (axis: 'x' | 'y') => {
-      if (axis === 'x') {
-        return newSize.width < 300 ? position.x : start.x + scaledMovement.x
-      }
-      return newSize.height < 300 ? position.y : start.y + scaledMovement.y
-    }
-
-    switch (pos) {
-      case 'left': {
-        newSize.width = start.width - scaledMovement.x
-        newPosition.x = createNewPosition('x')
-        break
-      }
-      case 'topLeft': {
-        newSize = {
-          width: start.width - scaledMovement.x,
-          height: start.height - scaledMovement.y,
-        }
-        newPosition.x = createNewPosition('x')
-        newPosition.y = createNewPosition('y')
-        break
-      }
-      case 'top': {
-        newSize.height = start.height - scaledMovement.y
-        newPosition.y = createNewPosition('y')
-        break
-      }
-      case 'topRight': {
-        newSize = {
-          width: start.width + scaledMovement.x,
-          height: start.height - scaledMovement.y,
-        }
-        newPosition.y = createNewPosition('y')
-        break
-      }
-      case 'right': {
-        newSize.width = start.width + scaledMovement.x
-        break
-      }
-      case 'bottomRight': {
-        newSize = {
-          width: start.width + scaledMovement.x,
-          height: start.height + scaledMovement.y,
-        }
-        break
-      }
-      case 'bottom': {
-        newSize.height = start.height + scaledMovement.y
-        break
-      }
-      case 'bottomLeft': {
-        newSize = {
-          width: start.width - scaledMovement.x,
-          height: start.height + scaledMovement.y,
-        }
-        break
-      }
-    }
-    setOneWindowSize(id, newSize)
-    setOneWindowPosition(id, newPosition)
+    resizeWindow(id, start, totalMovement.current, pos)
   }
   const onDragStart = (
     e: DraggableEvent,

@@ -7,7 +7,7 @@ import { Email } from '@/state/emails'
 import { useAppStore } from '@/state/state'
 
 export const Item: FC<{ email: Email }> = ({ email }) => {
-  const toggleEmailOpen = useAppStore((state) => state.toggleOpenEmail)
+  const toggleEmailOpen = useAppStore((state) => state.toggleOpenWindow)
   return (
     <wrapper
       className={styles.wrapper}

@@ -2,16 +2,10 @@
 import type { FC } from 'react'
 import React from 'react'
 
-import { useDragControls, motion } from 'framer-motion'
 import styles from './Window.module.scss'
 import { Email } from '@/state/emails'
 import { useAppStore } from '@/state/state'
-import {
-  DraggableCore,
-  DraggableData,
-  DraggableEvent,
-  DraggableEventHandler,
-} from 'react-draggable'
+import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { WindowBorder } from './WindowBorder'
 
 export const WindowInternal: FC<{
@@ -19,11 +13,10 @@ export const WindowInternal: FC<{
   position: { x: number; y: number }
   size: { width: number; height: number }
 }> = ({ email, position, size }) => {
-  const { close, zoom, setPosition } = useAppStore((state) => ({
-    close: state.toggleOpenEmail,
+  const { close, zoom, setWindow } = useAppStore((state) => ({
+    close: state.toggleOpenWindow,
     zoom: state.zoom,
-    setPosition: state.setOneWindowPosition,
-    setSize: state.setOneWindowSize,
+    setWindow: state.setOneWindow,
   }))
 
   const { width, height } = size
@@ -38,7 +31,7 @@ export const WindowInternal: FC<{
       x: movementX / zoom,
       y: movementY / zoom,
     }
-    setPosition(email.id, {
+    setWindow(email.id, {
       x: position.x + scaledPosition.x,
       y: position.y + scaledPosition.y,
     })
