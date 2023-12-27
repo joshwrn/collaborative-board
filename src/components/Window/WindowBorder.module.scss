@@ -14,6 +14,7 @@ $handle-offset: -5px;
   width: calc($border-radius - $handle-offset);
   height: calc($border-radius - $handle-offset);
   // background-color: red;
+  z-index: 1;
 }
 
 .topLeft {
@@ -48,46 +49,40 @@ $handle-offset: -5px;
   right: $handle-offset;
 }
 
-@mixin border-side {
+@mixin border-side($side) {
   // background-color: rgb(255, 234, 0);
+  #{$side}: calc(100% - $border-radius);
+  @if $side == 'width' {
+    height: $border-radius;
+  } @else {
+    width: $border-radius;
+  }
 }
 
 .top {
-  @include border-side;
+  @include border-side(width);
   position: absolute;
   top: $handle-offset;
-  left: $border-radius;
-  right: $border-radius;
-  height: $border-radius;
   cursor: ns-resize;
 }
 
 .bottom {
-  @include border-side;
+  @include border-side(width);
   position: absolute;
   bottom: $handle-offset;
-  left: $border-radius;
-  right: $border-radius;
-  height: $border-radius;
   cursor: ns-resize;
 }
 
 .left {
-  @include border-side;
+  @include border-side(height);
   position: absolute;
-  top: $border-radius;
   left: $handle-offset;
-  bottom: $border-radius;
-  width: $border-radius;
   cursor: ew-resize;
 }
 
 .right {
-  @include border-side;
+  @include border-side(height);
   position: absolute;
-  top: $border-radius;
   right: $handle-offset;
-  bottom: $border-radius;
-  width: $border-radius;
   cursor: ew-resize;
 }

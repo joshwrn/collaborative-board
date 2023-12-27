@@ -181,9 +181,12 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   },
 })
 
+export const SIDES = ['top', 'right', 'bottom', 'left'] as const
+export type Side = (typeof SIDES)[number]
+
 export type ConnectedWindowsStore = {
-  connections: { from: string; to: string }[]
-  setConnections: Setter<{ from: string; to: string }[]>
+  connections: { from: string; to: string; side: Side }[]
+  setConnections: Setter<{ from: string; to: string; side: Side }[]>
 }
 
 export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (

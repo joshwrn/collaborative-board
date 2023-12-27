@@ -7,6 +7,7 @@ import { Email } from '@/state/emails'
 import { useAppStore } from '@/state/state'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { WindowBorder } from './WindowBorder'
+import { Connectors } from './Connectors'
 
 export const WindowInternal: FC<{
   email: Email
@@ -62,6 +63,7 @@ export const WindowInternal: FC<{
           height: `${height}px`,
         }}
       >
+        <Connectors />
         <WindowBorder
           width={width}
           height={height}
