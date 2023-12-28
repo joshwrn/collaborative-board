@@ -53,8 +53,8 @@ export const newWindowSizeInBounds = (
 
 const createNewWindowPosition = (windows: Window[]) => {
   const startingPosition = {
-    x: SPACE_ATTRS.size / 2,
-    y: SPACE_ATTRS.size / 2,
+    x: SPACE_ATTRS.size / 2 - WINDOW_ATTRS.defaultSize.width / 2,
+    y: SPACE_ATTRS.size / 2 - WINDOW_ATTRS.defaultSize.height / 2,
   }
   for (let i = 0; i < windows.length; i++) {
     const window = windows[i]

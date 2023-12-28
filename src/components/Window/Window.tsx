@@ -99,7 +99,7 @@ const WindowsInternal: FC = () => {
     windows: state.windows,
   }))
   return (
-    <div className={styles.wrapper}>
+    <>
       {emails.map((email) => {
         const window = windows.find((w) => w.id === email.id)
         if (!window) return null
@@ -113,7 +113,7 @@ const WindowsInternal: FC = () => {
           />
         )
       })}
-    </div>
+    </>
   )
 }
 
