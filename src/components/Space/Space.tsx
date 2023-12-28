@@ -1,7 +1,7 @@
 'use client'
 import type { FC } from 'react'
 import React from 'react'
-import { Window } from '../Window/Window'
+import { Windows } from '../Window/Window'
 
 import styles from './Space.module.scss'
 import { useAppStore } from '@/state/state'
@@ -15,8 +15,6 @@ export const Space: FC = () => {
     pan: state.pan,
     setPan: state.setPan,
     setZoom: state.setZoom,
-    emails: state.emails,
-    windows: state.windows,
   }))
   useGestures({ wrapperRef })
   return (
@@ -27,28 +25,7 @@ export const Space: FC = () => {
           transform: `scale(${state.zoom}) translate(${state.pan.x}px, ${state.pan.y}px)`,
         }}
       >
-        {state.windows.map((window) => {
-          const email = state.emails.find((email) => email.id === window.id)
-          if (!email) return null
-          return (
-            <Window
-              key={email.id}
-              email={email}
-              position={
-                state.windows.find((p) => p.id === email.id) || {
-                  x: 0,
-                  y: 0,
-                }
-              }
-              size={
-                state.windows.find((s) => s.id === email.id) || {
-                  width: 100,
-                  height: 100,
-                }
-              }
-            />
-          )
-        })}
+        <Windows />
         {/* <overlay className={styles.overlay} /> */}
       </container>
       <button className={styles.button}>

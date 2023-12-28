@@ -13,11 +13,13 @@ export const WindowInternal: FC<{
   email: Email
   position: { x: number; y: number }
   size: { width: number; height: number }
-}> = ({ email, position, size }) => {
-  const { close, zoom, setWindow } = useAppStore((state) => ({
+  zIndex: number
+}> = ({ email, position, size, zIndex }) => {
+  const { close, zoom, setWindow, bringToFront } = useAppStore((state) => ({
     close: state.toggleOpenWindow,
     zoom: state.zoom,
     setWindow: state.setOneWindow,
+    bringToFront: state.reorderWindows,
   }))
 
   const { width, height } = size
@@ -61,7 +63,9 @@ export const WindowInternal: FC<{
           transform: `translate(${position.x}px, ${position.y}px)`,
           width: `${width}px`,
           height: `${height}px`,
+          zIndex,
         }}
+        onPointerDown={() => bringToFront(email.id)}
       >
         <Connectors />
         <WindowBorder
@@ -87,4 +91,30 @@ export const WindowInternal: FC<{
   )
 }
 
-export const Window = React.memo(WindowInternal)
+const Window = React.memo(WindowInternal)
+
+const WindowsInternal: FC = () => {
+  const { emails, windows } = useAppStore((state) => ({
+    emails: state.emails,
+    windows: state.windows,
+  }))
+  return (
+    <div className={styles.wrapper}>
+      {emails.map((email) => {
+        const window = windows.find((w) => w.id === email.id)
+        if (!window) return null
+        return (
+          <Window
+            key={email.id}
+            email={email}
+            position={window}
+            size={window}
+            zIndex={window.zIndex}
+          />
+        )
+      })}
+    </div>
+  )
+}
+
+export const Windows = React.memo(WindowsInternal)

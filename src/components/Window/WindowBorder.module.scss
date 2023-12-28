@@ -23,6 +23,7 @@ $handle-offset: -5px;
   position: absolute;
   top: $handle-offset;
   left: $handle-offset;
+  border-radius: $border-radius 0 0 0;
 }
 
 .topRight {
@@ -31,6 +32,7 @@ $handle-offset: -5px;
   position: absolute;
   top: $handle-offset;
   right: $handle-offset;
+  border-radius: 0 $border-radius 0 0;
 }
 
 .bottomLeft {
@@ -39,6 +41,7 @@ $handle-offset: -5px;
   position: absolute;
   bottom: $handle-offset;
   left: $handle-offset;
+  border-radius: 0 0 0 $border-radius;
 }
 
 .bottomRight {
@@ -47,6 +50,7 @@ $handle-offset: -5px;
   position: absolute;
   bottom: $handle-offset;
   right: $handle-offset;
+  border-radius: 0 0 $border-radius 0;
 }
 
 @mixin border-side($side) {

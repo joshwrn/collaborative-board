@@ -7,6 +7,7 @@ type Window = {
   y: number
   width: number
   height: number
+  zIndex: number
 }
 
 export type OpenWindowsStore = {
@@ -19,12 +20,14 @@ export type OpenWindowsStore = {
     pos: string,
   ) => void
   setOneWindow: (id: string, update: Partial<Window>) => void
+  reorderWindows: (id: string) => void
 }
 
 export const WINDOW_ATTRS = {
   defaultSize: { width: 700, height: 500 },
   minSize: 300,
   maxSize: 1000,
+  zIndex: 0,
 }
 
 export const newWindowSizeInBounds = (
@@ -48,28 +51,49 @@ export const newWindowSizeInBounds = (
   }
 }
 
+const createNewWindowPosition = (windows: Window[]) => {
+  const startingPosition = {
+    x: SPACE_ATTRS.size / 2,
+    y: SPACE_ATTRS.size / 2,
+  }
+  for (let i = 0; i < windows.length; i++) {
+    const window = windows[i]
+    if (window.x === startingPosition.x && window.y === startingPosition.y) {
+      startingPosition.x += 20
+      startingPosition.y += 20
+      i = 0
+    }
+  }
+  return startingPosition
+}
+
 export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   set,
   get,
 ) => ({
   windows: [],
   toggleOpenWindow: (id: string) => {
-    const openWindow = get().windows.find((window) => window.id === id)
+    const openWindows = get().windows
+    const openWindow = openWindows.find((window) => window.id === id)
     if (openWindow) {
       set((state) => ({
         windows: state.windows.filter((window) => window.id !== id),
       }))
       return
     }
+    const highestZIndex = openWindows.reduce(
+      (highest, window) => Math.max(highest, window.zIndex),
+      0,
+    )
     set((state) => ({
       windows: [
         ...state.windows,
         {
           id,
-          x: SPACE_ATTRS.size / 2 - WINDOW_ATTRS.defaultSize.width / 2,
-          y: SPACE_ATTRS.size / 2 - WINDOW_ATTRS.defaultSize.height / 2,
+          ...createNewWindowPosition(state.windows),
           width: WINDOW_ATTRS.defaultSize.width,
           height: WINDOW_ATTRS.defaultSize.height,
+          zIndex: highestZIndex + 1,
         },
       ],
     }))
@@ -84,6 +108,28 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           }
         }
         return window
+      }),
+    }))
+  },
+  reorderWindows: (id) => {
+    console.log('reorderWindows')
+    const openWindows = get().windows
+    const openWindow = openWindows.find((window) => window.id === id)
+    if (!openWindow) {
+      throw new Error(`window ${id} not found`)
+    }
+    set((state) => ({
+      windows: state.windows.map((window) => {
+        if (window.id === id) {
+          return {
+            ...window,
+            zIndex: state.windows.length,
+          }
+        }
+        return {
+          ...window,
+          zIndex: window.zIndex - 1,
+        }
       }),
     }))
   },
