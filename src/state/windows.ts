@@ -112,7 +112,6 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     }))
   },
   reorderWindows: (id) => {
-    console.log('reorderWindows')
     const openWindows = get().windows
     const openWindow = openWindows.find((window) => window.id === id)
     if (!openWindow) {
@@ -230,15 +229,48 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
 export const SIDES = ['top', 'right', 'bottom', 'left'] as const
 export type Side = (typeof SIDES)[number]
 
+export type Connection = {
+  from: {
+    id: string
+    side: Side
+  }
+  to: {
+    id: string
+    side: Side
+  }
+}
+export type ActiveConnection = Pick<Connection, 'from'>
+
 export type ConnectedWindowsStore = {
-  connections: { from: string; to: string; side: Side }[]
-  setConnections: Setter<{ from: string; to: string; side: Side }[]>
+  activeConnection: ActiveConnection | null
+  setActiveConnection: Setter<ActiveConnection | null>
+  connections: Connection[]
+  setConnections: Setter<Connection[]>
+  makeConnection: (connection: Pick<Connection, 'to'>) => void
 }
 
 export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
   set,
   get,
 ) => ({
+  activeConnection: null,
+  setActiveConnection: (setter) => stateSetter(set, setter, `activeConnection`),
+  makeConnection: (connector) => {
+    const activeConnection = get().activeConnection
+    if (!activeConnection) {
+      throw new Error(`no active connection`)
+    }
+    set((state) => ({
+      activeConnection: null,
+      connections: [
+        ...state.connections,
+        {
+          from: activeConnection.from,
+          to: connector.to,
+        },
+      ],
+    }))
+  },
   connections: [],
   setConnections: (setter) => stateSetter(set, setter, `connections`),
 })

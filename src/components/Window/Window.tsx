@@ -67,7 +67,7 @@ export const WindowInternal: FC<{
         }}
         onPointerDown={() => bringToFront(email.id)}
       >
-        <Connectors />
+        <Connectors id={email.id} />
         <WindowBorder
           width={width}
           height={height}
