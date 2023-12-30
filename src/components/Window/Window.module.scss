@@ -9,6 +9,7 @@ $inner-border-radius: 19px;
   position: absolute;
   box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.35);
   z-index: 10;
+  border-radius: $border-radius;
   > [data-role='connectors'] {
     opacity: 0;
   }
@@ -24,7 +25,7 @@ $inner-border-radius: 19px;
   height: 40px;
   border-bottom-width: 1px;
   border-bottom-style: solid;
-  border-bottom-color: #6b6b6b;
+  border-bottom-color: var(--window-outline);
   width: 100%;
   padding: 0 15px;
   display: flex;
@@ -53,7 +54,7 @@ $inner-border-radius: 19px;
   background-color: #2b2b2b;
   border-bottom-width: 1px;
   border-bottom-style: solid;
-  border-bottom-color: #6b6b6b;
+  border-bottom-color: var(--window-outline);
   width: 100%;
   padding: 15px;
   display: flex;

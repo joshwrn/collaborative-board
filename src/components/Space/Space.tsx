@@ -7,6 +7,7 @@ import styles from './Space.module.scss'
 import { useAppStore } from '@/state/state'
 import { useGestures } from '@/gestures'
 import { MdOutlineCenterFocusWeak } from 'react-icons/md'
+import { Connections } from '../Connections/Connections'
 
 export const Space: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
@@ -25,6 +26,7 @@ export const Space: FC = () => {
           transform: `scale(${state.zoom}) translate(${state.pan.x}px, ${state.pan.y}px)`,
         }}
       >
+        <Connections />
         <Windows />
         {/* <overlay className={styles.overlay} /> */}
       </container>

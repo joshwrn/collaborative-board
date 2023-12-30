@@ -13,7 +13,7 @@ $connector-size: 30px;
 $connector-margin: 10px;
 $connector-distance: calc($connector-size + $connector-margin);
 
-.connector {
+@mixin base {
   position: absolute;
   display: flex;
   justify-content: center;
@@ -22,12 +22,21 @@ $connector-distance: calc($connector-size + $connector-margin);
   height: $connector-size;
   border-radius: 50%;
   cursor: pointer;
-  opacity: 0.5;
+}
+
+.connector {
+  @include base;
   // border: 1px solid red;
   transition: opacity 0.2s ease-in-out;
+  opacity: 0.5;
   &:hover {
     opacity: 1;
   }
+}
+
+.outlet {
+  @include base;
+  border: 1px solid var(--window-outline);
 }
 
 @mixin flap($pos) {

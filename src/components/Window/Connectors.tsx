@@ -20,15 +20,23 @@ export const Connectors: FC<{ id: string }> = ({ id }) => {
       state.makeConnection({ to: { id, side } })
     }
   }
+  const showOutlet =
+    state.activeConnection && state.activeConnection.from.id !== id
   return (
-    <container className={styles.container} data-role="connectors">
+    <container
+      className={styles.container}
+      data-role={state.activeConnection ? 'outlets' : 'connectors'}
+    >
       {SIDES.map((side) => (
         <div
           key={side}
-          className={joinClasses(styles[side], styles.connector)}
+          className={joinClasses(
+            styles[side],
+            showOutlet ? styles.outlet : styles.connector,
+          )}
           onClick={() => makeConnection(side)}
         >
-          <FaArrowRightLong />
+          {!showOutlet && <FaArrowRightLong />}
         </div>
       ))}
     </container>

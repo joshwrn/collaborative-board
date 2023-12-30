@@ -2,7 +2,7 @@
 
 .border {
   position: absolute;
-  background-color: #6b6b6b;
+  background-color: var(--window-outline);
   border-radius: $border-radius;
   z-index: -1;
   // overflow: hidden;

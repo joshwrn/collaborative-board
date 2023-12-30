@@ -1,7 +1,7 @@
 import { SPACE_ATTRS } from './space'
 import { AppStateCreator, Setter, stateSetter } from './state'
 
-type Window = {
+export type Window = {
   id: string
   x: number
   y: number
