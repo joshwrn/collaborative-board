@@ -5,6 +5,7 @@ import styles from './WindowBorder.module.scss'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { useAppStore } from '@/state/state'
 import { setCursorStyle } from '@/utils/setCursor'
+import { joinClasses } from '@/utils/joinClasses'
 
 const borderPositions = [
   'left',
@@ -35,8 +36,9 @@ export const WindowBorder: FC<{
   height: number
   position: { x: number; y: number }
 }> = ({ width, height, id, position }) => {
-  const { resizeWindow } = useAppStore((state) => ({
+  const state = useAppStore((state) => ({
     resizeWindow: state.resizeWindow,
+    activeConnection: state.activeConnection,
   }))
 
   const startPosition = React.useRef<{ x: number; y: number } | null>(null)
@@ -64,7 +66,7 @@ export const WindowBorder: FC<{
       height: startSize.current.height,
     }
 
-    resizeWindow(id, start, totalMovement.current, pos)
+    state.resizeWindow(id, start, totalMovement.current, pos)
   }
   const onDragStart = (
     e: DraggableEvent,
@@ -85,9 +87,10 @@ export const WindowBorder: FC<{
     totalMovement.current = { x: 0, y: 0 }
     setCursorStyle('default')
   }
+  const isActive = state.activeConnection?.from.id === id
   return (
     <div
-      className={styles.border}
+      className={joinClasses(styles.border, isActive ? styles.spinningBg : null)}
       style={{
         width: `${width + 2}px`,
         height: `${height + 2}px`,

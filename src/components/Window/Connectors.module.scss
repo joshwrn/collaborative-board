@@ -13,6 +13,12 @@ $connector-size: 30px;
 $connector-margin: 10px;
 $connector-distance: calc($connector-size + $connector-margin);
 
+:export {
+  connectorSize: $connector-size;
+  connectorMargin: $connector-margin;
+  connectorDistance: $connector-distance;
+}
+
 @mixin base {
   position: absolute;
   display: flex;
@@ -22,6 +28,7 @@ $connector-distance: calc($connector-size + $connector-margin);
   height: $connector-size;
   border-radius: 50%;
   cursor: pointer;
+  border: 1px solid var(--window-outline);
 }
 
 .connector {

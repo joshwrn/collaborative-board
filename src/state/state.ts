@@ -3,13 +3,9 @@ import { create } from 'zustand'
 import { EmailListStore, emailListStore } from './emails'
 import { UserStore, userStore } from './user'
 import { SpaceStore, spaceStore } from './space'
-import {
-  ConnectedWindowsStore,
-  OpenWindowsStore,
-  openWindowsStore,
-  connectedWindowsStore,
-} from './windows'
+import { OpenWindowsStore, openWindowsStore } from './windows'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
+import { ConnectedWindowsStore, connectedWindowsStore } from './connections'
 
 export type AppStore = EmailListStore &
   OpenWindowsStore &

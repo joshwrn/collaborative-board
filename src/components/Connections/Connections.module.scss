@@ -1,0 +1,32 @@
+.wrapper {
+  position: absolute;
+  // z-index: -999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // background: linear-gradient(
+  //   180deg,
+  //   rgba(63, 94, 251, 1) 0%,
+  //   rgba(252, 70, 237, 1) 100%
+  // );
+  opacity: 0.75;
+}
+
+.line {
+  height: 2px;
+  background: #d8d8d8;
+  position: absolute;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  > svg {
+    z-index: 99999;
+    position: absolute;
+    font-size: 25px;
+    transform: translateX(10px);
+    path {
+      fill: #d8d8d8;
+    }
+  }
+}

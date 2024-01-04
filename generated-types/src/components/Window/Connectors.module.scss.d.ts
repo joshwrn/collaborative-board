@@ -1,5 +1,8 @@
 export declare const bottom: string;
 export declare const connector: string;
+export declare const connectorDistance: string;
+export declare const connectorMargin: string;
+export declare const connectorSize: string;
 export declare const container: string;
 export declare const left: string;
 export declare const outlet: string;

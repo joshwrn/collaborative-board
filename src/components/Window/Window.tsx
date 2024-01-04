@@ -7,7 +7,8 @@ import { Email } from '@/state/emails'
 import { useAppStore } from '@/state/state'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { WindowBorder } from './WindowBorder'
-import { Connectors } from './Connectors'
+import { IoAddOutline } from 'react-icons/io5'
+import { ConnectorOverlay } from './ConnectorOverlay'
 
 export const WindowInternal: FC<{
   email: Email
@@ -15,11 +16,15 @@ export const WindowInternal: FC<{
   size: { width: number; height: number }
   zIndex: number
 }> = ({ email, position, size, zIndex }) => {
-  const { close, zoom, setWindow, bringToFront } = useAppStore((state) => ({
+  const state = useAppStore((state) => ({
     close: state.toggleOpenWindow,
     zoom: state.zoom,
     setWindow: state.setOneWindow,
     bringToFront: state.reorderWindows,
+    connections: state.connections,
+    activeConnection: state.activeConnection,
+    setActiveConnection: state.setActiveConnection,
+    makeConnection: state.makeConnection,
   }))
 
   const { width, height } = size
@@ -31,22 +36,21 @@ export const WindowInternal: FC<{
     const { movementX, movementY } = e
     if (!movementX && !movementY) return
     const scaledPosition = {
-      x: movementX / zoom,
-      y: movementY / zoom,
+      x: movementX / state.zoom,
+      y: movementY / state.zoom,
     }
-    setWindow(email.id, {
+    state.setWindow(email.id, {
       x: position.x + scaledPosition.x,
       y: position.y + scaledPosition.y,
     })
   }
 
-  const onDragStart = (e: DraggableEvent, data: DraggableData) => {
-    console.log('drag start')
-  }
+  const onDragStart = (e: DraggableEvent, data: DraggableData) => {}
 
-  const onDragStop = (e: DraggableEvent, data: DraggableData) => {
-    console.log('drag stop')
-  }
+  const onDragStop = (e: DraggableEvent, data: DraggableData) => {}
+
+  const toConnections = state.connections.filter((c) => c.to.id === email.id)
+  const fromConnections = state.connections.filter((c) => c.from.id === email.id)
 
   return (
     <DraggableCore
@@ -65,9 +69,8 @@ export const WindowInternal: FC<{
           height: `${height}px`,
           zIndex,
         }}
-        onPointerDown={() => bringToFront(email.id)}
+        onPointerDown={() => state.bringToFront(email.id)}
       >
-        <Connectors id={email.id} />
         <WindowBorder
           width={width}
           height={height}
@@ -75,17 +78,40 @@ export const WindowInternal: FC<{
           position={position}
         />
         <nav className={`${styles.topBar} handle`}>
-          <button className={styles.close} onClick={() => close(email.id)} />
+          <button
+            className={styles.close}
+            onClick={() => state.close(email.id)}
+          />
           <button className={styles.full} />
         </nav>
 
         <header className={styles.titleBar}>
-          <h3>{email.from}</h3>
-          <p>{email.address}</p>
+          <section className={styles.title}>
+            <h3>{email.from}</h3>
+            <p>{email.address}</p>
+          </section>
+          <section className={styles.connections}>
+            <inner>
+              <p>
+                Incoming <strong>{toConnections.length}</strong>
+              </p>
+              <p>
+                Outgoing <strong>{fromConnections.length}</strong>
+              </p>
+            </inner>
+            <button
+              onClick={() =>
+                state.setActiveConnection({ from: { id: email.id } })
+              }
+            >
+              <IoAddOutline />
+            </button>
+          </section>
         </header>
         <main className={styles.content}>
           <p>{email.body}</p>
         </main>
+        <ConnectorOverlay id={email.id} />
       </div>
     </DraggableCore>
   )

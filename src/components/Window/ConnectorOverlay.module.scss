@@ -1,0 +1,35 @@
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.431);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+  &:hover {
+    opacity: 1;
+  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  .icon {
+    font-size: 50px;
+    color: white;
+  }
+  .warning {
+    font-size: 50px;
+    stroke: rgb(255, 204, 0);
+    path {
+      &:last-of-type {
+        fill: rgb(255, 204, 0);
+      }
+    }
+  }
+}

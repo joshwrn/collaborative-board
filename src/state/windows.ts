@@ -215,6 +215,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           width: start.width - scaledMovement.x,
           height: start.height + scaledMovement.y,
         }
+        newPosition.x = createNewPosition('x')
         break
       }
     }
@@ -224,53 +225,4 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       ...newPosition,
     })
   },
-})
-
-export const SIDES = ['top', 'right', 'bottom', 'left'] as const
-export type Side = (typeof SIDES)[number]
-
-export type Connection = {
-  from: {
-    id: string
-    side: Side
-  }
-  to: {
-    id: string
-    side: Side
-  }
-}
-export type ActiveConnection = Pick<Connection, 'from'>
-
-export type ConnectedWindowsStore = {
-  activeConnection: ActiveConnection | null
-  setActiveConnection: Setter<ActiveConnection | null>
-  connections: Connection[]
-  setConnections: Setter<Connection[]>
-  makeConnection: (connection: Pick<Connection, 'to'>) => void
-}
-
-export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
-  set,
-  get,
-) => ({
-  activeConnection: null,
-  setActiveConnection: (setter) => stateSetter(set, setter, `activeConnection`),
-  makeConnection: (connector) => {
-    const activeConnection = get().activeConnection
-    if (!activeConnection) {
-      throw new Error(`no active connection`)
-    }
-    set((state) => ({
-      activeConnection: null,
-      connections: [
-        ...state.connections,
-        {
-          from: activeConnection.from,
-          to: connector.to,
-        },
-      ],
-    }))
-  },
-  connections: [],
-  setConnections: (setter) => stateSetter(set, setter, `connections`),
 })
