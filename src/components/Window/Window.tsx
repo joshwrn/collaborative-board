@@ -25,6 +25,7 @@ export const WindowInternal: FC<{
     activeConnection: state.activeConnection,
     setActiveConnection: state.setActiveConnection,
     makeConnection: state.makeConnection,
+    fullScreen: state.fullscreenWindow,
   }))
 
   const { width, height } = size
@@ -69,6 +70,9 @@ export const WindowInternal: FC<{
           height: `${height}px`,
           zIndex,
         }}
+        onClick={(e) => {
+          e.stopPropagation()
+        }}
         onPointerDown={() => state.bringToFront(email.id)}
       >
         <WindowBorder
@@ -82,7 +86,10 @@ export const WindowInternal: FC<{
             className={styles.close}
             onClick={() => state.close(email.id)}
           />
-          <button className={styles.full} />
+          <button
+            className={styles.full}
+            onClick={() => state.fullScreen(email.id)}
+          />
         </nav>
 
         <header className={styles.titleBar}>

@@ -6,12 +6,16 @@ import { SpaceStore, spaceStore } from './space'
 import { OpenWindowsStore, openWindowsStore } from './windows'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 import { ConnectedWindowsStore, connectedWindowsStore } from './connections'
+import { PeripheralStore, peripheralStore } from './peripheral'
+import { ContextMenuStore, contextMenuStore } from './contextMenu'
 
 export type AppStore = EmailListStore &
   OpenWindowsStore &
   SpaceStore &
   ConnectedWindowsStore &
-  UserStore
+  UserStore &
+  PeripheralStore &
+  ContextMenuStore
 
 export const useAppStore = create<AppStore>((...operators) => {
   // const stores = [emailListStore, openEmailsStore, spaceStore, userStore]
@@ -22,6 +26,8 @@ export const useAppStore = create<AppStore>((...operators) => {
     ...spaceStore(...operators),
     ...connectedWindowsStore(...operators),
     ...userStore(...operators),
+    ...peripheralStore(...operators),
+    ...contextMenuStore(...operators),
   }
 })
 if (process.env.NODE_ENV === 'development') {

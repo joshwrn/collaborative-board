@@ -1,5 +1,5 @@
 import { SPACE_ATTRS } from './space'
-import { AppStateCreator, Setter, stateSetter } from './state'
+import { AppStateCreator } from './state'
 
 export type Window = {
   id: string
@@ -21,6 +21,7 @@ export type OpenWindowsStore = {
   ) => void
   setOneWindow: (id: string, update: Partial<Window>) => void
   reorderWindows: (id: string) => void
+  fullscreenWindow: (id: string) => void
 }
 
 export const WINDOW_ATTRS = {
@@ -28,6 +29,26 @@ export const WINDOW_ATTRS = {
   minSize: 300,
   maxSize: 1000,
   zIndex: 0,
+}
+export const DEFAULT_WINDOW: Window = {
+  id: '',
+  x: 0,
+  y: 0,
+  width: WINDOW_ATTRS.defaultSize.width,
+  height: WINDOW_ATTRS.defaultSize.height,
+  zIndex: 0,
+}
+
+const createMaxSize = () => {
+  const width =
+    WINDOW_ATTRS.maxSize > window.innerWidth
+      ? window.innerWidth
+      : WINDOW_ATTRS.maxSize
+  const height =
+    WINDOW_ATTRS.maxSize > window.innerHeight
+      ? window.innerHeight
+      : WINDOW_ATTRS.maxSize
+  return { width, height }
 }
 
 export const newWindowSizeInBounds = (
@@ -37,15 +58,14 @@ export const newWindowSizeInBounds = (
   },
   currentSize: { width: number; height: number },
 ) => {
+  const maxSize = createMaxSize()
   return {
     width:
-      newSize.width < WINDOW_ATTRS.minSize ||
-      newSize.width > WINDOW_ATTRS.maxSize
+      newSize.width < WINDOW_ATTRS.minSize || newSize.width > maxSize.width
         ? currentSize.width
         : newSize.width,
     height:
-      newSize.height < WINDOW_ATTRS.minSize ||
-      newSize.height > WINDOW_ATTRS.maxSize
+      newSize.height < WINDOW_ATTRS.minSize || newSize.height > maxSize.height
         ? currentSize.height
         : newSize.height,
   }
@@ -72,6 +92,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   get,
 ) => ({
   windows: [],
+
   toggleOpenWindow: (id: string) => {
     const openWindows = get().windows
     const openWindow = openWindows.find((window) => window.id === id)
@@ -98,6 +119,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       ],
     }))
   },
+
   setOneWindow: (id, update) => {
     set((state) => ({
       windows: state.windows.map((window) => {
@@ -111,6 +133,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       }),
     }))
   },
+
   reorderWindows: (id) => {
     const openWindows = get().windows
     const openWindow = openWindows.find((window) => window.id === id)
@@ -223,6 +246,43 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     get().setOneWindow(id, {
       ...newWindowSizeInBounds(newSize, window),
       ...newPosition,
+    })
+  },
+
+  fullscreenWindow: (id) => {
+    const curWindow = get().windows.find((window) => window.id === id)
+    if (!id || !curWindow) {
+      throw new Error(`window ${id} not found`)
+    }
+    const newSize = createMaxSize()
+
+    const isMaximized =
+      curWindow.width === newSize.width && curWindow.height === newSize.height
+    if (isMaximized) {
+      const heightChange = curWindow.height - WINDOW_ATTRS.defaultSize.height
+      const widthChange = curWindow.width - WINDOW_ATTRS.defaultSize.width
+      const newPosition = {
+        x: curWindow.x + widthChange / 2,
+        y: curWindow.y + heightChange / 2,
+      }
+      get().setOneWindow(id, {
+        width: WINDOW_ATTRS.defaultSize.width,
+        height: WINDOW_ATTRS.defaultSize.height,
+        ...newPosition,
+      })
+      return
+    }
+
+    const heightChange = newSize.height - curWindow.height
+    const widthChange = newSize.width - curWindow.width
+    const newPosition = {
+      x: curWindow.x - widthChange / 2,
+      y: curWindow.y - heightChange / 2,
+    }
+    get().setOneWindow(id, {
+      ...newPosition,
+      width: newSize.width,
+      height: newSize.height,
     })
   },
 })

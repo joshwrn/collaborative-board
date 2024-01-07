@@ -5,6 +5,7 @@ import { IoMdOutlet } from 'react-icons/io'
 import { IoWarningOutline } from 'react-icons/io5'
 
 import { useAppStore } from '@/state/state'
+import { checkIfConnectionExists } from '@/state/connections'
 
 export const ConnectorOverlay: FC<{
   id: string
@@ -18,11 +19,11 @@ export const ConnectorOverlay: FC<{
   }))
   if (!state.activeConnection || state.activeConnection.from.id === id)
     return null
-  const alreadyConnected = state.connections.some(
-    (connection) =>
-      connection.to.id === id &&
-      state?.activeConnection?.from.id === connection.from.id,
-  )
+  const alreadyConnected = checkIfConnectionExists({
+    to: id,
+    from: state.activeConnection.from.id,
+    connections: state.connections,
+  })
   return (
     <overlay
       className={styles.overlay}

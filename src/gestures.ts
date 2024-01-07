@@ -54,16 +54,6 @@ export const useGestures = ({
           const zoomFocusPointOnScreenY = zoomFocusPointY / zoom
           const offSetX = -(zoomFocusPointOnScreenX * offset)
           const offSetY = -(zoomFocusPointOnScreenY * offset)
-          console.log({
-            zoomFocusPointX,
-            zoomFocusPointY,
-            zoomFocusPointOnScreenX,
-            zoomFocusPointOnScreenY,
-            offSetX,
-            offSetY,
-            pan,
-            zoom,
-          })
           setZoom((prev) => newZoom)
           setPan((prev) => ({
             x: prev.x - offSetX,
