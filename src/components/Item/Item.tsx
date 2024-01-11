@@ -7,11 +7,18 @@ import { Email } from '@/state/emails'
 import { useAppStore } from '@/state/state'
 
 export const Item: FC<{ email: Email }> = ({ email }) => {
-  const toggleEmailOpen = useAppStore((state) => state.toggleOpenWindow)
+  const state = useAppStore((state) => ({
+    toggleOpen: state.toggleOpenWindow,
+    openContextMenu: state.openContextMenu,
+  }))
   return (
     <wrapper
       className={styles.wrapper}
-      onClick={() => toggleEmailOpen(email.id)}
+      onClick={() => state.toggleOpen(email.id)}
+      onContextMenu={(e) => {
+        e.preventDefault()
+        state.openContextMenu({ elementType: 'item', id: email.id })
+      }}
     >
       <h3>{email.from}</h3>
       <h1>{email.subject}</h1>

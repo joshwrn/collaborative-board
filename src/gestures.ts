@@ -13,14 +13,15 @@ export const clampInto =
   (value: number): number =>
     value < min ? min : value > max ? max : value
 
-const clampZ = clampInto([0.5, 3])
+const clampZ = clampInto([0.2, 3])
 
 export const useGestures = ({
   wrapperRef,
 }: {
   wrapperRef: React.RefObject<HTMLDivElement>
 }) => {
-  const { zoom, pan, setZoom, setPan } = useAppStore((state) => ({
+  const state = useAppStore((state) => ({
+    contextMenu: state.contextMenu,
     zoom: state.zoom,
     pan: state.pan,
     setZoom: state.setZoom,
@@ -32,6 +33,7 @@ export const useGestures = ({
       onWheel: (data) => {
         // if (!(data.event.target instanceof HTMLCanvasElement)) return
         // pinchRef.current = `not sure`
+        if (state.contextMenu) return
         if (isWheelEndEvent(Date.now())) {
           return
         }
@@ -46,22 +48,22 @@ export const useGestures = ({
               `wrapperRef.current.getBoundingClientRect() is undefined`,
             )
           }
-          const newZoom = clampZ(zoom + delta.z)
-          const offset = zoom - newZoom
+          const newZoom = clampZ(state.zoom + delta.z)
+          const offset = state.zoom - newZoom
           const zoomFocusPointX = event.clientX - wrapper.x //- pan.x
           const zoomFocusPointY = event.clientY - wrapper.y //- pan.y
-          const zoomFocusPointOnScreenX = zoomFocusPointX / zoom
-          const zoomFocusPointOnScreenY = zoomFocusPointY / zoom
+          const zoomFocusPointOnScreenX = zoomFocusPointX / state.zoom
+          const zoomFocusPointOnScreenY = zoomFocusPointY / state.zoom
           const offSetX = -(zoomFocusPointOnScreenX * offset)
           const offSetY = -(zoomFocusPointOnScreenY * offset)
-          setZoom((prev) => newZoom)
-          setPan((prev) => ({
+          state.setZoom((prev) => newZoom)
+          state.setPan((prev) => ({
             x: prev.x - offSetX,
             y: prev.y - offSetY,
           }))
         }
         if ((delta.x || delta.y) && !delta.z) {
-          setPan((prev) => ({
+          state.setPan((prev) => ({
             x: prev.x + delta.x,
             y: prev.y + delta.y,
           }))

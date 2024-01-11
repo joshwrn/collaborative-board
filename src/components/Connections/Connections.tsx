@@ -90,7 +90,7 @@ export const Connections: FC = () => {
     openWindows: state.windows,
     activeConnection: state.activeConnection,
     hoveredConnection: state.hoveredConnection,
-    mousePosition: state.mousePosition,
+    spaceMousePosition: state.spaceMousePosition,
   }))
   const activeWindow = state.openWindows.find(
     (window) => window.id === state.activeConnection?.from.id,
@@ -105,7 +105,7 @@ export const Connections: FC = () => {
           from={activeWindow}
           to={hoveredWindow}
           id={''}
-          mousePosition={state.mousePosition}
+          mousePosition={state.spaceMousePosition}
           isActive={true}
         />
       )}

@@ -1,10 +1,12 @@
 import { Point2d } from '.'
 import { AppStateCreator, AppStore, Setter, stateSetter } from './state'
 
+export type ElementTypes = 'connections' | 'item'
+
 type ContextMenu = {
   position: Point2d
   id: string
-  elementType: keyof AppStore
+  elementType: ElementTypes
 } | null
 
 export type ContextMenuStore = {
@@ -15,7 +17,7 @@ export type ContextMenuStore = {
     elementType,
   }: {
     id: string
-    elementType: keyof AppStore
+    elementType: ElementTypes
   }) => void
 }
 

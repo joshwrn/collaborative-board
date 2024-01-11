@@ -63,10 +63,10 @@
 }
 
 .selected {
-  background: rgb(118, 198, 255);
+  background: var(--blue-highlight);
   > svg {
     path {
-      fill: rgb(118, 198, 255);
+      fill: var(--blue-highlight);
     }
   }
 }

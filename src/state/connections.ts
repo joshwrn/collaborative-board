@@ -52,7 +52,7 @@ export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
         {
           from: activeConnection.from,
           to: connector.to,
-          id: `${activeConnection.from.id}-${connector.to.id}`,
+          id: `${activeConnection.from.id}/${connector.to.id}`,
         },
       ],
     }))

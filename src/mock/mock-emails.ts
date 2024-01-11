@@ -1,8 +1,9 @@
 import { Email } from '@/state/emails'
+import { nanoid } from 'nanoid'
 
 export const MOCK_EMAILS: Email[] = [
   {
-    id: '11',
+    id: nanoid(),
     from: 'bill gates',
     to: 'SELF',
     address: 'bill.gates@microsoft.com',
@@ -10,7 +11,7 @@ export const MOCK_EMAILS: Email[] = [
     body: "Season's Greetings from Team Microsoft! Tis the season to Excel-sior! 🎄✨ May your holidays be as smooth as a bug-free software update and as delightful as finding a shortcut in a long code. May your days be Merry and your Outlook always bright! Here's to a holiday season filled with more joy than discovering Clippy in the attic. 😉 Wishing you a Windows-wonderful holiday and a PowerPoint-perfect New Year! Happy Holidays, Bill Gates and the Microsoft Crew",
   },
   {
-    id: '1',
+    id: nanoid(),
     from: 'sender@companyA.com',
     to: 'Recipient Receiver',
     address: 'recipient@companyB.com',
@@ -18,7 +19,7 @@ export const MOCK_EMAILS: Email[] = [
     body: "Hi Team, Attached is the status report for this week's project milestones. Let me know if you need any further details. Regards, Sender",
   },
   {
-    id: '2',
+    id: nanoid(),
     from: 'ceo@yourcompany.com',
     to: 'All Staff Members',
     address: 'allstaff@yourcompany.com',
@@ -26,7 +27,7 @@ export const MOCK_EMAILS: Email[] = [
     body: "Dear Team, I am thrilled to announce our plans for expanding into new markets. Your dedication has made this possible. Let's continue to grow together! Best, CEO",
   },
   {
-    id: '3',
+    id: nanoid(),
     from: 'noreply@bankinginstitution.com',
     to: 'Account Holder',
     address: 'account_holder@email.com',
@@ -34,7 +35,7 @@ export const MOCK_EMAILS: Email[] = [
     body: 'Dear Customer, We are upgrading our security systems. Click the link below to update your account information for a seamless banking experience. Thank you, Banking Institution',
   },
   {
-    id: '4',
+    id: nanoid(),
     from: 'service@subscriptionprovider.com',
     to: 'User One Two Three',
     address: 'user123@email.com',
@@ -42,7 +43,7 @@ export const MOCK_EMAILS: Email[] = [
     body: "Hi User, Your premium subscription is expiring soon. Don't miss out on uninterrupted service! Renew now and enjoy our exclusive features. Regards, Subscription Provider",
   },
   {
-    id: '5',
+    id: nanoid(),
     from: 'info@conferenceorganizer.com',
     to: 'Attendee Name',
     address: 'attendee@email.com',
@@ -50,7 +51,7 @@ export const MOCK_EMAILS: Email[] = [
     body: 'Hello Attendee, This is your final chance to register for our upcoming conference. Join industry experts for insightful sessions. Register now before seats fill up! Best regards, Conference Organizer',
   },
   {
-    id: '6',
+    id: nanoid(),
     from: 'updates@socialmedia.com',
     to: 'User Four Five Six',
     address: 'user456@email.com',
@@ -58,7 +59,7 @@ export const MOCK_EMAILS: Email[] = [
     body: "Hi User, Here's a summary of your recent activity on our platform. Keep engaging with your connections! Cheers, Social Media Updates",
   },
   {
-    id: '7',
+    id: nanoid(),
     from: 'support@softwarecompany.com',
     to: 'Valued Customer',
     address: 'customer@email.com',
@@ -66,7 +67,7 @@ export const MOCK_EMAILS: Email[] = [
     body: 'Dear Customer, We have successfully resolved the issue you reported (Ticket #12345). Let us know if you need further assistance. Regards, Software Company Support',
   },
   {
-    id: '8',
+    id: nanoid(),
     from: 'marketing@ecommercestore.com',
     to: 'Loyal Customer Name',
     address: 'loyalcustomer@email.com',
@@ -74,7 +75,7 @@ export const MOCK_EMAILS: Email[] = [
     body: 'Hello Loyal Customer, You are exclusively invited to our flash sale event. Grab your favorite items at discounted prices! Happy shopping! Regards, E-commerce Store Marketing',
   },
   {
-    id: '9',
+    id: nanoid(),
     from: 'notifications@travelagency.com',
     to: 'Traveler Person',
     address: 'traveler@email.com',
@@ -82,7 +83,7 @@ export const MOCK_EMAILS: Email[] = [
     body: 'Dear Traveler, Your itinerary for the upcoming trip has been finalized. Check the details attached and get ready for an unforgettable experience! Best regards, Travel Agency Notifications',
   },
   {
-    id: '10',
+    id: nanoid(),
     from: 'updates@weatherforecast.com',
     to: 'Weather Subscriber',
     address: 'weathersubscriber@email.com',

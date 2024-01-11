@@ -8,7 +8,7 @@ import { useAppStore } from '@/state/state'
 import { TfiWrite } from 'react-icons/tfi'
 
 export const List: FC = () => {
-  const s = useAppStore((state) => ({
+  const state = useAppStore((state) => ({
     emails: state.emails,
     setEmails: state.setEmails,
   }))
@@ -17,7 +17,7 @@ export const List: FC = () => {
       <header className={styles.header}>
         <button
           onClick={() => {
-            s.setEmails((emails) => [
+            state.setEmails((emails) => [
               ...emails,
               {
                 id: Math.random().toString(),
@@ -34,7 +34,7 @@ export const List: FC = () => {
         </button>
       </header>
       <container className={styles.listContainer}>
-        {s.emails.map((email) => (
+        {state.emails.map((email) => (
           <Item key={email.id} email={email} />
         ))}
       </container>

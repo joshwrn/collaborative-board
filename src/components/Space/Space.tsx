@@ -18,7 +18,7 @@ export const Space: FC = () => {
     pan: state.pan,
     setPan: state.setPan,
     setZoom: state.setZoom,
-    setMousePosition: state.setMousePosition,
+    setSpaceMousePosition: state.setSpaceMousePosition,
     setActiveConnection: state.setActiveConnection,
   }))
   useGestures({ wrapperRef })
@@ -36,7 +36,7 @@ export const Space: FC = () => {
         }
         const x = (e.clientX - rect.left) / state.zoom
         const y = (e.clientY - rect.top) / state.zoom
-        state.setMousePosition({
+        state.setSpaceMousePosition({
           x,
           y,
         })
@@ -54,7 +54,6 @@ export const Space: FC = () => {
       >
         <Connections />
         <Windows />
-        <ContextMenu />
       </container>
       <button className={styles.button}>
         <MdOutlineCenterFocusWeak

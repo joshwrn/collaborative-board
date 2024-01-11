@@ -13,9 +13,17 @@ export type Email = {
 export type EmailListStore = {
   emails: Email[]
   setEmails: Setter<Email[]>
+  deleteEmail: (id: string) => void
 }
 
 export const emailListStore: AppStateCreator<EmailListStore> = (set) => ({
   emails: MOCK_EMAILS,
   setEmails: (setter) => stateSetter(set, setter, `emails`),
+  deleteEmail: (id) =>
+    set((state) => ({
+      emails: state.emails.filter((email) => email.id !== id),
+      connections: state.connections.filter(
+        (connection) => connection.id.includes(id) === false,
+      ),
+    })),
 })
