@@ -41,7 +41,7 @@ const MenuItems = () => {
     contextMenu: state.contextMenu,
     setContextMenu: state.setContextMenu,
     removeConnection: state.removeConnection,
-    deleteEmail: state.deleteEmail,
+    deleteItem: state.deleteItem,
   }))
   if (state.contextMenu === null) return null
   const close = () => state.setContextMenu(null)
@@ -65,7 +65,7 @@ const MenuItems = () => {
         <item
           className={styles.item}
           onClick={() => {
-            state.deleteEmail(state.contextMenu?.id ?? '')
+            state.deleteItem(state.contextMenu?.id ?? '')
             close()
           }}
         >

@@ -1,6 +1,5 @@
 import type { Mutate, StoreApi, StoreMutatorIdentifier } from 'zustand'
 import { create } from 'zustand'
-import { EmailListStore, emailListStore } from './emails'
 import { UserStore, userStore } from './user'
 import { SpaceStore, spaceStore } from './space'
 import { OpenWindowsStore, openWindowsStore } from './windows'
@@ -8,8 +7,9 @@ import { mountStoreDevtool } from 'simple-zustand-devtools'
 import { ConnectedWindowsStore, connectedWindowsStore } from './connections'
 import { PeripheralStore, peripheralStore } from './peripheral'
 import { ContextMenuStore, contextMenuStore } from './contextMenu'
+import { ItemListStore, itemListStore } from './items'
 
-export type AppStore = EmailListStore &
+export type AppStore = ItemListStore &
   OpenWindowsStore &
   SpaceStore &
   ConnectedWindowsStore &
@@ -21,7 +21,7 @@ export const useAppStore = create<AppStore>((...operators) => {
   // const stores = [emailListStore, openEmailsStore, spaceStore, userStore]
   // return Object.assign({}, ...stores.map((store) => store(...operators)))
   return {
-    ...emailListStore(...operators),
+    ...itemListStore(...operators),
     ...openWindowsStore(...operators),
     ...spaceStore(...operators),
     ...connectedWindowsStore(...operators),

@@ -1,7 +1,7 @@
-import { MOCK_EMAILS } from '@/mock/mock-emails'
+import { MOCK_ITEMS } from '@/mock/mock-items'
 import { AppStateCreator, Setter, stateSetter } from './state'
 
-export type Email = {
+export type Item = {
   id: string
   from: string
   to: string
@@ -10,21 +10,21 @@ export type Email = {
   body: string
 }
 
-export type EmailListStore = {
-  emails: Email[]
-  setEmails: Setter<Email[]>
-  deleteEmail: (id: string) => void
+export type ItemListStore = {
+  items: Item[]
+  setItems: Setter<Item[]>
+  deleteItem: (id: string) => void
 
   hoveredItem: string | null
   setHoveredItem: Setter<string | null>
 }
 
-export const emailListStore: AppStateCreator<EmailListStore> = (set) => ({
-  emails: MOCK_EMAILS,
-  setEmails: (setter) => stateSetter(set, setter, `emails`),
-  deleteEmail: (id) =>
+export const itemListStore: AppStateCreator<ItemListStore> = (set) => ({
+  items: MOCK_ITEMS,
+  setItems: (setter) => stateSetter(set, setter, `items`),
+  deleteItem: (id) =>
     set((state) => ({
-      emails: state.emails.filter((email) => email.id !== id),
+      items: state.items.filter((Item) => Item.id !== id),
       connections: state.connections.filter(
         (connection) => connection.id.includes(id) === false,
       ),

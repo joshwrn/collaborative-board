@@ -2,7 +2,7 @@
 import type { FC } from 'react'
 import React from 'react'
 
-import { Item } from '../Item/Item'
+import { ItemComponent } from '../Item/Item'
 import styles from './List.module.scss'
 import { useAppStore } from '@/state/state'
 import { TfiWrite } from 'react-icons/tfi'
@@ -11,8 +11,8 @@ import { useShallow } from 'zustand/react/shallow'
 export const List: FC = () => {
   const state = useAppStore(
     useShallow((state) => ({
-      emails: state.emails,
-      setEmails: state.setEmails,
+      items: state.items,
+      setItems: state.setItems,
       windows: state.windows,
     })),
   )
@@ -21,8 +21,8 @@ export const List: FC = () => {
       <header className={styles.header}>
         <button
           onClick={() => {
-            state.setEmails((emails) => [
-              ...emails,
+            state.setItems((items) => [
+              ...items,
               {
                 id: Math.random().toString(),
                 from: 'me',
@@ -38,11 +38,11 @@ export const List: FC = () => {
         </button>
       </header>
       <container className={styles.listContainer}>
-        {state.emails.map((email) => (
-          <Item
-            key={email.id}
-            email={email}
-            isOpen={state.windows.some((window) => window.id === email.id)}
+        {state.items.map((item) => (
+          <ItemComponent
+            key={item.id}
+            item={item}
+            isOpen={state.windows.some((window) => window.id === item.id)}
           />
         ))}
       </container>

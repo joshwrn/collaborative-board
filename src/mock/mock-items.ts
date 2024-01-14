@@ -1,7 +1,7 @@
-import { Email } from '@/state/emails'
+import { Item } from '@/state/items'
 import { nanoid } from 'nanoid'
 
-export const MOCK_EMAILS: Email[] = [
+export const MOCK_ITEMS: Item[] = [
   {
     id: nanoid(),
     from: 'bill gates',

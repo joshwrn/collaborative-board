@@ -3,20 +3,20 @@ import type { FC } from 'react'
 import React from 'react'
 
 import styles from './Window.module.scss'
-import { Email } from '@/state/emails'
 import { useAppStore } from '@/state/state'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { WindowBorder } from './WindowBorder'
 import { IoAddOutline } from 'react-icons/io5'
 import { ConnectorOverlay } from './ConnectorOverlay'
 import { useShallow } from 'zustand/react/shallow'
+import { Item } from '@/state/items'
 
 export const WindowInternal: FC<{
-  email: Email
+  item: Item
   position: { x: number; y: number }
   size: { width: number; height: number }
   zIndex: number
-}> = ({ email, position, size, zIndex }) => {
+}> = ({ item, position, size, zIndex }) => {
   const state = useAppStore(
     useShallow((state) => ({
       close: state.toggleOpenWindow,
@@ -44,7 +44,7 @@ export const WindowInternal: FC<{
       x: movementX / state.zoom,
       y: movementY / state.zoom,
     }
-    state.setWindow(email.id, {
+    state.setWindow(item.id, {
       x: position.x + scaledPosition.x,
       y: position.y + scaledPosition.y,
     })
@@ -54,8 +54,8 @@ export const WindowInternal: FC<{
 
   const onDragStop = (e: DraggableEvent, data: DraggableData) => {}
 
-  const toConnections = state.connections.filter((c) => c.to.id === email.id)
-  const fromConnections = state.connections.filter((c) => c.from.id === email.id)
+  const toConnections = state.connections.filter((c) => c.to.id === item.id)
+  const fromConnections = state.connections.filter((c) => c.from.id === item.id)
 
   return (
     <DraggableCore
@@ -74,34 +74,34 @@ export const WindowInternal: FC<{
           height: `${height}px`,
           zIndex,
         }}
-        onMouseEnter={() => state.setHoveredWindow(email.id)}
+        onMouseEnter={() => state.setHoveredWindow(item.id)}
         onMouseLeave={() => state.setHoveredWindow(null)}
         onClick={(e) => {
           e.stopPropagation()
         }}
-        onPointerDown={() => state.bringToFront(email.id)}
+        onPointerDown={() => state.bringToFront(item.id)}
       >
         <WindowBorder
           width={width}
           height={height}
-          id={email.id}
+          id={item.id}
           position={position}
         />
         <nav className={`${styles.topBar} handle`}>
           <button
             className={styles.close}
-            onClick={() => state.close(email.id)}
+            onClick={() => state.close(item.id)}
           />
           <button
             className={styles.full}
-            onClick={() => state.fullScreen(email.id)}
+            onClick={() => state.fullScreen(item.id)}
           />
         </nav>
 
         <header className={styles.titleBar}>
           <section className={styles.title}>
-            <h3>{email.from}</h3>
-            <p>{email.address}</p>
+            <h3>{item.from}</h3>
+            <p>{item.address}</p>
           </section>
           <section className={styles.connections}>
             <inner>
@@ -114,7 +114,7 @@ export const WindowInternal: FC<{
             </inner>
             <button
               onClick={() =>
-                state.setActiveConnection({ from: { id: email.id } })
+                state.setActiveConnection({ from: { id: item.id } })
               }
             >
               <IoAddOutline />
@@ -122,9 +122,9 @@ export const WindowInternal: FC<{
           </section>
         </header>
         <main className={styles.content}>
-          <p contentEditable={true}>{email.body}</p>
+          <p contentEditable={true}>{item.body}</p>
         </main>
-        <ConnectorOverlay id={email.id} />
+        <ConnectorOverlay id={item.id} />
       </div>
     </DraggableCore>
   )
@@ -133,21 +133,21 @@ export const WindowInternal: FC<{
 const Window = React.memo(WindowInternal)
 
 const WindowsInternal: FC = () => {
-  const { emails, windows } = useAppStore(
+  const state = useAppStore(
     useShallow((state) => ({
-      emails: state.emails,
+      items: state.items,
       windows: state.windows,
     })),
   )
   return (
     <>
-      {emails.map((email) => {
-        const window = windows.find((w) => w.id === email.id)
+      {state.items.map((item) => {
+        const window = state.windows.find((w) => w.id === item.id)
         if (!window) return null
         return (
           <Window
-            key={email.id}
-            email={email}
+            key={item.id}
+            item={item}
             position={window}
             size={window}
             zIndex={window.zIndex}
