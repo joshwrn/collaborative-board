@@ -6,12 +6,16 @@ import { Item } from '../Item/Item'
 import styles from './List.module.scss'
 import { useAppStore } from '@/state/state'
 import { TfiWrite } from 'react-icons/tfi'
+import { useShallow } from 'zustand/react/shallow'
 
 export const List: FC = () => {
-  const state = useAppStore((state) => ({
-    emails: state.emails,
-    setEmails: state.setEmails,
-  }))
+  const state = useAppStore(
+    useShallow((state) => ({
+      emails: state.emails,
+      setEmails: state.setEmails,
+      windows: state.windows,
+    })),
+  )
   return (
     <wrapper className={styles.wrapper}>
       <header className={styles.header}>
@@ -35,7 +39,11 @@ export const List: FC = () => {
       </header>
       <container className={styles.listContainer}>
         {state.emails.map((email) => (
-          <Item key={email.id} email={email} />
+          <Item
+            key={email.id}
+            email={email}
+            isOpen={state.windows.some((window) => window.id === email.id)}
+          />
         ))}
       </container>
     </wrapper>

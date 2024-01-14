@@ -13,7 +13,7 @@ export const clampInto =
   (value: number): number =>
     value < min ? min : value > max ? max : value
 
-const clampZ = clampInto([0.2, 3])
+const clampZ = clampInto([0.25, 1])
 
 export const useGestures = ({
   wrapperRef,

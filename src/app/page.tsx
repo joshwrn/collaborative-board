@@ -5,11 +5,14 @@ import styles from './page.module.scss'
 import { Nav } from '@/components/Nav/Nav'
 import { useAppStore } from '@/state/state'
 import { ContextMenu } from '@/components/ContextMenu/ContextMenu'
+import { useShallow } from 'zustand/react/shallow'
 
 export default function Home() {
-  const state = useAppStore((state) => ({
-    setMousePosition: state.setMousePosition,
-  }))
+  const state = useAppStore(
+    useShallow((state) => ({
+      setMousePosition: state.setMousePosition,
+    })),
+  )
   return (
     <main
       className={styles.wrapper}

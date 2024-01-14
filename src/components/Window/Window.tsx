@@ -9,6 +9,7 @@ import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { WindowBorder } from './WindowBorder'
 import { IoAddOutline } from 'react-icons/io5'
 import { ConnectorOverlay } from './ConnectorOverlay'
+import { useShallow } from 'zustand/react/shallow'
 
 export const WindowInternal: FC<{
   email: Email
@@ -16,17 +17,20 @@ export const WindowInternal: FC<{
   size: { width: number; height: number }
   zIndex: number
 }> = ({ email, position, size, zIndex }) => {
-  const state = useAppStore((state) => ({
-    close: state.toggleOpenWindow,
-    zoom: state.zoom,
-    setWindow: state.setOneWindow,
-    bringToFront: state.reorderWindows,
-    connections: state.connections,
-    activeConnection: state.activeConnection,
-    setActiveConnection: state.setActiveConnection,
-    makeConnection: state.makeConnection,
-    fullScreen: state.fullscreenWindow,
-  }))
+  const state = useAppStore(
+    useShallow((state) => ({
+      close: state.toggleOpenWindow,
+      zoom: state.zoom,
+      setWindow: state.setOneWindow,
+      bringToFront: state.reorderWindows,
+      connections: state.connections,
+      activeConnection: state.activeConnection,
+      setActiveConnection: state.setActiveConnection,
+      makeConnection: state.makeConnection,
+      fullScreen: state.fullscreenWindow,
+      setHoveredWindow: state.setHoveredWindow,
+    })),
+  )
 
   const { width, height } = size
 
@@ -70,6 +74,8 @@ export const WindowInternal: FC<{
           height: `${height}px`,
           zIndex,
         }}
+        onMouseEnter={() => state.setHoveredWindow(email.id)}
+        onMouseLeave={() => state.setHoveredWindow(null)}
         onClick={(e) => {
           e.stopPropagation()
         }}
@@ -116,7 +122,7 @@ export const WindowInternal: FC<{
           </section>
         </header>
         <main className={styles.content}>
-          <p>{email.body}</p>
+          <p contentEditable={true}>{email.body}</p>
         </main>
         <ConnectorOverlay id={email.id} />
       </div>
@@ -127,10 +133,12 @@ export const WindowInternal: FC<{
 const Window = React.memo(WindowInternal)
 
 const WindowsInternal: FC = () => {
-  const { emails, windows } = useAppStore((state) => ({
-    emails: state.emails,
-    windows: state.windows,
-  }))
+  const { emails, windows } = useAppStore(
+    useShallow((state) => ({
+      emails: state.emails,
+      windows: state.windows,
+    })),
+  )
   return (
     <>
       {emails.map((email) => {

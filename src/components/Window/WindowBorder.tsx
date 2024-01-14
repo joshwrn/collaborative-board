@@ -2,10 +2,12 @@ import type { FC } from 'react'
 import React from 'react'
 
 import styles from './WindowBorder.module.scss'
+import animations from '@/style/spinningBackground.module.scss'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { useAppStore } from '@/state/state'
 import { setCursorStyle } from '@/utils/setCursor'
 import { joinClasses } from '@/utils/joinClasses'
+import { useShallow } from 'zustand/react/shallow'
 
 const borderPositions = [
   'left',
@@ -36,10 +38,13 @@ export const WindowBorder: FC<{
   height: number
   position: { x: number; y: number }
 }> = ({ width, height, id, position }) => {
-  const state = useAppStore((state) => ({
-    resizeWindow: state.resizeWindow,
-    activeConnection: state.activeConnection,
-  }))
+  const state = useAppStore(
+    useShallow((state) => ({
+      resizeWindow: state.resizeWindow,
+      activeConnection: state.activeConnection,
+      hoveredItem: state.hoveredItem,
+    })),
+  )
 
   const startPosition = React.useRef<{ x: number; y: number } | null>(null)
   const startSize = React.useRef<{ width: number; height: number } | null>(null)
@@ -90,7 +95,11 @@ export const WindowBorder: FC<{
   const isActive = state.activeConnection?.from.id === id
   return (
     <div
-      className={joinClasses(styles.border, isActive ? styles.spinningBg : null)}
+      className={joinClasses(
+        styles.border,
+        isActive && animations.spinningBg,
+        state.hoveredItem === id && animations.spinningBg,
+      )}
       style={{
         width: `${width + 2}px`,
         height: `${height + 2}px`,

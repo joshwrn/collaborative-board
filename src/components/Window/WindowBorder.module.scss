@@ -1,44 +1,5 @@
 @use './Window.module.scss' as *;
 
-@keyframes bg-spin {
-  to {
-    --border-angle: 1turn;
-  }
-}
-
-@property --border-angle {
-  syntax: '<angle>';
-  inherits: true;
-  initial-value: 0turn;
-}
-
-.spinningBg {
-  --border-angle: 0turn;
-  &::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    top: -1px;
-    left: -1px;
-    border-radius: $border-radius;
-    width: calc(100% + 2px);
-    height: calc(100% + 2px);
-    background-image: conic-gradient(
-      from var(--border-angle),
-      transparent 70%,
-      rgb(37, 37, 37),
-      rgb(193, 193, 193)
-    );
-    opacity: 0;
-    animation: bg-spin 5s linear infinite;
-    animation-play-state: paused;
-    transition: opacity 0.3s ease-in-out;
-
-    opacity: 1;
-    animation-play-state: running;
-  }
-}
-
 .border {
   position: absolute;
   background-color: var(--window-outline);
@@ -128,4 +89,8 @@ $handle-offset: -5px;
   position: absolute;
   right: $handle-offset;
   cursor: ew-resize;
+}
+
+.hovered {
+  background-color: rgb(193, 193, 193);
 }

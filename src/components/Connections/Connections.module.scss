@@ -1,14 +1,8 @@
 .wrapper {
   position: absolute;
-  // z-index: -999;
   display: flex;
   align-items: center;
   justify-content: center;
-  // background: linear-gradient(
-  //   180deg,
-  //   rgba(63, 94, 251, 1) 0%,
-  //   rgba(252, 70, 237, 1) 100%
-  // );
   opacity: 0.75;
   z-index: -9999;
   border: 1px solid #f73939;
@@ -23,7 +17,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  transition: background 0.3s ease-in-out;
+  transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   translate: 5000px 5000px;
   > svg {
     position: absolute;
@@ -62,11 +56,24 @@
   }
 }
 
-.selected {
-  background: var(--blue-highlight);
+@mixin line($color) {
+  background: $color;
+  box-shadow: 0 0 35px 0px $color;
   > svg {
     path {
-      fill: var(--blue-highlight);
+      fill: $color;
     }
   }
+}
+
+.selected {
+  @include line(var(--blue-highlight));
+}
+
+.from {
+  @include line(#3fcd6f);
+}
+
+.to {
+  @include line(#f14971);
 }

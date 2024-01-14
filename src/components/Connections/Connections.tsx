@@ -10,6 +10,8 @@ import {
   createLineBetweenWindows,
 } from '@/logic/createLineBetweenWindowSides'
 import { createLineFromWindowToMouse } from '@/logic/createLineFromWindowToMouse'
+import { useShallow } from 'zustand/react/shallow'
+import { Connection } from '@/state/connections'
 
 const Connection = ({
   from,
@@ -17,12 +19,14 @@ const Connection = ({
   id,
   isActive,
   mousePosition,
+  hoveredItem,
 }: {
   from: Window
   to: Window | undefined
   mousePosition?: { x: number; y: number }
   id: string
   isActive?: boolean
+  hoveredItem: 'none' | 'from' | 'to'
 }) => {
   const state = useAppStore((state) => ({
     openContextMenu: state.openContextMenu,
@@ -56,7 +60,7 @@ const Connection = ({
         }}
         className={joinClasses(
           styles.line,
-          createBackground(!!isActive, isSelected),
+          createBackground(!!isActive, isSelected, hoveredItem),
         )}
         style={{
           width: distance.toString() + 'px',
@@ -74,24 +78,38 @@ const Connection = ({
   )
 }
 
-const createBackground = (isActive: boolean, isSelected: boolean) => {
+const createBackground = (
+  isActive: boolean,
+  isSelected: boolean,
+  hoveredItem: 'none' | 'from' | 'to',
+) => {
   if (isActive) {
     return styles.active
   }
   if (isSelected) {
     return styles.selected
   }
+  if (hoveredItem === 'from') {
+    return styles.from
+  }
+  if (hoveredItem === 'to') {
+    return styles.to
+  }
   return null
 }
 
 export const Connections: FC = () => {
-  const state = useAppStore((state) => ({
-    connections: state.connections,
-    openWindows: state.windows,
-    activeConnection: state.activeConnection,
-    hoveredConnection: state.hoveredConnection,
-    spaceMousePosition: state.spaceMousePosition,
-  }))
+  const state = useAppStore(
+    useShallow((state) => ({
+      connections: state.connections,
+      openWindows: state.windows,
+      activeConnection: state.activeConnection,
+      hoveredConnection: state.hoveredConnection,
+      spaceMousePosition: state.spaceMousePosition,
+      hoveredItem: state.hoveredItem,
+      hoveredWindow: state.hoveredWindow,
+    })),
+  )
   const activeWindow = state.openWindows.find(
     (window) => window.id === state.activeConnection?.from.id,
   )
@@ -107,6 +125,7 @@ export const Connections: FC = () => {
           id={''}
           mousePosition={state.spaceMousePosition}
           isActive={true}
+          hoveredItem={'none'}
         />
       )}
       {state.connections.map((connection) => {
@@ -127,9 +146,27 @@ export const Connections: FC = () => {
             from={windowFrom}
             to={windowTo}
             id={connection.id}
+            hoveredItem={includesHoveredItem(
+              connection,
+              state.hoveredItem ?? state.hoveredWindow,
+            )}
           />
         )
       })}
     </>
   )
+}
+
+const includesHoveredItem = (
+  connection: Connection,
+  hoveredItem: string | null,
+) => {
+  if (!hoveredItem) return 'none'
+  if (connection.from.id === hoveredItem) {
+    return 'from'
+  }
+  if (connection.to.id === hoveredItem) {
+    return 'to'
+  }
+  return 'none'
 }

@@ -9,18 +9,21 @@ import { useGestures } from '@/gestures'
 import { MdOutlineCenterFocusWeak } from 'react-icons/md'
 import { Connections } from '../Connections/Connections'
 import { ContextMenu } from '../ContextMenu/ContextMenu'
+import { useShallow } from 'zustand/react/shallow'
 
 export const Space: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
   const spaceRef = React.useRef<HTMLDivElement>(null)
-  const state = useAppStore((state) => ({
-    zoom: state.zoom,
-    pan: state.pan,
-    setPan: state.setPan,
-    setZoom: state.setZoom,
-    setSpaceMousePosition: state.setSpaceMousePosition,
-    setActiveConnection: state.setActiveConnection,
-  }))
+  const state = useAppStore(
+    useShallow((state) => ({
+      zoom: state.zoom,
+      pan: state.pan,
+      setPan: state.setPan,
+      setZoom: state.setZoom,
+      setSpaceMousePosition: state.setSpaceMousePosition,
+      setActiveConnection: state.setActiveConnection,
+    })),
+  )
   useGestures({ wrapperRef })
   return (
     <wrapper

@@ -1,5 +1,5 @@
 import { SPACE_ATTRS } from './space'
-import { AppStateCreator } from './state'
+import { AppStateCreator, Setter, stateSetter } from './state'
 
 export type Window = {
   id: string
@@ -22,6 +22,9 @@ export type OpenWindowsStore = {
   setOneWindow: (id: string, update: Partial<Window>) => void
   reorderWindows: (id: string) => void
   fullscreenWindow: (id: string) => void
+
+  hoveredWindow: string | null
+  setHoveredWindow: Setter<string | null>
 }
 
 export const WINDOW_ATTRS = {
@@ -285,4 +288,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       height: newSize.height,
     })
   },
+
+  hoveredWindow: null,
+  setHoveredWindow: (setter) => stateSetter(set, setter, `hoveredWindow`),
 })

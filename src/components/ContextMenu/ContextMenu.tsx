@@ -5,14 +5,17 @@ import { useAppStore } from '@/state/state'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { BsTrash3 as TrashIcon } from 'react-icons/bs'
 import { usePreventScroll } from '@/utils/usePreventScroll'
+import { useShallow } from 'zustand/react/shallow'
 
 export const ContextMenu: FC = () => {
-  const state = useAppStore((state) => ({
-    contextMenu: state.contextMenu,
-    setContextMenu: state.setContextMenu,
-    zoom: state.zoom,
-    pan: state.pan,
-  }))
+  const state = useAppStore(
+    useShallow((state) => ({
+      contextMenu: state.contextMenu,
+      setContextMenu: state.setContextMenu,
+      zoom: state.zoom,
+      pan: state.pan,
+    })),
+  )
   const ref = React.useRef<HTMLDivElement>(null)
   usePreventScroll({ enabled: state.contextMenu !== null })
   useOutsideClick({ action: () => state.setContextMenu(null), providedRef: ref })

@@ -14,6 +14,9 @@ export type EmailListStore = {
   emails: Email[]
   setEmails: Setter<Email[]>
   deleteEmail: (id: string) => void
+
+  hoveredItem: string | null
+  setHoveredItem: Setter<string | null>
 }
 
 export const emailListStore: AppStateCreator<EmailListStore> = (set) => ({
@@ -26,4 +29,7 @@ export const emailListStore: AppStateCreator<EmailListStore> = (set) => ({
         (connection) => connection.id.includes(id) === false,
       ),
     })),
+
+  hoveredItem: null,
+  setHoveredItem: (setter) => stateSetter(set, setter, `hoveredItem`),
 })
