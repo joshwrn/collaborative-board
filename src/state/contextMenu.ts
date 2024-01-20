@@ -1,5 +1,5 @@
 import { Point2d } from '.'
-import { AppStateCreator, AppStore, Setter, stateSetter } from './state'
+import { AppStateCreator, Setter, stateSetter } from './state'
 
 export type ElementTypes = 'connections' | 'item'
 

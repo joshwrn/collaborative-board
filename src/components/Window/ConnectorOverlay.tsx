@@ -4,7 +4,7 @@ import styles from './ConnectorOverlay.module.scss'
 import { IoMdOutlet } from 'react-icons/io'
 import { IoWarningOutline } from 'react-icons/io5'
 
-import { useAppStore } from '@/state/state'
+import { useAppStore } from '@/state/gen-state'
 import { checkIfConnectionExists } from '@/state/connections'
 import { useShallow } from 'zustand/react/shallow'
 

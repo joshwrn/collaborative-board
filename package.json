@@ -7,13 +7,17 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "gen-scss": "npx typed-scss-modules src --watch --outputFolder generated-types"
+    "gen-scss": "npx typed-scss-modules src --watch --outputFolder generated-types",
+    "gen-store": "npx ts-node ./src/utils/generateStore.ts"
   },
   "dependencies": {
+    "@react-three/fiber": "^8.15.14",
     "@stylexjs/stylex": "^0.3.0",
+    "@types/three": "^0.160.0",
     "@use-gesture/react": "^10.3.0",
     "axios": "^1.6.2",
     "framer-motion": "^10.16.16",
+    "fs-extra": "^11.2.0",
     "googleapis": "^129.0.0",
     "mathjs": "^12.2.1",
     "nanoid": "^5.0.4",
@@ -22,15 +26,19 @@
     "react-dom": "^18",
     "react-draggable": "^4.4.6",
     "react-icons": "^4.12.0",
+    "three": "^0.160.0",
+    "ts-pattern": "^5.0.6",
     "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@stylexjs/dev-runtime": "^0.3.0",
     "@stylexjs/eslint-plugin": "^0.3.0",
     "@stylexjs/nextjs-plugin": "^0.3.0",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "chokidar": "^3.5.3",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "sass": "^1.69.5",

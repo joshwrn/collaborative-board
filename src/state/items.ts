@@ -1,13 +1,18 @@
 import { MOCK_ITEMS } from '@/mock/mock-items'
 import { AppStateCreator, Setter, stateSetter } from './state'
 
+export type Iframe = {
+  src: string
+  [key: string]: string
+}
+
 export type Item = {
   id: string
   from: string
   to: string
   address: string
   subject: string
-  body: string
+  body: (string | Iframe)[]
 }
 
 export type ItemListStore = {

@@ -1,12 +1,7 @@
 import { useGesture } from '@use-gesture/react'
-import {
-  AppStateCreator,
-  Setter,
-  StateCallback,
-  stateSetter,
-  useAppStore,
-} from './state/state'
+
 import React from 'react'
+import { useAppStore } from './state/gen-state'
 
 export const clampInto =
   ([min, max]: [number, number]) =>

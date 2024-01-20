@@ -4,7 +4,7 @@ import React from 'react'
 import { Windows } from '../Window/Window'
 
 import styles from './Space.module.scss'
-import { useAppStore } from '@/state/state'
+import { useAppStore } from '@/state/gen-state'
 import { useGestures } from '@/gestures'
 import { MdOutlineCenterFocusWeak } from 'react-icons/md'
 import { Connections } from '../Connections/Connections'

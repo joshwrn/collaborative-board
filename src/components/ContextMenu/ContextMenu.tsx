@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import React, { useEffect } from 'react'
 import styles from './ContextMenu.module.scss'
-import { useAppStore } from '@/state/state'
+import { useAppStore } from '@/state/gen-state'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { BsTrash3 as TrashIcon } from 'react-icons/bs'
 import { usePreventScroll } from '@/utils/usePreventScroll'

@@ -3,20 +3,51 @@ import type { FC } from 'react'
 import React from 'react'
 
 import styles from './Window.module.scss'
-import { useAppStore } from '@/state/state'
+import { useAppStore } from '@/state/gen-state'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { WindowBorder } from './WindowBorder'
 import { IoAddOutline } from 'react-icons/io5'
 import { ConnectorOverlay } from './ConnectorOverlay'
 import { useShallow } from 'zustand/react/shallow'
-import { Item } from '@/state/items'
+import { Iframe, Item } from '@/state/items'
+import { Window } from '@/state/windows'
+import { match, P } from 'ts-pattern'
+
+const matchBody = (
+  body: string | Iframe,
+): JSX.Element | JSX.Element[] | null => {
+  return match(body)
+    .with(P.string, (value) => <p>{value}</p>)
+    .with(
+      {
+        src: P.string,
+      },
+      (value) => (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+        >
+          <iframe
+            style={{
+              width: '100%',
+              height: '100%',
+              border: 'none',
+              borderRadius: '10px',
+            }}
+            {...value}
+          />
+        </div>
+      ),
+    )
+    .otherwise(() => null)
+}
 
 export const WindowInternal: FC<{
   item: Item
-  position: { x: number; y: number }
-  size: { width: number; height: number }
-  zIndex: number
-}> = ({ item, position, size, zIndex }) => {
+  window: Window
+}> = ({ item, window }) => {
   const state = useAppStore(
     useShallow((state) => ({
       close: state.toggleOpenWindow,
@@ -32,7 +63,7 @@ export const WindowInternal: FC<{
     })),
   )
 
-  const { width, height } = size
+  const { width, height } = window
 
   const nodeRef = React.useRef<HTMLDivElement>(null)
 
@@ -45,8 +76,8 @@ export const WindowInternal: FC<{
       y: movementY / state.zoom,
     }
     state.setWindow(item.id, {
-      x: position.x + scaledPosition.x,
-      y: position.y + scaledPosition.y,
+      x: window.x + scaledPosition.x,
+      y: window.y + scaledPosition.y,
     })
   }
 
@@ -69,10 +100,10 @@ export const WindowInternal: FC<{
         ref={nodeRef}
         className={styles.wrapper}
         style={{
-          transform: `translate(${position.x}px, ${position.y}px)`,
+          transform: `translate(${window.x}px, ${window.y}px)`,
           width: `${width}px`,
           height: `${height}px`,
-          zIndex,
+          zIndex: window.zIndex,
         }}
         onMouseEnter={() => state.setHoveredWindow(item.id)}
         onMouseLeave={() => state.setHoveredWindow(null)}
@@ -85,7 +116,7 @@ export const WindowInternal: FC<{
           width={width}
           height={height}
           id={item.id}
-          position={position}
+          position={{ x: window.x, y: window.y }}
         />
         <nav className={`${styles.topBar} handle`}>
           <button
@@ -121,8 +152,9 @@ export const WindowInternal: FC<{
             </button>
           </section>
         </header>
+
         <main className={styles.content}>
-          <p contentEditable={true}>{item.body}</p>
+          {item.body.map((body) => matchBody(body))}
         </main>
         <ConnectorOverlay id={item.id} />
       </div>
@@ -144,15 +176,7 @@ const WindowsInternal: FC = () => {
       {state.items.map((item) => {
         const window = state.windows.find((w) => w.id === item.id)
         if (!window) return null
-        return (
-          <Window
-            key={item.id}
-            item={item}
-            position={window}
-            size={window}
-            zIndex={window.zIndex}
-          />
-        )
+        return <Window key={item.id} item={item} window={window} />
       })}
     </>
   )

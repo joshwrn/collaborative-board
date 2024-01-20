@@ -4,7 +4,7 @@ import React from 'react'
 
 import { ItemComponent } from '../Item/Item'
 import styles from './List.module.scss'
-import { useAppStore } from '@/state/state'
+import { useAppStore } from '@/state/gen-state'
 import { TfiWrite } from 'react-icons/tfi'
 import { useShallow } from 'zustand/react/shallow'
 

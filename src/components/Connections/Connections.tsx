@@ -1,4 +1,4 @@
-import { useAppStore } from '@/state/state'
+import { useAppStore } from '@/state/gen-state'
 
 import type { FC } from 'react'
 import { Window } from '@/state/windows'

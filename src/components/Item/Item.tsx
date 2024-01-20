@@ -3,11 +3,31 @@ import type { FC } from 'react'
 import React from 'react'
 
 import styles from './Item.module.scss'
-import { useAppStore } from '@/state/state'
+import { useAppStore } from '@/state/gen-state'
 import { joinClasses } from '@/utils/joinClasses'
 import { useShallow } from 'zustand/react/shallow'
 import animations from '@/style/spinningBackground.module.scss'
-import type { Item } from '@/state/items'
+import type { Iframe, Item } from '@/state/items'
+import { match, P } from 'ts-pattern'
+
+const matchBody = (
+  body: string | Iframe,
+): JSX.Element | JSX.Element[] | null => {
+  return match(body)
+    .with(P.string, (value) => (
+      <p>
+        {value.substring(0, 90)}
+        {value.length > 90 && '...'}
+      </p>
+    ))
+    .with(
+      {
+        src: P.string,
+      },
+      (value) => <p>One Attachment</p>,
+    )
+    .otherwise(() => null)
+}
 
 const ItemInternal: FC<{ item: Item; isOpen: boolean }> = ({ item, isOpen }) => {
   const state = useAppStore(
@@ -37,10 +57,7 @@ const ItemInternal: FC<{ item: Item; isOpen: boolean }> = ({ item, isOpen }) => 
       >
         <h3>{item.from}</h3>
         <h1>{item.subject}</h1>
-        <p>
-          {item.body.substring(0, 90)}
-          {item.body.length > 90 && '...'}
-        </p>
+        {matchBody(item.body[0])}
       </wrapper>
     </outer>
   )

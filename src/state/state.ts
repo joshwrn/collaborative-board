@@ -1,38 +1,6 @@
 import type { Mutate, StoreApi, StoreMutatorIdentifier } from 'zustand'
-import { create } from 'zustand'
-import { UserStore, userStore } from './user'
-import { SpaceStore, spaceStore } from './space'
-import { OpenWindowsStore, openWindowsStore } from './windows'
-import { mountStoreDevtool } from 'simple-zustand-devtools'
-import { ConnectedWindowsStore, connectedWindowsStore } from './connections'
-import { PeripheralStore, peripheralStore } from './peripheral'
-import { ContextMenuStore, contextMenuStore } from './contextMenu'
-import { ItemListStore, itemListStore } from './items'
 
-export type AppStore = ItemListStore &
-  OpenWindowsStore &
-  SpaceStore &
-  ConnectedWindowsStore &
-  UserStore &
-  PeripheralStore &
-  ContextMenuStore
-
-export const useAppStore = create<AppStore>((...operators) => {
-  // const stores = [emailListStore, openEmailsStore, spaceStore, userStore]
-  // return Object.assign({}, ...stores.map((store) => store(...operators)))
-  return {
-    ...itemListStore(...operators),
-    ...openWindowsStore(...operators),
-    ...spaceStore(...operators),
-    ...connectedWindowsStore(...operators),
-    ...userStore(...operators),
-    ...peripheralStore(...operators),
-    ...contextMenuStore(...operators),
-  }
-})
-if (process.env.NODE_ENV === 'development') {
-  mountStoreDevtool('appStore', useAppStore)
-}
+import { AppStore } from './gen-state'
 
 type Get<T, K, F> = K extends keyof T ? T[K] : F
 export type AppStateCreator<
