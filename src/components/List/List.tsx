@@ -29,7 +29,7 @@ export const List: FC = () => {
                 to: 'you',
                 address: 'idk',
                 subject: 'hello',
-                body: 'world',
+                body: ['world'],
               },
             ])
           }}
