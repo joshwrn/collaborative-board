@@ -20,11 +20,10 @@ export const ConnectorOverlay: FC<{
       setHoveredConnection: state.setHoveredConnection,
     })),
   )
-  if (!state.activeConnection || state.activeConnection.from.id === id)
-    return null
+  if (!state.activeConnection || state.activeConnection.from === id) return null
   const alreadyConnected = checkIfConnectionExists({
     to: id,
-    from: state.activeConnection.from.id,
+    from: state.activeConnection.from,
     connections: state.connections,
   })
   return (
@@ -32,10 +31,10 @@ export const ConnectorOverlay: FC<{
       className={styles.overlay}
       onClick={() => {
         if (!alreadyConnected) {
-          state.makeConnection({ to: { id } })
+          state.makeConnection({ to: id })
         }
       }}
-      onMouseOver={() => state.setHoveredConnection({ to: { id } })}
+      onMouseOver={() => state.setHoveredConnection({ to: id })}
       onMouseOut={() => state.setHoveredConnection(null)}
     >
       {alreadyConnected && <IoWarningOutline className={styles.warning} />}

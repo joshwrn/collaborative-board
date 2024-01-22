@@ -5,12 +5,8 @@ export type Side = (typeof SIDES)[number]
 
 export type Connection = {
   id: string
-  from: {
-    id: string
-  }
-  to: {
-    id: string
-  }
+  from: string
+  to: string
 }
 export type ActiveConnection = Pick<Connection, 'from'>
 export type HoveredConnection = Pick<Connection, 'to'>
@@ -52,7 +48,7 @@ export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
         {
           from: activeConnection.from,
           to: connector.to,
-          id: `${activeConnection.from.id}/${connector.to.id}`,
+          id: `${activeConnection.from}/${connector.to}`,
         },
       ],
     }))
@@ -82,7 +78,7 @@ export const checkIfConnectionExists = ({
 }) => {
   return connections.some(
     (connection) =>
-      (connection.from.id === from && connection.to.id === to) ||
-      (connection.from.id === to && connection.to.id === from),
+      (connection.from === from && connection.to === to) ||
+      (connection.from === to && connection.to === from),
   )
 }

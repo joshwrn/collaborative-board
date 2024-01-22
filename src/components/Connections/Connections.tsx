@@ -111,10 +111,10 @@ export const Connections: FC = () => {
     })),
   )
   const activeWindow = state.openWindows.find(
-    (window) => window.id === state.activeConnection?.from.id,
+    (window) => window.id === state.activeConnection?.from,
   )
   const hoveredWindow = state.openWindows.find(
-    (window) => window.id === state.hoveredConnection?.to.id,
+    (window) => window.id === state.hoveredConnection?.to,
   )
   return (
     <>
@@ -130,10 +130,10 @@ export const Connections: FC = () => {
       )}
       {state.connections.map((connection) => {
         const windowFrom = state.openWindows.find(
-          (window) => window.id === connection.from.id,
+          (window) => window.id === connection.from,
         )
         const windowTo = state.openWindows.find(
-          (window) => window.id === connection.to.id,
+          (window) => window.id === connection.to,
         )
 
         if (!windowFrom || !windowTo) {
@@ -162,10 +162,10 @@ const includesHoveredItem = (
   hoveredItem: string | null,
 ) => {
   if (!hoveredItem) return 'none'
-  if (connection.from.id === hoveredItem) {
+  if (connection.from === hoveredItem) {
     return 'from'
   }
-  if (connection.to.id === hoveredItem) {
+  if (connection.to === hoveredItem) {
     return 'to'
   }
   return 'none'

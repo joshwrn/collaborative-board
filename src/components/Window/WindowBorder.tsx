@@ -92,7 +92,7 @@ export const WindowBorder: FC<{
     totalMovement.current = { x: 0, y: 0 }
     setCursorStyle('default')
   }
-  const isActive = state.activeConnection?.from.id === id
+  const isActive = state.activeConnection?.from === id
   return (
     <div
       className={joinClasses(

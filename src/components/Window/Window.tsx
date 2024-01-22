@@ -85,8 +85,8 @@ export const WindowInternal: FC<{
 
   const onDragStop = (e: DraggableEvent, data: DraggableData) => {}
 
-  const toConnections = state.connections.filter((c) => c.to.id === item.id)
-  const fromConnections = state.connections.filter((c) => c.from.id === item.id)
+  const toConnections = state.connections.filter((c) => c.to === item.id)
+  const fromConnections = state.connections.filter((c) => c.from === item.id)
 
   return (
     <DraggableCore
@@ -143,11 +143,7 @@ export const WindowInternal: FC<{
                 Outgoing <strong>{fromConnections.length}</strong>
               </p>
             </inner>
-            <button
-              onClick={() =>
-                state.setActiveConnection({ from: { id: item.id } })
-              }
-            >
+            <button onClick={() => state.setActiveConnection({ from: item.id })}>
               <IoAddOutline />
             </button>
           </section>
