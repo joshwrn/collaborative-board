@@ -55,7 +55,7 @@ const ItemInternal: FC<{ item: Item; isOpen: boolean }> = ({ item, isOpen }) => 
           state.openContextMenu({ elementType: 'item', id: item.id })
         }}
       >
-        <h3>{item.from}</h3>
+        <h3></h3>
         <h1>{item.subject}</h1>
         {matchBody(item.body[0])}
       </wrapper>

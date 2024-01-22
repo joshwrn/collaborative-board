@@ -8,11 +8,9 @@ export type Iframe = {
 
 export type Item = {
   id: string
-  from: string
-  to: string
-  address: string
   subject: string
   body: (string | Iframe)[]
+  members: string[]
 }
 
 export type ItemListStore = {

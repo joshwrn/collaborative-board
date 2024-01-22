@@ -7,6 +7,7 @@ import styles from './List.module.scss'
 import { useAppStore } from '@/state/gen-state'
 import { TfiWrite } from 'react-icons/tfi'
 import { useShallow } from 'zustand/react/shallow'
+import { createMockItem } from '@/mock/mock-items'
 
 export const List: FC = () => {
   const state = useAppStore(
@@ -21,17 +22,7 @@ export const List: FC = () => {
       <header className={styles.header}>
         <button
           onClick={() => {
-            state.setItems((items) => [
-              ...items,
-              {
-                id: Math.random().toString(),
-                from: 'me',
-                to: 'you',
-                address: 'idk',
-                subject: 'hello',
-                body: ['world'],
-              },
-            ])
+            state.setItems((items) => [...items, ...createMockItem(1)])
           }}
         >
           <TfiWrite />

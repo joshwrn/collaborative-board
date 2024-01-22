@@ -130,10 +130,7 @@ export const WindowInternal: FC<{
         </nav>
 
         <header className={styles.titleBar}>
-          <section className={styles.title}>
-            <h3>{item.from}</h3>
-            <p>{item.address}</p>
-          </section>
+          <section className={styles.title}></section>
           <section className={styles.connections}>
             <inner>
               <p>
