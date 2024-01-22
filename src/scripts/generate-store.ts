@@ -68,6 +68,11 @@ const generateCodeFromFiles = (files: string[]): string => {
     imports.push(...importLines)
     storesArr.push(...uniques)
   }
+
+  if (storesArr.length === 0) {
+    return ''
+  }
+
   let appStoreType = `export type AppStore = `
   for (let i = 0; i < storesArr.length; i++) {
     const store = storesArr[i]
@@ -107,6 +112,10 @@ const watchFolder = () => {
   })
 }
 
+const shouldWatch = process.argv[2] === '--watch'
+
 generateCode()
 
-watchFolder()
+if (shouldWatch) {
+  watchFolder()
+}
