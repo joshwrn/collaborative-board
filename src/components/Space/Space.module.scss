@@ -1,8 +1,26 @@
+.outer {
+  background-color: var(--charcoal);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-shrink: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 45px 0 0 20px;
+  overflow: hidden;
+  touch-action: none;
+}
+
 .wrapper {
   width: 100%;
   height: 100%;
   display: flex;
   flex-shrink: 1;
+  background-color: var(--space-background);
+  border: 1px solid #222222;
+  border-radius: 10px 0 0 0;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -27,16 +45,6 @@ $line-color: #222222;
   background-image: linear-gradient($line-color 0.1em, transparent 0.1em),
     linear-gradient(90deg, $line-color 0.1em, transparent 0.1em);
   background-size: 100px 100px;
-}
-
-.overlay {
-  background: radial-gradient(transparent 50%, var(--space-background));
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  pointer-events: none;
-  touch-action: none;
-  user-select: none;
 }
 
 .button {

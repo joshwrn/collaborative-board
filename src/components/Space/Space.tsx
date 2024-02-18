@@ -26,46 +26,48 @@ export const Space: FC = () => {
   )
   useGestures({ wrapperRef })
   return (
-    <wrapper
-      ref={wrapperRef}
-      className={styles.wrapper}
-      onContextMenu={(e) => {
-        e.preventDefault()
-      }}
-      onMouseMove={(e) => {
-        const rect = spaceRef.current?.getBoundingClientRect() ?? {
-          left: 0,
-          top: 0,
-        }
-        const x = (e.clientX - rect.left) / state.zoom
-        const y = (e.clientY - rect.top) / state.zoom
-        state.setSpaceMousePosition({
-          x,
-          y,
-        })
-      }}
-    >
-      <container
-        className={styles.container}
-        ref={spaceRef}
-        onClick={() => {
-          state.setActiveConnection(null)
+    <div className={styles.outer}>
+      <wrapper
+        ref={wrapperRef}
+        className={styles.wrapper}
+        onContextMenu={(e) => {
+          e.preventDefault()
         }}
-        style={{
-          transform: `scale(${state.zoom}) translate(${state.pan.x}px, ${state.pan.y}px)`,
+        onMouseMove={(e) => {
+          const rect = spaceRef.current?.getBoundingClientRect() ?? {
+            left: 0,
+            top: 0,
+          }
+          const x = (e.clientX - rect.left) / state.zoom
+          const y = (e.clientY - rect.top) / state.zoom
+          state.setSpaceMousePosition({
+            x,
+            y,
+          })
         }}
       >
-        <Connections />
-        <Windows />
-      </container>
-      <button className={styles.button}>
-        <MdOutlineCenterFocusWeak
+        <container
+          className={styles.container}
+          ref={spaceRef}
           onClick={() => {
-            state.setZoom(1)
-            state.setPan({ x: 0, y: 0 })
+            state.setActiveConnection(null)
           }}
-        />
-      </button>
-    </wrapper>
+          style={{
+            transform: `scale(${state.zoom}) translate(${state.pan.x}px, ${state.pan.y}px)`,
+          }}
+        >
+          <Connections />
+          <Windows />
+        </container>
+        <button className={styles.button}>
+          <MdOutlineCenterFocusWeak
+            onClick={() => {
+              state.setZoom(1)
+              state.setPan({ x: 0, y: 0 })
+            }}
+          />
+        </button>
+      </wrapper>
+    </div>
   )
 }

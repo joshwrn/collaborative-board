@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker'
 
 export const createMockItem = (length: number) =>
   Array.from({ length }, () => {
-    const subject = faker.lorem.sentence()
+    const subject = faker.word.words()
     const body = faker.lorem.paragraphs(3)
     return {
       id: nanoid(),

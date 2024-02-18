@@ -1,17 +1,12 @@
-$padding: 15px;
 .wrapper {
   width: 350px;
   height: 100%;
-  background-color: #1b1b1b;
+  background-color: var(--charcoal);
   display: flex;
   flex-direction: column;
-  border-right-width: 1px;
-  border-right-style: solid;
-  border-right-color: #3b3b3b;
   padding: 0;
   overflow: hidden;
   z-index: 1;
-  box-shadow: 0px 0 40px 0 rgba(0, 0, 0, 0.5);
 }
 
 .header {
@@ -21,7 +16,7 @@ $padding: 15px;
   align-items: center;
   height: 50px;
   border-bottom: 1px solid #3b3b3b;
-  padding: 0 $padding;
+  padding: 0;
   > button {
     font-size: 20px;
   }
@@ -34,6 +29,6 @@ $padding: 15px;
   overflow-y: auto;
   flex-shrink: 1;
   height: 100%;
-  padding: $padding;
+  padding: 15px 0;
   position: relative;
 }

@@ -17,14 +17,14 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  // transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   translate: 5000px 5000px;
   > svg {
     position: absolute;
     font-size: 25px;
     transform: translateX(10px);
     path {
-      transition: fill 0.3s ease-in-out;
+      // transition: fill 0.3s ease-in-out;
       fill: #d8d8d8;
     }
   }
@@ -58,7 +58,7 @@
 
 @mixin line($color) {
   background: $color;
-  box-shadow: 0 0 35px 0px $color;
+  // box-shadow: 0 0 35px 0px $color;
   > svg {
     path {
       fill: $color;
