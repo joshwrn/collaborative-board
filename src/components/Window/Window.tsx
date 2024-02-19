@@ -12,6 +12,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { Iframe, Item } from '@/state/items'
 import { Window } from '@/state/windows'
 import { match, P } from 'ts-pattern'
+import { useStore } from 'zustand'
 
 const matchBody = (
   body: string | Iframe,
@@ -53,7 +54,6 @@ export const WindowInternal: FC<{
   const state = useAppStore(
     useShallow((state) => ({
       close: state.toggleOpenWindow,
-      zoom: state.zoom,
       setWindow: state.setOneWindow,
       bringToFront: state.reorderWindows,
       connections: state.connections,
@@ -76,8 +76,8 @@ export const WindowInternal: FC<{
     const { movementX, movementY } = e
     if (!movementX && !movementY) return
     const scaledPosition = {
-      x: movementX / state.zoom,
-      y: movementY / state.zoom,
+      x: movementX / useAppStore.getState().zoom,
+      y: movementY / useAppStore.getState().zoom,
     }
     state.setWindow(item.id, {
       x: window.x + scaledPosition.x,

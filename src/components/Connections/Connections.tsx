@@ -2,6 +2,7 @@ import { useAppStore } from '@/state/gen-state'
 
 import type { FC } from 'react'
 import { Window } from '@/state/windows'
+// this arrow caused bad performance... lol?
 import { IoIosArrowForward } from 'react-icons/io'
 import styles from './Connections.module.scss'
 import { joinClasses } from '@/utils/joinClasses'
@@ -75,7 +76,7 @@ const ConnectionInternal = ({
           )}deg)`,
         }}
       >
-        <IoIosArrowForward />
+        {/* <p>arrow</p> */}
       </div>
     </div>
   )

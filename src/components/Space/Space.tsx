@@ -53,7 +53,8 @@ export const SpaceInternal: FC = () => {
             state.setActiveConnection(null)
           }}
           style={{
-            transform: `scale(${state.zoom}) translate(${state.pan.x}px, ${state.pan.y}px)`,
+            transform: `translate(${state.pan.x}px, ${state.pan.y}px)`,
+            scale: state.zoom,
           }}
         >
           <Connections />
