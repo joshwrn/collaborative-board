@@ -11,9 +11,10 @@ import {
 } from '@/logic/createLineBetweenWindowSides'
 import { createLineFromWindowToMouse } from '@/logic/createLineFromWindowToMouse'
 import { useShallow } from 'zustand/react/shallow'
-import { Connection } from '@/state/connections'
+import { Connection as ConnectionType } from '@/state/connections'
+import React from 'react'
 
-const Connection = ({
+const ConnectionInternal = ({
   from,
   to,
   id,
@@ -28,10 +29,12 @@ const Connection = ({
   isActive?: boolean
   hoveredItem: 'none' | 'from' | 'to'
 }) => {
-  const state = useAppStore((state) => ({
-    openContextMenu: state.openContextMenu,
-    contextMenu: state.contextMenu,
-  }))
+  const state = useAppStore(
+    useShallow((state) => ({
+      openContextMenu: state.openContextMenu,
+      contextMenu: state.contextMenu,
+    })),
+  )
 
   const properties = to
     ? createLineBetweenWindows(from, to)
@@ -78,6 +81,8 @@ const Connection = ({
   )
 }
 
+const Connection = React.memo(ConnectionInternal)
+
 const createBackground = (
   isActive: boolean,
   isSelected: boolean,
@@ -98,7 +103,7 @@ const createBackground = (
   return null
 }
 
-export const Connections: FC = () => {
+export const ConnectionsInternal: FC = () => {
   const state = useAppStore(
     useShallow((state) => ({
       connections: state.connections,
@@ -157,8 +162,10 @@ export const Connections: FC = () => {
   )
 }
 
+export const Connections = React.memo(ConnectionsInternal)
+
 const includesHoveredItem = (
-  connection: Connection,
+  connection: ConnectionType,
   hoveredItem: string | null,
 ) => {
   if (!hoveredItem) return 'none'

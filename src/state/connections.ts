@@ -1,4 +1,9 @@
+import {
+  createManyMockConnectionsToOneWindow,
+  createMockConnection,
+} from '@/mock/mock-connections'
 import { AppStateCreator, Setter, stateSetter } from './state'
+import { AMT_OF_WINDOWS } from '@/mock/mock-windows'
 
 export const SIDES = ['top', 'right', 'bottom', 'left'] as const
 export type Side = (typeof SIDES)[number]
@@ -54,7 +59,10 @@ export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
     }))
   },
 
-  connections: [],
+  connections: [
+    ...createMockConnection(AMT_OF_WINDOWS - 1),
+    ...createManyMockConnectionsToOneWindow(AMT_OF_WINDOWS),
+  ],
 
   removeConnection: (connectionId) => {
     set((state) => ({

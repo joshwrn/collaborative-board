@@ -9,7 +9,7 @@ import { TfiWrite } from 'react-icons/tfi'
 import { useShallow } from 'zustand/react/shallow'
 import { createMockItem } from '@/mock/mock-items'
 
-export const List: FC = () => {
+export const ListInternal: FC = () => {
   const state = useAppStore(
     useShallow((state) => ({
       items: state.items,
@@ -40,3 +40,5 @@ export const List: FC = () => {
     </wrapper>
   )
 }
+
+export const List = React.memo(ListInternal)

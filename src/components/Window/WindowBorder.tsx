@@ -32,7 +32,7 @@ const cursorsForBorderPositions: Record<BorderPosition, string> = {
   bottomLeft: 'nesw-resize',
 }
 
-export const WindowBorder: FC<{
+export const WindowBorderInternal: FC<{
   id: string
   width: number
   height: number
@@ -118,3 +118,5 @@ export const WindowBorder: FC<{
     </div>
   )
 }
+
+export const WindowBorder = React.memo(WindowBorderInternal)

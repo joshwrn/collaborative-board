@@ -8,7 +8,7 @@ import { useAppStore } from '@/state/gen-state'
 import { checkIfConnectionExists } from '@/state/connections'
 import { useShallow } from 'zustand/react/shallow'
 
-export const ConnectorOverlay: FC<{
+export const ConnectorOverlayInternal: FC<{
   id: string
 }> = ({ id }) => {
   const state = useAppStore(
@@ -44,3 +44,5 @@ export const ConnectorOverlay: FC<{
     </overlay>
   )
 }
+
+export const ConnectorOverlay = React.memo(ConnectorOverlayInternal)

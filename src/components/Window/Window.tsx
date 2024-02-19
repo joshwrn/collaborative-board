@@ -15,9 +15,10 @@ import { match, P } from 'ts-pattern'
 
 const matchBody = (
   body: string | Iframe,
+  i: number,
 ): JSX.Element | JSX.Element[] | null => {
   return match(body)
-    .with(P.string, (value) => <p>{value}</p>)
+    .with(P.string, (value) => <p key={i}>{value}</p>)
     .with(
       {
         src: P.string,
@@ -28,6 +29,7 @@ const matchBody = (
             width: '100%',
             height: '100%',
           }}
+          key={i}
         >
           <iframe
             style={{
@@ -62,6 +64,8 @@ export const WindowInternal: FC<{
       setHoveredWindow: state.setHoveredWindow,
     })),
   )
+
+  console.log('window', window.id)
 
   const { width, height } = window
 
@@ -147,7 +151,7 @@ export const WindowInternal: FC<{
         </header>
 
         <main className={styles.content}>
-          {item.body.map((body) => matchBody(body))}
+          {item.body.map((body, i) => matchBody(body, i))}
         </main>
         <ConnectorOverlay id={item.id} />
       </div>

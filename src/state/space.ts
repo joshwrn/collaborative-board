@@ -12,7 +12,7 @@ export const SPACE_ATTRS = {
 }
 
 export const spaceStore: AppStateCreator<SpaceStore> = (set) => ({
-  zoom: 1,
+  zoom: 0.25,
   pan: { x: 0, y: 0 },
   setZoom: (setter) => stateSetter(set, setter, `zoom`),
   setPan: (setter) => stateSetter(set, setter, `pan`),

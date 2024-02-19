@@ -11,7 +11,7 @@ import { Connections } from '../Connections/Connections'
 import { ContextMenu } from '../ContextMenu/ContextMenu'
 import { useShallow } from 'zustand/react/shallow'
 
-export const Space: FC = () => {
+export const SpaceInternal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
   const spaceRef = React.useRef<HTMLDivElement>(null)
   const state = useAppStore(
@@ -71,3 +71,5 @@ export const Space: FC = () => {
     </div>
   )
 }
+
+export const Space = React.memo(SpaceInternal)

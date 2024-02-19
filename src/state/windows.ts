@@ -1,3 +1,4 @@
+import { AMT_OF_WINDOWS, createMockWindow } from '@/mock/mock-windows'
 import { SPACE_ATTRS } from './space'
 import { AppStateCreator, Setter, stateSetter } from './state'
 
@@ -94,7 +95,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   set,
   get,
 ) => ({
-  windows: [],
+  windows: [...createMockWindow(AMT_OF_WINDOWS)],
 
   toggleOpenWindow: (id: string) => {
     const openWindows = get().windows
