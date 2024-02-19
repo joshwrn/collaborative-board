@@ -37,6 +37,7 @@ const ConnectionInternal = ({
     })),
   )
 
+  // this is where the lag is coming from
   const properties = to
     ? createLineBetweenWindows(from, to)
     : createLineFromWindowToMouse(from, mousePosition)
@@ -82,7 +83,7 @@ const ConnectionInternal = ({
   )
 }
 
-const Connection = React.memo(ConnectionInternal)
+export const Connection = React.memo(ConnectionInternal)
 
 const createBackground = (
   isActive: boolean,
@@ -109,31 +110,13 @@ export const ConnectionsInternal: FC = () => {
     useShallow((state) => ({
       connections: state.connections,
       openWindows: state.windows,
-      activeConnection: state.activeConnection,
-      hoveredConnection: state.hoveredConnection,
-      spaceMousePosition: state.spaceMousePosition,
       hoveredItem: state.hoveredItem,
       hoveredWindow: state.hoveredWindow,
     })),
   )
-  const activeWindow = state.openWindows.find(
-    (window) => window.id === state.activeConnection?.from,
-  )
-  const hoveredWindow = state.openWindows.find(
-    (window) => window.id === state.hoveredConnection?.to,
-  )
+
   return (
     <>
-      {activeWindow && (
-        <Connection
-          from={activeWindow}
-          to={hoveredWindow}
-          id={''}
-          mousePosition={state.spaceMousePosition}
-          isActive={true}
-          hoveredItem={'none'}
-        />
-      )}
       {state.connections.map((connection) => {
         const windowFrom = state.openWindows.find(
           (window) => window.id === connection.from,

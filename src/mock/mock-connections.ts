@@ -1,34 +1,36 @@
 import { Connection } from '@/state/connections'
-import { MOCK_ITEMS } from './mock-items'
-import { AMT_OF_WINDOWS } from './mock-windows'
 
-export const createMockConnection = (length: number): Connection[] =>
-  Array.from({ length }, (_, i) => {
-    const item = MOCK_ITEMS[i]
+import { AMT_OF_WINDOWS } from './mock-windows'
+import { Item } from '@/state/items'
+
+export const createMockConnection = (mockItems: Item[]): Connection[] =>
+  Array.from({ length: mockItems.length - 2 }, (_, i) => {
+    const item = mockItems[i]
     return {
       from: item.id,
-      to: MOCK_ITEMS[i + 1].id,
-      id: `${item.id}/${MOCK_ITEMS[i + 1].id}`,
+      to: mockItems[i + 1].id,
+      id: `${item.id}/${mockItems[i + 1].id}`,
     }
   })
 
 export const createManyMockConnectionsToOneWindow = (
-  length: number,
+  mockItems: Item[],
 ): Connection[] => {
   const connections = []
+  const length = mockItems.length - 1
   for (let i = 0; i < length; i++) {
-    const item = MOCK_ITEMS[i]
+    const item = mockItems[i]
     if (i % 2 === 0) {
       connections.push({
         from: item.id,
-        to: MOCK_ITEMS[length - 1].id,
-        id: `${item.id}/${MOCK_ITEMS[length - 1].id}`,
+        to: mockItems[length - 1].id,
+        id: `${item.id}/${mockItems[length - 1].id}`,
       })
     } else {
       connections.push({
-        from: MOCK_ITEMS[length - 1].id,
+        from: mockItems[length - 1].id,
         to: item.id,
-        id: `${MOCK_ITEMS[length - 1].id}/${item.id}`,
+        id: `${mockItems[length - 1].id}/${item.id}`,
       })
     }
   }

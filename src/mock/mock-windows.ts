@@ -1,6 +1,6 @@
 import { Window, DEFAULT_WINDOW } from '@/state/windows'
-import { MOCK_ITEMS } from './mock-items'
 import { SPACE_ATTRS } from '@/state/space'
+import { Item } from '@/state/items'
 
 export const AMT_OF_WINDOWS = 99
 
@@ -15,9 +15,9 @@ const randomPosition = (x: boolean) => {
   return pos
 }
 
-export const createMockWindow = (length: number): Window[] =>
-  Array.from({ length }, (_, i) => {
-    const item = MOCK_ITEMS[i]
+export const createMockWindow = (mockItems: Item[]): Window[] =>
+  Array.from({ length: mockItems.length }, (_, i) => {
+    const item = mockItems[i]
     return {
       ...DEFAULT_WINDOW,
       id: item.id,

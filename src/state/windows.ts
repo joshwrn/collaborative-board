@@ -95,7 +95,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   set,
   get,
 ) => ({
-  windows: [...createMockWindow(AMT_OF_WINDOWS)],
+  windows: [],
 
   toggleOpenWindow: (id: string) => {
     const openWindows = get().windows

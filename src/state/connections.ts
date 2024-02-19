@@ -59,10 +59,7 @@ export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
     }))
   },
 
-  connections: [
-    ...createMockConnection(AMT_OF_WINDOWS - 1),
-    ...createManyMockConnectionsToOneWindow(AMT_OF_WINDOWS),
-  ],
+  connections: [],
 
   removeConnection: (connectionId) => {
     set((state) => ({

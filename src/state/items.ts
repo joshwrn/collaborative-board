@@ -23,7 +23,7 @@ export type ItemListStore = {
 }
 
 export const itemListStore: AppStateCreator<ItemListStore> = (set) => ({
-  items: MOCK_ITEMS,
+  items: [],
   setItems: (setter) => stateSetter(set, setter, `items`),
   deleteItem: (id) =>
     set((state) => ({

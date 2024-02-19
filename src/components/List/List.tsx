@@ -15,6 +15,7 @@ export const ListInternal: FC = () => {
       items: state.items,
       setItems: state.setItems,
       windows: state.windows,
+      createMocks: state.createAllMocks,
     })),
   )
   return (
@@ -26,6 +27,13 @@ export const ListInternal: FC = () => {
           }}
         >
           <TfiWrite />
+        </button>
+        <button
+          onClick={() => {
+            state.createMocks(99)
+          }}
+        >
+          <p>Mock</p>
         </button>
       </header>
       <container className={styles.listContainer}>

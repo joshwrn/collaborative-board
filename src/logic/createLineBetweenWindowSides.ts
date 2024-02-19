@@ -12,7 +12,11 @@ export const circle = {
 export const createLineBetweenWindows = (
   windowFrom: Window,
   windowTo: Window,
-) => {
+): {
+  dimensions: { top: number; height: number; left: number; width: number }
+  line: { from: { x: number; y: number }; to: { x: number; y: number } }
+  distance: number
+} => {
   const closestConnection = findClosestConnection(windowFrom, windowTo)
   const distTo = createCircleMargins(closestConnection.toSide, true)
   const distFrom = createCircleMargins(closestConnection.fromSide, false)
@@ -50,7 +54,7 @@ export const createLineBetweenWindows = (
   return {
     dimensions: createdDimensions,
     line: lineBetweenCircles,
-    distance: lineBetweenCirclesDistance,
+    distance: Number(lineBetweenCirclesDistance),
   }
 }
 

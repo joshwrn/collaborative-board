@@ -10,6 +10,7 @@ import { MdOutlineCenterFocusWeak } from 'react-icons/md'
 import { Connections } from '../Connections/Connections'
 import { ContextMenu } from '../ContextMenu/ContextMenu'
 import { useShallow } from 'zustand/react/shallow'
+import { ActiveConnection } from '../Connections/ActiveConnection'
 
 export const SpaceInternal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
@@ -57,6 +58,7 @@ export const SpaceInternal: FC = () => {
             scale: state.zoom,
           }}
         >
+          <ActiveConnection />
           <Connections />
           <Windows />
         </container>
