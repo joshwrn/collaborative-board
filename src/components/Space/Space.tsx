@@ -11,6 +11,7 @@ import { Connections } from '../Connections/Connections'
 import { ContextMenu } from '../ContextMenu/ContextMenu'
 import { useShallow } from 'zustand/react/shallow'
 import { ActiveConnection } from '../Connections/ActiveConnection'
+import { DropDownMenu } from '../DropDownMenu/DropDownMenu'
 
 export const SpaceInternal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)

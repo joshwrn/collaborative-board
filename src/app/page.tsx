@@ -8,6 +8,7 @@ import { ContextMenu } from '@/components/ContextMenu/ContextMenu'
 import { useShallow } from 'zustand/react/shallow'
 // @ts-ignore
 import FPSStats from 'react-fps-stats'
+import { DropDownMenu } from '@/components/DropDownMenu/DropDownMenu'
 
 export default function Home() {
   const state = useAppStore(
@@ -16,17 +17,20 @@ export default function Home() {
     })),
   )
   return (
-    <main
+    <wrapper
       className={styles.wrapper}
       onMouseMove={(e) => {
         state.setMousePosition({ x: e.clientX, y: e.clientY })
       }}
     >
-      <Space />
-      <List />
-      <Nav />
-      <ContextMenu />
+      <DropDownMenu />
+      <main>
+        {/* <Nav /> */}
+        <List />
+        <Space />
+        <ContextMenu />
+      </main>
       <FPSStats left={'auto'} right={0} />
-    </main>
+    </wrapper>
   )
 }

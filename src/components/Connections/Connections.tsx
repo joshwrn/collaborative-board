@@ -114,16 +114,20 @@ export const ConnectionsInternal: FC = () => {
       hoveredWindow: state.hoveredWindow,
     })),
   )
+  const windowsMap = React.useMemo(
+    () =>
+      state.openWindows.reduce((acc, window) => {
+        acc[window.id] = window
+        return acc
+      }, {} as Record<string, Window>),
+    [state.openWindows],
+  )
 
   return (
     <>
       {state.connections.map((connection) => {
-        const windowFrom = state.openWindows.find(
-          (window) => window.id === connection.from,
-        )
-        const windowTo = state.openWindows.find(
-          (window) => window.id === connection.to,
-        )
+        const windowFrom = windowsMap[connection.from]
+        const windowTo = windowsMap[connection.to]
 
         if (!windowFrom || !windowTo) {
           return null

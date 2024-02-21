@@ -65,8 +65,6 @@ export const WindowInternal: FC<{
     })),
   )
 
-  console.log('window', window.id)
-
   const { width, height } = window
 
   const nodeRef = React.useRef<HTMLDivElement>(null)
@@ -89,8 +87,15 @@ export const WindowInternal: FC<{
 
   const onDragStop = (e: DraggableEvent, data: DraggableData) => {}
 
-  const toConnections = state.connections.filter((c) => c.to === item.id)
-  const fromConnections = state.connections.filter((c) => c.from === item.id)
+  const toConnections = React.useMemo(
+    () => state.connections.filter((c) => c.to === item.id),
+    [state.connections, item.id],
+  )
+
+  const fromConnections = React.useMemo(
+    () => state.connections.filter((c) => c.from === item.id),
+    [state.connections, item.id],
+  )
 
   return (
     <DraggableCore
@@ -168,10 +173,18 @@ const WindowsInternal: FC = () => {
       windows: state.windows,
     })),
   )
+  const itemsMap = React.useMemo(
+    () =>
+      state.items.reduce((acc, item) => {
+        acc[item.id] = item
+        return acc
+      }, {} as Record<string, Item>),
+    [state.items],
+  )
   return (
     <>
-      {state.items.map((item) => {
-        const window = state.windows.find((w) => w.id === item.id)
+      {state.windows.map((window) => {
+        const item = itemsMap[window.id]
         if (!window) return null
         return <Window key={item.id} item={item} window={window} />
       })}

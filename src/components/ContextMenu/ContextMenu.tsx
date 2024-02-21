@@ -1,3 +1,4 @@
+'use client'
 import type { FC } from 'react'
 import React, { useEffect } from 'react'
 import styles from './ContextMenu.module.scss'
@@ -27,7 +28,6 @@ export const ContextMenu: FC = () => {
       style={{
         left: state.contextMenu.position.x,
         top: state.contextMenu.position.y,
-
         transformOrigin: 'top left',
       }}
     >

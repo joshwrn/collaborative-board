@@ -1,3 +1,4 @@
+'use client'
 import type { MutableRefObject, RefObject } from 'react'
 import { useEffect, useRef } from 'react'
 

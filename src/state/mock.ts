@@ -13,12 +13,14 @@ export type MockStore = {
 export const mockStore: AppStateCreator<MockStore> = (set) => ({
   createAllMocks: (length: number) => {
     const items = createMockItem(length)
+    const connections = [
+      ...createMockConnection(items),
+      ...createManyMockConnectionsToOneWindow(items),
+    ]
+    const connectionsSet = new Set(connections)
     set((state) => ({
       items: items,
-      connections: [
-        ...createMockConnection(items),
-        ...createManyMockConnectionsToOneWindow(items),
-      ],
+      connections: [...connectionsSet],
       windows: createMockWindow(items),
     }))
   },
