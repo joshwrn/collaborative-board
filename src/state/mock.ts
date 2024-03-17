@@ -8,6 +8,7 @@ import { createMockWindow } from '@/mock/mock-windows'
 
 export type MockStore = {
   createAllMocks: (length: number) => void
+  clearMocks: () => void
 }
 
 export const mockStore: AppStateCreator<MockStore> = (set) => ({
@@ -22,6 +23,13 @@ export const mockStore: AppStateCreator<MockStore> = (set) => ({
       items: items,
       connections: [...connectionsSet],
       windows: createMockWindow(items),
+    }))
+  },
+  clearMocks: () => {
+    set(() => ({
+      items: [],
+      connections: [],
+      windows: [],
     }))
   },
 })

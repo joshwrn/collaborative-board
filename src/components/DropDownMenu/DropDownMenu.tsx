@@ -14,6 +14,7 @@ const MockItem = () => {
   const state = useAppStore(
     useShallow((state) => ({
       createMocks: state.createAllMocks,
+      clear: state.clearMocks,
     })),
   )
   return (
@@ -38,11 +39,11 @@ const MockItem = () => {
           </li>
           <li
             onClick={() => {
-              state.createMocks(25)
+              state.createMocks(26)
               setOpen(false)
             }}
           >
-            Create (25)
+            Create (26)
           </li>
           <li
             onClick={() => {
@@ -51,6 +52,14 @@ const MockItem = () => {
             }}
           >
             Create (10)
+          </li>
+          <li
+            onClick={() => {
+              state.clear()
+              setOpen(false)
+            }}
+          >
+            Clear
           </li>
         </ul>
       )}
