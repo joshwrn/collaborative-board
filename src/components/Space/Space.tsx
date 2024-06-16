@@ -8,10 +8,10 @@ import { useAppStore } from '@/state/gen-state'
 import { useGestures } from '@/gestures'
 import { MdOutlineCenterFocusWeak } from 'react-icons/md'
 import { Connections } from '../Connections/Connections'
-import { ContextMenu } from '../ContextMenu/ContextMenu'
 import { useShallow } from 'zustand/react/shallow'
-import { ActiveConnection } from '../Connections/ActiveConnection'
-import { DropDownMenu } from '../DropDownMenu/DropDownMenu'
+import { ActiveConnectionGuard } from '../Connections/ActiveConnection'
+import { Debug } from '../Debug/Debug'
+import { resetPan } from '@/state/space'
 
 const Space_Internal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
@@ -26,7 +26,12 @@ const Space_Internal: FC = () => {
       setActiveConnection: state.setActiveConnection,
     })),
   )
-  useGestures({ wrapperRef })
+
+  React.useEffect(() => {
+    state.setPan(resetPan(wrapperRef))
+  }, [])
+
+  useGestures({ wrapperRef, spaceRef })
   const lineSize = 1 / state.zoom
   return (
     <div className={styles.outer}>
@@ -35,9 +40,6 @@ const Space_Internal: FC = () => {
         className={styles.wrapper}
         onContextMenu={(e) => {
           e.preventDefault()
-        }}
-        style={{
-          border: `1px solid red`,
         }}
         onMouseMove={(e) => {
           const rect = spaceRef.current?.getBoundingClientRect() ?? {
@@ -59,21 +61,22 @@ const Space_Internal: FC = () => {
             state.setActiveConnection(null)
           }}
           style={{
-            transform: `translate(${state.pan.x}px, ${state.pan.y}px)`,
+            transformOrigin: `0 0`,
+            transform: `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`,
             backgroundImage: `linear-gradient(#222222 ${lineSize}px, transparent ${lineSize}px),
     linear-gradient(90deg, #222222 ${lineSize}px, transparent ${lineSize}px)`,
-            scale: state.zoom,
           }}
         >
-          <ActiveConnection />
+          <ActiveConnectionGuard />
           <Connections />
           <Windows />
+          <Debug />
         </container>
         <button className={styles.button}>
           <MdOutlineCenterFocusWeak
             onClick={() => {
-              state.setZoom(1)
-              state.setPan({ x: 0, y: 0 })
+              state.setZoom(0.25)
+              state.setPan(() => resetPan(wrapperRef))
             }}
           />
         </button>

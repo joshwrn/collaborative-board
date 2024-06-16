@@ -10,9 +10,8 @@ import { IoAddOutline } from 'react-icons/io5'
 import { ConnectorOverlay } from './ConnectorOverlay'
 import { useShallow } from 'zustand/react/shallow'
 import { Iframe, Item } from '@/state/items'
-import { Window } from '@/state/windows'
+import { WindowType } from '@/state/windows'
 import { match, P } from 'ts-pattern'
-import { useStore } from 'zustand'
 
 const matchBody = (
   body: string | Iframe,
@@ -49,7 +48,7 @@ const matchBody = (
 
 export const WindowInternal: FC<{
   item: Item
-  window: Window
+  window: WindowType
 }> = ({ item, window }) => {
   const state = useAppStore(
     useShallow((state) => ({
@@ -57,7 +56,6 @@ export const WindowInternal: FC<{
       setWindow: state.setOneWindow,
       bringToFront: state.reorderWindows,
       connections: state.connections,
-      activeConnection: state.activeConnection,
       setActiveConnection: state.setActiveConnection,
       makeConnection: state.makeConnection,
       fullScreen: state.fullscreenWindow,

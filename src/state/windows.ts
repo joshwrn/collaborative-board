@@ -1,8 +1,7 @@
-import { AMT_OF_WINDOWS, createMockWindow } from '@/mock/mock-windows'
 import { SPACE_ATTRS } from './space'
 import { AppStateCreator, Setter, stateSetter } from './state'
 
-export type Window = {
+export type WindowType = {
   id: string
   x: number
   y: number
@@ -12,7 +11,7 @@ export type Window = {
 }
 
 export type OpenWindowsStore = {
-  windows: Window[]
+  windows: WindowType[]
   toggleOpenWindow: (id: string) => void
   resizeWindow: (
     id: string,
@@ -20,7 +19,7 @@ export type OpenWindowsStore = {
     movement: { x: number; y: number },
     pos: string,
   ) => void
-  setOneWindow: (id: string, update: Partial<Window>) => void
+  setOneWindow: (id: string, update: Partial<WindowType>) => void
   reorderWindows: (id: string) => void
   fullscreenWindow: (id: string) => void
 
@@ -34,7 +33,7 @@ export const WINDOW_ATTRS = {
   maxSize: 1000,
   zIndex: 0,
 }
-export const DEFAULT_WINDOW: Window = {
+export const DEFAULT_WINDOW: WindowType = {
   id: '',
   x: 0,
   y: 0,
@@ -75,7 +74,7 @@ export const newWindowSizeInBounds = (
   }
 }
 
-const createNewWindowPosition = (windows: Window[]) => {
+const createNewWindowPosition = (windows: WindowType[]) => {
   const startingPosition = {
     x: SPACE_ATTRS.size / 2 - WINDOW_ATTRS.defaultSize.width / 2,
     y: SPACE_ATTRS.size / 2 - WINDOW_ATTRS.defaultSize.height / 2,

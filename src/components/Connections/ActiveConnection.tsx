@@ -18,7 +18,7 @@ export const ActiveConnection = () => {
   const hoveredWindow = state.openWindows.find(
     (window) => window.id === state.hoveredConnection?.to,
   )
-  if (!activeWindow || !hoveredWindow) {
+  if (!activeWindow) {
     return null
   }
   return (

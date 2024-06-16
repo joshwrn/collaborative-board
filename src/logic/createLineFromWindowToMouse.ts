@@ -1,6 +1,6 @@
 import { Point2d } from '@/state'
 import { SIDES } from '@/state/connections'
-import { Window } from '@/state/windows'
+import { WindowType } from '@/state/windows'
 import { distance } from 'mathjs'
 import {
   calculateConnectionPoints,
@@ -11,7 +11,7 @@ import {
 } from './createLineBetweenWindowSides'
 
 export const createLineFromWindowToMouse = (
-  windowFrom: Window,
+  windowFrom: WindowType,
   mousePosition?: Point2d,
 ) => {
   if (!mousePosition) {
@@ -60,7 +60,7 @@ export const createLineFromWindowToMouse = (
   }
 }
 
-const findClosestConnection = (from: Window, to: Point2d) => {
+const findClosestConnection = (from: WindowType, to: Point2d) => {
   const fromPossible = [...SIDES]
   const fromPoints = calculateConnectionPoints(from)
   let closest = {

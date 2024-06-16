@@ -9,6 +9,7 @@ import { useShallow } from 'zustand/react/shallow'
 // @ts-ignore
 import FPSStats from 'react-fps-stats'
 import { DropDownMenu } from '@/components/DropDownMenu/DropDownMenu'
+import { Debug } from '@/components/Debug/Debug'
 
 export default function Home() {
   const state = useAppStore(
@@ -31,6 +32,7 @@ export default function Home() {
         <ContextMenu />
       </main>
       <FPSStats left={'auto'} right={0} />
+      {/* <Debug /> */}
     </wrapper>
   )
 }
