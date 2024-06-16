@@ -39,6 +39,7 @@ export const ActiveConnectionGuardInternal = () => {
       activeConnection: state.activeConnection,
     })),
   )
+  console.log('ActiveConnectionGuard', state.activeConnection)
   if (!state.activeConnection) {
     return null
   }
