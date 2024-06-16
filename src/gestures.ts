@@ -15,7 +15,8 @@ export const useGestures = ({
 }: {
   wrapperRef: React.RefObject<HTMLDivElement>
 }) => {
-  const state = useAppStore((state) => ({
+  // const pinchRef = React.useRef<string | null>(null)
+  const { pan, zoom, setZoom, setPan } = useAppStore((state) => ({
     contextMenu: state.contextMenu,
     zoom: state.zoom,
     pan: state.pan,
@@ -28,7 +29,6 @@ export const useGestures = ({
       onWheel: (data) => {
         // if (!(data.event.target instanceof HTMLCanvasElement)) return
         // pinchRef.current = `not sure`
-        if (state.contextMenu) return
         if (isWheelEndEvent(Date.now())) {
           return
         }
@@ -38,30 +38,45 @@ export const useGestures = ({
         if (delta.x === 0 && delta.y === 0) return
         if (delta.z) {
           const wrapper = wrapperRef.current.getBoundingClientRect()
-          if (!wrapper) {
-            throw new Error(
-              `wrapperRef.current.getBoundingClientRect() is undefined`,
-            )
-          }
-          const newZoom = clampZ(state.zoom + delta.z)
-          const offset = state.zoom - newZoom
-          const zoomFocusPointX = event.clientX - wrapper.x //- pan.x
-          const zoomFocusPointY = event.clientY - wrapper.y //- pan.y
-          const zoomFocusPointOnScreenX = zoomFocusPointX / state.zoom
-          const zoomFocusPointOnScreenY = zoomFocusPointY / state.zoom
+          const newZoom = clampZ(zoom + delta.z)
+          const offset = zoom - newZoom
+          const zoomFocusPointX = event.clientX - wrapper.x - pan.x
+          const zoomFocusPointY = event.clientY - wrapper.y - pan.y
+          const zoomFocusPointOnScreenX = zoomFocusPointX / zoom
+          const zoomFocusPointOnScreenY = zoomFocusPointY / zoom
           const offSetX = -(zoomFocusPointOnScreenX * offset)
           const offSetY = -(zoomFocusPointOnScreenY * offset)
-          state.setZoom((prev) => newZoom)
-          state.setPan((prev) => ({
+
+          setZoom((prev) => newZoom)
+          setPan((prev) => ({
             x: prev.x - offSetX,
             y: prev.y - offSetY,
           }))
         }
         if ((delta.x || delta.y) && !delta.z) {
-          state.setPan((prev) => ({
+          setPan((prev) => ({
             x: prev.x + delta.x,
             y: prev.y + delta.y,
           }))
+        }
+      },
+      onMove: (data) => {
+        const { event, pinching } = data
+        if (pinching) return
+        // Middle mouse button
+        if (event.buttons === 4) {
+          const movement = {
+            x: event.movementX / zoom,
+            y: event.movementY / zoom,
+          }
+          const newPosition = {
+            x: pan.x + movement.x,
+            y: pan.y + movement.y,
+          }
+          setPan({
+            x: newPosition.x,
+            y: newPosition.y,
+          })
         }
       },
     },
@@ -70,7 +85,6 @@ export const useGestures = ({
     },
   )
 }
-
 export function normalizeWheel(
   event: React.WheelEvent<HTMLElement> | WheelEvent,
 ): {
@@ -122,6 +136,25 @@ export const isWheelEndEvent = (time: number): boolean => {
 
   lastWheelTime = time
   return false
+}
+
+/* eslint-disable max-lines */
+type Vec2dModel = { x: number; y: number; z?: number }
+
+/** @public */
+export type VecLike = Vec2d | Vec2dModel
+
+/** @public */
+export class Vec2d {
+  public constructor(public x = 0, public y = 0, public z = 1) {}
+
+  dist(V: VecLike): number {
+    return Vec2d.Dist(this, V)
+  }
+
+  static Dist(A: VecLike, B: VecLike): number {
+    return Math.hypot(A.y - B.y, A.x - B.x)
+  }
 }
 
 export const usePreventDefaults = (): void => {

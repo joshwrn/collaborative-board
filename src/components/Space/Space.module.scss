@@ -30,7 +30,6 @@
   touch-action: none;
 }
 
-$line-color: #222222;
 .container {
   width: 5000px;
   height: 5000px;
@@ -42,8 +41,6 @@ $line-color: #222222;
   position: relative;
   overflow: hidden;
   touch-action: none;
-  background-image: linear-gradient($line-color 0.1em, transparent 0.1em),
-    linear-gradient(90deg, $line-color 0.1em, transparent 0.1em);
   background-size: 100px 100px;
 }
 

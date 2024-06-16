@@ -13,7 +13,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { ActiveConnection } from '../Connections/ActiveConnection'
 import { DropDownMenu } from '../DropDownMenu/DropDownMenu'
 
-export const SpaceInternal: FC = () => {
+const Space_Internal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
   const spaceRef = React.useRef<HTMLDivElement>(null)
   const state = useAppStore(
@@ -27,6 +27,7 @@ export const SpaceInternal: FC = () => {
     })),
   )
   useGestures({ wrapperRef })
+  const lineSize = 1 / state.zoom
   return (
     <div className={styles.outer}>
       <wrapper
@@ -34,6 +35,9 @@ export const SpaceInternal: FC = () => {
         className={styles.wrapper}
         onContextMenu={(e) => {
           e.preventDefault()
+        }}
+        style={{
+          border: `1px solid red`,
         }}
         onMouseMove={(e) => {
           const rect = spaceRef.current?.getBoundingClientRect() ?? {
@@ -56,6 +60,8 @@ export const SpaceInternal: FC = () => {
           }}
           style={{
             transform: `translate(${state.pan.x}px, ${state.pan.y}px)`,
+            backgroundImage: `linear-gradient(#222222 ${lineSize}px, transparent ${lineSize}px),
+    linear-gradient(90deg, #222222 ${lineSize}px, transparent ${lineSize}px)`,
             scale: state.zoom,
           }}
         >
@@ -76,4 +82,4 @@ export const SpaceInternal: FC = () => {
   )
 }
 
-export const Space = React.memo(SpaceInternal)
+export const Space = React.memo(Space_Internal)
