@@ -1,7 +1,7 @@
 import { useAppStore } from '@/state/gen-state'
 
 import type { FC } from 'react'
-import { Window } from '@/state/windows'
+import { WindowType } from '@/state/windows'
 // this arrow caused bad performance... lol?
 import { IoIosArrowForward } from 'react-icons/io'
 import styles from './Connections.module.scss'
@@ -23,8 +23,8 @@ const ConnectionInternal = ({
   mousePosition,
   hoveredItem,
 }: {
-  from: Window
-  to: Window | undefined
+  from: WindowType
+  to: WindowType | undefined
   mousePosition?: { x: number; y: number }
   id: string
   isActive?: boolean
@@ -119,7 +119,7 @@ export const ConnectionsInternal: FC = () => {
       state.openWindows.reduce((acc, window) => {
         acc[window.id] = window
         return acc
-      }, {} as Record<string, Window>),
+      }, {} as Record<string, WindowType>),
     [state.openWindows],
   )
 

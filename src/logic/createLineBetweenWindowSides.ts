@@ -1,5 +1,5 @@
 import { SIDES, Side } from '@/state/connections'
-import { Window } from '@/state/windows'
+import { WindowType } from '@/state/windows'
 import { distance } from 'mathjs'
 
 export const circle = {
@@ -10,8 +10,8 @@ export const circle = {
 }
 
 export const createLineBetweenWindows = (
-  windowFrom: Window,
-  windowTo: Window,
+  windowFrom: WindowType,
+  windowTo: WindowType,
 ): {
   dimensions: { top: number; height: number; left: number; width: number }
   line: { from: { x: number; y: number }; to: { x: number; y: number } }
@@ -125,7 +125,7 @@ export const calculateAngleBetweenPoints = (
   return angleDeg
 }
 
-export const calculateConnectionPoints = (window: Window) => {
+export const calculateConnectionPoints = (window: WindowType) => {
   const { x, y, width, height } = window
   const cd = 0
   const top = { y: y - cd, x: x + width / 2 }
@@ -135,7 +135,7 @@ export const calculateConnectionPoints = (window: Window) => {
   return { top, bottom, left, right }
 }
 
-export const findClosestConnection = (from: Window, to: Window) => {
+export const findClosestConnection = (from: WindowType, to: WindowType) => {
   const fromPossible = [...SIDES]
   const toPossible = [...SIDES]
   const fromPoints = calculateConnectionPoints(from)
@@ -166,10 +166,10 @@ export const findClosestConnection = (from: Window, to: Window) => {
   return closest
 }
 
-export const isFromHigher = (from: Window, to: Window) => from.y < to.y
-export const isFromLeft = (from: Window, to: Window) => from.x < to.x
+export const isFromHigher = (from: WindowType, to: WindowType) => from.y < to.y
+export const isFromLeft = (from: WindowType, to: WindowType) => from.x < to.x
 
-export const createDimensions = (from: Window, to: Window) => {
+export const createDimensions = (from: WindowType, to: WindowType) => {
   let height = 0
   let top = 0
   let left = 0
