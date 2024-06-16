@@ -7,9 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "gen-scss": "npx typed-scss-modules src --watch --outputFolder generated-types",
     "gen-store": "npx ts-node ./src/scripts/generate-store.ts --watch",
-    "all": "concurrently \"npm run dev\" \"npm run gen-scss\" \"npm run gen-store\""
+    "all": "concurrently \"npm run dev\" \"npm run gen-store\""
   },
   "dependencies": {
     "@react-three/fiber": "^8.15.14",
