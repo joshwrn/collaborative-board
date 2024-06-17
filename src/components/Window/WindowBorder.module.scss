@@ -91,6 +91,6 @@ $handle-offset: -5px;
   cursor: ew-resize;
 }
 
-.hovered {
-  background-color: rgb(193, 193, 193);
+.activeBorder {
+  background-color: var(--window-border-active);
 }

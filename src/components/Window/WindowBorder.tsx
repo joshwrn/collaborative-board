@@ -2,7 +2,6 @@ import type { FC } from 'react'
 import React from 'react'
 
 import styles from './WindowBorder.module.scss'
-import animations from '@/style/spinningBackground.module.scss'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { useAppStore } from '@/state/gen-state'
 import { setCursorStyle } from '@/utils/setCursor'
@@ -97,8 +96,8 @@ export const WindowBorderInternal: FC<{
     <div
       className={joinClasses(
         styles.border,
-        isActive && animations.spinningBg,
-        state.hoveredItem === id && animations.spinningBg,
+        isActive && styles.activeBorder,
+        state.hoveredItem === id && styles.activeBorder,
       )}
       style={{
         width: `${width + 2}px`,

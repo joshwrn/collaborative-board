@@ -1,8 +1,25 @@
 :root {
-  --space-background: #171717;
-  --charcoal: #1b1b1b;
-  --window-outline: #6b6b6b;
+  --space-background: #000000;
+  --space-grid-color: #141414;
+
+  --charcoal: #020202;
+  --border: #262626;
+
+  --window-outline: #5e5e5e;
+  --window-header: #101010;
+  --window-content: #262626;
+  --window-text: #d2d2d2;
+  --window-text-bold: #888888;
+  --window-text-title: #ffffff;
+  --window-border-active: #c0c0c0;
+
   --blue-highlight: rgb(118, 198, 255);
+
+  --item-background: #111111;
+  --item-border: #000000;
+  --item-border-open: #232323;
+
+  --connection-color: #434343;
 }
 * {
   flex-shrink: 0;

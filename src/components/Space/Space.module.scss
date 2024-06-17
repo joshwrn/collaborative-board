@@ -19,7 +19,7 @@
   display: flex;
   flex-shrink: 1;
   background-color: var(--space-background);
-  border: 1px solid #222222;
+  border: 1px solid var(--space-grid-color);
   border-radius: 10px 0 0 0;
   flex-direction: column;
   justify-content: center;
@@ -35,9 +35,21 @@
   flex-shrink: 0;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
+  // overflow: hidden;
   touch-action: none;
   background-size: 100px 100px;
+}
+$size: 10000000px;
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: $size;
+  height: $size;
+  left: calc(-#{$size} / 2);
+  top: calc(-#{$size} / 2);
+  background-size: 100px 100px;
+  z-index: -9999;
 }
 
 .button {

@@ -65,10 +65,15 @@ const Space_Internal: FC = () => {
             height: SPACE_ATTRS.size,
             transformOrigin: `0 0`,
             transform: `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`,
-            backgroundImage: `linear-gradient(#222222 ${lineSize}px, transparent ${lineSize}px),
-    linear-gradient(90deg, #222222 ${lineSize}px, transparent ${lineSize}px)`,
           }}
         >
+          <div
+            className={styles.background}
+            style={{
+              backgroundImage: `linear-gradient(var(--space-grid-color) ${lineSize}px, transparent ${lineSize}px),
+          linear-gradient(90deg, var(--space-grid-color) ${lineSize}px, transparent ${lineSize}px)`,
+            }}
+          />
           <ActiveConnectionGuard />
           <Connections />
           <Windows />

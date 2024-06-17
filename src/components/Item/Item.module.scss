@@ -1,43 +1,22 @@
-.outer {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1px;
-  overflow: hidden;
-  position: relative;
-  border-radius: 10px;
-  &::before {
-    display: none;
-  }
-}
-.isOpenOuter {
-  &:hover {
-    &::before {
-      display: block;
-    }
-  }
-}
 .wrapper {
   width: 100%;
-  background-color: #2b2b2b;
+  background-color: var(--item-background);
+  border: 1px solid var(--item-border);
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   padding: 15px;
   gap: 5px;
-  border: 1px solid #6b6b6b00;
   cursor: pointer;
-  h3 {
-    font-size: 14px;
-  }
   h1 {
     font-size: 16px;
+    color: var(--window-text);
   }
   p {
     font-size: 12px;
+    color: var(--window-text-bold);
   }
 }
 .isOpenWrapper {
-  border: 1px solid #6b6b6b;
+  border: 1px solid var(--item-border-open);
 }

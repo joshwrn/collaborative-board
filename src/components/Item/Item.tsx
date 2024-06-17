@@ -38,28 +38,19 @@ const ItemInternal: FC<{ item: Item; isOpen: boolean }> = ({ item, isOpen }) => 
     })),
   )
   return (
-    <outer
-      className={joinClasses(
-        animations.spinningBg,
-        styles.outer,
-        isOpen && styles.isOpenOuter,
-      )}
+    <wrapper
+      className={joinClasses(styles.wrapper, isOpen && styles.isOpenWrapper)}
+      onClick={() => state.toggleOpen(item.id)}
+      onMouseEnter={() => state.setHoveredItem(item.id)}
+      onMouseLeave={() => state.setHoveredItem(null)}
+      onContextMenu={(e) => {
+        e.preventDefault()
+        state.openContextMenu({ elementType: 'item', id: item.id })
+      }}
     >
-      <wrapper
-        className={joinClasses(styles.wrapper, isOpen && styles.isOpenWrapper)}
-        onClick={() => state.toggleOpen(item.id)}
-        onMouseEnter={() => state.setHoveredItem(item.id)}
-        onMouseLeave={() => state.setHoveredItem(null)}
-        onContextMenu={(e) => {
-          e.preventDefault()
-          state.openContextMenu({ elementType: 'item', id: item.id })
-        }}
-      >
-        <h3></h3>
-        <h1>{item.subject}</h1>
-        {matchBody(item.body[0])}
-      </wrapper>
-    </outer>
+      <h1>{item.subject}</h1>
+      {matchBody(item.body[0])}
+    </wrapper>
   )
 }
 

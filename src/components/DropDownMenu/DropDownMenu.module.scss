@@ -4,7 +4,7 @@
   // border: 1px solid red;
   flex-shrink: 1;
   background-color: var(--charcoal);
-  border-bottom: 1px solid #3b3b3b;
+  border-bottom: 1px solid var(--border);
   padding: 0 15px;
 }
 
@@ -16,7 +16,7 @@
     justify-content: space-between;
     align-items: center;
     height: 30px;
-    color: var(--white);
+    color: var(--window-text);
     font-size: 14px;
     cursor: pointer;
   }
@@ -34,8 +34,9 @@
     list-style: none;
     padding: 10px;
     background-color: var(--charcoal);
-    color: var(--white);
-    border: 1px solid #3b3b3b;
+    color: var(--window-text);
+    border: 1px solid var(--border);
+    border-top: none;
     cursor: pointer;
   }
 }

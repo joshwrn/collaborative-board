@@ -10,7 +10,7 @@ export const clampInto =
   (value: number): number =>
     value < min ? min : value > max ? max : value
 
-const clampZ = clampInto([0.25, 1])
+const clampZ = clampInto([0.15, 1])
 
 export const useGestures = ({
   wrapperRef,
@@ -26,7 +26,7 @@ export const useGestures = ({
       pan: state.pan,
       setZoom: state.setZoom,
       setPan: state.setPan,
-      setZoomFocusPoint: state.debug_setZoomFocusPoint,
+      debug_setZoomFocusPoint: state.debug_setZoomFocusPoint,
     })),
   )
 
@@ -52,7 +52,7 @@ export const useGestures = ({
           const offSetX = zoomFocusPointOnScreenX * offset
           const offSetY = zoomFocusPointOnScreenY * offset
 
-          state.setZoomFocusPoint({
+          state.debug_setZoomFocusPoint({
             x: zoomFocusPointOnScreenX,
             y: zoomFocusPointOnScreenY,
           })

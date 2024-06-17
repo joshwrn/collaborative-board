@@ -21,7 +21,7 @@ $inner-border-radius: 19px;
 }
 
 .topBar {
-  background-color: #2b2b2b;
+  background-color: var(--window-header);
   height: 40px;
   border-bottom-width: 1px;
   border-bottom-style: solid;
@@ -52,7 +52,7 @@ $inner-border-radius: 19px;
 
 .titleBar {
   position: relative;
-  background-color: #2b2b2b;
+  background-color: var(--window-header);
   border-bottom-width: 1px;
   border-bottom-style: solid;
   border-bottom-color: var(--window-outline);
@@ -62,7 +62,7 @@ $inner-border-radius: 19px;
   overflow: hidden;
   justify-content: space-between;
   user-select: none;
-  color: #ffffff;
+  color: var(--window-text-title);
   p {
     font-size: 12px;
   }
@@ -83,17 +83,21 @@ $inner-border-radius: 19px;
   align-items: center;
   gap: 20px;
   height: 100%;
-  background: linear-gradient(90deg, rgba(255, 0, 0, 0) 0%, #2b2b2b 30%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0) 0%,
+    var(--window-header) 30%
+  );
   p {
     display: flex;
     gap: 8px;
-    color: rgb(186, 186, 186);
+    color: var(--window-text);
     strong {
-      color: #d8d8d8;
+      color: var(--window-text-bold);
     }
   }
   button {
-    border: 1px solid #d8d8d8;
+    border: 1px solid var(--window-text-bold);
     border-radius: 50%;
     width: 25px;
     height: 25px;
@@ -118,7 +122,10 @@ $inner-border-radius: 19px;
   scrollbar-width: none;
   line-height: 1.75;
   position: relative;
-  background-color: #444444;
+  p {
+    color: var(--window-text);
+  }
+  background-color: var(--window-content);
   &::-webkit-scrollbar {
     display: none;
   }
