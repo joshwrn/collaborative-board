@@ -82,7 +82,7 @@ const Space_Internal: FC = () => {
         <button className={styles.button}>
           <MdOutlineCenterFocusWeak
             onClick={() => {
-              state.setZoom(0.25)
+              state.setZoom(SPACE_ATTRS.default.zoom)
               state.setPan(() => resetPan(wrapperRef))
             }}
           />

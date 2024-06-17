@@ -9,6 +9,10 @@ export type SpaceStore = {
 
 export const SPACE_ATTRS = {
   size: 5000,
+  default: {
+    zoom: 0.25,
+    pan: { x: 0, y: 0 },
+  },
 }
 
 export const resetPan = (wrapperRef: React.RefObject<HTMLDivElement>) => {
@@ -25,8 +29,8 @@ export const resetPan = (wrapperRef: React.RefObject<HTMLDivElement>) => {
 }
 
 export const spaceStore: AppStateCreator<SpaceStore> = (set) => ({
-  zoom: 0.25,
-  pan: { x: 0, y: 0 },
+  zoom: SPACE_ATTRS.default.zoom,
+  pan: SPACE_ATTRS.default.pan,
   setZoom: (setter) => stateSetter(set, setter, `zoom`),
   setPan: (setter) => stateSetter(set, setter, `pan`),
 })
