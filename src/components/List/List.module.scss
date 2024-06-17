@@ -1,13 +1,19 @@
 .wrapper {
   width: 350px;
-  height: 100%;
-  background-color: var(--charcoal);
+  height: 90%;
+  top: 50%;
+  left: 25px;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(20px);
+  border-radius: 10px;
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   padding: 0;
   overflow: hidden;
   z-index: 1;
-  padding-left: 25px;
+  position: absolute;
 }
 
 .header {
@@ -17,12 +23,12 @@
   align-items: center;
   height: 50px;
   border-bottom: 1px solid var(--border);
+  padding: 0 25px;
   svg {
     path {
       fill: var(--window-text);
     }
   }
-  padding: 0;
   > button {
     font-size: 20px;
   }
@@ -35,6 +41,6 @@
   overflow-y: auto;
   flex-shrink: 1;
   height: 100%;
-  padding: 15px 0;
+  padding: 15px 25px;
   position: relative;
 }
