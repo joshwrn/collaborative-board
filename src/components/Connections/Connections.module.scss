@@ -12,7 +12,7 @@
 
 .line {
   height: 2px;
-  background: #d8d8d8;
+  background: #7c7c7c;
   position: absolute;
   display: flex;
   justify-content: flex-end;
@@ -28,13 +28,6 @@
 }
 
 .active {
-  background: repeating-linear-gradient(
-    to right,
-    #d8d8d8,
-    #d8d8d8 10px,
-    transparent 10px,
-    transparent 15px
-  );
   animation: line 10s linear infinite;
 }
 

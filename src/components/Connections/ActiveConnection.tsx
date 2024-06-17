@@ -10,6 +10,7 @@ export const ActiveConnection = () => {
       activeConnection: state.activeConnection,
       hoveredConnection: state.hoveredConnection,
       spaceMousePosition: state.spaceMousePosition,
+      zoom: state.zoom,
     })),
   )
   const activeWindow = state.openWindows.find(
@@ -24,6 +25,7 @@ export const ActiveConnection = () => {
   return (
     <Connection
       from={activeWindow}
+      zoom={state.zoom}
       to={hoveredWindow}
       id={''}
       mousePosition={state.spaceMousePosition}
@@ -39,7 +41,6 @@ export const ActiveConnectionGuardInternal = () => {
       activeConnection: state.activeConnection,
     })),
   )
-  console.log('ActiveConnectionGuard', state.activeConnection)
   if (!state.activeConnection) {
     return null
   }

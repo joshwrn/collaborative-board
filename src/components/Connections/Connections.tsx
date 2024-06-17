@@ -22,11 +22,13 @@ const ConnectionInternal = ({
   isActive,
   mousePosition,
   hoveredItem,
+  zoom,
 }: {
   from: WindowType
   to: WindowType | undefined
   mousePosition?: { x: number; y: number }
   id: string
+  zoom: number
   isActive?: boolean
   hoveredItem: 'none' | 'from' | 'to'
 }) => {
@@ -65,9 +67,10 @@ const ConnectionInternal = ({
         }}
         className={joinClasses(
           styles.line,
-          createBackground(!!isActive, isSelected, hoveredItem),
+          createBackgroundClass(!!isActive, isSelected, hoveredItem),
         )}
         style={{
+          height: `${1 / zoom}px`,
           width: distance.toString() + 'px',
           transform: `rotate(${calculateAngleBetweenPoints(
             line.from.x,
@@ -75,6 +78,7 @@ const ConnectionInternal = ({
             line.to.x,
             line.to.y,
           )}deg)`,
+          background: createBackground(isActive, zoom),
         }}
       >
         {/* <p>arrow</p> */}
@@ -85,7 +89,16 @@ const ConnectionInternal = ({
 
 export const Connection = React.memo(ConnectionInternal)
 
-const createBackground = (
+const createBackground = (isActive: boolean | undefined, zoom: number) => {
+  if (isActive) {
+    return `repeating-linear-gradient(to right,#7c7c7c,#7c7c7c ${
+      10 / zoom
+    }px,transparent ${10 / zoom}px,transparent ${15 / zoom}px)`
+  }
+  return undefined
+}
+
+const createBackgroundClass = (
   isActive: boolean,
   isSelected: boolean,
   hoveredItem: 'none' | 'from' | 'to',
@@ -112,6 +125,7 @@ export const ConnectionsInternal: FC = () => {
       openWindows: state.windows,
       hoveredItem: state.hoveredItem,
       hoveredWindow: state.hoveredWindow,
+      zoom: state.zoom,
     })),
   )
   const windowsMap = React.useMemo(
@@ -139,6 +153,7 @@ export const ConnectionsInternal: FC = () => {
             from={windowFrom}
             to={windowTo}
             id={connection.id}
+            zoom={state.zoom}
             hoveredItem={includesHoveredItem(
               connection,
               state.hoveredItem ?? state.hoveredWindow,
