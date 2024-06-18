@@ -11,7 +11,7 @@ export const SPACE_ATTRS = {
   size: 5000,
   default: {
     zoom: 0.25,
-    pan: { x: 0, y: 0 },
+    pan: { x: 2190, y: 2035 },
   },
 }
 
@@ -20,7 +20,7 @@ export const resetPan = (wrapperRef: React.RefObject<HTMLDivElement>) => {
     throw new Error(`wrapperRef.current is null`)
   }
   const wrapper = wrapperRef.current.getBoundingClientRect()
-  const x = (SPACE_ATTRS.size - window.innerWidth + wrapper.left) / 2
+  const x = (SPACE_ATTRS.size - window.innerWidth + wrapper.left + 725) / 2
   const y = (SPACE_ATTRS.size - window.innerHeight + wrapper.top) / 2
   return {
     x: x,
