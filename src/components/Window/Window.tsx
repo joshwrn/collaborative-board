@@ -98,9 +98,9 @@ export const WindowInternal: FC<{
 
   return (
     <DraggableCore
-      // onDrag={onDrag}
-      // onStop={onDragStop}
-      // onStart={onDragStart}
+      onDrag={onDrag}
+      onStop={onDragStop}
+      onStart={onDragStart}
       handle=".handle"
       nodeRef={nodeRef}
     >
