@@ -13,7 +13,7 @@ $handle-offset: -5px;
 @mixin border-corner {
   width: calc($border-radius - $handle-offset);
   height: calc($border-radius - $handle-offset);
-  // background-color: red;
+  background-color: red;
   z-index: 1;
 }
 
@@ -54,12 +54,12 @@ $handle-offset: -5px;
 }
 
 @mixin border-side($side) {
-  // background-color: rgb(255, 234, 0);
+  background-color: rgb(255, 234, 0);
   #{$side}: calc(100% - $border-radius);
   @if $side == 'width' {
-    height: $border-radius;
+    height: 2px;
   } @else {
-    width: $border-radius;
+    width: 2px;
   }
 }
 

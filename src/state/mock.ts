@@ -5,6 +5,7 @@ import {
 } from '@/mock/mock-connections'
 import { createMockItem } from '@/mock/mock-items'
 import { createMockWindow } from '@/mock/mock-windows'
+import { WINDOW_ATTRS } from './windows'
 
 export type MockStore = {
   createAllMocks: (length: number) => void
@@ -21,8 +22,8 @@ export const mockStore: AppStateCreator<MockStore> = (set, get) => ({
       items: items,
       connections: connections,
       windows: createMockWindow(items, {
-        x: (window.innerWidth / 2 - 370) / zoom,
-        y: window.innerHeight / 2 / zoom,
+        x: WINDOW_ATTRS.defaultSize.width,
+        y: WINDOW_ATTRS.defaultSize.height + 300,
       }),
     }))
   },
