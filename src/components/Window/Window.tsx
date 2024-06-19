@@ -12,6 +12,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { Iframe, Item } from '@/state/items'
 import { WindowType } from '@/state/windows'
 import { match, P } from 'ts-pattern'
+import { joinClasses } from '@/utils/joinClasses'
 
 const matchBody = (
   body: string | Iframe,
@@ -105,7 +106,8 @@ export const WindowInternal: FC<{
     >
       <div
         ref={nodeRef}
-        className={styles.wrapper}
+        className={joinClasses(styles.wrapper, 'window')}
+        id={`window-${item.id}`}
         style={{
           transform: `translate(${window.x}px, ${window.y}px)`,
           width: `${width}px`,
@@ -119,12 +121,6 @@ export const WindowInternal: FC<{
         }}
         onPointerDown={() => state.bringToFront(item.id)}
       >
-        <WindowBorder
-          width={width}
-          height={height}
-          id={item.id}
-          position={{ x: window.x, y: window.y }}
-        />
         <nav className={`${styles.topBar} handle`}>
           <button
             className={styles.close}
@@ -157,6 +153,13 @@ export const WindowInternal: FC<{
           {item.body.map((body, i) => matchBody(body, i))}
         </main>
         <ConnectorOverlay id={item.id} />
+
+        <WindowBorder
+          width={width}
+          height={height}
+          id={item.id}
+          position={{ x: window.x, y: window.y }}
+        />
       </div>
     </DraggableCore>
   )

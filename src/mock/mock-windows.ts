@@ -15,7 +15,10 @@ const randomPosition = (x: boolean) => {
   return pos
 }
 
-export const createMockWindow = (mockItems: Item[]): WindowType[] =>
+export const createMockWindow = (
+  mockItems: Item[],
+  windowProps: Partial<WindowType> = {},
+): WindowType[] =>
   Array.from({ length: mockItems.length }, (_, i) => {
     const item = mockItems[i]
     return {
@@ -23,5 +26,6 @@ export const createMockWindow = (mockItems: Item[]): WindowType[] =>
       id: item.id,
       x: randomPosition(true),
       y: randomPosition(false),
+      ...windowProps,
     }
   })

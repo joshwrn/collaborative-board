@@ -49,18 +49,20 @@ export const newWindowSizeInBounds = (
   },
   currentSize: { width: number; height: number },
 ) => {
-  return {
-    width:
-      newSize.width < WINDOW_ATTRS.minSize ||
-      newSize.width > WINDOW_ATTRS.maxSize
-        ? currentSize.width
-        : newSize.width,
-    height:
-      newSize.height < WINDOW_ATTRS.minSize ||
-      newSize.height > WINDOW_ATTRS.maxSize
-        ? currentSize.height
-        : newSize.height,
+  let size = { width: newSize.width, height: newSize.height }
+  if (size.width < WINDOW_ATTRS.minSize) {
+    size.width = WINDOW_ATTRS.minSize
   }
+  if (size.height < WINDOW_ATTRS.minSize) {
+    size.height = WINDOW_ATTRS.minSize
+  }
+  if (size.width > WINDOW_ATTRS.maxSize) {
+    size.width = WINDOW_ATTRS.maxSize
+  }
+  if (size.height > WINDOW_ATTRS.maxSize) {
+    size.height = WINDOW_ATTRS.maxSize
+  }
+  return size
 }
 
 const createNewWindowPosition = (windows: WindowType[]) => {
@@ -163,29 +165,31 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       x: movement.x / zoom,
       y: movement.y / zoom,
     }
-    const createNewPosition = (axis: 'x' | 'y') => {
-      if (axis === 'x') {
-        if (
-          newSize.width < WINDOW_ATTRS.minSize ||
-          newSize.width > WINDOW_ATTRS.maxSize
-        ) {
-          return position[axis]
+    const createNewPosition = {
+      x: () => {
+        if (newSize.width > WINDOW_ATTRS.maxSize) {
+          return start.x - (WINDOW_ATTRS.maxSize - start.width)
+        }
+        if (newSize.width < WINDOW_ATTRS.minSize) {
+          return start.x + (start.width - WINDOW_ATTRS.minSize)
         }
         return start.x + scaledMovement.x
-      }
-      if (
-        newSize.height < WINDOW_ATTRS.minSize ||
-        newSize.height > WINDOW_ATTRS.maxSize
-      ) {
-        return position[axis]
-      }
-      return start.y + scaledMovement.y
+      },
+      y: () => {
+        if (newSize.height > WINDOW_ATTRS.maxSize) {
+          return start.y - (WINDOW_ATTRS.maxSize - start.height)
+        }
+        if (newSize.height < WINDOW_ATTRS.minSize) {
+          return start.y + (start.height - WINDOW_ATTRS.minSize)
+        }
+        return start.y + scaledMovement.y
+      },
     }
 
     switch (pos) {
       case 'left': {
         newSize.width = start.width - scaledMovement.x
-        newPosition.x = createNewPosition('x')
+        newPosition.x = createNewPosition.x()
         break
       }
       case 'topLeft': {
@@ -193,13 +197,13 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           width: start.width - scaledMovement.x,
           height: start.height - scaledMovement.y,
         }
-        newPosition.x = createNewPosition('x')
-        newPosition.y = createNewPosition('y')
+        newPosition.x = createNewPosition.x()
+        newPosition.y = createNewPosition.y()
         break
       }
       case 'top': {
         newSize.height = start.height - scaledMovement.y
-        newPosition.y = createNewPosition('y')
+        newPosition.y = createNewPosition.y()
         break
       }
       case 'topRight': {
@@ -207,7 +211,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           width: start.width + scaledMovement.x,
           height: start.height - scaledMovement.y,
         }
-        newPosition.y = createNewPosition('y')
+        newPosition.y = createNewPosition.y()
         break
       }
       case 'right': {
@@ -230,7 +234,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           width: start.width - scaledMovement.x,
           height: start.height + scaledMovement.y,
         }
-        newPosition.x = createNewPosition('x')
+        newPosition.x = createNewPosition.x()
         break
       }
     }

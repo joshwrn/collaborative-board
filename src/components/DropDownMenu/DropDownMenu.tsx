@@ -14,12 +14,14 @@ const MockItem = () => {
   const state = useAppStore(
     useShallow((state) => ({
       createMocks: state.createAllMocks,
+      createOneMock: state.createOneMock,
       clear: state.clearMocks,
     })),
   )
   return (
     <item className={style.item}>
       <button
+        id={'dropdown-create-mocks-button'}
         ref={ref1}
         onClick={() => {
           setOpen(!open)
@@ -46,12 +48,22 @@ const MockItem = () => {
             Create (26)
           </li>
           <li
+            id={'dropdown-create-mocks-10'}
             onClick={() => {
               state.createMocks(10)
               setOpen(false)
             }}
           >
             Create (10)
+          </li>
+          <li
+            id={'dropdown-create-mocks-1'}
+            onClick={() => {
+              state.createOneMock()
+              setOpen(false)
+            }}
+          >
+            Create (1)
           </li>
           <li
             onClick={() => {

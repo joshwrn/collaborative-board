@@ -111,7 +111,10 @@ export const WindowBorderInternal: FC<{
           onStart={(e, data) => onDragStart(e, data, pos)}
           onStop={(e, data) => onDragStop(e, data, pos)}
         >
-          <div className={styles[pos]} />
+          <div
+            className={styles[pos]}
+            id={`window-border-draggable-${pos}-${id}`}
+          />
         </DraggableCore>
       ))}
     </div>
