@@ -3,7 +3,7 @@ import { SPACE_ATTRS } from '@/state/space'
 import { WINDOW_ATTRS } from '@/state/windows'
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://localhost:3000')
+  await page.goto('/')
 })
 
 test.describe('can resize window', () => {
