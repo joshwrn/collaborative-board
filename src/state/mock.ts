@@ -8,10 +8,24 @@ import { createMockWindow } from '@/mock/mock-windows'
 
 export type MockStore = {
   createAllMocks: (length: number) => void
+  createOneMock: () => void
   clearMocks: () => void
 }
 
-export const mockStore: AppStateCreator<MockStore> = (set) => ({
+export const mockStore: AppStateCreator<MockStore> = (set, get) => ({
+  createOneMock: () => {
+    const items = createMockItem(1)
+    const connections = createMockConnection(items)
+    const zoom = get().zoom
+    set((state) => ({
+      items: items,
+      connections: connections,
+      windows: createMockWindow(items, {
+        x: (window.innerWidth / 2 - 370) / zoom,
+        y: window.innerHeight / 2 / zoom,
+      }),
+    }))
+  },
   createAllMocks: (length: number) => {
     const items = createMockItem(length)
     const connections = [
