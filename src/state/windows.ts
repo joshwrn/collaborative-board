@@ -42,18 +42,6 @@ export const DEFAULT_WINDOW: WindowType = {
   zIndex: 0,
 }
 
-const createMaxSize = () => {
-  const width =
-    WINDOW_ATTRS.maxSize > window.innerWidth
-      ? window.innerWidth
-      : WINDOW_ATTRS.maxSize
-  const height =
-    WINDOW_ATTRS.maxSize > window.innerHeight
-      ? window.innerHeight
-      : WINDOW_ATTRS.maxSize
-  return { width, height }
-}
-
 export const newWindowSizeInBounds = (
   newSize: {
     width: number
@@ -61,14 +49,15 @@ export const newWindowSizeInBounds = (
   },
   currentSize: { width: number; height: number },
 ) => {
-  const maxSize = createMaxSize()
   return {
     width:
-      newSize.width < WINDOW_ATTRS.minSize || newSize.width > maxSize.width
+      newSize.width < WINDOW_ATTRS.minSize ||
+      newSize.width > WINDOW_ATTRS.maxSize
         ? currentSize.width
         : newSize.width,
     height:
-      newSize.height < WINDOW_ATTRS.minSize || newSize.height > maxSize.height
+      newSize.height < WINDOW_ATTRS.minSize ||
+      newSize.height > WINDOW_ATTRS.maxSize
         ? currentSize.height
         : newSize.height,
   }
@@ -257,10 +246,10 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     if (!id || !curWindow) {
       throw new Error(`window ${id} not found`)
     }
-    const newSize = createMaxSize()
 
     const isMaximized =
-      curWindow.width === newSize.width && curWindow.height === newSize.height
+      curWindow.width === WINDOW_ATTRS.maxSize &&
+      curWindow.height === WINDOW_ATTRS.maxSize
     if (isMaximized) {
       const heightChange = curWindow.height - WINDOW_ATTRS.defaultSize.height
       const widthChange = curWindow.width - WINDOW_ATTRS.defaultSize.width
@@ -276,16 +265,16 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       return
     }
 
-    const heightChange = newSize.height - curWindow.height
-    const widthChange = newSize.width - curWindow.width
+    const heightChange = WINDOW_ATTRS.maxSize - curWindow.height
+    const widthChange = WINDOW_ATTRS.maxSize - curWindow.width
     const newPosition = {
       x: curWindow.x - widthChange / 2,
       y: curWindow.y - heightChange / 2,
     }
     get().setOneWindow(id, {
       ...newPosition,
-      width: newSize.width,
-      height: newSize.height,
+      width: WINDOW_ATTRS.maxSize,
+      height: WINDOW_ATTRS.maxSize,
     })
   },
 
