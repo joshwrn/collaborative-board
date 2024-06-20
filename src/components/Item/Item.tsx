@@ -6,7 +6,6 @@ import styles from './Item.module.scss'
 import { useAppStore } from '@/state/gen-state'
 import { joinClasses } from '@/utils/joinClasses'
 import { useShallow } from 'zustand/react/shallow'
-import animations from '@/style/spinningBackground.module.scss'
 import type { Iframe, Item } from '@/state/items'
 import { match, P } from 'ts-pattern'
 

@@ -1,9 +1,4 @@
-import {
-  createManyMockConnectionsToOneWindow,
-  createMockConnection,
-} from '@/mock/mock-connections'
 import { AppStateCreator, Setter, stateSetter } from './state'
-import { AMT_OF_WINDOWS } from '@/mock/mock-windows'
 
 export const SIDES = ['top', 'right', 'bottom', 'left'] as const
 export type Side = (typeof SIDES)[number]

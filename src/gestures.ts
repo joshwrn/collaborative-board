@@ -3,7 +3,6 @@ import { useGesture } from '@use-gesture/react'
 import React from 'react'
 import { useAppStore } from './state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
-import { SPACE_ATTRS } from './state/space'
 
 export const clampInto =
   ([min, max]: [number, number]) =>
@@ -11,6 +10,10 @@ export const clampInto =
     value < min ? min : value > max ? max : value
 
 const clampZ = clampInto([0.15, 1])
+
+const MOUSE_BUTTONS = {
+  middle: 4,
+}
 
 export const useGestures = ({
   wrapperRef,
@@ -73,8 +76,7 @@ export const useGestures = ({
       onMove: (data) => {
         const { event, pinching } = data
         if (pinching) return
-        // Middle mouse button
-        if (event.buttons === 4) {
+        if (event.buttons === MOUSE_BUTTONS.middle) {
           const movement = {
             x: event.movementX,
             y: event.movementY,

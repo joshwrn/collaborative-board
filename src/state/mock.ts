@@ -17,7 +17,6 @@ export const mockStore: AppStateCreator<MockStore> = (set, get) => ({
   createOneMock: () => {
     const items = createMockItem(1)
     const connections = createMockConnection(items)
-    const zoom = get().zoom
     set((state) => ({
       items: items,
       connections: connections,

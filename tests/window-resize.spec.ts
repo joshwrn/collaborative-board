@@ -20,8 +20,8 @@ test.describe('can resize window', () => {
   }
 
   const MOVE = {
-    step1: 150,
-    step2: 270,
+    step1: 0,
+    step2: 500,
   }
 
   const getBox = async () => {

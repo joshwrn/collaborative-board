@@ -1,6 +1,5 @@
 import { Connection } from '@/state/connections'
 
-import { AMT_OF_WINDOWS } from './mock-windows'
 import { Item } from '@/state/items'
 
 export const createMockConnection = (mockItems: Item[]): Connection[] =>

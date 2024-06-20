@@ -1,4 +1,3 @@
-import { MOCK_ITEMS } from '@/mock/mock-items'
 import { AppStateCreator, Setter, stateSetter } from './state'
 
 export type Iframe = {
