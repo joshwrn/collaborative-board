@@ -13,6 +13,8 @@ import { Iframe, Item } from '@/state/items'
 import { WindowType } from '@/state/windows'
 import { match, P } from 'ts-pattern'
 import { joinClasses } from '@/utils/joinClasses'
+import { track } from 'signia-react'
+import { useStore } from '@/state-signia/store'
 
 const matchBody = (
   body: string | Iframe,
@@ -54,7 +56,6 @@ export const WindowInternal: FC<{
   const state = useAppStore(
     useShallow((state) => ({
       close: state.toggleOpenWindow,
-      setWindow: state.setOneWindow,
       bringToFront: state.reorderWindows,
       connections: state.connections,
       setActiveConnection: state.setActiveConnection,
@@ -63,6 +64,8 @@ export const WindowInternal: FC<{
       setHoveredWindow: state.setHoveredWindow,
     })),
   )
+
+  const state2 = useStore()
 
   const { width, height } = window
 
@@ -76,7 +79,7 @@ export const WindowInternal: FC<{
       x: movementX / useAppStore.getState().zoom,
       y: movementY / useAppStore.getState().zoom,
     }
-    state.setWindow(item.id, {
+    state2.windows.setWindowPosition(item.id, {
       x: window.x + scaledPosition.x,
       y: window.y + scaledPosition.y,
     })
@@ -95,7 +98,7 @@ export const WindowInternal: FC<{
     () => state.connections.filter((c) => c.from === item.id),
     [state.connections, item.id],
   )
-
+  console.log('window', window)
   return (
     <DraggableCore
       onDrag={onDrag}
@@ -168,24 +171,16 @@ export const WindowInternal: FC<{
 const Window = React.memo(WindowInternal)
 
 const WindowsInternal: FC = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      items: state.items,
-      windows: state.windows,
-    })),
-  )
-  const itemsMap = React.useMemo(
-    () =>
-      state.items.reduce((acc, item) => {
-        acc[item.id] = item
-        return acc
-      }, {} as Record<string, Item>),
-    [state.items],
-  )
+  const state = useStore()
+  const item = {
+    id: '1',
+    body: ['test'],
+    subject: 'test',
+    members: [],
+  }
   return (
     <>
-      {state.windows.map((window) => {
-        const item = itemsMap[window.id]
+      {state.windows.open.map((window) => {
         if (!window) return null
         return <Window key={item.id} item={item} window={window} />
       })}
@@ -193,4 +188,4 @@ const WindowsInternal: FC = () => {
   )
 }
 
-export const Windows = React.memo(WindowsInternal)
+export const Windows = track(WindowsInternal)

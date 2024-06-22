@@ -8,21 +8,19 @@ import { useShallow } from 'zustand/react/shallow'
 // @ts-ignore
 import FPSStats from 'react-fps-stats'
 import { DropDownMenu } from '@/components/DropDownMenu/DropDownMenu'
-import { Debug } from '@/components/Debug/Debug'
+import { Store, StoreContext, useStore } from '@/state-signia/store'
 
-export default function Home() {
-  const state = useAppStore(
-    useShallow((state) => ({
-      setMousePosition: state.setMousePosition,
-    })),
-  )
+const Inner = () => {
+  const state = useStore()
+
   return (
     <wrapper
       className={styles.wrapper}
       onMouseMove={(e) => {
-        state.setMousePosition({ x: e.clientX, y: e.clientY })
+        state.peripheral.setMousePosition({ x: e.clientX, y: e.clientY })
       }}
     >
+      <p>{state.peripheral.mousePosition.x}</p>
       <DropDownMenu />
       <main>
         {/* <Nav /> */}
@@ -33,5 +31,14 @@ export default function Home() {
       <FPSStats left={'auto'} right={0} />
       {/* <Debug /> */}
     </wrapper>
+  )
+}
+
+export default function Home() {
+  const doc = Store.useNewStore()
+  return (
+    <StoreContext.Provider value={doc}>
+      <Inner />
+    </StoreContext.Provider>
   )
 }

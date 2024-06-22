@@ -27,6 +27,9 @@
     "react-draggable": "^4.4.6",
     "react-fps-stats": "^0.3.1",
     "react-icons": "^4.12.0",
+    "signia": "^0.1.5",
+    "signia-react": "^0.1.5",
+    "signia-react-jsx": "^0.1.5",
     "three": "^0.160.0",
     "ts-pattern": "^5.0.6",
     "zustand": "^4.4.7"

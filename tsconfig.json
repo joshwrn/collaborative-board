@@ -11,7 +11,10 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    // "jsx": "preserve",
     "jsx": "preserve",
+    "jsxImportSource": "signia-react-jsx",
+    "experimentalDecorators": true,
     "incremental": true,
     "rootDirs": ["."],
     "plugins": [
