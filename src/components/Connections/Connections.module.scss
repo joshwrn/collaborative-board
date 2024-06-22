@@ -1,24 +1,12 @@
-$distance: 500000px;
-.wrapper {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.line {
   opacity: 0.75;
   z-index: -9999;
-  border: 1px solid #f73939;
-
-  transform: translate(-$distance, -$distance);
-}
-
-.line {
   height: 2px;
   background: var(--connection-color);
   position: absolute;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  translate: $distance $distance;
   &::before {
     content: '';
     width: 100%;

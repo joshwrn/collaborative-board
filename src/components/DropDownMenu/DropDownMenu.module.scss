@@ -38,5 +38,18 @@
     border: 1px solid var(--border);
     border-top: none;
     cursor: pointer;
+    .customCreate {
+      display: flex;
+      gap: 5px;
+      input {
+        width: 50px;
+        padding: 0px;
+        background-color: var(--charcoal);
+        color: var(--window-text);
+        outline: none;
+        border: none;
+        border: 1px solid var(--border);
+      }
+    }
   }
 }

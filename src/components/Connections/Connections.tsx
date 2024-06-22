@@ -40,50 +40,47 @@ const ConnectionInternal = ({
   )
 
   // this is where the lag is coming from
-  const properties = to
-    ? createLineBetweenWindows(from, to)
-    : createLineFromWindowToMouse(from, mousePosition)
+  const properties = React.useMemo(
+    () =>
+      to
+        ? createLineBetweenWindows(from, to)
+        : createLineFromWindowToMouse(from, mousePosition),
+    [from, to, mousePosition],
+  )
+
   const isSelected = state.contextMenu?.id === id
   if (!properties) return null
-  const { dimensions, line, distance } = properties
+  const { line, distance } = properties
   return (
     <div
-      className={styles.wrapper}
-      style={{
-        width: dimensions.width,
-        left: dimensions.left,
-        top: dimensions.top,
-        height: dimensions.height,
+      onContextMenu={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        state.openContextMenu({
+          id,
+          elementType: 'connections',
+        })
       }}
-    >
-      <div
-        onContextMenu={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          state.openContextMenu({
-            id,
-            elementType: 'connections',
-          })
-        }}
-        className={joinClasses(
-          styles.line,
-          createBackgroundClass(!!isActive, isSelected, hoveredItem),
-        )}
-        style={{
-          height: `${1 / zoom}px`,
-          width: distance.toString() + 'px',
-          transform: `rotate(${calculateAngleBetweenPoints(
-            line.from.x,
-            line.from.y,
-            line.to.x,
-            line.to.y,
-          )}deg)`,
-          background: createBackground(isActive, zoom),
-        }}
-      >
-        {/* <p>arrow</p> */}
-      </div>
-    </div>
+      className={joinClasses(
+        styles.line,
+        createBackgroundClass(!!isActive, isSelected, hoveredItem),
+      )}
+      style={{
+        width: distance.toString() + 'px',
+        left: line.from.x,
+        top: line.from.y,
+        height: `${1 / zoom}px`,
+        background: createBackground(isActive, zoom),
+        transformOrigin: '0 0',
+        transform: `rotate(${calculateAngleBetweenPoints(
+          line.from.x,
+          line.from.y,
+          line.to.x,
+          line.to.y,
+        )}deg)
+        `,
+      }}
+    />
   )
 }
 

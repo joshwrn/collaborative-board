@@ -18,6 +18,7 @@ const MockItem = () => {
       clear: state.clearMocks,
     })),
   )
+  const [amount, setAmount] = React.useState(0)
   return (
     <item className={style.item}>
       <button
@@ -64,6 +65,30 @@ const MockItem = () => {
             }}
           >
             Create (1)
+          </li>
+          <li>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                state.createMocks(amount)
+                setOpen(false)
+              }}
+              onClick={() => {
+                state.createMocks(amount)
+                setOpen(false)
+              }}
+              className={style.customCreate}
+            >
+              Create (
+              <input
+                onClick={(e) => e.stopPropagation()}
+                type="text"
+                placeholder="Custom"
+                value={amount === 0 ? '' : amount}
+                onChange={(e) => setAmount(Number(e.target.value))}
+              />
+              )
+            </form>
           </li>
           <li
             onClick={() => {

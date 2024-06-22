@@ -9,14 +9,15 @@ export const circle = {
   toMargin: 10,
 }
 
+export type LineBetweenWindows = {
+  line: { from: { x: number; y: number }; to: { x: number; y: number } }
+  distance: number
+}
+
 export const createLineBetweenWindows = (
   windowFrom: WindowType,
   windowTo: WindowType,
-): {
-  dimensions: { top: number; height: number; left: number; width: number }
-  line: { from: { x: number; y: number }; to: { x: number; y: number } }
-  distance: number
-} => {
+): LineBetweenWindows => {
   const closestConnection = findClosestConnection(windowFrom, windowTo)
   const distTo = createCircleMargins(closestConnection.toSide, true)
   const distFrom = createCircleMargins(closestConnection.fromSide, false)
@@ -41,18 +42,7 @@ export const createLineBetweenWindows = (
     [lineBetweenCircles.to.x, lineBetweenCircles.to.y],
   )
 
-  const createdDimensions = createDimensions(
-    {
-      ...windowFrom,
-      ...lineBetweenCircles.from,
-    },
-    {
-      ...windowTo,
-      ...lineBetweenCircles.to,
-    },
-  )
   return {
-    dimensions: createdDimensions,
     line: lineBetweenCircles,
     distance: Number(lineBetweenCirclesDistance),
   }
@@ -168,18 +158,3 @@ export const findClosestConnection = (from: WindowType, to: WindowType) => {
 
 export const isFromHigher = (from: WindowType, to: WindowType) => from.y < to.y
 export const isFromLeft = (from: WindowType, to: WindowType) => from.x < to.x
-
-export const createDimensions = (from: WindowType, to: WindowType) => {
-  let height = 0
-  let top = 0
-  let left = 0
-  let width = 0
-
-  const fromIsHigher = isFromHigher(from, to)
-  const fromIsLeft = isFromLeft(from, to)
-  top = fromIsHigher ? from.y : to.y
-  height = fromIsHigher ? to.y - from.y : from.y - to.y
-  left = fromIsLeft ? from.x : to.x
-  width = fromIsLeft ? to.x - from.x : from.x - to.x
-  return { top, height, left, width }
-}

@@ -7,7 +7,6 @@ import {
   circle,
   closestLineBetweenCircles,
   createCircleMargins,
-  createDimensions,
 } from './createLineBetweenWindowSides'
 
 export const createLineFromWindowToMouse = (
@@ -40,21 +39,7 @@ export const createLineFromWindowToMouse = (
     [lineBetweenCircles.to.x, lineBetweenCircles.to.y],
   )
 
-  const createdDimensions = createDimensions(
-    {
-      ...windowFrom,
-      ...lineBetweenCircles.from,
-    },
-    {
-      id: 'mouse',
-      zIndex: 0,
-      width: 1,
-      height: 1,
-      ...mousePosition,
-    },
-  )
   return {
-    dimensions: createdDimensions,
     line: lineBetweenCircles,
     distance: lineBetweenCirclesDistance,
   }
