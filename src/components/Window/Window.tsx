@@ -109,7 +109,8 @@ export const WindowInternal: FC<{
         className={joinClasses(styles.wrapper, 'window')}
         id={`window-${item.id}`}
         style={{
-          transform: `translate(${window.x}px, ${window.y}px)`,
+          left: window.x,
+          top: window.y,
           width: `${width}px`,
           height: `${height}px`,
           zIndex: window.zIndex,

@@ -39,7 +39,6 @@ const ConnectionInternal = ({
     })),
   )
 
-  // this is where the lag is coming from
   const properties = React.useMemo(
     () =>
       to
