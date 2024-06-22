@@ -43,7 +43,8 @@ export class ConnectionsStore {
     return createLineBetweenWindows(fromWindow, toWindow, connection.id)
   }
 
-  allLinesBetweenWindows() {
+  @computed get allLinesBetweenWindows() {
+    console.log('allLinesBetweenWindows')
     return this.connectionsState.value.map((connection) =>
       this.lineBetweenWindows(connection.id),
     )

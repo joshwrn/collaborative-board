@@ -117,7 +117,7 @@ export const ConnectionsInternal: FC = () => {
   )
   const state = useStore()
 
-  const allLines = state.connections.allLinesBetweenWindows()
+  const allLines = state.connections.allLinesBetweenWindows
 
   return (
     <>
