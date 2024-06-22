@@ -1,3 +1,4 @@
+import { Point2d } from '@/state'
 import { SIDES, Side } from '@/state/connections'
 import { WindowType } from '@/state/windows'
 import { distance } from 'mathjs'
@@ -10,13 +11,15 @@ export const circle = {
 }
 
 export type LineBetweenWindows = {
-  line: { from: { x: number; y: number }; to: { x: number; y: number } }
+  line: { from: Point2d; to: Point2d }
   distance: number
+  id: string
 }
 
 export const createLineBetweenWindows = (
   windowFrom: WindowType,
   windowTo: WindowType,
+  id: string,
 ): LineBetweenWindows => {
   const closestConnection = findClosestConnection(windowFrom, windowTo)
   const distTo = createCircleMargins(closestConnection.toSide, true)
@@ -45,6 +48,7 @@ export const createLineBetweenWindows = (
   return {
     line: lineBetweenCircles,
     distance: Number(lineBetweenCirclesDistance),
+    id,
   }
 }
 

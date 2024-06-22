@@ -3,6 +3,7 @@ import style from './DropDownMenu.module.scss'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { useAppStore } from '@/state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
+import { useStore } from '@/state-signia/store'
 
 const MockItem = () => {
   const [open, setOpen] = React.useState(false)
@@ -11,14 +12,11 @@ const MockItem = () => {
       setOpen(false)
     },
   })
-  const state = useAppStore(
-    useShallow((state) => ({
-      createMocks: state.createAllMocks,
-      createOneMock: state.createOneMock,
-      clear: state.clearMocks,
-    })),
-  )
+
   const [amount, setAmount] = React.useState(0)
+
+  const state = useStore()
+
   return (
     <item className={style.item}>
       <button
@@ -34,7 +32,7 @@ const MockItem = () => {
         <ul className={style.submenu} ref={ref2}>
           <li
             onClick={() => {
-              state.createMocks(100)
+              state.mocks.createMocks(100)
               setOpen(false)
             }}
           >
@@ -42,7 +40,7 @@ const MockItem = () => {
           </li>
           <li
             onClick={() => {
-              state.createMocks(26)
+              state.mocks.createMocks(26)
               setOpen(false)
             }}
           >
@@ -51,7 +49,7 @@ const MockItem = () => {
           <li
             id={'dropdown-create-mocks-10'}
             onClick={() => {
-              state.createMocks(10)
+              state.mocks.createMocks(10)
               setOpen(false)
             }}
           >
@@ -60,7 +58,7 @@ const MockItem = () => {
           <li
             id={'dropdown-create-mocks-1'}
             onClick={() => {
-              state.createOneMock()
+              // state.mocks.createOneMock()
               setOpen(false)
             }}
           >
@@ -70,11 +68,11 @@ const MockItem = () => {
             <form
               onSubmit={(e) => {
                 e.preventDefault()
-                state.createMocks(amount)
+                state.mocks.createMocks(amount)
                 setOpen(false)
               }}
               onClick={() => {
-                state.createMocks(amount)
+                state.mocks.createMocks(amount)
                 setOpen(false)
               }}
               className={style.customCreate}
@@ -92,7 +90,7 @@ const MockItem = () => {
           </li>
           <li
             onClick={() => {
-              state.clear()
+              state.mocks.clear()
               setOpen(false)
             }}
           >

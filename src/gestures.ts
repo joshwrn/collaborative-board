@@ -3,6 +3,7 @@ import { useGesture } from '@use-gesture/react'
 import React from 'react'
 import { useAppStore } from './state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
+import { useStore } from './state-signia/store'
 
 export const clampInto =
   ([min, max]: [number, number]) =>
@@ -22,16 +23,18 @@ export const useGestures = ({
   wrapperRef: React.RefObject<HTMLDivElement>
   spaceRef: React.RefObject<HTMLDivElement>
 }) => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      contextMenu: state.contextMenu,
-      zoom: state.zoom,
-      pan: state.pan,
-      setZoom: state.setZoom,
-      setPan: state.setPan,
-      debug_setZoomFocusPoint: state.debug_setZoomFocusPoint,
-    })),
-  )
+  // const state = useAppStore(
+  //   useShallow((state) => ({
+  //     contextMenu: state.contextMenu,
+  //     zoom: state.zoom,
+  //     pan: state.pan,
+  //     setZoom: state.setZoom,
+  //     setPan: state.setPan,
+  //     debug_setZoomFocusPoint: state.debug_setZoomFocusPoint,
+  //   })),
+  // )
+  const state1 = useStore()
+  const state = state1.space
 
   usePreventDefaults()
   useGesture(
@@ -55,22 +58,30 @@ export const useGestures = ({
           const offSetX = zoomFocusPointOnScreenX * offset
           const offSetY = zoomFocusPointOnScreenY * offset
 
-          state.debug_setZoomFocusPoint({
-            x: zoomFocusPointOnScreenX,
-            y: zoomFocusPointOnScreenY,
-          })
+          // state.debug_setZoomFocusPoint({
+          //   x: zoomFocusPointOnScreenX,
+          //   y: zoomFocusPointOnScreenY,
+          // })
 
-          state.setZoom((prev) => newZoom)
-          state.setPan((prev) => ({
-            x: prev.x - offSetX,
-            y: prev.y - offSetY,
-          }))
+          state.setZoom(newZoom)
+          // state.setPan((prev) => ({
+          //   x: prev.x - offSetX,
+          //   y: prev.y - offSetY,
+          // }))
+          state.setPan({
+            x: state.pan.x - offSetX,
+            y: state.pan.y - offSetY,
+          })
         }
         if ((delta.x || delta.y) && !delta.z) {
-          state.setPan((prev) => ({
-            x: prev.x + delta.x,
-            y: prev.y + delta.y,
-          }))
+          // state.setPan((prev) => ({
+          //   x: prev.x + delta.x,
+          //   y: prev.y + delta.y,
+          // }))
+          state.setPan({
+            x: state.pan.x + delta.x,
+            y: state.pan.y + delta.y,
+          })
         }
       },
       onMove: (data) => {

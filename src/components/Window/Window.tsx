@@ -76,8 +76,8 @@ export const WindowInternal: FC<{
     const { movementX, movementY } = e
     if (!movementX && !movementY) return
     const scaledPosition = {
-      x: movementX / useAppStore.getState().zoom,
-      y: movementY / useAppStore.getState().zoom,
+      x: movementX / state2.space.zoom,
+      y: movementY / state2.space.zoom,
     }
     state2.windows.setWindowPosition(item.id, {
       x: window.x + scaledPosition.x,
@@ -98,7 +98,6 @@ export const WindowInternal: FC<{
     () => state.connections.filter((c) => c.from === item.id),
     [state.connections, item.id],
   )
-  console.log('window', window)
   return (
     <DraggableCore
       onDrag={onDrag}
@@ -168,20 +167,20 @@ export const WindowInternal: FC<{
   )
 }
 
-const Window = React.memo(WindowInternal)
+const Window = track(WindowInternal)
 
 const WindowsInternal: FC = () => {
   const state = useStore()
-  const item = {
-    id: '1',
-    body: ['test'],
-    subject: 'test',
-    members: [],
-  }
+  const itemsMap = state.items.items.reduce((acc, item) => {
+    acc[item.id] = item
+    return acc
+  }, {} as Record<string, Item>)
   return (
     <>
       {state.windows.open.map((window) => {
         if (!window) return null
+        const item = itemsMap[window.id]
+        if (!item) return null
         return <Window key={item.id} item={item} window={window} />
       })}
     </>

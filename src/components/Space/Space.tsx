@@ -12,27 +12,31 @@ import { useShallow } from 'zustand/react/shallow'
 import { ActiveConnectionGuard } from '../Connections/ActiveConnection'
 import { Debug } from '../Debug/Debug'
 import { SPACE_ATTRS, resetPan } from '@/state/space'
+import { useStore } from '@/state-signia/store'
+import { track } from 'signia-react'
 
 const Space_Internal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
   const spaceRef = React.useRef<HTMLDivElement>(null)
-  const state = useAppStore(
-    useShallow((state) => ({
-      zoom: state.zoom,
-      pan: state.pan,
-      setPan: state.setPan,
-      setZoom: state.setZoom,
-      setSpaceMousePosition: state.setSpaceMousePosition,
-      setActiveConnection: state.setActiveConnection,
-    })),
-  )
+  // const state = useAppStore(
+  //   useShallow((state) => ({
+  //     zoom: state.zoom,
+  //     pan: state.pan,
+  //     setPan: state.setPan,
+  //     setZoom: state.setZoom,
+  //     setSpaceMousePosition: state.setSpaceMousePosition,
+  //     setActiveConnection: state.setActiveConnection,
+  //   })),
+  // )
+
+  const state = useStore()
 
   React.useEffect(() => {
-    state.setPan(resetPan(wrapperRef))
+    state.space.setPan(resetPan(wrapperRef))
   }, [])
 
   useGestures({ wrapperRef, spaceRef })
-  const lineSize = 1 / state.zoom
+  const lineSize = 1 / state.space.zoom
   return (
     <div className={styles.outer}>
       <wrapper
@@ -46,25 +50,25 @@ const Space_Internal: FC = () => {
             left: 0,
             top: 0,
           }
-          const x = (e.clientX - rect.left) / state.zoom
-          const y = (e.clientY - rect.top) / state.zoom
-          state.setSpaceMousePosition({
-            x,
-            y,
-          })
+          const x = (e.clientX - rect.left) / state.space.zoom
+          const y = (e.clientY - rect.top) / state.space.zoom
+          // state.space.setSpaceMousePosition({
+          //   x,
+          //   y,
+          // })
         }}
       >
         <container
           className={styles.container}
           ref={spaceRef}
-          onClick={() => {
-            state.setActiveConnection(null)
-          }}
+          // onClick={() => {
+          //   state.space.setActiveConnection(null)
+          // }}
           style={{
             width: SPACE_ATTRS.size,
             height: SPACE_ATTRS.size,
             transformOrigin: `0 0`,
-            transform: `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`,
+            transform: `translate(${state.space.pan.x}px, ${state.space.pan.y}px) scale(${state.space.zoom})`,
           }}
         >
           <div
@@ -82,8 +86,8 @@ const Space_Internal: FC = () => {
         <button className={styles.button}>
           <MdOutlineCenterFocusWeak
             onClick={() => {
-              state.setZoom(SPACE_ATTRS.default.zoom)
-              state.setPan(() => resetPan(wrapperRef))
+              state.space.setZoom(SPACE_ATTRS.default.zoom)
+              state.space.setPan(resetPan(wrapperRef))
             }}
           />
         </button>
@@ -92,4 +96,4 @@ const Space_Internal: FC = () => {
   )
 }
 
-export const Space = React.memo(Space_Internal)
+export const Space = track(Space_Internal)
