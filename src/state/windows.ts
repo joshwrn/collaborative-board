@@ -1,3 +1,4 @@
+import { Point2d } from '.'
 import { SPACE_ATTRS } from './space'
 import { AppStateCreator, Setter, stateSetter } from './state'
 
@@ -8,6 +9,11 @@ export type WindowType = {
   width: number
   height: number
   zIndex: number
+}
+
+export type SnappingToPositions = {
+  x: { from: Point2d; to: Point2d } | null
+  y: { from: Point2d; to: Point2d } | null
 }
 
 export type OpenWindowsStore = {
@@ -22,7 +28,8 @@ export type OpenWindowsStore = {
   setOneWindow: (id: string, update: Partial<WindowType>) => void
   reorderWindows: (id: string) => void
   fullscreenWindow: (id: string) => void
-
+  snapToWindows: (id: string, newPos: WindowType) => void
+  snappingToPositions: SnappingToPositions
   hoveredWindow: string | null
   setHoveredWindow: Setter<string | null>
 }
@@ -148,6 +155,82 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         }
       }),
     }))
+  },
+
+  snappingToPositions: {
+    x: null,
+    y: null,
+  },
+
+  snapToWindows: (id, window) => {
+    const openWindows = get().windows
+    const openWindow = openWindows.find((window) => window.id === id)
+    if (!openWindow) {
+      throw new Error(`window ${id} not found`)
+    }
+    const snapDistance = 50
+    const snapTo = { ...window }
+    const snappingToPositions: SnappingToPositions = { x: null, y: null }
+    for (let i = 0; i < openWindows.length; i++) {
+      if (window.x !== snapTo.x && window.y !== snapTo.y) {
+        break
+      }
+      const currentWindow = openWindows[i]
+      if (currentWindow.id === id) {
+        continue
+      }
+      const bottom = currentWindow.y + currentWindow.height
+      const right = currentWindow.x + currentWindow.width
+      const distance = {
+        x: Math.abs(currentWindow.x - window.x),
+        y: Math.abs(currentWindow.y - window.y),
+        bottom: Math.abs(bottom - window.y),
+        right: Math.abs(right - window.x),
+        top: Math.abs(currentWindow.y - (window.y + openWindow.height)),
+        left: Math.abs(currentWindow.x - (window.x + openWindow.width)),
+      }
+      const keys = Object.keys(distance) as (keyof typeof distance)[]
+
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i]
+        if (distance[key] < snapDistance) {
+          if (key === 'x') {
+            snapTo.x = currentWindow.x
+            snappingToPositions.x = {
+              from: { x: currentWindow.x, y: currentWindow.y },
+              to: { x: window.x, y: window.y },
+            }
+          }
+          if (key === 'y') {
+            snapTo.y = currentWindow.y
+            snappingToPositions.y = {
+              from: { x: currentWindow.x, y: currentWindow.y },
+              to: { x: window.x, y: window.y },
+            }
+          }
+          // if (key === 'bottom') {
+          //   snapTo.y = bottom
+          // }
+          // if (key === 'right') {
+          //   snapTo.x = right
+          // }
+          // if (key === 'top') {
+          //   snapTo.y = currentWindow.y - openWindow.height
+          // }
+          // if (key === 'left') {
+          //   snapTo.x = currentWindow.x - openWindow.width
+          // }
+        }
+      }
+    }
+    set((state) => ({
+      snappingToPositions,
+    }))
+    console.log(window, snapTo)
+    get().setOneWindow(id, {
+      x: snapTo.x,
+      y: snapTo.y,
+    })
   },
 
   resizeWindow: (id, start, movement, pos) => {

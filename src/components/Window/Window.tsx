@@ -61,8 +61,11 @@ export const WindowInternal: FC<{
       makeConnection: state.makeConnection,
       fullScreen: state.fullscreenWindow,
       setHoveredWindow: state.setHoveredWindow,
+      snapToWindows: state.snapToWindows,
     })),
   )
+
+  const realPosition = React.useRef({ x: window.x, y: window.y })
 
   const { width, height } = window
 
@@ -76,9 +79,12 @@ export const WindowInternal: FC<{
       x: movementX / useAppStore.getState().zoom,
       y: movementY / useAppStore.getState().zoom,
     }
-    state.setWindow(item.id, {
-      x: window.x + scaledPosition.x,
-      y: window.y + scaledPosition.y,
+    realPosition.current.x += scaledPosition.x
+    realPosition.current.y += scaledPosition.y
+    state.snapToWindows(item.id, {
+      ...window,
+      x: realPosition.current.x,
+      y: realPosition.current.y,
     })
   }
 
