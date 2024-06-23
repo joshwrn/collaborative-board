@@ -12,8 +12,8 @@ export type WindowType = {
 }
 
 export type SnappingToPositions = {
-  x: { from: Point2d; to: Point2d } | null
-  y: { from: Point2d; to: Point2d } | null
+  x: { from: Point2d; to: Point2d; dir: number } | null
+  y: { from: Point2d; to: Point2d; dir: number } | null
 }
 
 export type OpenWindowsStore = {
@@ -48,6 +48,22 @@ export const DEFAULT_WINDOW: WindowType = {
   height: WINDOW_ATTRS.defaultSize.height,
   zIndex: 0,
 }
+
+const SNAP_POINTS_Y = [
+  'topToTop',
+  'bottomToBottom',
+  'topToBottom',
+  'bottomToTop',
+] as const
+type SnapPointsY = (typeof SNAP_POINTS_Y)[number]
+
+const SNAP_POINTS_X = [
+  'leftToLeft',
+  'rightToRight',
+  'leftToRight',
+  'rightToLeft',
+] as const
+type SnapPointsX = (typeof SNAP_POINTS_X)[number]
 
 export const newWindowSizeInBounds = (
   newSize: {
@@ -179,47 +195,42 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       if (currentWindow.id === id) {
         continue
       }
-      const bottom = currentWindow.y + currentWindow.height
-      const right = currentWindow.x + currentWindow.width
-      const distance = {
-        x: Math.abs(currentWindow.x - window.x),
-        y: Math.abs(currentWindow.y - window.y),
-        bottom: Math.abs(bottom - window.y),
-        right: Math.abs(right - window.x),
-        top: Math.abs(currentWindow.y - (window.y + openWindow.height)),
-        left: Math.abs(currentWindow.x - (window.x + openWindow.width)),
-      }
-      const keys = Object.keys(distance) as (keyof typeof distance)[]
+      const curWindowBottom = currentWindow.y + currentWindow.height
+      const curWindowRight = currentWindow.x + currentWindow.width
+      const windowBottom = window.y + window.height
+      const windowRight = window.x + window.width
+      const distance: {
+        x: Record<SnapPointsX, number>
+        y: Record<SnapPointsY, number>
+      } = {
+        y: {
+          topToTop: Math.abs(currentWindow.y - window.y),
+          bottomToBottom: Math.abs(curWindowBottom - windowBottom),
+          topToBottom: Math.abs(currentWindow.y - windowBottom),
+          bottomToTop: Math.abs(curWindowBottom - window.y),
+        },
 
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i]
-        if (distance[key] < snapDistance) {
-          if (key === 'x') {
-            snapTo.x = currentWindow.x
-            snappingToPositions.x = {
-              from: { x: currentWindow.x, y: currentWindow.y },
-              to: { x: window.x, y: window.y },
-            }
-          }
-          if (key === 'y') {
-            snapTo.y = currentWindow.y
-            snappingToPositions.y = {
-              from: { x: currentWindow.x, y: currentWindow.y },
-              to: { x: window.x, y: window.y },
-            }
-          }
-          // if (key === 'bottom') {
-          //   snapTo.y = bottom
-          // }
-          // if (key === 'right') {
-          //   snapTo.x = right
-          // }
-          // if (key === 'top') {
-          //   snapTo.y = currentWindow.y - openWindow.height
-          // }
-          // if (key === 'left') {
-          //   snapTo.x = currentWindow.x - openWindow.width
-          // }
+        x: {
+          leftToLeft: Math.abs(currentWindow.x - window.x),
+          rightToRight: Math.abs(curWindowRight - windowRight),
+          leftToRight: Math.abs(currentWindow.x - windowRight),
+          rightToLeft: Math.abs(curWindowRight - window.x),
+        },
+      }
+      if (distance.y.topToTop < snapDistance) {
+        snapTo.y = currentWindow.y
+        snappingToPositions.y = {
+          from: { x: window.x, y: currentWindow.y },
+          to: { x: currentWindow.x, y: currentWindow.y },
+          dir: window.x > currentWindow.x ? -1 : 1,
+        }
+      }
+      if (distance.x.leftToLeft < snapDistance) {
+        snapTo.x = currentWindow.x
+        snappingToPositions.x = {
+          from: { x: currentWindow.x, y: window.y },
+          to: { x: currentWindow.x, y: currentWindow.y },
+          dir: window.y > currentWindow.y ? -1 : 1,
         }
       }
     }
