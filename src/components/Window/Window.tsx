@@ -62,6 +62,7 @@ export const WindowInternal: FC<{
       fullScreen: state.fullscreenWindow,
       setHoveredWindow: state.setHoveredWindow,
       snapToWindows: state.snapToWindows,
+      setSnappingToPositions: state.setSnappingToPositions,
     })),
   )
 
@@ -90,7 +91,12 @@ export const WindowInternal: FC<{
 
   const onDragStart = (e: DraggableEvent, data: DraggableData) => {}
 
-  const onDragStop = (e: DraggableEvent, data: DraggableData) => {}
+  const onDragStop = (e: DraggableEvent, data: DraggableData) => {
+    state.setSnappingToPositions({
+      x: null,
+      y: null,
+    })
+  }
 
   const toConnections = React.useMemo(
     () => state.connections.filter((c) => c.to === item.id),

@@ -30,6 +30,7 @@ export type OpenWindowsStore = {
   fullscreenWindow: (id: string) => void
   snapToWindows: (id: string, newPos: WindowType) => void
   snappingToPositions: SnappingToPositions
+  setSnappingToPositions: Setter<SnappingToPositions>
   hoveredWindow: string | null
   setHoveredWindow: Setter<string | null>
 }
@@ -177,6 +178,8 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     x: null,
     y: null,
   },
+  setSnappingToPositions: (setter) =>
+    stateSetter(set, setter, `snappingToPositions`),
 
   snapToWindows: (id, window) => {
     const openWindows = get().windows
@@ -200,44 +203,165 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       const windowBottom = window.y + window.height
       const windowRight = window.x + window.width
       const distance: {
-        x: Record<SnapPointsX, number>
-        y: Record<SnapPointsY, number>
+        x: Record<SnapPointsX, boolean>
+        y: Record<SnapPointsY, boolean>
       } = {
         y: {
-          topToTop: Math.abs(currentWindow.y - window.y),
-          bottomToBottom: Math.abs(curWindowBottom - windowBottom),
-          topToBottom: Math.abs(currentWindow.y - windowBottom),
-          bottomToTop: Math.abs(curWindowBottom - window.y),
+          topToTop: Math.abs(currentWindow.y - window.y) < snapDistance,
+          bottomToBottom:
+            Math.abs(curWindowBottom - windowBottom) < snapDistance,
+          topToBottom: Math.abs(window.y - curWindowBottom) < snapDistance,
+          bottomToTop: Math.abs(windowBottom - currentWindow.y) < snapDistance,
         },
 
         x: {
-          leftToLeft: Math.abs(currentWindow.x - window.x),
-          rightToRight: Math.abs(curWindowRight - windowRight),
-          leftToRight: Math.abs(currentWindow.x - windowRight),
-          rightToLeft: Math.abs(curWindowRight - window.x),
+          leftToLeft: Math.abs(currentWindow.x - window.x) < snapDistance,
+          rightToRight: Math.abs(curWindowRight - windowRight) < snapDistance,
+          leftToRight: Math.abs(window.x - curWindowRight) < snapDistance,
+          rightToLeft: Math.abs(windowRight - currentWindow.x) < snapDistance,
         },
       }
-      if (distance.y.topToTop < snapDistance) {
+
+      if (distance.y.topToTop) {
         snapTo.y = currentWindow.y
+        const dir = window.x > currentWindow.x ? -1 : 1
         snappingToPositions.y = {
-          from: { x: window.x, y: currentWindow.y },
-          to: { x: currentWindow.x, y: currentWindow.y },
-          dir: window.x > currentWindow.x ? -1 : 1,
+          from: {
+            x: 0,
+            y: currentWindow.y,
+          },
+          to: {
+            x: currentWindow.x,
+            y: currentWindow.y,
+          },
+          dir,
         }
+        continue
       }
-      if (distance.x.leftToLeft < snapDistance) {
+      if (distance.y.bottomToBottom) {
+        snapTo.y = curWindowBottom - window.height
+        const dir = window.x > currentWindow.x ? -1 : 1
+        snappingToPositions.y = {
+          from: {
+            x: 0,
+            y: curWindowBottom,
+          },
+          to: {
+            x: currentWindow.x,
+            y: curWindowBottom,
+          },
+          dir,
+        }
+        continue
+      }
+      if (distance.y.bottomToTop) {
+        snapTo.y = currentWindow.y - window.height
+        const dir = window.x > currentWindow.x ? -1 : 1
+        snappingToPositions.y = {
+          from: {
+            x: 0,
+            y: currentWindow.y,
+          },
+          to: {
+            x: currentWindow.x,
+            y: currentWindow.y,
+          },
+          dir,
+        }
+        continue
+      }
+      if (distance.y.topToBottom) {
+        snapTo.y = curWindowBottom
+        const dir = window.x > currentWindow.x ? -1 : 1
+        snappingToPositions.y = {
+          from: {
+            x: 0,
+            y: curWindowBottom,
+          },
+          to: {
+            x: currentWindow.x,
+            y: curWindowBottom,
+          },
+          dir,
+        }
+        continue
+      }
+
+      if (distance.x.leftToLeft) {
         snapTo.x = currentWindow.x
+        const dir = window.y > currentWindow.y ? -1 : 1
         snappingToPositions.x = {
-          from: { x: currentWindow.x, y: window.y },
-          to: { x: currentWindow.x, y: currentWindow.y },
-          dir: window.y > currentWindow.y ? -1 : 1,
+          from: {
+            x: currentWindow.x,
+            y: 0,
+          },
+          to: {
+            x: currentWindow.x,
+            y: currentWindow.y,
+          },
+          dir,
         }
+        continue
       }
+      if (distance.x.leftToRight) {
+        snapTo.x = curWindowRight
+        const dir = window.y > currentWindow.y ? -1 : 1
+        snappingToPositions.x = {
+          from: {
+            x: curWindowRight,
+            y: 0,
+          },
+          to: {
+            x: curWindowRight,
+            y: currentWindow.y,
+          },
+          dir,
+        }
+        continue
+      }
+      if (distance.x.rightToLeft) {
+        snapTo.x = currentWindow.x - window.width
+        const dir = window.y > currentWindow.y ? -1 : 1
+        snappingToPositions.x = {
+          from: {
+            x: currentWindow.x,
+            y: 0,
+          },
+          to: {
+            x: currentWindow.x,
+            y: currentWindow.y,
+          },
+          dir,
+        }
+        continue
+      }
+      if (distance.x.rightToRight) {
+        snapTo.x = curWindowRight - window.width
+        const dir = window.y > currentWindow.y ? -1 : 1
+        snappingToPositions.x = {
+          from: {
+            x: curWindowRight,
+            y: 0,
+          },
+          to: {
+            x: curWindowRight,
+            y: currentWindow.y,
+          },
+          dir,
+        }
+        continue
+      }
+    }
+    if (snappingToPositions.x) {
+      snappingToPositions.x.from.y = snapTo.y
+    }
+    if (snappingToPositions.y) {
+      snappingToPositions.y.from.x = snapTo.x
     }
     set((state) => ({
       snappingToPositions,
     }))
-    console.log(window, snapTo)
+    // console.log(window, snapTo)
     get().setOneWindow(id, {
       x: snapTo.x,
       y: snapTo.y,
