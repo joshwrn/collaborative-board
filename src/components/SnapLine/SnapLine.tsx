@@ -3,10 +3,15 @@ import style from './SnapLine.module.scss'
 import { useAppStore } from '@/state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
 import { distance } from 'mathjs'
-import { SnappingToPositions } from '@/state/windows'
+import {
+  SNAP_POINTS_X,
+  SNAP_POINTS_Y,
+  SnappingToPosition,
+  SnappingToPositions,
+} from '@/state/windows'
 
 export const SnapLineY: React.FC<{
-  yPos: SnappingToPositions['y'] | null
+  yPos: SnappingToPosition | null
 }> = ({ yPos }) => {
   if (!yPos) {
     return null
@@ -29,7 +34,7 @@ export const SnapLineY: React.FC<{
 }
 
 export const SnapLineX: React.FC<{
-  xPos: SnappingToPositions['x'] | null
+  xPos: SnappingToPosition | null
 }> = ({ xPos }) => {
   if (!xPos) {
     return null
@@ -59,10 +64,15 @@ export const SnapLines: React.FC = () => {
       }
     }),
   )
+
   return (
     <>
-      <SnapLineX xPos={state.snappingToPositions.x} />
-      <SnapLineY yPos={state.snappingToPositions.y} />
+      {SNAP_POINTS_Y.map((yPos) => {
+        return <SnapLineY yPos={state.snappingToPositions[yPos]} key={yPos} />
+      })}
+      {SNAP_POINTS_X.map((xPos) => {
+        return <SnapLineX xPos={state.snappingToPositions[xPos]} key={xPos} />
+      })}
     </>
   )
 }

@@ -11,9 +11,34 @@ export type WindowType = {
   zIndex: number
 }
 
+export type SnappingToPosition = {
+  from: Point2d
+  to: Point2d
+  dir: number
+}
+
 export type SnappingToPositions = {
-  x: { from: Point2d; to: Point2d; dir: number } | null
-  y: { from: Point2d; to: Point2d; dir: number } | null
+  topToTop: SnappingToPosition | null
+  bottomToBottom: SnappingToPosition | null
+  topToBottom: SnappingToPosition | null
+  bottomToTop: SnappingToPosition | null
+
+  leftToLeft: SnappingToPosition | null
+  rightToRight: SnappingToPosition | null
+  leftToRight: SnappingToPosition | null
+  rightToLeft: SnappingToPosition | null
+}
+
+export const DEFAULT_SNAPPING_TO_POSITIONS: SnappingToPositions = {
+  topToTop: null,
+  bottomToBottom: null,
+  topToBottom: null,
+  bottomToTop: null,
+
+  leftToLeft: null,
+  rightToRight: null,
+  leftToRight: null,
+  rightToLeft: null,
 }
 
 export type OpenWindowsStore = {
@@ -31,6 +56,8 @@ export type OpenWindowsStore = {
   snapToWindows: (id: string, newPos: WindowType) => void
   snappingToPositions: SnappingToPositions
   setSnappingToPositions: Setter<SnappingToPositions>
+  isSnappingOn: boolean
+  setIsSnappingOn: Setter<boolean>
   hoveredWindow: string | null
   setHoveredWindow: Setter<string | null>
 }
@@ -50,7 +77,7 @@ export const DEFAULT_WINDOW: WindowType = {
   zIndex: 0,
 }
 
-const SNAP_POINTS_Y = [
+export const SNAP_POINTS_Y = [
   'topToTop',
   'bottomToBottom',
   'topToBottom',
@@ -58,7 +85,7 @@ const SNAP_POINTS_Y = [
 ] as const
 type SnapPointsY = (typeof SNAP_POINTS_Y)[number]
 
-const SNAP_POINTS_X = [
+export const SNAP_POINTS_X = [
   'leftToLeft',
   'rightToRight',
   'leftToRight',
@@ -174,22 +201,31 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     }))
   },
 
+  isSnappingOn: false,
+  setIsSnappingOn: (setter) => stateSetter(set, setter, `isSnappingOn`),
   snappingToPositions: {
-    x: null,
-    y: null,
+    ...DEFAULT_SNAPPING_TO_POSITIONS,
   },
   setSnappingToPositions: (setter) =>
     stateSetter(set, setter, `snappingToPositions`),
 
   snapToWindows: (id, window) => {
-    const openWindows = get().windows
+    const state = get()
+    const isSnapping = state.isSnappingOn
+    if (!isSnapping) {
+      state.setOneWindow(id, { x: window.x, y: window.y })
+      return
+    }
+    const openWindows = state.windows
     const openWindow = openWindows.find((window) => window.id === id)
     if (!openWindow) {
       throw new Error(`window ${id} not found`)
     }
     const snapDistance = 50
     const snapTo = { ...window }
-    const snappingToPositions: SnappingToPositions = { x: null, y: null }
+    const snappingToPositions: SnappingToPositions = {
+      ...DEFAULT_SNAPPING_TO_POSITIONS,
+    }
     for (let i = 0; i < openWindows.length; i++) {
       if (window.x !== snapTo.x && window.y !== snapTo.y) {
         break
@@ -225,9 +261,9 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       if (distance.y.topToTop) {
         snapTo.y = currentWindow.y
         const dir = window.x > currentWindow.x ? -1 : 1
-        snappingToPositions.y = {
+        snappingToPositions.topToTop = {
           from: {
-            x: 0,
+            x: snapTo.x,
             y: currentWindow.y,
           },
           to: {
@@ -236,14 +272,13 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           },
           dir,
         }
-        continue
       }
       if (distance.y.bottomToBottom) {
         snapTo.y = curWindowBottom - window.height
         const dir = window.x > currentWindow.x ? -1 : 1
-        snappingToPositions.y = {
+        snappingToPositions.bottomToBottom = {
           from: {
-            x: 0,
+            x: snapTo.x,
             y: curWindowBottom,
           },
           to: {
@@ -252,14 +287,13 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           },
           dir,
         }
-        continue
       }
       if (distance.y.bottomToTop) {
         snapTo.y = currentWindow.y - window.height
         const dir = window.x > currentWindow.x ? -1 : 1
-        snappingToPositions.y = {
+        snappingToPositions.bottomToTop = {
           from: {
-            x: 0,
+            x: snapTo.x,
             y: currentWindow.y,
           },
           to: {
@@ -268,14 +302,13 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           },
           dir,
         }
-        continue
       }
       if (distance.y.topToBottom) {
         snapTo.y = curWindowBottom
         const dir = window.x > currentWindow.x ? -1 : 1
-        snappingToPositions.y = {
+        snappingToPositions.topToBottom = {
           from: {
-            x: 0,
+            x: snapTo.x,
             y: curWindowBottom,
           },
           to: {
@@ -284,16 +317,15 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           },
           dir,
         }
-        continue
       }
 
       if (distance.x.leftToLeft) {
         snapTo.x = currentWindow.x
         const dir = window.y > currentWindow.y ? -1 : 1
-        snappingToPositions.x = {
+        snappingToPositions.leftToLeft = {
           from: {
             x: currentWindow.x,
-            y: 0,
+            y: snapTo.y,
           },
           to: {
             x: currentWindow.x,
@@ -301,15 +333,14 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           },
           dir,
         }
-        continue
       }
       if (distance.x.leftToRight) {
         snapTo.x = curWindowRight
         const dir = window.y > currentWindow.y ? -1 : 1
-        snappingToPositions.x = {
+        snappingToPositions.leftToRight = {
           from: {
             x: curWindowRight,
-            y: 0,
+            y: snapTo.y,
           },
           to: {
             x: curWindowRight,
@@ -317,15 +348,14 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           },
           dir,
         }
-        continue
       }
       if (distance.x.rightToLeft) {
         snapTo.x = currentWindow.x - window.width
         const dir = window.y > currentWindow.y ? -1 : 1
-        snappingToPositions.x = {
+        snappingToPositions.rightToLeft = {
           from: {
             x: currentWindow.x,
-            y: 0,
+            y: snapTo.y,
           },
           to: {
             x: currentWindow.x,
@@ -333,15 +363,14 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           },
           dir,
         }
-        continue
       }
       if (distance.x.rightToRight) {
         snapTo.x = curWindowRight - window.width
         const dir = window.y > currentWindow.y ? -1 : 1
-        snappingToPositions.x = {
+        snappingToPositions.rightToRight = {
           from: {
             x: curWindowRight,
-            y: 0,
+            y: snapTo.y,
           },
           to: {
             x: curWindowRight,
@@ -349,14 +378,19 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           },
           dir,
         }
-        continue
       }
     }
-    if (snappingToPositions.x) {
-      snappingToPositions.x.from.y = snapTo.y
+    for (const snapPoint of SNAP_POINTS_Y) {
+      if (snappingToPositions[snapPoint]) {
+        // @ts-expect-error
+        snappingToPositions[snapPoint].from.x = snapTo.x
+      }
     }
-    if (snappingToPositions.y) {
-      snappingToPositions.y.from.x = snapTo.x
+    for (const snapPoint of SNAP_POINTS_X) {
+      if (snappingToPositions[snapPoint]) {
+        // @ts-expect-error
+        snappingToPositions[snapPoint].from.y = snapTo.y
+      }
     }
     set((state) => ({
       snappingToPositions,

@@ -5,21 +5,18 @@
   flex-shrink: 1;
   background-color: var(--charcoal);
   border-bottom: 1px solid var(--border);
-  padding: 0 15px;
+  padding: 0 35px;
+  display: flex;
+  gap: 20px;
 }
 
 .item {
   position: relative;
-  > button {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    height: 30px;
-    color: var(--window-text);
-    font-size: 14px;
-    cursor: pointer;
-  }
+  width: fit-content;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  // border: 1px solid red;
 }
 
 .submenu {

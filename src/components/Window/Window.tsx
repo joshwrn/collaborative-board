@@ -10,7 +10,7 @@ import { IoAddOutline } from 'react-icons/io5'
 import { ConnectorOverlay } from './ConnectorOverlay'
 import { useShallow } from 'zustand/react/shallow'
 import { Iframe, Item } from '@/state/items'
-import { WindowType } from '@/state/windows'
+import { DEFAULT_SNAPPING_TO_POSITIONS, WindowType } from '@/state/windows'
 import { match, P } from 'ts-pattern'
 import { joinClasses } from '@/utils/joinClasses'
 
@@ -93,8 +93,7 @@ export const WindowInternal: FC<{
 
   const onDragStop = (e: DraggableEvent, data: DraggableData) => {
     state.setSnappingToPositions({
-      x: null,
-      y: null,
+      ...DEFAULT_SNAPPING_TO_POSITIONS,
     })
   }
 
