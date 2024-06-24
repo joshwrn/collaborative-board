@@ -50,3 +50,30 @@
     }
   }
 }
+
+.zoom {
+  p {
+    font-size: var(--font--2);
+    text-transform: capitalize;
+    color: var(--white-65);
+  }
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  > section {
+    display: flex;
+    gap: 20px;
+    > button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      width: 20px;
+      height: 20px;
+      &:hover {
+        background-color: var(--white-15);
+      }
+    }
+  }
+}

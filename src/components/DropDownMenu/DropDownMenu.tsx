@@ -98,11 +98,46 @@ const SnappingItem = () => {
   )
 }
 
+const SpaceItem = () => {
+  const state = useAppStore(
+    useShallow((state) => ({
+      zoom: state.zoom,
+      setZoom: state.setZoom,
+    })),
+  )
+  return (
+    <item className={style.item}>
+      <Dropdown.Menu
+        SelectedOption={() => <p>Space</p>}
+        Options={[
+          <div
+            className={style.zoom}
+            key={'Zoom'}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p>Zoom</p>
+            <section>
+              <button onClick={() => state.setZoom(state.zoom - 0.05)}>
+                <p>-</p>
+              </button>
+              <p>{state.zoom.toFixed(2)}</p>
+              <button onClick={() => state.setZoom(state.zoom + 0.05)}>
+                <p>+</p>
+              </button>
+            </section>
+          </div>,
+        ]}
+      />
+    </item>
+  )
+}
+
 export const DropDownMenu = () => {
   return (
     <wrapper className={style.wrapper}>
       <MockItem />
       <SnappingItem />
+      <SpaceItem />
     </wrapper>
   )
 }
