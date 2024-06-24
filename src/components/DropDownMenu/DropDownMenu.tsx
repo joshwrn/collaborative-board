@@ -14,11 +14,12 @@ const MockItem = () => {
     })),
   )
   const [amount, setAmount] = React.useState(0)
-  const defaultAmounts = [100, 26, 10, 1]
+  const defaultAmounts = [100, 26, 10]
   return (
     <item className={style.item}>
       <Dropdown.Menu
         SelectedOption={() => <p>Mocks</p>}
+        id="dropdown-create-mocks-button"
         Options={[
           ...defaultAmounts.map((amount) => (
             <Dropdown.Item
@@ -30,6 +31,15 @@ const MockItem = () => {
               isChecked={false}
             />
           )),
+          <Dropdown.Item
+            key={'Create One'}
+            onClick={() => {
+              state.createOneMock()
+            }}
+            label1={'Create One'}
+            isChecked={false}
+            id="dropdown-create-mocks-1"
+          />,
           <Dropdown.Item
             key={'Create (Custom)'}
             onClick={() => {
@@ -108,6 +118,7 @@ const SpaceItem = () => {
   return (
     <item className={style.item}>
       <Dropdown.Menu
+        id="dropdown-space-button"
         SelectedOption={() => <p>Space</p>}
         Options={[
           <div
@@ -117,11 +128,17 @@ const SpaceItem = () => {
           >
             <p>Zoom</p>
             <section>
-              <button onClick={() => state.setZoom(state.zoom - 0.05)}>
+              <button
+                onClick={() => state.setZoom(state.zoom - 0.05)}
+                id="dropdown-space-zoom-out-button"
+              >
                 <p>-</p>
               </button>
               <p>{state.zoom.toFixed(2)}</p>
-              <button onClick={() => state.setZoom(state.zoom + 0.05)}>
+              <button
+                onClick={() => state.setZoom(state.zoom + 0.05)}
+                id="dropdown-space-zoom-in-button"
+              >
                 <p>+</p>
               </button>
             </section>

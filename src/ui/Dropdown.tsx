@@ -50,11 +50,13 @@ const DropdownInternal = ({
   disabled = false,
   Options,
   NullableOption = null,
+  id,
 }: {
   SelectedOption: React.FC
   disabled?: boolean
   Options: (JSX.Element | null)[]
   NullableOption?: JSX.Element | null
+  id?: string
 }): React.ReactElement => {
   const [open, setOpen] = React.useState<boolean>(false)
   const { refs, strategy, x, y } = useFloating({
@@ -80,6 +82,7 @@ const DropdownInternal = ({
   return (
     <>
       <div
+        id={id ?? ''}
         data-open={open}
         className={style.inner}
         ref={refs.setReference}
@@ -156,6 +159,7 @@ export const Item: React.FC<{
   label2?: string
   isChecked: boolean
   showCheck?: boolean
+  id?: string
   children?: React.ReactNode
 }> = ({
   onClick,
@@ -165,6 +169,7 @@ export const Item: React.FC<{
   isChecked,
   showCheck = true,
   children,
+  id,
 }) => {
   return (
     <motion.div
@@ -181,6 +186,7 @@ export const Item: React.FC<{
       data-role="dropdown-item"
       data-checked={isChecked && showCheck}
       className={style.item}
+      id={id ?? ''}
     >
       {children ? (
         children
