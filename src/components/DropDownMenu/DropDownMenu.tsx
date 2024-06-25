@@ -14,7 +14,7 @@ const MockItem = () => {
     })),
   )
   const [amount, setAmount] = React.useState(0)
-  const defaultAmounts = [100, 26, 10]
+  const defaultAmounts = [100, 26, 10, 3]
   return (
     <item className={style.item}>
       <Dropdown.Menu
@@ -36,7 +36,7 @@ const MockItem = () => {
             onClick={() => {
               state.createOneMock()
             }}
-            label1={'Create One'}
+            label1={'Create (1)'}
             isChecked={false}
             id="dropdown-create-mocks-1"
           />,

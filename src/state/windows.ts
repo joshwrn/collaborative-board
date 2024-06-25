@@ -380,22 +380,44 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         }
       }
     }
+    // update the opposite x and y positions
+    // then make sure that each snap point is still valid
+    // if selected snap point does not align with the window, remove it
+    // margin of error because javascript is bad at math
+    const marginOfError = 0.01
     for (const snapPoint of SNAP_POINTS_Y) {
-      if (snappingToPositions[snapPoint]) {
-        // @ts-expect-error
-        snappingToPositions[snapPoint].from.x = snapTo.x
+      const selectedPoint = snappingToPositions[snapPoint]
+      if (selectedPoint) {
+        selectedPoint.from.x = snapTo.x
+
+        const yPos = selectedPoint.from.y
+        const doesNotAlignToTop = Math.abs(yPos - snapTo.y) > marginOfError
+        const doesNotAlignToBottom =
+          Math.abs(yPos - (snapTo.y + window.height)) > marginOfError
+
+        if (doesNotAlignToTop && doesNotAlignToBottom) {
+          snappingToPositions[snapPoint] = null
+        }
       }
     }
     for (const snapPoint of SNAP_POINTS_X) {
-      if (snappingToPositions[snapPoint]) {
-        // @ts-expect-error
-        snappingToPositions[snapPoint].from.y = snapTo.y
+      const selectedPoint = snappingToPositions[snapPoint]
+      if (selectedPoint) {
+        selectedPoint.from.y = snapTo.y
+
+        const xPos = selectedPoint.from.x
+        const doesNotAlignToLeft = Math.abs(xPos - snapTo.x) > marginOfError
+        const doesNotAlignToRight =
+          Math.abs(xPos - (snapTo.x + window.width)) > marginOfError
+
+        if (doesNotAlignToLeft && doesNotAlignToRight) {
+          snappingToPositions[snapPoint] = null
+        }
       }
     }
     set((state) => ({
       snappingToPositions,
     }))
-    // console.log(window, snapTo)
     get().setOneWindow(id, {
       x: snapTo.x,
       y: snapTo.y,
