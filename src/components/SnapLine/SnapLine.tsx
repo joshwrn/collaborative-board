@@ -3,12 +3,8 @@ import style from './SnapLine.module.scss'
 import { useAppStore } from '@/state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
 import { distance } from 'mathjs'
-import {
-  SNAP_POINTS_X,
-  SNAP_POINTS_Y,
-  SnappingToPosition,
-  SnappingToPositions,
-} from '@/state/windows'
+import { SNAP_POINTS_X, SNAP_POINTS_Y } from '@/state/windows'
+import { SnappingToPosition } from '@/state/snapping'
 
 export const SnapLineY: React.FC<{
   yPos: SnappingToPosition | null
