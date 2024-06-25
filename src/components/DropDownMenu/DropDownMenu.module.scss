@@ -5,21 +5,18 @@
   flex-shrink: 1;
   background-color: var(--charcoal);
   border-bottom: 1px solid var(--border);
-  padding: 0 15px;
+  padding: 0 35px;
+  display: flex;
+  gap: 20px;
 }
 
 .item {
   position: relative;
-  > button {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    height: 30px;
-    color: var(--window-text);
-    font-size: 14px;
-    cursor: pointer;
-  }
+  width: fit-content;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  // border: 1px solid red;
 }
 
 .submenu {
@@ -49,6 +46,37 @@
         outline: none;
         border: none;
         border: 1px solid var(--border);
+      }
+    }
+  }
+}
+
+.zoom {
+  p {
+    font-size: var(--font--2);
+    text-transform: capitalize;
+    color: var(--white-65);
+  }
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  > section {
+    display: flex;
+    gap: 20px;
+    > button {
+      &[disabled] {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      width: 20px;
+      height: 20px;
+      &:hover {
+        background-color: var(--white-15);
       }
     }
   }

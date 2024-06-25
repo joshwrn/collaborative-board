@@ -10,8 +10,14 @@ export type SpaceStore = {
 export const SPACE_ATTRS = {
   size: 5000,
   default: {
-    zoom: 0.5,
+    zoom: 0.15,
     pan: { x: 2190, y: 2035 },
+  },
+  max: {
+    zoom: 1,
+  },
+  min: {
+    zoom: 0.1,
   },
 }
 

@@ -10,7 +10,7 @@ import { IoAddOutline } from 'react-icons/io5'
 import { ConnectorOverlay } from './ConnectorOverlay'
 import { useShallow } from 'zustand/react/shallow'
 import { Iframe, Item } from '@/state/items'
-import { WindowType } from '@/state/windows'
+import { DEFAULT_SNAPPING_TO_POSITIONS, WindowType } from '@/state/windows'
 import { match, P } from 'ts-pattern'
 import { joinClasses } from '@/utils/joinClasses'
 
@@ -61,8 +61,12 @@ export const WindowInternal: FC<{
       makeConnection: state.makeConnection,
       fullScreen: state.fullscreenWindow,
       setHoveredWindow: state.setHoveredWindow,
+      snapToWindows: state.snapToWindows,
+      setSnappingToPositions: state.setSnappingToPositions,
     })),
   )
+
+  const realPosition = React.useRef({ x: window.x, y: window.y })
 
   const { width, height } = window
 
@@ -76,15 +80,22 @@ export const WindowInternal: FC<{
       x: movementX / useAppStore.getState().zoom,
       y: movementY / useAppStore.getState().zoom,
     }
-    state.setWindow(item.id, {
-      x: window.x + scaledPosition.x,
-      y: window.y + scaledPosition.y,
+    realPosition.current.x += scaledPosition.x
+    realPosition.current.y += scaledPosition.y
+    state.snapToWindows(item.id, {
+      ...window,
+      x: realPosition.current.x,
+      y: realPosition.current.y,
     })
   }
 
   const onDragStart = (e: DraggableEvent, data: DraggableData) => {}
 
-  const onDragStop = (e: DraggableEvent, data: DraggableData) => {}
+  const onDragStop = (e: DraggableEvent, data: DraggableData) => {
+    state.setSnappingToPositions({
+      ...DEFAULT_SNAPPING_TO_POSITIONS,
+    })
+  }
 
   const toConnections = React.useMemo(
     () => state.connections.filter((c) => c.to === item.id),

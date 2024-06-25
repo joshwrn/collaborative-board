@@ -3,13 +3,14 @@ import { useGesture } from '@use-gesture/react'
 import React from 'react'
 import { useAppStore } from './state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
+import { SPACE_ATTRS } from './state/space'
 
 export const clampInto =
   ([min, max]: [number, number]) =>
   (value: number): number =>
     value < min ? min : value > max ? max : value
 
-const clampZ = clampInto([0.15, 1])
+const clampZ = clampInto([SPACE_ATTRS.min.zoom, SPACE_ATTRS.max.zoom])
 
 const MOUSE_BUTTONS = {
   middle: 4,

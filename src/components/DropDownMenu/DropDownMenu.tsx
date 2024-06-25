@@ -1,16 +1,12 @@
 import React from 'react'
 import style from './DropDownMenu.module.scss'
-import { useOutsideClick } from '@/utils/useOutsideClick'
+
 import { useAppStore } from '@/state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
+import Dropdown from '@/ui/Dropdown'
+import { SPACE_ATTRS } from '@/state/space'
 
 const MockItem = () => {
-  const [open, setOpen] = React.useState(false)
-  const [ref1, ref2] = useOutsideClick<HTMLButtonElement, HTMLUListElement>({
-    action: () => {
-      setOpen(false)
-    },
-  })
   const state = useAppStore(
     useShallow((state) => ({
       createMocks: state.createAllMocks,
@@ -19,67 +15,50 @@ const MockItem = () => {
     })),
   )
   const [amount, setAmount] = React.useState(0)
+  const defaultAmounts = [100, 26, 10, 3]
   return (
     <item className={style.item}>
-      <button
-        id={'dropdown-create-mocks-button'}
-        ref={ref1}
-        onClick={() => {
-          setOpen(!open)
-        }}
-      >
-        Mocks
-      </button>
-      {open && (
-        <ul className={style.submenu} ref={ref2}>
-          <li
-            onClick={() => {
-              state.createMocks(100)
-              setOpen(false)
-            }}
-          >
-            Create (100)
-          </li>
-          <li
-            onClick={() => {
-              state.createMocks(26)
-              setOpen(false)
-            }}
-          >
-            Create (26)
-          </li>
-          <li
-            id={'dropdown-create-mocks-10'}
-            onClick={() => {
-              state.createMocks(10)
-              setOpen(false)
-            }}
-          >
-            Create (10)
-          </li>
-          <li
-            id={'dropdown-create-mocks-1'}
+      <Dropdown.Menu
+        SelectedOption={() => <p>Mocks</p>}
+        id="dropdown-create-mocks-button"
+        Options={[
+          ...defaultAmounts.map((amount) => (
+            <Dropdown.Item
+              key={`Create (${amount})`}
+              onClick={() => {
+                state.createMocks(amount)
+              }}
+              label1={`Create (${amount})`}
+              isChecked={false}
+            />
+          )),
+          <Dropdown.Item
+            key={'Create One'}
             onClick={() => {
               state.createOneMock()
-              setOpen(false)
             }}
+            label1={'Create (1)'}
+            isChecked={false}
+            id="dropdown-create-mocks-1"
+          />,
+          <Dropdown.Item
+            key={'Create (Custom)'}
+            onClick={() => {
+              state.createMocks(amount)
+            }}
+            isChecked={false}
           >
-            Create (1)
-          </li>
-          <li>
             <form
               onSubmit={(e) => {
                 e.preventDefault()
                 state.createMocks(amount)
-                setOpen(false)
               }}
               onClick={() => {
                 state.createMocks(amount)
-                setOpen(false)
               }}
               className={style.customCreate}
             >
-              Create (
+              <p>Create (</p>
               <input
                 onClick={(e) => e.stopPropagation()}
                 type="text"
@@ -87,19 +66,88 @@ const MockItem = () => {
                 value={amount === 0 ? '' : amount}
                 onChange={(e) => setAmount(Number(e.target.value))}
               />
-              )
+              <p>)</p>
             </form>
-          </li>
-          <li
+          </Dropdown.Item>,
+          <Dropdown.Item
+            key={'Clear'}
             onClick={() => {
               state.clear()
-              setOpen(false)
             }}
+            label1={'Clear'}
+            isChecked={false}
+          />,
+        ]}
+      />
+    </item>
+  )
+}
+
+const SnappingItem = () => {
+  const state = useAppStore(
+    useShallow((state) => ({
+      isSnappingOn: state.isSnappingOn,
+      setIsSnappingOn: state.setIsSnappingOn,
+    })),
+  )
+  return (
+    <item className={style.item}>
+      <Dropdown.Menu
+        SelectedOption={() => <p>Snapping</p>}
+        Options={[
+          <Dropdown.Item
+            key={'Snapping'}
+            onClick={() => {
+              state.setIsSnappingOn(!state.isSnappingOn)
+            }}
+            label1={'Snapping'}
+            isChecked={state.isSnappingOn}
+          />,
+        ]}
+      />
+    </item>
+  )
+}
+
+const SpaceItem = () => {
+  const state = useAppStore(
+    useShallow((state) => ({
+      zoom: state.zoom,
+      setZoom: state.setZoom,
+    })),
+  )
+  return (
+    <item className={style.item}>
+      <Dropdown.Menu
+        id="dropdown-space-button"
+        SelectedOption={() => <p>Space</p>}
+        Options={[
+          <div
+            className={style.zoom}
+            key={'Zoom'}
+            onClick={(e) => e.stopPropagation()}
           >
-            Clear
-          </li>
-        </ul>
-      )}
+            <p>Zoom</p>
+            <section>
+              <button
+                onClick={() => state.setZoom(state.zoom - 0.05)}
+                id="dropdown-space-zoom-out-button"
+                disabled={state.zoom <= SPACE_ATTRS.min.zoom}
+              >
+                <p>-</p>
+              </button>
+              <p>{state.zoom.toFixed(2)}</p>
+              <button
+                onClick={() => state.setZoom(state.zoom + 0.05)}
+                disabled={state.zoom >= SPACE_ATTRS.max.zoom}
+                id="dropdown-space-zoom-in-button"
+              >
+                <p>+</p>
+              </button>
+            </section>
+          </div>,
+        ]}
+      />
     </item>
   )
 }
@@ -108,6 +156,8 @@ export const DropDownMenu = () => {
   return (
     <wrapper className={style.wrapper}>
       <MockItem />
+      <SnappingItem />
+      <SpaceItem />
     </wrapper>
   )
 }

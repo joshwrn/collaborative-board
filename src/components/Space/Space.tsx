@@ -12,6 +12,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { ActiveConnectionGuard } from '../Connections/ActiveConnection'
 import { Debug } from '../Debug/Debug'
 import { SPACE_ATTRS, resetPan } from '@/state/space'
+import { SnapLines } from '../SnapLine/SnapLine'
 
 const Space_Internal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
@@ -77,6 +78,7 @@ const Space_Internal: FC = () => {
           <ActiveConnectionGuard />
           <Connections />
           <Windows />
+          <SnapLines />
           <Debug />
         </container>
         <button className={styles.button}>

@@ -11,6 +11,7 @@
     "all": "concurrently \"npm run dev\" \"npm run gen-store\""
   },
   "dependencies": {
+    "@floating-ui/react": "^0.26.17",
     "@react-three/fiber": "^8.15.14",
     "@stylexjs/stylex": "^0.3.0",
     "@types/three": "^0.160.0",

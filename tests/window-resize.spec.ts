@@ -2,8 +2,16 @@ import { test, expect, Locator } from '@playwright/test'
 import { SPACE_ATTRS } from '@/state/space'
 import { WINDOW_ATTRS } from '@/state/windows'
 
+// default zoom (0.15) + (5 * 0.05) = 0.4
+const ZOOM = 0.4
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
+  await page.locator('#dropdown-space-button').click()
+  await page.locator('#dropdown-space-zoom-in-button').click()
+  await page.locator('#dropdown-space-zoom-in-button').click()
+  await page.locator('#dropdown-space-zoom-in-button').click()
+  await page.locator('#dropdown-space-zoom-in-button').click()
+  await page.locator('#dropdown-space-zoom-in-button').click()
 })
 
 test.describe('can resize window', () => {
@@ -11,11 +19,11 @@ test.describe('can resize window', () => {
   let window_id: string
 
   const SCALED = {
-    max: WINDOW_ATTRS.maxSize * SPACE_ATTRS.default.zoom,
-    min: WINDOW_ATTRS.minSize * SPACE_ATTRS.default.zoom,
+    max: WINDOW_ATTRS.maxSize * ZOOM,
+    min: WINDOW_ATTRS.minSize * ZOOM,
     default: {
-      width: WINDOW_ATTRS.defaultSize.width * SPACE_ATTRS.default.zoom,
-      height: WINDOW_ATTRS.defaultSize.height * SPACE_ATTRS.default.zoom,
+      width: WINDOW_ATTRS.defaultSize.width * ZOOM,
+      height: WINDOW_ATTRS.defaultSize.height * ZOOM,
     },
   }
 
@@ -43,12 +51,12 @@ test.describe('can resize window', () => {
 
   // y
   test('resize larger from top', async ({ page }) => {
-    await page.locator(`#window-border-draggable-top-${window_id}`).hover()
-    await page.mouse.down()
     const box = await getBox()
     expect(box.height).toBe(SCALED.default.height)
     const bottom_y = box.y + box.height
 
+    await page.locator(`#window-border-draggable-top-${window_id}`).hover()
+    await page.mouse.down()
     await page.mouse.move(box.x + box.width / 2, box.y - MOVE.step1)
     await page.mouse.move(box.x + box.width / 2, box.y - MOVE.step2)
     await page.mouse.up()
