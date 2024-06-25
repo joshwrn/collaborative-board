@@ -6,6 +6,7 @@ import { itemListStore, ItemListStore } from './items'
 import { memberStore, MemberStore } from './members'
 import { mockStore, MockStore } from './mock'
 import { peripheralStore, PeripheralStore } from './peripheral'
+import { snappingStore, SnappingStore } from './snapping'
 import { spaceStore, SpaceStore } from './space'
 import { userStore, UserStore } from './user'
 import { openWindowsStore, OpenWindowsStore } from './windows'
@@ -17,6 +18,7 @@ export type AppStore = ConnectedWindowsStore &
   MemberStore &
   MockStore &
   PeripheralStore &
+  SnappingStore &
   SpaceStore &
   UserStore &
   OpenWindowsStore
@@ -30,6 +32,7 @@ export const useAppStore = create<AppStore>((...operators) => {
     ...memberStore(...operators),
     ...mockStore(...operators),
     ...peripheralStore(...operators),
+    ...snappingStore(...operators),
     ...spaceStore(...operators),
     ...userStore(...operators),
     ...openWindowsStore(...operators),
