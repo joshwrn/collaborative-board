@@ -64,6 +64,10 @@
     display: flex;
     gap: 20px;
     > button {
+      &[disabled] {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
       display: flex;
       justify-content: center;
       align-items: center;

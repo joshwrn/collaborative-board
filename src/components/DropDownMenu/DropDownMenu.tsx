@@ -4,6 +4,7 @@ import style from './DropDownMenu.module.scss'
 import { useAppStore } from '@/state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
 import Dropdown from '@/ui/Dropdown'
+import { SPACE_ATTRS } from '@/state/space'
 
 const MockItem = () => {
   const state = useAppStore(
@@ -131,12 +132,14 @@ const SpaceItem = () => {
               <button
                 onClick={() => state.setZoom(state.zoom - 0.05)}
                 id="dropdown-space-zoom-out-button"
+                disabled={state.zoom <= SPACE_ATTRS.min.zoom}
               >
                 <p>-</p>
               </button>
               <p>{state.zoom.toFixed(2)}</p>
               <button
                 onClick={() => state.setZoom(state.zoom + 0.05)}
+                disabled={state.zoom >= SPACE_ATTRS.max.zoom}
                 id="dropdown-space-zoom-in-button"
               >
                 <p>+</p>

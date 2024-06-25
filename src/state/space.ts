@@ -13,6 +13,12 @@ export const SPACE_ATTRS = {
     zoom: 0.15,
     pan: { x: 2190, y: 2035 },
   },
+  max: {
+    zoom: 1,
+  },
+  min: {
+    zoom: 0.1,
+  },
 }
 
 export const resetPan = (wrapperRef: React.RefObject<HTMLDivElement>) => {
