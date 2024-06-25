@@ -1,5 +1,5 @@
+import { distance } from 'mathjs'
 import { Point2d } from '.'
-import { SPACE_ATTRS } from './space'
 import { AppStateCreator, Setter, stateSetter } from './state'
 import { WindowType } from './windows'
 
@@ -57,6 +57,21 @@ export const SNAP_POINTS_X = [
 ] as const
 type SnapPointsX = (typeof SNAP_POINTS_X)[number]
 
+const isPointCloserFn = (window: WindowType, currentWindow: Point2d) => {
+  return (snapPos: SnappingToPosition | null) => {
+    if (!snapPos) {
+      return true
+    }
+    if (
+      distance([window.x, window.y], [snapPos.to.x, snapPos.to.y]) >
+      distance([window.x, window.y], [currentWindow.x, currentWindow.y])
+    ) {
+      return true
+    }
+    return false
+  }
+}
+
 export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
   isSnappingOn: false,
   setIsSnappingOn: (setter) => stateSetter(set, setter, `isSnappingOn`),
@@ -84,9 +99,9 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
       ...DEFAULT_SNAPPING_TO_POSITIONS,
     }
     for (let i = 0; i < openWindows.length; i++) {
-      if (window.x !== snapTo.x && window.y !== snapTo.y) {
-        break
-      }
+      // if (window.x !== snapTo.x && window.y !== snapTo.y) {
+      //   break
+      // }
       const currentWindow = openWindows[i]
       if (currentWindow.id === id) {
         continue
@@ -95,7 +110,7 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
       const curWindowRight = currentWindow.x + currentWindow.width
       const windowBottom = window.y + window.height
       const windowRight = window.x + window.width
-      const distance: {
+      const inRange: {
         x: Record<SnapPointsX, boolean>
         y: Record<SnapPointsY, boolean>
       } = {
@@ -115,125 +130,143 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
         },
       }
 
-      if (distance.y.topToTop) {
+      const isPointCloser = isPointCloserFn(window, currentWindow)
+
+      if (inRange.y.topToTop) {
         snapTo.y = currentWindow.y
         const dir = window.x > currentWindow.x ? -1 : 1
-        snappingToPositions.topToTop = {
-          from: {
-            x: snapTo.x,
-            y: currentWindow.y,
-          },
-          to: {
-            x: currentWindow.x,
-            y: currentWindow.y,
-          },
-          dir,
+        if (isPointCloser(snappingToPositions.topToTop)) {
+          snappingToPositions.topToTop = {
+            from: {
+              x: snapTo.x,
+              y: currentWindow.y,
+            },
+            to: {
+              x: currentWindow.x,
+              y: currentWindow.y,
+            },
+            dir,
+          }
         }
       }
-      if (distance.y.bottomToBottom) {
+      if (inRange.y.bottomToBottom) {
         snapTo.y = curWindowBottom - window.height
         const dir = window.x > currentWindow.x ? -1 : 1
-        snappingToPositions.bottomToBottom = {
-          from: {
-            x: snapTo.x,
-            y: curWindowBottom,
-          },
-          to: {
-            x: currentWindow.x,
-            y: curWindowBottom,
-          },
-          dir,
+        if (isPointCloser(snappingToPositions.bottomToBottom)) {
+          snappingToPositions.bottomToBottom = {
+            from: {
+              x: snapTo.x,
+              y: curWindowBottom,
+            },
+            to: {
+              x: currentWindow.x,
+              y: curWindowBottom,
+            },
+            dir,
+          }
         }
       }
-      if (distance.y.bottomToTop) {
+      if (inRange.y.bottomToTop) {
         snapTo.y = currentWindow.y - window.height
         const dir = window.x > currentWindow.x ? -1 : 1
-        snappingToPositions.bottomToTop = {
-          from: {
-            x: snapTo.x,
-            y: currentWindow.y,
-          },
-          to: {
-            x: currentWindow.x,
-            y: currentWindow.y,
-          },
-          dir,
+        if (isPointCloser(snappingToPositions.bottomToTop)) {
+          snappingToPositions.bottomToTop = {
+            from: {
+              x: snapTo.x,
+              y: currentWindow.y,
+            },
+            to: {
+              x: currentWindow.x,
+              y: currentWindow.y,
+            },
+            dir,
+          }
         }
       }
-      if (distance.y.topToBottom) {
+      if (inRange.y.topToBottom) {
         snapTo.y = curWindowBottom
         const dir = window.x > currentWindow.x ? -1 : 1
-        snappingToPositions.topToBottom = {
-          from: {
-            x: snapTo.x,
-            y: curWindowBottom,
-          },
-          to: {
-            x: currentWindow.x,
-            y: curWindowBottom,
-          },
-          dir,
+        if (isPointCloser(snappingToPositions.topToBottom)) {
+          snappingToPositions.topToBottom = {
+            from: {
+              x: snapTo.x,
+              y: curWindowBottom,
+            },
+            to: {
+              x: currentWindow.x,
+              y: curWindowBottom,
+            },
+            dir,
+          }
         }
       }
 
-      if (distance.x.leftToLeft) {
+      if (inRange.x.leftToLeft) {
         snapTo.x = currentWindow.x
         const dir = window.y > currentWindow.y ? -1 : 1
-        snappingToPositions.leftToLeft = {
-          from: {
-            x: currentWindow.x,
-            y: snapTo.y,
-          },
-          to: {
-            x: currentWindow.x,
-            y: currentWindow.y,
-          },
-          dir,
+        if (isPointCloser(snappingToPositions.leftToLeft)) {
+          snappingToPositions.leftToLeft = {
+            from: {
+              x: currentWindow.x,
+              y: snapTo.y,
+            },
+            to: {
+              x: currentWindow.x,
+              y: currentWindow.y,
+            },
+            dir,
+          }
         }
       }
-      if (distance.x.leftToRight) {
+      if (inRange.x.leftToRight) {
         snapTo.x = curWindowRight
         const dir = window.y > currentWindow.y ? -1 : 1
-        snappingToPositions.leftToRight = {
-          from: {
-            x: curWindowRight,
-            y: snapTo.y,
-          },
-          to: {
-            x: curWindowRight,
-            y: currentWindow.y,
-          },
-          dir,
+        if (isPointCloser(snappingToPositions.leftToRight)) {
+          snappingToPositions.leftToRight = {
+            from: {
+              x: curWindowRight,
+              y: snapTo.y,
+            },
+            to: {
+              x: curWindowRight,
+              y: currentWindow.y,
+            },
+            dir,
+          }
         }
       }
-      if (distance.x.rightToLeft) {
+      if (inRange.x.rightToLeft) {
         snapTo.x = currentWindow.x - window.width
         const dir = window.y > currentWindow.y ? -1 : 1
-        snappingToPositions.rightToLeft = {
-          from: {
-            x: currentWindow.x,
-            y: snapTo.y,
-          },
-          to: {
-            x: currentWindow.x,
-            y: currentWindow.y,
-          },
-          dir,
+        if (isPointCloser(snappingToPositions.rightToLeft)) {
+          snappingToPositions.rightToLeft = {
+            from: {
+              x: currentWindow.x,
+              y: snapTo.y,
+            },
+            to: {
+              x: currentWindow.x,
+              y: currentWindow.y,
+            },
+            dir,
+          }
         }
       }
-      if (distance.x.rightToRight) {
+      if (inRange.x.rightToRight) {
         snapTo.x = curWindowRight - window.width
         const dir = window.y > currentWindow.y ? -1 : 1
-        snappingToPositions.rightToRight = {
-          from: {
-            x: curWindowRight,
-            y: snapTo.y,
-          },
-          to: {
-            x: curWindowRight,
-            y: currentWindow.y,
-          },
-          dir,
+        if (isPointCloser(snappingToPositions.rightToRight)) {
+          snappingToPositions.rightToRight = {
+            from: {
+              x: curWindowRight,
+              y: snapTo.y,
+            },
+            to: {
+              x: curWindowRight,
+              y: currentWindow.y,
+            },
+            dir,
+          }
         }
       }
     }

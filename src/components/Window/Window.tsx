@@ -10,9 +10,10 @@ import { IoAddOutline } from 'react-icons/io5'
 import { ConnectorOverlay } from './ConnectorOverlay'
 import { useShallow } from 'zustand/react/shallow'
 import { Iframe, Item } from '@/state/items'
-import { DEFAULT_SNAPPING_TO_POSITIONS, WindowType } from '@/state/windows'
+import { WindowType } from '@/state/windows'
 import { match, P } from 'ts-pattern'
 import { joinClasses } from '@/utils/joinClasses'
+import { DEFAULT_SNAPPING_TO_POSITIONS } from '@/state/snapping'
 
 const matchBody = (
   body: string | Iframe,
