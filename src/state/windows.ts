@@ -9,6 +9,7 @@ export type WindowType = {
   width: number
   height: number
   zIndex: number
+  rotation: number
 }
 
 export type OpenWindowsStore = {
@@ -22,6 +23,7 @@ export type OpenWindowsStore = {
   ) => void
   setOneWindow: (id: string, update: Partial<WindowType>) => void
   reorderWindows: (id: string) => void
+  rotateWindow: (id: string, movement: Point2d) => void
   fullscreenWindow: (id: string) => void
   hoveredWindow: string | null
   setHoveredWindow: Setter<string | null>
@@ -40,31 +42,13 @@ export const DEFAULT_WINDOW: WindowType = {
   width: WINDOW_ATTRS.defaultSize.width,
   height: WINDOW_ATTRS.defaultSize.height,
   zIndex: 0,
+  rotation: 0,
 }
 
-export const SNAP_POINTS_Y = [
-  'topToTop',
-  'bottomToBottom',
-  'topToBottom',
-  'bottomToTop',
-] as const
-type SnapPointsY = (typeof SNAP_POINTS_Y)[number]
-
-export const SNAP_POINTS_X = [
-  'leftToLeft',
-  'rightToRight',
-  'leftToRight',
-  'rightToLeft',
-] as const
-type SnapPointsX = (typeof SNAP_POINTS_X)[number]
-
-export const newWindowSizeInBounds = (
-  newSize: {
-    width: number
-    height: number
-  },
-  currentSize: { width: number; height: number },
-) => {
+export const newWindowSizeInBounds = (newSize: {
+  width: number
+  height: number
+}) => {
   let size = { width: newSize.width, height: newSize.height }
   if (size.width < WINDOW_ATTRS.minSize) {
     size.width = WINDOW_ATTRS.minSize
@@ -125,6 +109,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           width: WINDOW_ATTRS.defaultSize.width,
           height: WINDOW_ATTRS.defaultSize.height,
           zIndex: highestZIndex + 1,
+          rotation: 0,
         },
       ],
     }))
@@ -164,6 +149,16 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         }
       }),
     }))
+  },
+
+  rotateWindow: (id, movement) => {
+    const state = get()
+    const window = state.windows.find((window) => window.id === id)
+    if (!window) {
+      throw new Error(`window ${id} not found`)
+    }
+    const rotation = window.rotation - movement.x
+    state.setOneWindow(id, { rotation })
   },
 
   resizeWindow: (id, start, movement, pos) => {
@@ -256,7 +251,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     }
 
     get().setOneWindow(id, {
-      ...newWindowSizeInBounds(newSize, window),
+      ...newWindowSizeInBounds(newSize),
       ...newPosition,
     })
   },
