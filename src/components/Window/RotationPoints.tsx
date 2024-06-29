@@ -23,7 +23,8 @@ const cursorsForRotationPoints: Record<RotationPoint, string> = {
 
 export const RotationPoints: React.FC<{
   id: string
-}> = ({ id }) => {
+  rotation: number
+}> = ({ id, rotation }) => {
   const state = useAppStore(
     useShallow((state) => ({
       rotateWindow: state.rotateWindow,
@@ -56,6 +57,12 @@ export const RotationPoints: React.FC<{
 
   return (
     <div className={style.wrapper}>
+      <div
+        className={style.rotationOutline}
+        style={{
+          transform: `rotate(-${rotation}deg)`,
+        }}
+      />
       {ROTATION_POINTS.map((pos) => {
         return (
           <DraggableCore

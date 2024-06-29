@@ -39,3 +39,11 @@ $handle-offset: -15px;
   bottom: $handle-offset;
   right: $handle-offset;
 }
+
+.rotationOutline {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #ff0000;
+  pointer-events: none;
+}

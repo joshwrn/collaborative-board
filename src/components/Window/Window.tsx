@@ -137,7 +137,7 @@ export const WindowInternal: FC<{
         }}
         onPointerDown={() => state.bringToFront(item.id)}
       >
-        <RotationPoints id={item.id} />
+        <RotationPoints id={item.id} rotation={window.rotation} />
         <nav className={`${styles.topBar} handle`}>
           <button
             className={styles.close}
