@@ -8,44 +8,14 @@ export type SnappingToPosition = {
   from: Point2d
   to: Point2d
   dir: number
-}
-
-export const SNAP_POINTS_Y = [
-  'topToTop',
-  'bottomToBottom',
-  'topToBottom',
-  'bottomToTop',
-] as const
-type SnapPointsY = (typeof SNAP_POINTS_Y)[number]
-
-export const SNAP_POINTS_X = [
-  'leftToLeft',
-  'rightToRight',
-  'leftToRight',
-  'rightToLeft',
-] as const
-type SnapPointsX = (typeof SNAP_POINTS_X)[number]
-
-export type SnappingToPositions = {
-  [key in SnapPointsY | SnapPointsX]: SnappingToPosition | null
-}
-
-export const DEFAULT_SNAPPING_TO_POSITIONS: SnappingToPositions = {
-  topToTop: null,
-  bottomToBottom: null,
-  topToBottom: null,
-  bottomToTop: null,
-
-  leftToLeft: null,
-  rightToRight: null,
-  leftToRight: null,
-  rightToLeft: null,
+  axis: 'x' | 'y'
+  realSnap: number
 }
 
 export type SnappingStore = {
   snapToWindows: (id: string, newPos: WindowType) => void
-  snappingToPositions: SnappingToPositions
-  setSnappingToPositions: Setter<SnappingToPositions>
+  snapLines: SnappingToPosition[]
+  setSnapLines: Setter<SnappingToPosition[]>
   isSnappingOn: boolean
   setIsSnappingOn: Setter<boolean>
 }
@@ -121,11 +91,8 @@ function getRectangleCorners(
 export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
   isSnappingOn: true,
   setIsSnappingOn: (setter) => stateSetter(set, setter, `isSnappingOn`),
-  snappingToPositions: {
-    ...DEFAULT_SNAPPING_TO_POSITIONS,
-  },
-  setSnappingToPositions: (setter) =>
-    stateSetter(set, setter, `snappingToPositions`),
+  snapLines: [],
+  setSnapLines: (setter) => stateSetter(set, setter, `snapLines`),
 
   snapToWindows: (id, window) => {
     const state = get()
@@ -141,9 +108,7 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
     }
     const snapDistance = 50
     const snapTo = { ...window }
-    const snappingToPositions: SnappingToPositions = {
-      ...DEFAULT_SNAPPING_TO_POSITIONS,
-    }
+    const snappingToPositions: SnappingToPosition[] = []
     const randomPoints: (Point2d & { label: string })[] = []
     for (let i = 0; i < openWindows.length; i++) {
       // if (window.x !== snapTo.x && window.y !== snapTo.y) {
@@ -186,35 +151,23 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
           const xInRange =
             Math.abs(windowPoint.x - curWindowPoint.x) <= snapDistance
           if (yInRange) {
-            if (
-              windowPoint.label === 'topLeft' &&
-              curWindowPoint.label === 'topLeft'
-            ) {
-              const resetPoint = rotatePoint(
-                { x: windowPoint.x, y: curWindowPoint.y },
-                -window.rotation,
-                {
-                  x: window.x + window.width / 2,
-                  y: window.y + window.height / 2,
-                },
-                'topLeft',
-              )
-              snapTo.y = resetPoint.y
-              randomPoints.push({
-                x: resetPoint.x,
-                y: resetPoint.y,
-                label: 'topToTop',
-              })
-
-              snappingToPositions.topToTop = {
-                from: {
-                  x: windowPoint.x,
-                  y: curWindowPoint.y,
-                },
-                to: curWindowPoint,
-                dir: 1,
-              }
-            }
+            snapTo.y = window.y - windowPoint.y + curWindowPoint.y
+            randomPoints.push({
+              x: window.x,
+              y: window.y - windowPoint.y + curWindowPoint.y,
+              label: 'topToTop',
+            })
+            const dir = windowPoint.x < curWindowPoint.x ? 1 : -1
+            snappingToPositions.push({
+              from: {
+                x: windowPoint.x,
+                y: curWindowPoint.y,
+              },
+              to: curWindowPoint,
+              realSnap: snapTo.y,
+              dir,
+              axis: 'y',
+            })
           }
         }
       }
@@ -257,8 +210,21 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
     //     }
     //   }
     // }
+    const marginOfError = 0.01
+    const filtered = snappingToPositions.filter((snapPoint) => {
+      if (snapPoint.axis === 'y') {
+        const yPos = snapPoint.realSnap
+        const doesNotAlignToTop = Math.abs(yPos - snapTo.y) > marginOfError
+        const doesNotAlignToBottom =
+          Math.abs(yPos - (snapTo.y + window.height)) > marginOfError
+        if (doesNotAlignToTop && doesNotAlignToBottom) {
+          return false
+        }
+      }
+      return true
+    })
     set((state) => ({
-      snappingToPositions,
+      snapLines: filtered,
     }))
 
     set((state) => ({

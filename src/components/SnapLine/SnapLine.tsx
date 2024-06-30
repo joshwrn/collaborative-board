@@ -3,11 +3,7 @@ import style from './SnapLine.module.scss'
 import { useAppStore } from '@/state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
 import { distance } from 'mathjs'
-import {
-  SNAP_POINTS_X,
-  SNAP_POINTS_Y,
-  SnappingToPosition,
-} from '@/state/snapping'
+import { SnappingToPosition } from '@/state/snapping'
 
 export const SnapLineY: React.FC<{
   yPos: SnappingToPosition | null
@@ -59,19 +55,25 @@ export const SnapLines: React.FC = () => {
   const state = useAppStore(
     useShallow((state) => {
       return {
-        snappingToPositions: state.snappingToPositions,
+        snapLines: state.snapLines,
       }
     }),
   )
-
+  console.log('SnapLines', state.snapLines)
   return (
     <>
-      {SNAP_POINTS_Y.map((yPos) => {
-        return <SnapLineY yPos={state.snappingToPositions[yPos]} key={yPos} />
-      })}
-      {SNAP_POINTS_X.map((xPos) => {
-        return <SnapLineX xPos={state.snappingToPositions[xPos]} key={xPos} />
+      {state.snapLines.map((pos) => {
+        const key = createKey(pos)
+        if (pos.axis === 'y') {
+          return <SnapLineY key={key} yPos={pos} />
+        } else {
+          return <SnapLineX key={key} xPos={pos} />
+        }
       })}
     </>
   )
+}
+
+const createKey = (pos: SnappingToPosition) => {
+  return pos.from.x + pos.from.y + pos.to.x + pos.to.y + pos.axis + pos.dir
 }

@@ -13,7 +13,6 @@ import { Iframe, Item } from '@/state/items'
 import { WindowType } from '@/state/windows'
 import { match, P } from 'ts-pattern'
 import { joinClasses } from '@/utils/joinClasses'
-import { DEFAULT_SNAPPING_TO_POSITIONS } from '@/state/snapping'
 import { RotationPoints } from './RotationPoints'
 
 const matchBody = (
@@ -64,7 +63,7 @@ export const WindowInternal: FC<{
       fullScreen: state.fullscreenWindow,
       setHoveredWindow: state.setHoveredWindow,
       snapToWindows: state.snapToWindows,
-      setSnappingToPositions: state.setSnappingToPositions,
+      setSnappingToPositions: state.setSnapLines,
     })),
   )
 
@@ -94,9 +93,7 @@ export const WindowInternal: FC<{
   const onDragStart = (e: DraggableEvent, data: DraggableData) => {}
 
   const onDragStop = (e: DraggableEvent, data: DraggableData) => {
-    state.setSnappingToPositions({
-      ...DEFAULT_SNAPPING_TO_POSITIONS,
-    })
+    state.setSnappingToPositions([])
   }
 
   const toConnections = React.useMemo(
