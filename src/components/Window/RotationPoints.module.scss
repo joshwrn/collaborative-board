@@ -8,12 +8,12 @@
   display: flex;
 }
 
-$handle-offset: -15px;
+$handle-offset: -30px;
 
 .point {
   position: absolute;
-  width: 15px;
-  height: 15px;
+  width: 30px;
+  height: 30px;
   background-color: #ff0000;
   border-radius: 50%;
   cursor: grab;

@@ -20,21 +20,6 @@ export type SnappingStore = {
   setIsSnappingOn: Setter<boolean>
 }
 
-const isPointCloserFn = (window: WindowType, currentWindow: Point2d) => {
-  return (snapPos: SnappingToPosition | null) => {
-    if (!snapPos) {
-      return true
-    }
-    if (
-      distance([window.x, window.y], [snapPos.to.x, snapPos.to.y]) >
-      distance([window.x, window.y], [currentWindow.x, currentWindow.y])
-    ) {
-      return true
-    }
-    return false
-  }
-}
-
 const degToRadians = (deg: number) => (deg * Math.PI) / 180
 
 type PointWithLabel = Point2d & { label: RotationPoint }
@@ -107,9 +92,8 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
       throw new Error(`window ${id} not found`)
     }
     const snapDistance = 50
-    const snapTo = { ...window }
+    const snapTo = { x: window.x, y: window.y }
     const snapLines: SnappingToPosition[] = []
-    const randomPoints: (Point2d & { label: string })[] = []
     for (let i = 0; i < openWindows.length; i++) {
       const currentWindow = openWindows[i]
       if (currentWindow.id === id) {
@@ -131,13 +115,6 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
         window.height,
         window.rotation,
       )
-
-      state.debug_setRotationPoints({
-        topLeft: windowPoints[0],
-        topRight: windowPoints[1],
-        bottomRight: windowPoints[2],
-        bottomLeft: windowPoints[3],
-      })
 
       for (const windowPoint of windowPoints) {
         for (const curWindowPoint of curWindowPoints) {
@@ -207,10 +184,6 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
     })
     set((state) => ({
       snapLines: filtered,
-    }))
-
-    set((state) => ({
-      debug_randomPoints: randomPoints,
     }))
     get().setOneWindow(id, {
       x: snapTo.x,

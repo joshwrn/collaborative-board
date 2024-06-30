@@ -163,7 +163,6 @@ export const WindowInternal: FC<{
           </section>
         </header>
 
-        <h1>{window.rotation}</h1>
         <main className={styles.content}>
           {item.body.map((body, i) => matchBody(body, i))}
         </main>

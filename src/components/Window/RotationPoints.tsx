@@ -4,7 +4,6 @@ import { joinClasses } from '@/utils/joinClasses'
 import { DraggableCore, DraggableEvent } from 'react-draggable'
 import { useShallow } from 'zustand/react/shallow'
 import { useAppStore } from '@/state/gen-state'
-import { Point2d } from '@/state'
 import { WindowType } from '@/state/windows'
 
 export const ROTATION_POINTS = [
@@ -15,13 +14,6 @@ export const ROTATION_POINTS = [
 ] as const
 
 export type RotationPoint = (typeof ROTATION_POINTS)[number]
-
-const cursorsForRotationPoints: Record<RotationPoint, string> = {
-  topLeft: 'grab',
-  topRight: 'grab',
-  bottomRight: 'grab',
-  bottomLeft: 'grab',
-}
 
 const rotationsPointToDegrees: Record<RotationPoint, number> = {
   topLeft: -35,
@@ -78,6 +70,7 @@ export const RotationPoints: React.FC<{
     const degrees = getDegrees(mouse, centerPoint, pos)
     state.setOneWindow(id, { rotation: degrees })
   }
+
   const onDragStart = (
     e: DraggableEvent,
     data: { deltaX: number; deltaY: number },
@@ -85,6 +78,7 @@ export const RotationPoints: React.FC<{
   ) => {
     console.log('start', pos)
   }
+
   const onDragStop = (
     e: DraggableEvent,
     data: { deltaX: number; deltaY: number },
@@ -95,12 +89,6 @@ export const RotationPoints: React.FC<{
 
   return (
     <div className={style.wrapper}>
-      <div
-        className={style.rotationOutline}
-        style={{
-          transform: `rotate(-${window.rotation}deg)`,
-        }}
-      />
       {ROTATION_POINTS.map((pos) => {
         return (
           <DraggableCore

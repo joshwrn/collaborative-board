@@ -88,6 +88,8 @@ const SnappingItem = () => {
     useShallow((state) => ({
       isSnappingOn: state.isSnappingOn,
       setIsSnappingOn: state.setIsSnappingOn,
+      showConnections: state.showConnections,
+      setShowConnections: state.setShowConnections,
     })),
   )
   return (
@@ -102,6 +104,14 @@ const SnappingItem = () => {
             }}
             label1={'Snapping'}
             isChecked={state.isSnappingOn}
+          />,
+          <Dropdown.Item
+            key={'Show Connections'}
+            onClick={() => {
+              state.setShowConnections(!state.showConnections)
+            }}
+            label1={'Show Connections'}
+            isChecked={state.showConnections}
           />,
         ]}
       />

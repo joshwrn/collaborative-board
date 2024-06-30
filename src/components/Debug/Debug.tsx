@@ -11,7 +11,6 @@ export const Debug: React.FC = () => {
   const state = useAppStore(
     useShallow((state) => ({
       zoomFocusPoint: state.debug_zoomFocusPoint,
-      rotationPoints: state.debug_rotationPoints,
       snapPoints: state.debug_snapPoints,
       newCenterPoint: state.debug_newCenterPoint,
       randomPoints: state.debug_randomPoints,
@@ -28,21 +27,6 @@ export const Debug: React.FC = () => {
           transform: `translate(${state.zoomFocusPoint.x}px, ${state.zoomFocusPoint.y}px)`,
         }}
       />
-      {Object.entries(state.rotationPoints).map(([key, value]) => {
-        if (!value) {
-          return null
-        }
-        return (
-          <div
-            key={key}
-            className={style.rotationPoint}
-            style={{
-              top: value.y,
-              left: value.x,
-            }}
-          />
-        )
-      })}
       {state.randomPoints.map((point, i) => {
         return (
           <div
