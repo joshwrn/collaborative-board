@@ -134,7 +134,7 @@ export const WindowInternal: FC<{
         }}
         onPointerDown={() => state.bringToFront(item.id)}
       >
-        <RotationPoints id={item.id} rotation={window.rotation} />
+        <RotationPoints id={item.id} window={window} />
         <nav className={`${styles.topBar} handle`}>
           <button
             className={styles.close}
@@ -163,6 +163,7 @@ export const WindowInternal: FC<{
           </section>
         </header>
 
+        <h1>{window.rotation}</h1>
         <main className={styles.content}>
           {item.body.map((body, i) => matchBody(body, i))}
         </main>

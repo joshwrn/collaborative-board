@@ -4,6 +4,8 @@ import { joinClasses } from '@/utils/joinClasses'
 import { DraggableCore, DraggableEvent } from 'react-draggable'
 import { useShallow } from 'zustand/react/shallow'
 import { useAppStore } from '@/state/gen-state'
+import { Point2d } from '@/state'
+import { WindowType } from '@/state/windows'
 
 export const ROTATION_POINTS = [
   'topLeft',
@@ -21,13 +23,41 @@ const cursorsForRotationPoints: Record<RotationPoint, string> = {
   bottomLeft: 'grab',
 }
 
+const rotationsPointToDegrees: Record<RotationPoint, number> = {
+  topLeft: -35,
+  topRight: -145,
+  bottomRight: 145,
+  bottomLeft: 35,
+}
+
+type WrapAround = (value: number, range: [min: number, max: number]) => number
+
+export const wrapAround: WrapAround = (value, [min, max]) =>
+  ((((value - min) % (max - min)) + (max - min)) % (max - min)) + min
+
+export const getDegrees = (
+  p1: { x: number; y: number },
+  p2: { x: number; y: number },
+  pos: RotationPoint,
+) => {
+  const min = 0
+  const max = 360
+  const angleRadians = Math.atan2(p2.y - p1.y, p2.x - p1.x)
+  let angleDegrees = angleRadians * (180 / Math.PI)
+  angleDegrees = Math.floor(angleDegrees + rotationsPointToDegrees[pos])
+  const wrapped = wrapAround(angleDegrees, [min, max])
+  return wrapped
+}
+
 export const RotationPoints: React.FC<{
   id: string
-  rotation: number
-}> = ({ id, rotation }) => {
+  window: WindowType
+}> = ({ id, window }) => {
   const state = useAppStore(
     useShallow((state) => ({
-      rotateWindow: state.rotateWindow,
+      setOneWindow: state.setOneWindow,
+      zoom: state.zoom,
+      spaceMousePosition: state.spaceMousePosition,
     })),
   )
 
@@ -37,8 +67,16 @@ export const RotationPoints: React.FC<{
     pos: RotationPoint,
   ) => {
     if (!(e instanceof MouseEvent)) return
-    const { movementX, movementY } = e
-    state.rotateWindow(id, { x: movementX, y: movementY })
+    const centerPoint = {
+      y: window.y + window.height / 2,
+      x: window.x + window.width / 2,
+    }
+    const mouse = {
+      x: state.spaceMousePosition.x,
+      y: state.spaceMousePosition.y,
+    }
+    const degrees = getDegrees(mouse, centerPoint, pos)
+    state.setOneWindow(id, { rotation: degrees })
   }
   const onDragStart = (
     e: DraggableEvent,
@@ -60,7 +98,7 @@ export const RotationPoints: React.FC<{
       <div
         className={style.rotationOutline}
         style={{
-          transform: `rotate(-${rotation}deg)`,
+          transform: `rotate(-${window.rotation}deg)`,
         }}
       />
       {ROTATION_POINTS.map((pos) => {

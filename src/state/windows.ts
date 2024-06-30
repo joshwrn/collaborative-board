@@ -23,7 +23,6 @@ export type OpenWindowsStore = {
   ) => void
   setOneWindow: (id: string, update: Partial<WindowType>) => void
   reorderWindows: (id: string) => void
-  rotateWindow: (id: string, movement: Point2d) => void
   fullscreenWindow: (id: string) => void
   hoveredWindow: string | null
   setHoveredWindow: Setter<string | null>
@@ -149,16 +148,6 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         }
       }),
     }))
-  },
-
-  rotateWindow: (id, movement) => {
-    const state = get()
-    const window = state.windows.find((window) => window.id === id)
-    if (!window) {
-      throw new Error(`window ${id} not found`)
-    }
-    const rotation = window.rotation - movement.x
-    state.setOneWindow(id, { rotation })
   },
 
   resizeWindow: (id, start, movement, pos) => {
