@@ -139,7 +139,7 @@ export const ConnectionsInternal: FC = () => {
 
   return (
     <>
-      {state.connections.map((connection) => {
+      {state.connections.map((connection, i) => {
         const windowFrom = windowsMap[connection.from]
         const windowTo = windowsMap[connection.to]
 
@@ -149,7 +149,7 @@ export const ConnectionsInternal: FC = () => {
 
         return (
           <Connection
-            key={connection.id}
+            key={connection.id + i}
             from={windowFrom}
             to={windowTo}
             id={connection.id}

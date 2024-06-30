@@ -42,7 +42,7 @@ export const getDegrees = (
   return wrapped
 }
 
-export const RotationPoints: React.FC<{
+const RotationPoints_Internal: React.FC<{
   id: string
   window: WindowType
 }> = ({ id, window }) => {
@@ -129,3 +129,5 @@ export const RotationPoints: React.FC<{
     </div>
   )
 }
+
+export const RotationPoints = React.memo(RotationPoints_Internal)
