@@ -185,7 +185,7 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
     set((state) => ({
       snapLines: filtered,
     }))
-    get().setOneWindow(id, {
+    state.setOneWindow(id, {
       x: snapTo.x,
       y: snapTo.y,
     })

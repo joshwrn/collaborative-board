@@ -95,7 +95,7 @@ const SnappingItem = () => {
   return (
     <item className={style.item}>
       <Dropdown.Menu
-        SelectedOption={() => <p>Snapping</p>}
+        SelectedOption={() => <p>Windows</p>}
         Options={[
           <Dropdown.Item
             key={'Snapping'}

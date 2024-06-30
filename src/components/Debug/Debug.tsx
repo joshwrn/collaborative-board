@@ -11,8 +11,6 @@ export const Debug: React.FC = () => {
   const state = useAppStore(
     useShallow((state) => ({
       zoomFocusPoint: state.debug_zoomFocusPoint,
-      snapPoints: state.debug_snapPoints,
-      newCenterPoint: state.debug_newCenterPoint,
       randomPoints: state.debug_randomPoints,
     })),
   )
@@ -21,12 +19,14 @@ export const Debug: React.FC = () => {
   }
   return (
     <>
-      <div
-        className={style.zoomFocusPoint}
-        style={{
-          transform: `translate(${state.zoomFocusPoint.x}px, ${state.zoomFocusPoint.y}px)`,
-        }}
-      />
+      {state.zoomFocusPoint && (
+        <div
+          className={style.zoomFocusPoint}
+          style={{
+            transform: `translate(${state.zoomFocusPoint.x}px, ${state.zoomFocusPoint.y}px)`,
+          }}
+        />
+      )}
       {state.randomPoints.map((point, i) => {
         return (
           <div
@@ -41,36 +41,6 @@ export const Debug: React.FC = () => {
           </div>
         )
       })}
-      {state.snapPoints.from.map((point, i) => {
-        return (
-          <div
-            key={i}
-            className={joinClasses(style.snapPoint, style.snapPointFrom)}
-            style={{
-              transform: `translate(${point.x}px, ${point.y}px)`,
-            }}
-          />
-        )
-      })}
-      {state.snapPoints.to.map((point, i) => {
-        return (
-          <div
-            key={i}
-            className={joinClasses(style.snapPoint, style.snapPointTo)}
-            style={{
-              transform: `translate(${point.x}px, ${point.y}px)`,
-            }}
-          />
-        )
-      })}
-      {state.newCenterPoint && (
-        <div
-          className={style.newCenterPoint}
-          style={{
-            transform: `translate(${state.newCenterPoint.x}px, ${state.newCenterPoint.y}px)`,
-          }}
-        />
-      )}
     </>
   )
 }
