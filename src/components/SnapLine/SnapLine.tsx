@@ -14,17 +14,15 @@ export const SnapLineY: React.FC<{
 
   const yDistance = distance([yPos.from.x, yPos.from.y], [yPos.to.x, yPos.to.y])
   return (
-    <>
-      <div
-        className={style.line}
-        style={{
-          left: yPos.dir === -1 ? yPos.to.x : yPos.from.x,
-          top: yPos.from.y,
-          height: '2px',
-          width: yDistance.toString() + 'px',
-        }}
-      />
-    </>
+    <span
+      className={style.line}
+      style={{
+        left: yPos.dir === -1 ? yPos.to.x : yPos.from.x,
+        top: yPos.from.y,
+        height: '2px',
+        width: yDistance.toString() + 'px',
+      }}
+    />
   )
 }
 
@@ -37,21 +35,19 @@ export const SnapLineX: React.FC<{
 
   const xDistance = distance([xPos.from.x, xPos.from.y], [xPos.to.x, xPos.to.y])
   return (
-    <>
-      <div
-        className={style.line}
-        style={{
-          left: xPos.from.x,
-          top: xPos.dir === -1 ? xPos.to.y : xPos.from.y,
-          width: '2px',
-          height: xDistance.toString() + 'px',
-        }}
-      />
-    </>
+    <span
+      className={style.line}
+      style={{
+        left: xPos.from.x,
+        top: xPos.dir === -1 ? xPos.to.y : xPos.from.y,
+        width: '2px',
+        height: xDistance.toString() + 'px',
+      }}
+    />
   )
 }
 
-export const SnapLines: React.FC = () => {
+const SnapLines_Internal: React.FC = () => {
   const state = useAppStore(
     useShallow((state) => {
       return {
@@ -59,20 +55,24 @@ export const SnapLines: React.FC = () => {
       }
     }),
   )
-  console.log('SnapLines', state.snapLines)
+  if (state.snapLines.length === 0) {
+    return null
+  }
   return (
     <>
-      {state.snapLines.map((pos) => {
+      {state.snapLines.map((pos, i) => {
         const key = createKey(pos)
         if (pos.axis === 'y') {
-          return <SnapLineY key={key} yPos={pos} />
+          return <SnapLineY key={key + i} yPos={pos} />
         } else {
-          return <SnapLineX key={key} xPos={pos} />
+          return <SnapLineX key={key + i} xPos={pos} />
         }
       })}
     </>
   )
 }
+
+export const SnapLines = React.memo(SnapLines_Internal)
 
 const createKey = (pos: SnappingToPosition) => {
   return pos.from.x + pos.from.y + pos.to.x + pos.to.y + pos.axis + pos.dir

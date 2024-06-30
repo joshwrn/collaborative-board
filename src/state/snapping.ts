@@ -108,18 +108,13 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
     }
     const snapDistance = 50
     const snapTo = { ...window }
-    const snappingToPositions: SnappingToPosition[] = []
+    const snapLines: SnappingToPosition[] = []
     const randomPoints: (Point2d & { label: string })[] = []
     for (let i = 0; i < openWindows.length; i++) {
-      // if (window.x !== snapTo.x && window.y !== snapTo.y) {
-      //   break
-      // }
       const currentWindow = openWindows[i]
       if (currentWindow.id === id) {
         continue
       }
-      // const curWindowBottom = currentWindow.y + currentWindow.height
-      // const curWindowRight = currentWindow.x + currentWindow.width
 
       const curWindowPoints = getRectangleCorners(
         currentWindow.x,
@@ -152,13 +147,8 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
             Math.abs(windowPoint.x - curWindowPoint.x) <= snapDistance
           if (yInRange) {
             snapTo.y = window.y - windowPoint.y + curWindowPoint.y
-            randomPoints.push({
-              x: window.x,
-              y: window.y - windowPoint.y + curWindowPoint.y,
-              label: 'topToTop',
-            })
             const dir = windowPoint.x < curWindowPoint.x ? 1 : -1
-            snappingToPositions.push({
+            snapLines.push({
               from: {
                 x: windowPoint.x,
                 y: curWindowPoint.y,
@@ -167,6 +157,20 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
               realSnap: snapTo.y,
               dir,
               axis: 'y',
+            })
+          }
+          if (xInRange) {
+            snapTo.x = window.x - windowPoint.x + curWindowPoint.x
+            const dir = windowPoint.y < curWindowPoint.y ? 1 : -1
+            snapLines.push({
+              from: {
+                x: curWindowPoint.x,
+                y: windowPoint.y,
+              },
+              to: curWindowPoint,
+              realSnap: snapTo.x,
+              dir,
+              axis: 'x',
             })
           }
         }
@@ -179,45 +183,23 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
     // then make sure that each snap point is still valid
     // if selected snap point does not align with the window, remove it
     // margin of error because javascript is bad at math
-    // const marginOfError = 0.01
-    // for (const snapPoint of SNAP_POINTS_Y) {
-    //   const selectedPoint = snappingToPositions[snapPoint]
-    //   if (selectedPoint) {
-    //     selectedPoint.from.x = snapTo.x
-
-    //     const yPos = selectedPoint.from.y
-    //     const doesNotAlignToTop = Math.abs(yPos - snapTo.y) > marginOfError
-    //     const doesNotAlignToBottom =
-    //       Math.abs(yPos - (snapTo.y + window.height)) > marginOfError
-
-    //     if (doesNotAlignToTop && doesNotAlignToBottom) {
-    //       snappingToPositions[snapPoint] = null
-    //     }
-    //   }
-    // }
-    // for (const snapPoint of SNAP_POINTS_X) {
-    //   const selectedPoint = snappingToPositions[snapPoint]
-    //   if (selectedPoint) {
-    //     selectedPoint.from.y = snapTo.y
-
-    //     const xPos = selectedPoint.from.x
-    //     const doesNotAlignToLeft = Math.abs(xPos - snapTo.x) > marginOfError
-    //     const doesNotAlignToRight =
-    //       Math.abs(xPos - (snapTo.x + window.width)) > marginOfError
-
-    //     if (doesNotAlignToLeft && doesNotAlignToRight) {
-    //       snappingToPositions[snapPoint] = null
-    //     }
-    //   }
-    // }
     const marginOfError = 0.01
-    const filtered = snappingToPositions.filter((snapPoint) => {
+    const filtered = snapLines.filter((snapPoint) => {
       if (snapPoint.axis === 'y') {
         const yPos = snapPoint.realSnap
         const doesNotAlignToTop = Math.abs(yPos - snapTo.y) > marginOfError
         const doesNotAlignToBottom =
           Math.abs(yPos - (snapTo.y + window.height)) > marginOfError
         if (doesNotAlignToTop && doesNotAlignToBottom) {
+          return false
+        }
+      }
+      if (snapPoint.axis === 'x') {
+        const xPos = snapPoint.realSnap
+        const doesNotAlignToLeft = Math.abs(xPos - snapTo.x) > marginOfError
+        const doesNotAlignToRight =
+          Math.abs(xPos - (snapTo.x + window.width)) > marginOfError
+        if (doesNotAlignToLeft && doesNotAlignToRight) {
           return false
         }
       }
@@ -230,13 +212,6 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
     set((state) => ({
       debug_randomPoints: randomPoints,
     }))
-    // const angles = getRectangleCorners(
-    //   snapTo.x,
-    //   snapTo.y,
-    //   window.width,
-    //   window.height,
-    //   -window.rotation,
-    // )
     get().setOneWindow(id, {
       x: snapTo.x,
       y: snapTo.y,
