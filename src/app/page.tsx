@@ -17,7 +17,7 @@ export default function Home() {
       setMousePosition: state.setMousePosition,
     })),
   )
-  useScenario({ scenario: 'rotation' })
+  // useScenario({ scenario: 'rotation' })
   return (
     <wrapper
       className={styles.wrapper}
