@@ -9,6 +9,7 @@ import { useShallow } from 'zustand/react/shallow'
 import FPSStats from 'react-fps-stats'
 import { DropDownMenu } from '@/components/DropDownMenu/DropDownMenu'
 import { Debug } from '@/components/Debug/Debug'
+import { useScenario } from '@/mock/scenarios'
 
 export default function Home() {
   const state = useAppStore(
@@ -16,6 +17,7 @@ export default function Home() {
       setMousePosition: state.setMousePosition,
     })),
   )
+  // useScenario({ scenario: 'rotation' })
   return (
     <wrapper
       className={styles.wrapper}

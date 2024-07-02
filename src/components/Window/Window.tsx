@@ -13,7 +13,7 @@ import { Iframe, Item } from '@/state/items'
 import { WindowType } from '@/state/windows'
 import { match, P } from 'ts-pattern'
 import { joinClasses } from '@/utils/joinClasses'
-import { DEFAULT_SNAPPING_TO_POSITIONS } from '@/state/snapping'
+import { RotationPoints } from './RotationPoints'
 
 const matchBody = (
   body: string | Iframe,
@@ -63,7 +63,7 @@ export const WindowInternal: FC<{
       fullScreen: state.fullscreenWindow,
       setHoveredWindow: state.setHoveredWindow,
       snapToWindows: state.snapToWindows,
-      setSnappingToPositions: state.setSnappingToPositions,
+      setSnappingToPositions: state.setSnapLines,
     })),
   )
 
@@ -93,9 +93,7 @@ export const WindowInternal: FC<{
   const onDragStart = (e: DraggableEvent, data: DraggableData) => {}
 
   const onDragStop = (e: DraggableEvent, data: DraggableData) => {
-    state.setSnappingToPositions({
-      ...DEFAULT_SNAPPING_TO_POSITIONS,
-    })
+    state.setSnappingToPositions([])
   }
 
   const toConnections = React.useMemo(
@@ -123,8 +121,10 @@ export const WindowInternal: FC<{
         style={{
           left: window.x,
           top: window.y,
+          // transformOrigin: '0 0',
           width: `${width}px`,
           height: `${height}px`,
+          rotate: `${window.rotation}deg`,
           zIndex: window.zIndex,
         }}
         onMouseEnter={() => state.setHoveredWindow(item.id)}
@@ -134,6 +134,7 @@ export const WindowInternal: FC<{
         }}
         onPointerDown={() => state.bringToFront(item.id)}
       >
+        <RotationPoints id={item.id} window={window} />
         <nav className={`${styles.topBar} handle`}>
           <button
             className={styles.close}

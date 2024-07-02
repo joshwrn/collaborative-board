@@ -121,6 +121,7 @@ export const ConnectionsInternal: FC = () => {
       openWindows: state.windows,
       hoveredItem: state.hoveredItem,
       hoveredWindow: state.hoveredWindow,
+      showConnections: state.showConnections,
       zoom: state.zoom,
     })),
   )
@@ -132,10 +133,13 @@ export const ConnectionsInternal: FC = () => {
       }, {} as Record<string, WindowType>),
     [state.openWindows],
   )
+  if (!state.showConnections) {
+    return null
+  }
 
   return (
     <>
-      {state.connections.map((connection) => {
+      {state.connections.map((connection, i) => {
         const windowFrom = windowsMap[connection.from]
         const windowTo = windowsMap[connection.to]
 
@@ -145,7 +149,7 @@ export const ConnectionsInternal: FC = () => {
 
         return (
           <Connection
-            key={connection.id}
+            key={connection.id + i}
             from={windowFrom}
             to={windowTo}
             id={connection.id}

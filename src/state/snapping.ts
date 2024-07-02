@@ -2,84 +2,82 @@ import { distance } from 'mathjs'
 import { Point2d } from '.'
 import { AppStateCreator, Setter, stateSetter } from './state'
 import { WindowType } from './windows'
+import { RotationPoint } from '@/components/Window/RotationPoints'
 
 export type SnappingToPosition = {
   from: Point2d
   to: Point2d
   dir: number
-}
-
-export type SnappingToPositions = {
-  topToTop: SnappingToPosition | null
-  bottomToBottom: SnappingToPosition | null
-  topToBottom: SnappingToPosition | null
-  bottomToTop: SnappingToPosition | null
-
-  leftToLeft: SnappingToPosition | null
-  rightToRight: SnappingToPosition | null
-  leftToRight: SnappingToPosition | null
-  rightToLeft: SnappingToPosition | null
-}
-
-export const DEFAULT_SNAPPING_TO_POSITIONS: SnappingToPositions = {
-  topToTop: null,
-  bottomToBottom: null,
-  topToBottom: null,
-  bottomToTop: null,
-
-  leftToLeft: null,
-  rightToRight: null,
-  leftToRight: null,
-  rightToLeft: null,
+  axis: 'x' | 'y'
+  realSnap: number
 }
 
 export type SnappingStore = {
   snapToWindows: (id: string, newPos: WindowType) => void
-  snappingToPositions: SnappingToPositions
-  setSnappingToPositions: Setter<SnappingToPositions>
+  snapLines: SnappingToPosition[]
+  setSnapLines: Setter<SnappingToPosition[]>
   isSnappingOn: boolean
   setIsSnappingOn: Setter<boolean>
 }
 
-export const SNAP_POINTS_Y = [
-  'topToTop',
-  'bottomToBottom',
-  'topToBottom',
-  'bottomToTop',
-] as const
-type SnapPointsY = (typeof SNAP_POINTS_Y)[number]
+const degToRadians = (deg: number) => (deg * Math.PI) / 180
 
-export const SNAP_POINTS_X = [
-  'leftToLeft',
-  'rightToRight',
-  'leftToRight',
-  'rightToLeft',
-] as const
-type SnapPointsX = (typeof SNAP_POINTS_X)[number]
+type PointWithLabel = Point2d & { label: RotationPoint }
 
-const isPointCloserFn = (window: WindowType, currentWindow: Point2d) => {
-  return (snapPos: SnappingToPosition | null) => {
-    if (!snapPos) {
-      return true
-    }
-    if (
-      distance([window.x, window.y], [snapPos.to.x, snapPos.to.y]) >
-      distance([window.x, window.y], [currentWindow.x, currentWindow.y])
-    ) {
-      return true
-    }
-    return false
+function rotatePoint(
+  point: Point2d,
+  angle: number,
+  center: Point2d,
+  label: RotationPoint,
+): PointWithLabel {
+  const radians = degToRadians(angle)
+  const cos = Math.cos(radians)
+  const sin = Math.sin(radians)
+
+  const translatedX = point.x - center.x
+  const translatedY = point.y - center.y
+
+  const rotatedX = translatedX * cos - translatedY * sin
+  const rotatedY = translatedX * sin + translatedY * cos
+
+  return {
+    x: rotatedX + center.x,
+    y: rotatedY + center.y,
+    label: label,
   }
 }
 
+function getRectangleCorners(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  angle: number,
+): [PointWithLabel, PointWithLabel, PointWithLabel, PointWithLabel] {
+  const center = { x: x + width / 2, y: y + height / 2 }
+  const halfWidth = width / 2
+  const halfHeight = height / 2
+
+  const corners: Record<RotationPoint, Point2d> = {
+    topLeft: { x: center.x - halfWidth, y: center.y - halfHeight },
+    topRight: { x: center.x + halfWidth, y: center.y - halfHeight },
+    bottomRight: { x: center.x + halfWidth, y: center.y + halfHeight },
+    bottomLeft: { x: center.x - halfWidth, y: center.y + halfHeight },
+  }
+
+  return [
+    rotatePoint(corners.topLeft, angle, center, 'topLeft'),
+    rotatePoint(corners.topRight, angle, center, 'topRight'),
+    rotatePoint(corners.bottomRight, angle, center, 'bottomRight'),
+    rotatePoint(corners.bottomLeft, angle, center, 'bottomLeft'),
+  ]
+}
+
 export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
-  isSnappingOn: false,
+  isSnappingOn: true,
   setIsSnappingOn: (setter) => stateSetter(set, setter, `isSnappingOn`),
-  snappingToPositions: {
-    ...DEFAULT_SNAPPING_TO_POSITIONS,
-  },
-  setSnappingToPositions: (setter) =>
-    stateSetter(set, setter, `snappingToPositions`),
+  snapLines: [],
+  setSnapLines: (setter) => stateSetter(set, setter, `snapLines`),
 
   snapToWindows: (id, window) => {
     const state = get()
@@ -94,221 +92,100 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
       throw new Error(`window ${id} not found`)
     }
     const snapDistance = 50
-    const snapTo = { ...window }
-    const snappingToPositions: SnappingToPositions = {
-      ...DEFAULT_SNAPPING_TO_POSITIONS,
-    }
+    const snapTo = { x: window.x, y: window.y }
+    const snapLines: SnappingToPosition[] = []
     for (let i = 0; i < openWindows.length; i++) {
-      // if (window.x !== snapTo.x && window.y !== snapTo.y) {
-      //   break
-      // }
       const currentWindow = openWindows[i]
       if (currentWindow.id === id) {
         continue
       }
-      const curWindowBottom = currentWindow.y + currentWindow.height
-      const curWindowRight = currentWindow.x + currentWindow.width
-      const windowBottom = window.y + window.height
-      const windowRight = window.x + window.width
-      const inRange: {
-        x: Record<SnapPointsX, boolean>
-        y: Record<SnapPointsY, boolean>
-      } = {
-        y: {
-          topToTop: Math.abs(currentWindow.y - window.y) < snapDistance,
-          bottomToBottom:
-            Math.abs(curWindowBottom - windowBottom) < snapDistance,
-          topToBottom: Math.abs(window.y - curWindowBottom) < snapDistance,
-          bottomToTop: Math.abs(windowBottom - currentWindow.y) < snapDistance,
-        },
 
-        x: {
-          leftToLeft: Math.abs(currentWindow.x - window.x) < snapDistance,
-          rightToRight: Math.abs(curWindowRight - windowRight) < snapDistance,
-          leftToRight: Math.abs(window.x - curWindowRight) < snapDistance,
-          rightToLeft: Math.abs(windowRight - currentWindow.x) < snapDistance,
-        },
-      }
+      const curWindowPoints = getRectangleCorners(
+        currentWindow.x,
+        currentWindow.y,
+        currentWindow.width,
+        currentWindow.height,
+        currentWindow.rotation,
+      )
 
-      const isPointCloser = isPointCloserFn(window, currentWindow)
+      const windowPoints = getRectangleCorners(
+        window.x,
+        window.y,
+        window.width,
+        window.height,
+        window.rotation,
+      )
 
-      if (inRange.y.topToTop) {
-        snapTo.y = currentWindow.y
-        const dir = window.x > currentWindow.x ? -1 : 1
-        if (isPointCloser(snappingToPositions.topToTop)) {
-          snappingToPositions.topToTop = {
-            from: {
-              x: snapTo.x,
-              y: currentWindow.y,
-            },
-            to: {
-              x: currentWindow.x,
-              y: currentWindow.y,
-            },
-            dir,
+      for (const windowPoint of windowPoints) {
+        for (const curWindowPoint of curWindowPoints) {
+          const yInRange =
+            Math.abs(windowPoint.y - curWindowPoint.y) <= snapDistance
+          const xInRange =
+            Math.abs(windowPoint.x - curWindowPoint.x) <= snapDistance
+          if (yInRange) {
+            snapTo.y = window.y - windowPoint.y + curWindowPoint.y
+            const dir = windowPoint.x < curWindowPoint.x ? 1 : -1
+            snapLines.push({
+              from: {
+                x: windowPoint.x,
+                y: curWindowPoint.y,
+              },
+              to: curWindowPoint,
+              realSnap: snapTo.y,
+              dir,
+              axis: 'y',
+            })
           }
-        }
-      }
-      if (inRange.y.bottomToBottom) {
-        snapTo.y = curWindowBottom - window.height
-        const dir = window.x > currentWindow.x ? -1 : 1
-        if (isPointCloser(snappingToPositions.bottomToBottom)) {
-          snappingToPositions.bottomToBottom = {
-            from: {
-              x: snapTo.x,
-              y: curWindowBottom,
-            },
-            to: {
-              x: currentWindow.x,
-              y: curWindowBottom,
-            },
-            dir,
-          }
-        }
-      }
-      if (inRange.y.bottomToTop) {
-        snapTo.y = currentWindow.y - window.height
-        const dir = window.x > currentWindow.x ? -1 : 1
-        if (isPointCloser(snappingToPositions.bottomToTop)) {
-          snappingToPositions.bottomToTop = {
-            from: {
-              x: snapTo.x,
-              y: currentWindow.y,
-            },
-            to: {
-              x: currentWindow.x,
-              y: currentWindow.y,
-            },
-            dir,
-          }
-        }
-      }
-      if (inRange.y.topToBottom) {
-        snapTo.y = curWindowBottom
-        const dir = window.x > currentWindow.x ? -1 : 1
-        if (isPointCloser(snappingToPositions.topToBottom)) {
-          snappingToPositions.topToBottom = {
-            from: {
-              x: snapTo.x,
-              y: curWindowBottom,
-            },
-            to: {
-              x: currentWindow.x,
-              y: curWindowBottom,
-            },
-            dir,
-          }
-        }
-      }
-
-      if (inRange.x.leftToLeft) {
-        snapTo.x = currentWindow.x
-        const dir = window.y > currentWindow.y ? -1 : 1
-        if (isPointCloser(snappingToPositions.leftToLeft)) {
-          snappingToPositions.leftToLeft = {
-            from: {
-              x: currentWindow.x,
-              y: snapTo.y,
-            },
-            to: {
-              x: currentWindow.x,
-              y: currentWindow.y,
-            },
-            dir,
-          }
-        }
-      }
-      if (inRange.x.leftToRight) {
-        snapTo.x = curWindowRight
-        const dir = window.y > currentWindow.y ? -1 : 1
-        if (isPointCloser(snappingToPositions.leftToRight)) {
-          snappingToPositions.leftToRight = {
-            from: {
-              x: curWindowRight,
-              y: snapTo.y,
-            },
-            to: {
-              x: curWindowRight,
-              y: currentWindow.y,
-            },
-            dir,
-          }
-        }
-      }
-      if (inRange.x.rightToLeft) {
-        snapTo.x = currentWindow.x - window.width
-        const dir = window.y > currentWindow.y ? -1 : 1
-        if (isPointCloser(snappingToPositions.rightToLeft)) {
-          snappingToPositions.rightToLeft = {
-            from: {
-              x: currentWindow.x,
-              y: snapTo.y,
-            },
-            to: {
-              x: currentWindow.x,
-              y: currentWindow.y,
-            },
-            dir,
-          }
-        }
-      }
-      if (inRange.x.rightToRight) {
-        snapTo.x = curWindowRight - window.width
-        const dir = window.y > currentWindow.y ? -1 : 1
-        if (isPointCloser(snappingToPositions.rightToRight)) {
-          snappingToPositions.rightToRight = {
-            from: {
-              x: curWindowRight,
-              y: snapTo.y,
-            },
-            to: {
-              x: curWindowRight,
-              y: currentWindow.y,
-            },
-            dir,
+          if (xInRange) {
+            snapTo.x = window.x - windowPoint.x + curWindowPoint.x
+            const dir = windowPoint.y < curWindowPoint.y ? 1 : -1
+            snapLines.push({
+              from: {
+                x: curWindowPoint.x,
+                y: windowPoint.y,
+              },
+              to: curWindowPoint,
+              realSnap: snapTo.x,
+              dir,
+              axis: 'x',
+            })
           }
         }
       }
     }
+
+    // const isPointCloser = isPointCloserFn(window, currentWindow)
+
     // update the opposite x and y positions
     // then make sure that each snap point is still valid
     // if selected snap point does not align with the window, remove it
     // margin of error because javascript is bad at math
     const marginOfError = 0.01
-    for (const snapPoint of SNAP_POINTS_Y) {
-      const selectedPoint = snappingToPositions[snapPoint]
-      if (selectedPoint) {
-        selectedPoint.from.x = snapTo.x
-
-        const yPos = selectedPoint.from.y
+    const filtered = snapLines.filter((snapPoint) => {
+      if (snapPoint.axis === 'y') {
+        const yPos = snapPoint.realSnap
         const doesNotAlignToTop = Math.abs(yPos - snapTo.y) > marginOfError
         const doesNotAlignToBottom =
           Math.abs(yPos - (snapTo.y + window.height)) > marginOfError
-
         if (doesNotAlignToTop && doesNotAlignToBottom) {
-          snappingToPositions[snapPoint] = null
+          return false
         }
       }
-    }
-    for (const snapPoint of SNAP_POINTS_X) {
-      const selectedPoint = snappingToPositions[snapPoint]
-      if (selectedPoint) {
-        selectedPoint.from.y = snapTo.y
-
-        const xPos = selectedPoint.from.x
+      if (snapPoint.axis === 'x') {
+        const xPos = snapPoint.realSnap
         const doesNotAlignToLeft = Math.abs(xPos - snapTo.x) > marginOfError
         const doesNotAlignToRight =
           Math.abs(xPos - (snapTo.x + window.width)) > marginOfError
-
         if (doesNotAlignToLeft && doesNotAlignToRight) {
-          snappingToPositions[snapPoint] = null
+          return false
         }
       }
-    }
+      return true
+    })
     set((state) => ({
-      snappingToPositions,
+      snapLines: filtered,
     }))
-    get().setOneWindow(id, {
+    state.setOneWindow(id, {
       x: snapTo.x,
       y: snapTo.y,
     })

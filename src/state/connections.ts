@@ -20,6 +20,8 @@ export type ConnectedWindowsStore = {
   setConnections: Setter<Connection[]>
   makeConnection: (connection: Pick<Connection, 'to'>) => void
   removeConnection: (connectionId: string) => void
+  showConnections: boolean
+  setShowConnections: Setter<boolean>
 }
 
 export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
@@ -27,13 +29,14 @@ export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
   get,
 ) => ({
   activeConnection: null,
-
   setActiveConnection: (setter) => stateSetter(set, setter, `activeConnection`),
 
   hoveredConnection: null,
-
   setHoveredConnection: (setter) =>
     stateSetter(set, setter, `hoveredConnection`),
+
+  showConnections: true,
+  setShowConnections: (setter) => stateSetter(set, setter, `showConnections`),
 
   makeConnection: (connector) => {
     const activeConnection = get().activeConnection
