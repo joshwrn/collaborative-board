@@ -221,15 +221,16 @@ export const WindowInternal: FC<{
               width: '20px',
               height: '20px',
               backgroundColor: 'blue',
+              top: centerPoint.y,
+              left: centerPoint.x,
               position: 'absolute',
-              transform: `translate(${centerPoint.x}px, ${centerPoint.y}px)`,
             }}
           />
           <div
             data-role="counter-rect"
             style={{
               width: `${width}px`,
-              height: `${height - 110}px`,
+              height: `${height}px`,
               position: 'absolute',
               transform: `rotate(${-window.rotation}deg)`,
               pointerEvents: 'none',
@@ -239,7 +240,7 @@ export const WindowInternal: FC<{
           />
           <canvas
             width={width}
-            height={height - 110}
+            height={height}
             style={{
               position: 'relative',
               top: 0,
@@ -260,16 +261,13 @@ export const WindowInternal: FC<{
               setCenterPoint(center)
               const mousePositionPure = {
                 x: (e.clientX - counterBox.left) / state.zoom,
-                y:
-                  (e.clientY - counterBox.top) / state.zoom +
-                  mainRef.current.scrollTop,
+                y: (e.clientY - counterBox.top) / state.zoom,
               }
               const rotatedMousePosition = rotatePointAroundCenter(
                 mousePositionPure,
                 center,
                 -window.rotation,
               )
-              console.log(rotatedMousePosition, mousePositionPure, center)
 
               const from = lastPosition.current
               ctx.beginPath()

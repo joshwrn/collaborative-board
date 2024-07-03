@@ -151,7 +151,8 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   },
 
   resizeWindow: (id, start, movement, pos) => {
-    const window = get().windows.find((window) => window.id === id)
+    const state = get()
+    const window = state.windows.find((window) => window.id === id)
     if (!window) {
       throw new Error(`window ${id} not found`)
     }
@@ -159,7 +160,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
 
     let newSize = { width: window.width, height: window.height }
     let newPosition = { x: position.x, y: position.y }
-    const zoom = get().zoom
+    const zoom = state.zoom
 
     const scaledMovement = {
       x: movement.x / zoom,
@@ -239,7 +240,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       }
     }
 
-    get().setOneWindow(id, {
+    state.setOneWindow(id, {
       ...newWindowSizeInBounds(newSize),
       ...newPosition,
     })
