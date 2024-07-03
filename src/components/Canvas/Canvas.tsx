@@ -77,6 +77,10 @@ export const Canvas: React.FC<{
             -window.rotation,
           )
 
+          if (e.buttons !== 1) {
+            lastPosition.current = rotatedMousePosition
+            return
+          }
           const from = lastPosition.current
           ctx.beginPath()
           ctx.lineWidth = 3
