@@ -16,6 +16,7 @@ import { joinClasses } from '@/utils/joinClasses'
 import { RotationPoints } from './RotationPoints'
 import { Point2d } from '@/state'
 import { Canvas } from '../Canvas/Canvas'
+import { useOutsideClick } from '@/utils/useOutsideClick'
 
 const matchBody = (
   body: string | Iframe,
@@ -68,14 +69,24 @@ export const WindowInternal: FC<{
       setSnappingToPositions: state.setSnapLines,
       spaceMousePosition: state.spaceMousePosition,
       zoom: state.zoom,
+      setSelectedWindow: state.setSelectedWindow,
+      selectedWindow: state.selectedWindow,
     })),
   )
 
   const realPosition = React.useRef({ x: window.x, y: window.y })
+  const nodeRef = React.useRef<HTMLDivElement>(null)
 
   const { width, height } = window
 
-  const nodeRef = React.useRef<HTMLDivElement>(null)
+  useOutsideClick({
+    providedRef: nodeRef,
+    action: () => {
+      if (state.selectedWindow === item.id) {
+        state.setSelectedWindow(null)
+      }
+    },
+  })
 
   const onDrag = (e: DraggableEvent, data: DraggableData) => {
     if (!(e instanceof MouseEvent)) return
@@ -136,7 +147,10 @@ export const WindowInternal: FC<{
         onClick={(e) => {
           e.stopPropagation()
         }}
-        onPointerDown={() => state.bringToFront(item.id)}
+        onPointerDown={() => {
+          state.setSelectedWindow(item.id)
+          state.bringToFront(item.id)
+        }}
       >
         <RotationPoints id={item.id} window={window} />
         <nav className={`${styles.topBar} handle`}>

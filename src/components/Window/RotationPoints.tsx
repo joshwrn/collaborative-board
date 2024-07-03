@@ -51,6 +51,7 @@ const RotationPoints_Internal: React.FC<{
       setOneWindow: state.setOneWindow,
       zoom: state.zoom,
       spaceMousePosition: state.spaceMousePosition,
+      selectedWindow: state.selectedWindow,
     })),
   )
 
@@ -111,6 +112,8 @@ const RotationPoints_Internal: React.FC<{
   ) => {
     console.log('stop', pos)
   }
+
+  if (state.selectedWindow !== id) return null
 
   return (
     <div className={style.wrapper}>

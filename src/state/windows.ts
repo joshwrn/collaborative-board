@@ -26,6 +26,8 @@ export type OpenWindowsStore = {
   fullscreenWindow: (id: string) => void
   hoveredWindow: string | null
   setHoveredWindow: Setter<string | null>
+  selectedWindow: string | null
+  setSelectedWindow: Setter<string | null>
 }
 
 export const WINDOW_ATTRS = {
@@ -285,4 +287,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
 
   hoveredWindow: null,
   setHoveredWindow: (setter) => stateSetter(set, setter, `hoveredWindow`),
+
+  selectedWindow: null,
+  setSelectedWindow: (setter) => stateSetter(set, setter, `selectedWindow`),
 })
