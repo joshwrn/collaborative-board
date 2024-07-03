@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { canvasStore, CanvasStore } from './canvas'
 import { connectedWindowsStore, ConnectedWindowsStore } from './connections'
 import { contextMenuStore, ContextMenuStore } from './contextMenu'
 import { debugStore, DebugStore } from './debug'
@@ -11,7 +12,8 @@ import { spaceStore, SpaceStore } from './space'
 import { userStore, UserStore } from './user'
 import { openWindowsStore, OpenWindowsStore } from './windows'
 
-export type AppStore = ConnectedWindowsStore &
+export type AppStore = CanvasStore &
+  ConnectedWindowsStore &
   ContextMenuStore &
   DebugStore &
   ItemListStore &
@@ -25,6 +27,7 @@ export type AppStore = ConnectedWindowsStore &
 
 export const useAppStore = create<AppStore>((...operators) => {
   return {
+    ...canvasStore(...operators),
     ...connectedWindowsStore(...operators),
     ...contextMenuStore(...operators),
     ...debugStore(...operators),

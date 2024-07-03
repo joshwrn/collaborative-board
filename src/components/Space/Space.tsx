@@ -13,6 +13,7 @@ import { ActiveConnectionGuard } from '../Connections/ActiveConnection'
 import { Debug } from '../Debug/Debug'
 import { SPACE_ATTRS, resetPan } from '@/state/space'
 import { SnapLines } from '../SnapLine/SnapLine'
+import { Toolbar } from '../Toolbar/Toolbar'
 
 const Space_Internal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
@@ -89,6 +90,7 @@ const Space_Internal: FC = () => {
             }}
           />
         </button>
+        <Toolbar />
       </wrapper>
     </div>
   )

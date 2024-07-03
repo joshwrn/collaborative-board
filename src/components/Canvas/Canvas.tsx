@@ -15,26 +15,11 @@ export const Canvas: React.FC<{
     })),
   )
 
-  const [centerPoint, setCenterPoint] = React.useState<Point2d>({
-    x: 0,
-    y: 0,
-  })
-
   const counterRef = React.useRef<HTMLDivElement>(null)
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const lastPosition = React.useRef({ x: 0, y: 0 })
   return (
     <>
-      <div
-        style={{
-          width: '20px',
-          height: '20px',
-          backgroundColor: 'blue',
-          top: centerPoint.y,
-          left: centerPoint.x,
-          position: 'absolute',
-        }}
-      />
       <div
         data-role="counter-rect"
         style={{
@@ -66,7 +51,6 @@ export const Canvas: React.FC<{
             x: counterBox.width / 2 / state.zoom,
             y: counterBox.height / 2 / state.zoom,
           }
-          setCenterPoint(center)
           const mousePositionPure = {
             x: (e.clientX - counterBox.left) / state.zoom,
             y: (e.clientY - counterBox.top) / state.zoom,
@@ -83,8 +67,9 @@ export const Canvas: React.FC<{
           }
           const from = lastPosition.current
           ctx.beginPath()
-          ctx.lineWidth = 3
+          ctx.lineWidth = 10
           ctx.lineCap = `round`
+          ctx.lineJoin = `round`
           ctx.strokeStyle = 'red'
           ctx.moveTo(from.x, from.y)
           ctx.lineTo(rotatedMousePosition.x, rotatedMousePosition.y)
