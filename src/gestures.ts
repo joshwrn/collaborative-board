@@ -31,6 +31,7 @@ export const useGestures = ({
       setZoom: state.setZoom,
       setPan: state.setPan,
       debug_setZoomFocusPoint: state.debug_setZoomFocusPoint,
+      hoveredWindow: state.hoveredWindow,
     })),
   )
 
@@ -68,6 +69,9 @@ export const useGestures = ({
           }))
         }
         if ((delta.x || delta.y) && !delta.z) {
+          if (state.hoveredWindow) {
+            return
+          }
           state.setPan((prev) => ({
             x: prev.x + delta.x,
             y: prev.y + delta.y,
