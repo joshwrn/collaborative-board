@@ -12,6 +12,7 @@ export const Canvas: React.FC<{
   const state = useAppStore(
     useShallow((state) => ({
       zoom: state.zoom,
+      drawColor: state.drawColor,
     })),
   )
 
@@ -28,7 +29,6 @@ export const Canvas: React.FC<{
           position: 'absolute',
           transform: `rotate(${-window.rotation}deg)`,
           pointerEvents: 'none',
-          border: '1px solid red',
         }}
         ref={counterRef}
       />
@@ -70,7 +70,7 @@ export const Canvas: React.FC<{
           ctx.lineWidth = 10
           ctx.lineCap = `round`
           ctx.lineJoin = `round`
-          ctx.strokeStyle = 'red'
+          ctx.strokeStyle = state.drawColor
           ctx.moveTo(from.x, from.y)
           ctx.lineTo(rotatedMousePosition.x, rotatedMousePosition.y)
           ctx.stroke()
