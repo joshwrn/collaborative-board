@@ -2,7 +2,7 @@
 import type { MutableRefObject, RefObject } from 'react'
 import { useEffect, useRef } from 'react'
 
-const checkIfClickedOutside = <EL extends HTMLElement>(
+const checkIfClickedOutsideRef = <EL extends HTMLElement>(
   ref: RefObject<EL>,
   event: MouseEvent,
 ) => {
@@ -12,27 +12,31 @@ const checkIfClickedOutside = <EL extends HTMLElement>(
   }
 }
 
-export const useOutsideClick = <
-  EL1 extends HTMLElement,
-  EL2 extends HTMLElement = EL1,
->({
+const checkIfClickedOutsideSelector = (selector: string, event: MouseEvent) => {
+  if (!event.target) return false
+  if (!(event.target instanceof Element)) return false
+  if (!event.target.closest(selector)) {
+    return true
+  }
+}
+
+export const useOutsideClick = <EL1 extends HTMLElement>({
   action,
-  providedRef,
-  providedRef2,
+  refs,
+  selectors,
 }: {
   action: VoidFunction
-  providedRef?: MutableRefObject<EL1 | null>
-  providedRef2?: MutableRefObject<EL2 | null>
-}): [RefObject<EL1>, RefObject<EL2>] => {
-  const ref1 = useRef<EL1>(null)
-  const ref2 = useRef<EL2>(null)
+  refs: RefObject<EL1>[]
+  selectors?: string[]
+}) => {
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      const firstRefToCheck = providedRef || ref1
-      const secondRefToCheck = providedRef2 || ref2
       if (
-        checkIfClickedOutside(firstRefToCheck, e) &&
-        (!secondRefToCheck.current || checkIfClickedOutside(secondRefToCheck, e))
+        refs.every((ref) => checkIfClickedOutsideRef(ref, e)) &&
+        (!selectors ||
+          selectors.every((selector) =>
+            checkIfClickedOutsideSelector(selector, e),
+          ))
       ) {
         action()
       }
@@ -41,6 +45,5 @@ export const useOutsideClick = <
     return () => {
       document.removeEventListener(`mousedown`, handleClickOutside)
     }
-  }, [ref1, ref2, action, providedRef, providedRef2])
-  return [ref1, ref2]
+  }, [action, refs, selectors])
 }

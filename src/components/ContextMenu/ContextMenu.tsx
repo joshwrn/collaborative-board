@@ -19,7 +19,7 @@ export const ContextMenu: FC = () => {
   )
   const ref = React.useRef<HTMLDivElement>(null)
   usePreventScroll({ enabled: state.contextMenu !== null })
-  useOutsideClick({ action: () => state.setContextMenu(null), providedRef: ref })
+  useOutsideClick({ action: () => state.setContextMenu(null), refs: [ref] })
   if (!state.contextMenu) return null
   return (
     <container

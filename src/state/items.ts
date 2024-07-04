@@ -5,10 +5,14 @@ export type Iframe = {
   [key: string]: string
 }
 
+export type CanvasData = {
+  blob: string
+}
+
 export type Item = {
   id: string
   subject: string
-  body: (string | Iframe)[]
+  body: (string | Iframe | CanvasData)[]
   members: string[]
 }
 

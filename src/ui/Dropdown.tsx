@@ -75,8 +75,10 @@ const DropdownInternal = ({
     ],
   })
   useOutsideClick({
-    providedRef: refs.reference as React.MutableRefObject<HTMLElement | null>,
-    providedRef2: refs.floating,
+    refs: [
+      refs.reference as React.MutableRefObject<HTMLElement | null>,
+      refs.floating,
+    ],
     action: () => setOpen(false),
   })
   return (

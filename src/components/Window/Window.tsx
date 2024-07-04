@@ -9,7 +9,7 @@ import { WindowBorder } from './WindowBorder'
 import { IoAddOutline } from 'react-icons/io5'
 import { ConnectorOverlay } from './ConnectorOverlay'
 import { useShallow } from 'zustand/react/shallow'
-import { Iframe, Item } from '@/state/items'
+import { CanvasData, Iframe, Item } from '@/state/items'
 import { WindowType } from '@/state/windows'
 import { match, P } from 'ts-pattern'
 import { joinClasses } from '@/utils/joinClasses'
@@ -19,10 +19,12 @@ import { Canvas } from '../Canvas/Canvas'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 
 const matchBody = (
-  body: string | Iframe,
+  body: string | Iframe | CanvasData,
   i: number,
+  window: WindowType,
 ): JSX.Element | JSX.Element[] | null => {
   return match(body)
+    .with({ blob: P.string }, (value) => <Canvas key={i} window={window} />)
     .with(P.string, (value) => <p key={i}>{value}</p>)
     .with(
       {
@@ -80,7 +82,8 @@ export const WindowInternal: FC<{
   const { width, height } = window
 
   useOutsideClick({
-    providedRef: nodeRef,
+    refs: [nodeRef],
+    selectors: ['#toolbar'],
     action: () => {
       if (state.selectedWindow === item.id) {
         state.setSelectedWindow(null)
@@ -92,9 +95,10 @@ export const WindowInternal: FC<{
     if (!(e instanceof MouseEvent)) return
     const { movementX, movementY } = e
     if (!movementX && !movementY) return
+    const zoom = useAppStore.getState().zoom
     const scaledPosition = {
-      x: movementX / useAppStore.getState().zoom,
-      y: movementY / useAppStore.getState().zoom,
+      x: movementX / zoom,
+      y: movementY / zoom,
     }
     realPosition.current.x += scaledPosition.x
     realPosition.current.y += scaledPosition.y
@@ -182,8 +186,7 @@ export const WindowInternal: FC<{
         </header>
 
         <main className={styles.content}>
-          {/* {item.body.map((body, i) => matchBody(body, i))} */}
-          <Canvas window={window} />
+          {item.body.map((body, i) => matchBody(body, i, window))}
         </main>
         <ConnectorOverlay id={item.id} />
 

@@ -23,7 +23,7 @@ export const Toolbar: React.FC = () => {
   }
 
   return (
-    <div className={style.wrapper}>
+    <div className={style.wrapper} id="toolbar">
       <button>Draw</button>
       <button>
         <div
