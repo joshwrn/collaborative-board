@@ -1,0 +1,10 @@
+.wrapper {
+  padding-left: 20px;
+  [data-role='dropdown-menu'] {
+    p {
+      z-index: -1;
+    }
+    position: relative;
+    z-index: 1;
+  }
+}

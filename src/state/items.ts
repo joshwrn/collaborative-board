@@ -9,10 +9,12 @@ export type CanvasData = {
   blob: string
 }
 
+export type ItemBody = string | Iframe | CanvasData
+
 export type Item = {
   id: string
   subject: string
-  body: (string | Iframe | CanvasData)[]
+  body: ItemBody[]
   members: string[]
 }
 
@@ -23,6 +25,8 @@ export type ItemListStore = {
 
   hoveredItem: string | null
   setHoveredItem: Setter<string | null>
+
+  addContentToItem: (id: string, content: string | Iframe | CanvasData) => void
 }
 
 export const itemListStore: AppStateCreator<ItemListStore> = (set) => ({
@@ -38,4 +42,10 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set) => ({
 
   hoveredItem: null,
   setHoveredItem: (setter) => stateSetter(set, setter, `hoveredItem`),
+  addContentToItem: (id, content) =>
+    set((state) => ({
+      items: state.items.map((item) =>
+        item.id === id ? { ...item, body: [...item.body, content] } : item,
+      ),
+    })),
 })

@@ -20,12 +20,16 @@ export const Canvas: React.FC<{
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const lastPosition = React.useRef({ x: 0, y: 0 })
   return (
-    <>
+    <div
+      style={{
+        position: 'relative',
+      }}
+    >
       <div
         data-role="counter-rect"
         style={{
           width: `${window.width}px`,
-          height: `${window.height}px`,
+          height: `${window.height - 200}px`,
           position: 'absolute',
           transform: `rotate(${-window.rotation}deg)`,
           pointerEvents: 'none',
@@ -34,7 +38,7 @@ export const Canvas: React.FC<{
       />
       <canvas
         width={window.width}
-        height={window.height}
+        height={window.height - 200}
         style={{
           position: 'relative',
           top: 0,
@@ -78,6 +82,6 @@ export const Canvas: React.FC<{
           lastPosition.current = rotatedMousePosition
         }}
       />
-    </>
+    </div>
   )
 }

@@ -86,9 +86,11 @@ const DropdownInternal = ({
       <div
         id={id ?? ''}
         data-open={open}
+        data-role="dropdown-menu"
         className={style.inner}
         ref={refs.setReference}
-        onClick={() => {
+        onClick={(e) => {
+          console.log('clicked')
           if (disabled) return
           setOpen(!open)
         }}
@@ -159,7 +161,7 @@ export const Item: React.FC<{
   Icon?: IconType
   label1?: string
   label2?: string
-  isChecked: boolean
+  isChecked?: boolean
   showCheck?: boolean
   id?: string
   children?: React.ReactNode

@@ -17,6 +17,7 @@ import { RotationPoints } from './RotationPoints'
 import { Point2d } from '@/state'
 import { Canvas } from '../Canvas/Canvas'
 import { useOutsideClick } from '@/utils/useOutsideClick'
+import { WindowMenu } from './WindowMenu/WindowMenu'
 
 const matchBody = (
   body: string | Iframe | CanvasData,
@@ -169,6 +170,9 @@ export const WindowInternal: FC<{
         </nav>
 
         <header className={styles.titleBar}>
+          <section>
+            <WindowMenu id={item.id} />
+          </section>
           <section className={styles.title}></section>
           <section className={styles.connections}>
             <inner>

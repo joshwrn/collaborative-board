@@ -2,7 +2,6 @@ import React from 'react'
 import style from './Toolbar.module.scss'
 import { useAppStore } from '@/state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
-import { color } from 'framer-motion'
 
 export const Toolbar: React.FC = () => {
   const state = useAppStore(
@@ -14,9 +13,6 @@ export const Toolbar: React.FC = () => {
       selectedWindow: state.selectedWindow,
     })),
   )
-
-  const colorInputRef = React.useRef<HTMLInputElement>(null)
-  const colorInputIsOpen = React.useRef(false)
 
   if (state.selectedWindow === null) {
     return null
@@ -31,14 +27,10 @@ export const Toolbar: React.FC = () => {
           style={{ backgroundColor: state.color }}
         />
         <input
-          onBlur={() => {
-            colorInputIsOpen.current = false
-          }}
           className={style.colorInput}
           type="color"
           value={state.color}
           onChange={(e) => state.setColor(e.target.value)}
-          ref={colorInputRef}
         />
       </button>
     </div>
