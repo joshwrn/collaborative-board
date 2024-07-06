@@ -42,6 +42,7 @@ export const WindowBorderInternal: FC<{
       resizeWindow: state.resizeWindow,
       activeConnection: state.activeConnection,
       hoveredItem: state.hoveredItem,
+      selectedWindow: state.selectedWindow,
     })),
   )
 
@@ -97,7 +98,8 @@ export const WindowBorderInternal: FC<{
       className={joinClasses(
         styles.border,
         isActive && styles.activeBorder,
-        state.hoveredItem === id && styles.activeBorder,
+        (state.hoveredItem === id || state.selectedWindow === id) &&
+          styles.activeBorder,
       )}
       style={{
         width: `${width + 2}px`,

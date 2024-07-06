@@ -6,7 +6,7 @@
   gap: 10px;
   // justify-content: center;
   // align-items: center;
-  // border: 1px solid rgba(255, 255, 255, 0.1);
+  // border: 1px solid green;
   transition: border 0.3s;
   &[data-open='true'] {
     // border: 1px solid rgba(255, 255, 255, 0.15);
@@ -22,15 +22,10 @@
 }
 
 .selectedOptionWrapper {
-  width: 100%;
   display: flex;
   gap: 20px;
   align-items: center;
   // border: 1px solid blue;
-  svg {
-    font-size: var(--font--1);
-    color: var(--white-65);
-  }
   p {
     text-transform: capitalize;
     color: var(--white-65);
@@ -39,13 +34,14 @@
 }
 
 .arrow {
-  padding-left: 50px;
+  // border: 1px solid red;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   svg {
-    font-size: var(--font--1);
+    transform: translateY(1px);
+    font-size: var(--font--2);
     color: var(--white-65);
   }
 }
@@ -106,7 +102,7 @@
     background-color: var(--white-15);
   }
   svg {
-    font-size: var(--font--1);
+    font-size: var(--font--2);
     color: var(--color-accent);
   }
   &[data-checked='true'] {

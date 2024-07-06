@@ -84,7 +84,7 @@ export const WindowInternal: FC<{
 
   useOutsideClick({
     refs: [nodeRef],
-    selectors: ['#toolbar'],
+    selectors: ['#toolbar', '.dropdown-list'],
     action: () => {
       if (state.selectedWindow === item.id) {
         state.setSelectedWindow(null)

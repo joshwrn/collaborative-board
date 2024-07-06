@@ -8,7 +8,7 @@ import {
 import type { Variants } from 'framer-motion'
 import { AnimatePresence, motion } from 'framer-motion'
 import React from 'react'
-import { IoMdArrowDropdown } from 'react-icons/io'
+import { IoIosArrowDown } from 'react-icons/io'
 import { IoCheckmarkSharp as CheckIcon } from 'react-icons/io5'
 import type { IconType } from 'react-icons/lib'
 
@@ -98,7 +98,9 @@ const DropdownInternal = ({
         <div className={style.selectedOptionWrapper}>
           <SelectedOption />
         </div>
-        {/* <div className={style.arrow}><IoMdArrowDropdown /> </div> */}
+        <div className={style.arrow}>
+          <IoIosArrowDown />
+        </div>
       </div>
       <AnimatePresence>
         {open && (
