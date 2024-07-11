@@ -13,6 +13,7 @@ export const Canvas: React.FC<{
     useShallow((state) => ({
       zoom: state.zoom,
       drawColor: state.drawColor,
+      drawSize: state.drawSize,
     })),
   )
 
@@ -23,13 +24,15 @@ export const Canvas: React.FC<{
     <div
       style={{
         position: 'relative',
+        display: 'flex',
+        justifyContent: 'center',
       }}
     >
       <div
         data-role="counter-rect"
         style={{
-          width: `${window.width}px`,
-          height: `${window.height - 200}px`,
+          width: `${window.width - 40}px`,
+          height: `${400}px`,
           position: 'absolute',
           transform: `rotate(${-window.rotation}deg)`,
           pointerEvents: 'none',
@@ -37,14 +40,9 @@ export const Canvas: React.FC<{
         ref={counterRef}
       />
       <canvas
-        width={window.width}
-        height={window.height - 200}
-        style={{
-          position: 'relative',
-          top: 0,
-          left: 0,
-          border: '1px solid blue',
-        }}
+        width={window.width - 40}
+        height={400}
+        className={style.canvas}
         ref={canvasRef}
         onMouseMove={(e) => {
           const ctx = canvasRef.current?.getContext('2d')
@@ -71,7 +69,7 @@ export const Canvas: React.FC<{
           }
           const from = lastPosition.current
           ctx.beginPath()
-          ctx.lineWidth = 10
+          ctx.lineWidth = state.drawSize
           ctx.lineCap = `round`
           ctx.lineJoin = `round`
           ctx.strokeStyle = state.drawColor

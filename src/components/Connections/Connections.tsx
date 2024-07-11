@@ -22,6 +22,7 @@ const ConnectionInternal = ({
   mousePosition,
   hoveredItem,
   zoom,
+  showArrow,
 }: {
   from: WindowType
   to: WindowType | undefined
@@ -30,6 +31,7 @@ const ConnectionInternal = ({
   zoom: number
   isActive?: boolean
   hoveredItem: 'none' | 'from' | 'to'
+  showArrow: boolean
 }) => {
   const state = useAppStore(
     useShallow((state) => ({
@@ -79,7 +81,7 @@ const ConnectionInternal = ({
         `,
       }}
     >
-      <IoIosArrowForward />
+      {showArrow && <IoIosArrowForward size={40} />}
     </div>
   )
 }
@@ -138,6 +140,8 @@ export const ConnectionsInternal: FC = () => {
     return null
   }
 
+  const showArrows = state.connections.length < 100
+
   return (
     <>
       {state.connections.map((connection, i) => {
@@ -155,6 +159,7 @@ export const ConnectionsInternal: FC = () => {
             to={windowTo}
             id={connection.id}
             zoom={state.zoom}
+            showArrow={showArrows}
             hoveredItem={includesHoveredItem(
               connection,
               state.hoveredItem ?? state.hoveredWindow,

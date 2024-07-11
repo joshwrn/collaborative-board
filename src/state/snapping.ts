@@ -1,4 +1,3 @@
-import { distance } from 'mathjs'
 import { Point2d } from '.'
 import { AppStateCreator, Setter, stateSetter } from './state'
 import { WindowType } from './windows'
