@@ -25,6 +25,7 @@ export const Canvas: React.FC<{
 
   useOutsideClick({
     refs: [canvasRef],
+    selectors: ['#toolbar', '.dropdown-list'],
     action: () => state.setCanvasIsFocused(false),
   })
 
