@@ -19,9 +19,9 @@ export const Toolbar: React.FC = () => {
       setColor: state.setDrawColor,
       tool: state.tool,
       setTool: state.setTool,
-      selectedWindow: state.selectedWindow,
       drawSize: state.drawSize,
       setDrawSize: state.setDrawSize,
+      canvasIsFocused: state.canvasIsFocused,
     })),
   )
 
@@ -46,7 +46,7 @@ export const Toolbar: React.FC = () => {
     action: () => setOpen(false),
   })
 
-  if (state.selectedWindow === null) {
+  if (!state.canvasIsFocused) {
     return null
   }
 

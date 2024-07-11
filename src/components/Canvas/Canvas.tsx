@@ -5,6 +5,7 @@ import { WindowType } from '@/state/windows'
 import { useAppStore } from '@/state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
 import { rotatePointAroundCenter } from '@/logic/rotatePointAroundCenter'
+import { useOutsideClick } from '@/utils/useOutsideClick'
 
 export const Canvas: React.FC<{
   window: WindowType
@@ -14,12 +15,19 @@ export const Canvas: React.FC<{
       zoom: state.zoom,
       drawColor: state.drawColor,
       drawSize: state.drawSize,
+      setCanvasIsFocused: state.setCanvasIsFocused,
     })),
   )
 
   const counterRef = React.useRef<HTMLDivElement>(null)
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const lastPosition = React.useRef({ x: 0, y: 0 })
+
+  useOutsideClick({
+    refs: [canvasRef],
+    action: () => state.setCanvasIsFocused(false),
+  })
+
   return (
     <div
       style={{
@@ -27,6 +35,7 @@ export const Canvas: React.FC<{
         display: 'flex',
         justifyContent: 'center',
       }}
+      onMouseDown={() => state.setCanvasIsFocused(true)}
     >
       <div
         data-role="counter-rect"

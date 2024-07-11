@@ -7,6 +7,8 @@ export type CanvasStore = {
   setDrawColor: Setter<string>
   drawSize: number
   setDrawSize: Setter<number>
+  canvasIsFocused: boolean
+  setCanvasIsFocused: Setter<boolean>
 }
 
 export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
@@ -16,4 +18,6 @@ export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
   setDrawSize: (setter) => stateSetter(set, setter, `drawSize`),
   drawColor: '#ff0000',
   setDrawColor: (setter) => stateSetter(set, setter, `drawColor`),
+  canvasIsFocused: false,
+  setCanvasIsFocused: (setter) => stateSetter(set, setter, `canvasIsFocused`),
 })
