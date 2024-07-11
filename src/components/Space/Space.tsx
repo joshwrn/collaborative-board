@@ -6,13 +6,13 @@ import { Windows } from '../Window/Window'
 import styles from './Space.module.scss'
 import { useAppStore } from '@/state/gen-state'
 import { useGestures } from '@/gestures'
-import { MdOutlineCenterFocusWeak } from 'react-icons/md'
 import { Connections } from '../Connections/Connections'
 import { useShallow } from 'zustand/react/shallow'
 import { ActiveConnectionGuard } from '../Connections/ActiveConnection'
 import { Debug } from '../Debug/Debug'
-import { SPACE_ATTRS, resetPan } from '@/state/space'
+import { SPACE_ATTRS } from '@/state/space'
 import { SnapLines } from '../SnapLine/SnapLine'
+import { Toolbar } from '../Toolbar/Toolbar'
 
 const Space_Internal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
@@ -21,16 +21,10 @@ const Space_Internal: FC = () => {
     useShallow((state) => ({
       zoom: state.zoom,
       pan: state.pan,
-      setPan: state.setPan,
-      setZoom: state.setZoom,
       setSpaceMousePosition: state.setSpaceMousePosition,
       setActiveConnection: state.setActiveConnection,
     })),
   )
-
-  React.useEffect(() => {
-    state.setPan(resetPan(wrapperRef))
-  }, [])
 
   useGestures({ wrapperRef, spaceRef })
   const lineSize = 1 / state.zoom
@@ -81,14 +75,7 @@ const Space_Internal: FC = () => {
           <SnapLines />
           <Debug />
         </container>
-        <button className={styles.button}>
-          <MdOutlineCenterFocusWeak
-            onClick={() => {
-              state.setZoom(SPACE_ATTRS.default.zoom)
-              state.setPan(() => resetPan(wrapperRef))
-            }}
-          />
-        </button>
+        <Toolbar />
       </wrapper>
     </div>
   )

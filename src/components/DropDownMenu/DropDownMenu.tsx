@@ -4,7 +4,7 @@ import style from './DropDownMenu.module.scss'
 import { useAppStore } from '@/state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
 import Dropdown from '@/ui/Dropdown'
-import { SPACE_ATTRS } from '@/state/space'
+import { SPACE_ATTRS, resetPan } from '@/state/space'
 
 const MockItem = () => {
   const state = useAppStore(
@@ -124,6 +124,7 @@ const SpaceItem = () => {
     useShallow((state) => ({
       zoom: state.zoom,
       setZoom: state.setZoom,
+      setPan: state.setPan,
     })),
   )
   return (
@@ -132,13 +133,9 @@ const SpaceItem = () => {
         id="dropdown-space-button"
         SelectedOption={() => <p>Space</p>}
         Options={[
-          <div
-            className={style.zoom}
-            key={'Zoom'}
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className={style.zoom} key={'Zoom'}>
             <p>Zoom</p>
-            <section>
+            <section onClick={(e) => e.stopPropagation()}>
               <button
                 onClick={() => state.setZoom(state.zoom - 0.05)}
                 id="dropdown-space-zoom-out-button"
@@ -155,6 +152,18 @@ const SpaceItem = () => {
                 <p>+</p>
               </button>
             </section>
+            <button
+              className={style.reset}
+              onClick={() => {
+                state.setZoom(SPACE_ATTRS.default.zoom)
+                state.setPan(() => ({
+                  x: SPACE_ATTRS.default.pan.x,
+                  y: SPACE_ATTRS.default.pan.y,
+                }))
+              }}
+            >
+              <p>Reset</p>
+            </button>
           </div>,
         ]}
       />

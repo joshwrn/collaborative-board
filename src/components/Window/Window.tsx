@@ -9,17 +9,23 @@ import { WindowBorder } from './WindowBorder'
 import { IoAddOutline } from 'react-icons/io5'
 import { ConnectorOverlay } from './ConnectorOverlay'
 import { useShallow } from 'zustand/react/shallow'
-import { Iframe, Item } from '@/state/items'
+import { CanvasData, Iframe, Item } from '@/state/items'
 import { WindowType } from '@/state/windows'
 import { match, P } from 'ts-pattern'
 import { joinClasses } from '@/utils/joinClasses'
 import { RotationPoints } from './RotationPoints'
+import { Point2d } from '@/state'
+import { Canvas } from '../Canvas/Canvas'
+import { useOutsideClick } from '@/utils/useOutsideClick'
+import { WindowMenu } from './WindowMenu/WindowMenu'
 
 const matchBody = (
-  body: string | Iframe,
+  body: string | Iframe | CanvasData,
   i: number,
+  window: WindowType,
 ): JSX.Element | JSX.Element[] | null => {
   return match(body)
+    .with({ blob: P.string }, (value) => <Canvas key={i} window={window} />)
     .with(P.string, (value) => <p key={i}>{value}</p>)
     .with(
       {
@@ -64,22 +70,36 @@ export const WindowInternal: FC<{
       setHoveredWindow: state.setHoveredWindow,
       snapToWindows: state.snapToWindows,
       setSnappingToPositions: state.setSnapLines,
+      spaceMousePosition: state.spaceMousePosition,
+      zoom: state.zoom,
+      setSelectedWindow: state.setSelectedWindow,
+      selectedWindow: state.selectedWindow,
     })),
   )
 
   const realPosition = React.useRef({ x: window.x, y: window.y })
+  const nodeRef = React.useRef<HTMLDivElement>(null)
 
   const { width, height } = window
 
-  const nodeRef = React.useRef<HTMLDivElement>(null)
+  useOutsideClick({
+    refs: [nodeRef],
+    selectors: ['#toolbar', '.dropdown-list'],
+    action: () => {
+      if (state.selectedWindow === item.id) {
+        state.setSelectedWindow(null)
+      }
+    },
+  })
 
   const onDrag = (e: DraggableEvent, data: DraggableData) => {
     if (!(e instanceof MouseEvent)) return
     const { movementX, movementY } = e
     if (!movementX && !movementY) return
+    const zoom = useAppStore.getState().zoom
     const scaledPosition = {
-      x: movementX / useAppStore.getState().zoom,
-      y: movementY / useAppStore.getState().zoom,
+      x: movementX / zoom,
+      y: movementY / zoom,
     }
     realPosition.current.x += scaledPosition.x
     realPosition.current.y += scaledPosition.y
@@ -132,7 +152,10 @@ export const WindowInternal: FC<{
         onClick={(e) => {
           e.stopPropagation()
         }}
-        onPointerDown={() => state.bringToFront(item.id)}
+        onPointerDown={() => {
+          state.setSelectedWindow(item.id)
+          state.bringToFront(item.id)
+        }}
       >
         <RotationPoints id={item.id} window={window} />
         <nav className={`${styles.topBar} handle`}>
@@ -147,6 +170,9 @@ export const WindowInternal: FC<{
         </nav>
 
         <header className={styles.titleBar}>
+          <section>
+            <WindowMenu id={item.id} />
+          </section>
           <section className={styles.title}></section>
           <section className={styles.connections}>
             <inner>
@@ -164,7 +190,7 @@ export const WindowInternal: FC<{
         </header>
 
         <main className={styles.content}>
-          {item.body.map((body, i) => matchBody(body, i))}
+          {item.body.map((body, i) => matchBody(body, i, window))}
         </main>
         <ConnectorOverlay id={item.id} />
 

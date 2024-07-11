@@ -8,7 +8,7 @@ import {
 import type { Variants } from 'framer-motion'
 import { AnimatePresence, motion } from 'framer-motion'
 import React from 'react'
-import { IoMdArrowDropdown } from 'react-icons/io'
+import { IoIosArrowDown } from 'react-icons/io'
 import { IoCheckmarkSharp as CheckIcon } from 'react-icons/io5'
 import type { IconType } from 'react-icons/lib'
 
@@ -75,8 +75,10 @@ const DropdownInternal = ({
     ],
   })
   useOutsideClick({
-    providedRef: refs.reference as React.MutableRefObject<HTMLElement | null>,
-    providedRef2: refs.floating,
+    refs: [
+      refs.reference as React.MutableRefObject<HTMLElement | null>,
+      refs.floating,
+    ],
     action: () => setOpen(false),
   })
   return (
@@ -84,9 +86,11 @@ const DropdownInternal = ({
       <div
         id={id ?? ''}
         data-open={open}
+        data-role="dropdown-menu"
         className={style.inner}
         ref={refs.setReference}
-        onClick={() => {
+        onClick={(e) => {
+          console.log('clicked')
           if (disabled) return
           setOpen(!open)
         }}
@@ -94,7 +98,9 @@ const DropdownInternal = ({
         <div className={style.selectedOptionWrapper}>
           <SelectedOption />
         </div>
-        {/* <div className={style.arrow}><IoMdArrowDropdown /> </div> */}
+        <div className={style.arrow}>
+          <IoIosArrowDown />
+        </div>
       </div>
       <AnimatePresence>
         {open && (
@@ -157,7 +163,7 @@ export const Item: React.FC<{
   Icon?: IconType
   label1?: string
   label2?: string
-  isChecked: boolean
+  isChecked?: boolean
   showCheck?: boolean
   id?: string
   children?: React.ReactNode

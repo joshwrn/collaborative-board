@@ -1,4 +1,3 @@
-import { distance } from 'mathjs'
 import { Point2d } from '.'
 import { AppStateCreator, Setter, stateSetter } from './state'
 import { WindowType } from './windows'
@@ -10,6 +9,7 @@ export type SnappingToPosition = {
   dir: number
   axis: 'x' | 'y'
   realSnap: number
+  label: RotationPoint
 }
 
 export type SnappingStore = {
@@ -79,11 +79,11 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
   snapLines: [],
   setSnapLines: (setter) => stateSetter(set, setter, `snapLines`),
 
-  snapToWindows: (id, window) => {
+  snapToWindows: (id, draggedWindow) => {
     const state = get()
     const isSnapping = state.isSnappingOn
     if (!isSnapping) {
-      state.setOneWindow(id, { x: window.x, y: window.y })
+      state.setOneWindow(id, { x: draggedWindow.x, y: draggedWindow.y })
       return
     }
     const openWindows = state.windows
@@ -92,7 +92,7 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
       throw new Error(`window ${id} not found`)
     }
     const snapDistance = 50
-    const snapTo = { x: window.x, y: window.y }
+    const snapTo = { x: draggedWindow.x, y: draggedWindow.y }
     const snapLines: SnappingToPosition[] = []
     for (let i = 0; i < openWindows.length; i++) {
       const currentWindow = openWindows[i]
@@ -108,44 +108,54 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
         currentWindow.rotation,
       )
 
-      const windowPoints = getRectangleCorners(
-        window.x,
-        window.y,
-        window.width,
-        window.height,
-        window.rotation,
+      const draggedWindowPoints = getRectangleCorners(
+        draggedWindow.x,
+        draggedWindow.y,
+        draggedWindow.width,
+        draggedWindow.height,
+        draggedWindow.rotation,
       )
 
-      for (const windowPoint of windowPoints) {
+      for (const draggedWindowPoint of draggedWindowPoints) {
         for (const curWindowPoint of curWindowPoints) {
           const yInRange =
-            Math.abs(windowPoint.y - curWindowPoint.y) <= snapDistance
+            Math.abs(draggedWindowPoint.y - curWindowPoint.y) <= snapDistance
           const xInRange =
-            Math.abs(windowPoint.x - curWindowPoint.x) <= snapDistance
+            Math.abs(draggedWindowPoint.x - curWindowPoint.x) <= snapDistance
           if (yInRange) {
-            snapTo.y = window.y - windowPoint.y + curWindowPoint.y
-            const dir = windowPoint.x < curWindowPoint.x ? 1 : -1
+            // lines appear horizontal
+            // visual of y snapping
+            // o <------------------- o <-- snap point
+            snapTo.y = draggedWindow.y - draggedWindowPoint.y + curWindowPoint.y
+            const dir = draggedWindowPoint.x < curWindowPoint.x ? 1 : -1
             snapLines.push({
               from: {
-                x: windowPoint.x,
+                x: NaN,
                 y: curWindowPoint.y,
               },
               to: curWindowPoint,
+              label: draggedWindowPoint.label,
               realSnap: snapTo.y,
               dir,
               axis: 'y',
             })
           }
           if (xInRange) {
-            snapTo.x = window.x - windowPoint.x + curWindowPoint.x
-            const dir = windowPoint.y < curWindowPoint.y ? 1 : -1
+            // lines appear vertical
+            // visual of x snapping
+            // o <-- snap point
+            // |
+            // o
+            snapTo.x = draggedWindow.x - draggedWindowPoint.x + curWindowPoint.x
+            const dir = draggedWindowPoint.y < curWindowPoint.y ? 1 : -1
             snapLines.push({
               from: {
                 x: curWindowPoint.x,
-                y: windowPoint.y,
+                y: NaN,
               },
               to: curWindowPoint,
               realSnap: snapTo.x,
+              label: draggedWindowPoint.label,
               dir,
               axis: 'x',
             })
@@ -156,34 +166,51 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
 
     // const isPointCloser = isPointCloserFn(window, currentWindow)
 
-    // update the opposite x and y positions
-    // then make sure that each snap point is still valid
     // if selected snap point does not align with the window, remove it
     // margin of error because javascript is bad at math
+    const snappedWindowPoints = getRectangleCorners(
+      snapTo.x,
+      snapTo.y,
+      draggedWindow.width,
+      draggedWindow.height,
+      draggedWindow.rotation,
+    )
     const marginOfError = 0.01
-    const filtered = snapLines.filter((snapPoint) => {
+    const refined: SnappingToPosition[] = []
+    for (const snapPoint of snapLines) {
+      const thisSnapPoint = snappedWindowPoints.find(
+        (point) => point.label === snapPoint.label,
+      )
+      if (!thisSnapPoint) {
+        throw new Error(`snap point ${snapPoint.label} not found`)
+      }
       if (snapPoint.axis === 'y') {
         const yPos = snapPoint.realSnap
-        const doesNotAlignToTop = Math.abs(yPos - snapTo.y) > marginOfError
-        const doesNotAlignToBottom =
-          Math.abs(yPos - (snapTo.y + window.height)) > marginOfError
-        if (doesNotAlignToTop && doesNotAlignToBottom) {
-          return false
+        const doesAlignToTop = Math.abs(yPos - snapTo.y) <= marginOfError
+        const doesAlignToBottom =
+          Math.abs(yPos - (snapTo.y + draggedWindow.height)) <= marginOfError
+        if (doesAlignToTop || doesAlignToBottom) {
+          refined.push({
+            ...snapPoint,
+            from: { x: thisSnapPoint.x, y: snapPoint.from.y },
+          })
         }
       }
       if (snapPoint.axis === 'x') {
         const xPos = snapPoint.realSnap
-        const doesNotAlignToLeft = Math.abs(xPos - snapTo.x) > marginOfError
-        const doesNotAlignToRight =
-          Math.abs(xPos - (snapTo.x + window.width)) > marginOfError
-        if (doesNotAlignToLeft && doesNotAlignToRight) {
-          return false
+        const doesAlignToLeft = Math.abs(xPos - snapTo.x) <= marginOfError
+        const doesAlignToRight =
+          Math.abs(xPos - (snapTo.x + draggedWindow.width)) <= marginOfError
+        if (doesAlignToLeft || doesAlignToRight) {
+          refined.push({
+            ...snapPoint,
+            from: { x: snapPoint.from.x, y: thisSnapPoint.y },
+          })
         }
       }
-      return true
-    })
+    }
     set((state) => ({
-      snapLines: filtered,
+      snapLines: refined,
     }))
     state.setOneWindow(id, {
       x: snapTo.x,
