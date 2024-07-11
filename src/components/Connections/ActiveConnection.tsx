@@ -31,7 +31,6 @@ export const ActiveConnection = () => {
       mousePosition={state.spaceMousePosition}
       isActive={true}
       hoveredItem={'none'}
-      showArrow={true}
     />
   )
 }

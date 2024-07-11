@@ -11,7 +11,7 @@
     position: absolute;
     font-size: 20px;
     // adding an extra transform might cause performance issues
-    transform: translateX(8px);
+    right: -12px;
     path {
       // transition: fill 0.3s ease-in-out;
       fill: var(--connection-color);
