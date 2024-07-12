@@ -7,7 +7,8 @@ import { SnappingToPosition } from '@/state/snapping'
 
 export const SnapLineY: React.FC<{
   yPos: SnappingToPosition | null
-}> = ({ yPos }) => {
+  zoom: number
+}> = ({ yPos, zoom }) => {
   if (!yPos) {
     return null
   }
@@ -19,7 +20,7 @@ export const SnapLineY: React.FC<{
       style={{
         left: yPos.dir === -1 ? yPos.to.x : yPos.from.x,
         top: yPos.from.y,
-        height: '2px',
+        height: `${1 / zoom}px`,
         width: yDistance.toString() + 'px',
       }}
     />
@@ -28,7 +29,8 @@ export const SnapLineY: React.FC<{
 
 export const SnapLineX: React.FC<{
   xPos: SnappingToPosition | null
-}> = ({ xPos }) => {
+  zoom: number
+}> = ({ xPos, zoom }) => {
   if (!xPos) {
     return null
   }
@@ -40,7 +42,7 @@ export const SnapLineX: React.FC<{
       style={{
         left: xPos.from.x,
         top: xPos.dir === -1 ? xPos.to.y : xPos.from.y,
-        width: '2px',
+        width: `${1 / zoom}px`,
         height: xDistance.toString() + 'px',
       }}
     />
@@ -52,6 +54,7 @@ const SnapLines_Internal: React.FC = () => {
     useShallow((state) => {
       return {
         snapLines: state.snapLines,
+        zoom: state.zoom,
       }
     }),
   )
@@ -63,9 +66,9 @@ const SnapLines_Internal: React.FC = () => {
       {state.snapLines.map((pos, i) => {
         const key = createKey(pos)
         if (pos.axis === 'y') {
-          return <SnapLineY key={key + i} yPos={pos} />
+          return <SnapLineY key={key + i} yPos={pos} zoom={state.zoom} />
         } else {
-          return <SnapLineX key={key + i} xPos={pos} />
+          return <SnapLineX key={key + i} xPos={pos} zoom={state.zoom} />
         }
       })}
     </>
