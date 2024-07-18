@@ -9,7 +9,7 @@ import { WindowBorder } from './WindowBorder'
 import { IoAddOutline } from 'react-icons/io5'
 import { ConnectorOverlay } from './ConnectorOverlay'
 import { useShallow } from 'zustand/react/shallow'
-import { CanvasData, Iframe, Item } from '@/state/items'
+import { CanvasData, Iframe, Item, ItemBody } from '@/state/items'
 import { WindowType } from '@/state/windows'
 import { match, P } from 'ts-pattern'
 import { joinClasses } from '@/utils/joinClasses'
@@ -19,17 +19,58 @@ import { Canvas } from '../Canvas/Canvas'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { WindowMenu } from './WindowMenu/WindowMenu'
 
+const Text = ({
+  content,
+  windowId,
+  contentId,
+}: {
+  content: string
+  windowId: string
+  contentId: string
+}) => {
+  const ref = React.useRef<HTMLParagraphElement>(null)
+  const state = useAppStore(
+    useShallow((state) => ({
+      editItemContent: state.editItemContent,
+    })),
+  )
+  const textRef = React.useRef(content)
+  return (
+    <p
+      ref={ref}
+      contentEditable
+      onInput={() => {
+        if (!ref.current) return
+        state.editItemContent(windowId, {
+          type: 'text',
+          content: ref.current.innerText,
+          id: contentId,
+        })
+      }}
+    >
+      {textRef.current}
+    </p>
+  )
+}
+
 const matchBody = (
-  body: string | Iframe | CanvasData,
+  body: ItemBody,
   i: number,
   window: WindowType,
 ): JSX.Element | JSX.Element[] | null => {
   return match(body)
-    .with({ blob: P.string }, (value) => <Canvas key={i} window={window} />)
-    .with(P.string, (value) => <p key={i}>{value}</p>)
+    .with({ type: 'canvas' }, (value) => <Canvas key={i} window={window} />)
+    .with({ type: 'text' }, (value) => (
+      <Text
+        key={i}
+        content={value.content}
+        windowId={window.id}
+        contentId={body.id}
+      />
+    ))
     .with(
       {
-        src: P.string,
+        type: 'iframe',
       },
       (value) => (
         <div
@@ -46,7 +87,7 @@ const matchBody = (
               border: 'none',
               borderRadius: '10px',
             }}
-            {...value}
+            {...value.content}
           />
         </div>
       ),

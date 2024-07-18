@@ -3,6 +3,7 @@ import style from './WindowMenu.module.scss'
 import Dropdown from '@/ui/Dropdown'
 import { useAppStore } from '@/state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
+import { nanoid } from 'nanoid'
 
 export const WindowMenu: React.FC<{
   id: string
@@ -20,7 +21,11 @@ export const WindowMenu: React.FC<{
         Options={[
           <Dropdown.Item
             onClick={() => {
-              state.addContentToItem(id, 'New Text')
+              state.addContentToItem(id, {
+                content: 'New Text',
+                type: 'text',
+                id: nanoid(),
+              })
             }}
             key={'Text'}
             label1="Text Block"
@@ -28,7 +33,13 @@ export const WindowMenu: React.FC<{
           />,
           <Dropdown.Item
             onClick={() => {
-              state.addContentToItem(id, { blob: '' })
+              state.addContentToItem(id, {
+                type: 'canvas',
+                content: {
+                  blob: '',
+                },
+                id: nanoid(),
+              })
             }}
             key={'Canvas'}
             label1="Canvas"

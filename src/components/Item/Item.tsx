@@ -10,7 +10,7 @@ import type { Iframe, Item, ItemBody } from '@/state/items'
 import { match, P } from 'ts-pattern'
 
 const matchBody = (body: ItemBody): JSX.Element | JSX.Element[] | null => {
-  return match(body)
+  return match(body.content)
     .with(P.string, (value) => (
       <p>
         {value.substring(0, 90)}
