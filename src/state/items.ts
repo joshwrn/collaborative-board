@@ -1,7 +1,6 @@
 // import { updateArrayItem } from '@/utils/updateArrayItem'
 import { produce } from 'immer'
-import { AppStateCreator, Setter, stateSetter } from './state'
-import { AppStore } from './gen-state'
+import { AppStateCreator, produceState, Setter, stateSetter } from './state'
 
 export type Iframe = {
   src: string
@@ -65,27 +64,23 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
   hoveredItem: null,
   setHoveredItem: (setter) => stateSetter(set, setter, `hoveredItem`),
   addContentToItem: (id, content) => {
-    set(
-      produce<AppStore>((state) => {
-        const item = state.items.find((item) => item.id === id)
-        if (item) {
-          item.body.push(content)
-        }
-      }),
-    )
+    produceState(set, (state) => {
+      const item = state.items.find((item) => item.id === id)
+      if (item) {
+        item.body.push(content)
+      }
+    })
   },
 
   editItemContent: (id, content) => {
-    set(
-      produce<AppStore>((state) => {
-        const item = state.items.find((item) => item.id === id)
-        if (item) {
-          const body = item.body.find((body) => body.id === content.id)
-          if (body) {
-            body.content = content.content
-          }
+    produceState(set, (state) => {
+      const item = state.items.find((item) => item.id === id)
+      if (item) {
+        const body = item.body.find((body) => body.id === content.id)
+        if (body) {
+          body.content = content.content
         }
-      }),
-    )
+      }
+    })
   },
 })

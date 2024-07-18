@@ -1,6 +1,7 @@
 import type { Mutate, StoreApi, StoreMutatorIdentifier } from 'zustand'
 
 import { AppStore } from './gen-state'
+import { produce } from 'immer'
 
 type Get<T, K, F> = K extends keyof T ? T[K] : F
 export type AppStateCreator<
@@ -47,4 +48,17 @@ export const stateSetter = <T extends keyof AppStore>(
       [key]: newValue,
     }
   })
+}
+
+export const produceState = (
+  set: (
+    partial:
+      | AppStore
+      | Partial<AppStore>
+      | ((state: AppStore) => AppStore | Partial<AppStore>),
+    replace?: boolean | undefined,
+  ) => void,
+  newState: (draft: AppStore) => void,
+) => {
+  return set(produce<AppStore>(newState))
 }
