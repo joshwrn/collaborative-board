@@ -22,7 +22,7 @@ export const MOCK_ITEMS: Item[] = [
     body: [
       {
         id: nanoid(),
-        type: 'text',
+        type: 'iframe',
         content: {
           src: 'https://codesandbox.io/embed/sbf2i?view=preview&module=%2Fsrc%2FEffects.js&hidenavigation=1',
           sandbox:
