@@ -35,8 +35,9 @@ export const WindowBorderInternal: FC<{
   id: string
   width: number
   height: number
+  isFullScreen: boolean
   position: { x: number; y: number }
-}> = ({ width, height, id, position }) => {
+}> = ({ width, height, id, position, isFullScreen }) => {
   const state = useAppStore(
     useShallow((state) => ({
       resizeWindow: state.resizeWindow,
@@ -99,11 +100,19 @@ export const WindowBorderInternal: FC<{
         styles.border,
         isActive && styles.activeBorder,
         (state.hoveredItem === id || state.selectedWindow === id) &&
+          !isFullScreen &&
           styles.activeBorder,
       )}
       style={{
-        width: `${width + 2}px`,
-        height: `${height + 2}px`,
+        ...(isFullScreen
+          ? {
+              width: 'calc(50vw + 2px)',
+              height: 'calc(100vh - 198px)',
+            }
+          : {
+              width: `${width + 2}px`,
+              height: `${height + 2}px`,
+            }),
       }}
     >
       {borderPositions.map((pos) => (
@@ -112,6 +121,7 @@ export const WindowBorderInternal: FC<{
           onDrag={(e, data) => onDrag(e, data, pos)}
           onStart={(e, data) => onDragStart(e, data, pos)}
           onStop={(e, data) => onDragStop(e, data, pos)}
+          disabled={isFullScreen}
         >
           <div
             className={styles[pos]}

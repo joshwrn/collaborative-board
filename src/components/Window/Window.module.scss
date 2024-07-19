@@ -50,6 +50,11 @@ $inner-border-radius: 19px;
   @include windowButton;
 }
 
+.min {
+  background-color: #fbbd5c;
+  @include windowButton;
+}
+
 .titleBar {
   position: relative;
   background-color: var(--window-header);
