@@ -23,7 +23,8 @@ export type OpenWindowsStore = {
   ) => void
   setOneWindow: (id: string, update: Partial<WindowType>) => void
   reorderWindows: (id: string) => void
-  fullscreenWindow: (id: string) => void
+  fullScreenWindow: string | null
+  setFullScreenWindow: Setter<string | null>
   hoveredWindow: string | null
   setHoveredWindow: Setter<string | null>
   selectedWindow: string | null
@@ -32,6 +33,7 @@ export type OpenWindowsStore = {
 
 export const WINDOW_ATTRS = {
   defaultSize: { width: 700, height: 500 },
+  defaultFullScreenSize: { width: 700, height: 750 },
   minSize: 300,
   maxSize: 1000,
   zIndex: 0,
@@ -248,42 +250,9 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     })
   },
 
-  fullscreenWindow: (id) => {
-    const curWindow = get().windows.find((window) => window.id === id)
-    if (!id || !curWindow) {
-      throw new Error(`window ${id} not found`)
-    }
+  fullScreenWindow: null,
 
-    const isMaximized =
-      curWindow.width === WINDOW_ATTRS.maxSize &&
-      curWindow.height === WINDOW_ATTRS.maxSize
-    if (isMaximized) {
-      const heightChange = curWindow.height - WINDOW_ATTRS.defaultSize.height
-      const widthChange = curWindow.width - WINDOW_ATTRS.defaultSize.width
-      const newPosition = {
-        x: curWindow.x + widthChange / 2,
-        y: curWindow.y + heightChange / 2,
-      }
-      get().setOneWindow(id, {
-        width: WINDOW_ATTRS.defaultSize.width,
-        height: WINDOW_ATTRS.defaultSize.height,
-        ...newPosition,
-      })
-      return
-    }
-
-    const heightChange = WINDOW_ATTRS.maxSize - curWindow.height
-    const widthChange = WINDOW_ATTRS.maxSize - curWindow.width
-    const newPosition = {
-      x: curWindow.x - widthChange / 2,
-      y: curWindow.y - heightChange / 2,
-    }
-    get().setOneWindow(id, {
-      ...newPosition,
-      width: WINDOW_ATTRS.maxSize,
-      height: WINDOW_ATTRS.maxSize,
-    })
-  },
+  setFullScreenWindow: (setter) => stateSetter(set, setter, `fullScreenWindow`),
 
   hoveredWindow: null,
   setHoveredWindow: (setter) => stateSetter(set, setter, `hoveredWindow`),

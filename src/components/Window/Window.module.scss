@@ -50,6 +50,11 @@ $inner-border-radius: 19px;
   @include windowButton;
 }
 
+.min {
+  background-color: #fbbd5c;
+  @include windowButton;
+}
+
 .titleBar {
   position: relative;
   background-color: var(--window-header);
@@ -123,9 +128,16 @@ $inner-border-radius: 19px;
   scrollbar-width: none;
   line-height: 1.75;
   position: relative;
+  padding: 10px;
   p {
     padding: 20px;
     color: var(--window-text);
+    border: 1px solid transparent;
+    border-radius: 5px;
+    &:focus {
+      outline: none;
+      border: 1px solid var(--color-accent);
+    }
   }
   background-color: var(--window-content);
   &::-webkit-scrollbar {

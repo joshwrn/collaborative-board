@@ -1,4 +1,6 @@
-import { AppStateCreator, Setter, stateSetter } from './state'
+// import { updateArrayItem } from '@/utils/updateArrayItem'
+import { produce } from 'immer'
+import { AppStateCreator, produceState, Setter, stateSetter } from './state'
 
 export type Iframe = {
   src: string
@@ -9,7 +11,25 @@ export type CanvasData = {
   blob: string
 }
 
-export type ItemBody = string | Iframe | CanvasData
+export const ItemBodyTypes = ['text', 'iframe', 'canvas'] as const
+export type ItemBodyType = (typeof ItemBodyTypes)[number]
+
+export type ItemBody =
+  | {
+      content: string
+      id: string
+      type: 'text'
+    }
+  | {
+      content: Iframe
+      id: string
+      type: 'iframe'
+    }
+  | {
+      content: CanvasData
+      id: string
+      type: 'canvas'
+    }
 
 export type Item = {
   id: string
@@ -26,15 +46,16 @@ export type ItemListStore = {
   hoveredItem: string | null
   setHoveredItem: Setter<string | null>
 
-  addContentToItem: (id: string, content: string | Iframe | CanvasData) => void
+  addContentToItem: (id: string, content: ItemBody) => void
+  editItemContent: (id: string, content: ItemBody) => void
 }
 
-export const itemListStore: AppStateCreator<ItemListStore> = (set) => ({
+export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
   items: [],
   setItems: (setter) => stateSetter(set, setter, `items`),
   deleteItem: (id) =>
     set((state) => ({
-      items: state.items.filter((Item) => Item.id !== id),
+      items: state.items.filter((item) => item.id !== id),
       connections: state.connections.filter(
         (connection) => connection.id.includes(id) === false,
       ),
@@ -42,10 +63,24 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set) => ({
 
   hoveredItem: null,
   setHoveredItem: (setter) => stateSetter(set, setter, `hoveredItem`),
-  addContentToItem: (id, content) =>
-    set((state) => ({
-      items: state.items.map((item) =>
-        item.id === id ? { ...item, body: [...item.body, content] } : item,
-      ),
-    })),
+  addContentToItem: (id, content) => {
+    produceState(set, (state) => {
+      const item = state.items.find((item) => item.id === id)
+      if (item) {
+        item.body.push(content)
+      }
+    })
+  },
+
+  editItemContent: (id, content) => {
+    produceState(set, (state) => {
+      const item = state.items.find((item) => item.id === id)
+      if (item) {
+        const body = item.body.find((body) => body.id === content.id)
+        if (body) {
+          body.content = content.content
+        }
+      }
+    })
+  },
 })

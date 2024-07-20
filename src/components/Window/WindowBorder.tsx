@@ -7,6 +7,7 @@ import { useAppStore } from '@/state/gen-state'
 import { setCursorStyle } from '@/utils/setCursor'
 import { joinClasses } from '@/utils/joinClasses'
 import { useShallow } from 'zustand/react/shallow'
+import { WINDOW_ATTRS } from '@/state/windows'
 
 const borderPositions = [
   'left',
@@ -35,8 +36,9 @@ export const WindowBorderInternal: FC<{
   id: string
   width: number
   height: number
+  isFullScreen: boolean
   position: { x: number; y: number }
-}> = ({ width, height, id, position }) => {
+}> = ({ width, height, id, position, isFullScreen }) => {
   const state = useAppStore(
     useShallow((state) => ({
       resizeWindow: state.resizeWindow,
@@ -99,11 +101,19 @@ export const WindowBorderInternal: FC<{
         styles.border,
         isActive && styles.activeBorder,
         (state.hoveredItem === id || state.selectedWindow === id) &&
+          !isFullScreen &&
           styles.activeBorder,
       )}
       style={{
-        width: `${width + 2}px`,
-        height: `${height + 2}px`,
+        ...(isFullScreen
+          ? {
+              width: `calc(${WINDOW_ATTRS.defaultFullScreenSize.width}px + 2px)`,
+              height: `calc(${WINDOW_ATTRS.defaultFullScreenSize.height}px + 2px)`,
+            }
+          : {
+              width: `${width + 2}px`,
+              height: `${height + 2}px`,
+            }),
       }}
     >
       {borderPositions.map((pos) => (
@@ -112,6 +122,7 @@ export const WindowBorderInternal: FC<{
           onDrag={(e, data) => onDrag(e, data, pos)}
           onStart={(e, data) => onDragStart(e, data, pos)}
           onStop={(e, data) => onDragStop(e, data, pos)}
+          disabled={isFullScreen}
         >
           <div
             className={styles[pos]}

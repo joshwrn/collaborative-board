@@ -30,7 +30,12 @@
   --color-dropdown-list: #000000;
   --font--1: 20px;
   --color-accent: #0070f3;
+
+  // z-indexes
+  --fullscreen-window-z-index: 100;
+  --toolbar-z-index: 101;
 }
+
 * {
   flex-shrink: 0;
   box-sizing: border-box;

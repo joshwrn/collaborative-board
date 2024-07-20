@@ -9,27 +9,75 @@ import { WindowBorder } from './WindowBorder'
 import { IoAddOutline } from 'react-icons/io5'
 import { ConnectorOverlay } from './ConnectorOverlay'
 import { useShallow } from 'zustand/react/shallow'
-import { CanvasData, Iframe, Item } from '@/state/items'
-import { WindowType } from '@/state/windows'
-import { match, P } from 'ts-pattern'
+import { Item, ItemBody } from '@/state/items'
+import { WINDOW_ATTRS, WindowType } from '@/state/windows'
+import { match } from 'ts-pattern'
 import { joinClasses } from '@/utils/joinClasses'
 import { RotationPoints } from './RotationPoints'
-import { Point2d } from '@/state'
 import { Canvas } from '../Canvas/Canvas'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { WindowMenu } from './WindowMenu/WindowMenu'
 
+const Text = ({
+  content,
+  windowId,
+  contentId,
+}: {
+  content: string
+  windowId: string
+  contentId: string
+}) => {
+  const ref = React.useRef<HTMLParagraphElement>(null)
+  const state = useAppStore(
+    useShallow((state) => ({
+      editItemContent: state.editItemContent,
+    })),
+  )
+  const textRef = React.useRef(content)
+  return (
+    <p
+      ref={ref}
+      contentEditable
+      suppressContentEditableWarning
+      onInput={() => {
+        if (!ref.current) return
+        state.editItemContent(windowId, {
+          type: 'text',
+          content: ref.current.innerText,
+          id: contentId,
+        })
+      }}
+    >
+      {textRef.current}
+    </p>
+  )
+}
+
 const matchBody = (
-  body: string | Iframe | CanvasData,
+  body: ItemBody,
   i: number,
   window: WindowType,
 ): JSX.Element | JSX.Element[] | null => {
   return match(body)
-    .with({ blob: P.string }, (value) => <Canvas key={i} window={window} />)
-    .with(P.string, (value) => <p key={i}>{value}</p>)
+    .with({ type: 'canvas' }, (value) => (
+      <Canvas
+        key={i}
+        window={window}
+        contentId={body.id}
+        content={value.content}
+      />
+    ))
+    .with({ type: 'text' }, (value) => (
+      <Text
+        key={i}
+        content={value.content}
+        windowId={window.id}
+        contentId={body.id}
+      />
+    ))
     .with(
       {
-        src: P.string,
+        type: 'iframe',
       },
       (value) => (
         <div
@@ -46,7 +94,7 @@ const matchBody = (
               border: 'none',
               borderRadius: '10px',
             }}
-            {...value}
+            {...value.content}
           />
         </div>
       ),
@@ -54,10 +102,11 @@ const matchBody = (
     .otherwise(() => null)
 }
 
-export const WindowInternal: FC<{
+const WindowInternal: FC<{
   item: Item
   window: WindowType
-}> = ({ item, window }) => {
+  isFullScreen: boolean
+}> = ({ item, window, isFullScreen }) => {
   const state = useAppStore(
     useShallow((state) => ({
       close: state.toggleOpenWindow,
@@ -66,7 +115,7 @@ export const WindowInternal: FC<{
       connections: state.connections,
       setActiveConnection: state.setActiveConnection,
       makeConnection: state.makeConnection,
-      fullScreen: state.fullscreenWindow,
+      setFullScreen: state.setFullScreenWindow,
       setHoveredWindow: state.setHoveredWindow,
       snapToWindows: state.snapToWindows,
       setSnappingToPositions: state.setSnapLines,
@@ -133,19 +182,32 @@ export const WindowInternal: FC<{
       onStart={onDragStart}
       handle=".handle"
       nodeRef={nodeRef}
+      disabled={isFullScreen}
     >
       <div
         ref={nodeRef}
         className={joinClasses(styles.wrapper, 'window')}
         id={`window-${item.id}`}
         style={{
-          left: window.x,
-          top: window.y,
-          // transformOrigin: '0 0',
-          width: `${width}px`,
-          height: `${height}px`,
-          rotate: `${window.rotation}deg`,
-          zIndex: window.zIndex,
+          ...(isFullScreen
+            ? {
+                left: 0,
+                top: 0,
+                position: 'relative',
+                width: WINDOW_ATTRS.defaultFullScreenSize.width + 'px',
+                height: WINDOW_ATTRS.defaultFullScreenSize.height + 'px',
+                rotate: '0deg',
+                zIndex: 'var(--fullscreen-window-z-index)',
+              }
+            : {
+                left: window.x,
+                top: window.y,
+                // transformOrigin: '0 0',
+                width: `${window.width}px`,
+                height: `${window.height}px`,
+                rotate: `${window.rotation}deg`,
+                zIndex: window.zIndex,
+              }),
         }}
         onMouseEnter={() => state.setHoveredWindow(item.id)}
         onMouseLeave={() => state.setHoveredWindow(null)}
@@ -158,14 +220,24 @@ export const WindowInternal: FC<{
         }}
       >
         <RotationPoints id={item.id} window={window} />
-        <nav className={`${styles.topBar} handle`}>
+        <nav
+          className={`${styles.topBar} handle`}
+          onDoubleClick={() =>
+            state.setFullScreen((prev) => (prev ? null : item.id))
+          }
+        >
           <button
             className={styles.close}
-            onClick={() => state.close(item.id)}
+            onClick={() => {
+              state.setFullScreen(null)
+              state.close(item.id)
+            }}
           />
           <button
-            className={styles.full}
-            onClick={() => state.fullScreen(item.id)}
+            className={!isFullScreen ? styles.full : styles.min}
+            onClick={() =>
+              state.setFullScreen((prev) => (prev ? null : item.id))
+            }
           />
         </nav>
 
@@ -199,19 +271,21 @@ export const WindowInternal: FC<{
           height={height}
           id={item.id}
           position={{ x: window.x, y: window.y }}
+          isFullScreen={isFullScreen}
         />
       </div>
     </DraggableCore>
   )
 }
 
-const Window = React.memo(WindowInternal)
+export const Window = React.memo(WindowInternal)
 
 const WindowsInternal: FC = () => {
   const state = useAppStore(
     useShallow((state) => ({
       items: state.items,
       windows: state.windows,
+      fullScreenWindow: state.fullScreenWindow,
     })),
   )
   const itemsMap = React.useMemo(
@@ -226,8 +300,16 @@ const WindowsInternal: FC = () => {
     <>
       {state.windows.map((window) => {
         const item = itemsMap[window.id]
+        if (state.fullScreenWindow === window.id) return null
         if (!window) return null
-        return <Window key={item.id} item={item} window={window} />
+        return (
+          <Window
+            key={item.id}
+            item={item}
+            window={window}
+            isFullScreen={false}
+          />
+        )
       })}
     </>
   )
