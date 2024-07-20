@@ -38,6 +38,7 @@ const Text = ({
     <p
       ref={ref}
       contentEditable
+      suppressContentEditableWarning
       onInput={() => {
         if (!ref.current) return
         state.editItemContent(windowId, {
