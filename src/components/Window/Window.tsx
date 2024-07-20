@@ -9,12 +9,11 @@ import { WindowBorder } from './WindowBorder'
 import { IoAddOutline } from 'react-icons/io5'
 import { ConnectorOverlay } from './ConnectorOverlay'
 import { useShallow } from 'zustand/react/shallow'
-import { CanvasData, Iframe, Item, ItemBody } from '@/state/items'
-import { WindowType } from '@/state/windows'
-import { match, P } from 'ts-pattern'
+import { Item, ItemBody } from '@/state/items'
+import { WINDOW_ATTRS, WindowType } from '@/state/windows'
+import { match } from 'ts-pattern'
 import { joinClasses } from '@/utils/joinClasses'
 import { RotationPoints } from './RotationPoints'
-import { Point2d } from '@/state'
 import { Canvas } from '../Canvas/Canvas'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { WindowMenu } from './WindowMenu/WindowMenu'
@@ -59,7 +58,14 @@ const matchBody = (
   window: WindowType,
 ): JSX.Element | JSX.Element[] | null => {
   return match(body)
-    .with({ type: 'canvas' }, (value) => <Canvas key={i} window={window} />)
+    .with({ type: 'canvas' }, (value) => (
+      <Canvas
+        key={i}
+        window={window}
+        contentId={body.id}
+        content={value.content}
+      />
+    ))
     .with({ type: 'text' }, (value) => (
       <Text
         key={i}
@@ -187,10 +193,10 @@ const WindowInternal: FC<{
                 left: 0,
                 top: 0,
                 position: 'relative',
-                width: 'calc(50vw)',
-                height: 'calc(100vh - 200px)',
+                width: WINDOW_ATTRS.defaultFullScreenSize.width + 'px',
+                height: WINDOW_ATTRS.defaultFullScreenSize.height + 'px',
                 rotate: '0deg',
-                zIndex: 1000,
+                zIndex: 'var(--fullscreen-window-z-index)',
               }
             : {
                 left: window.x,

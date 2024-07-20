@@ -7,6 +7,7 @@ import { useAppStore } from '@/state/gen-state'
 import { setCursorStyle } from '@/utils/setCursor'
 import { joinClasses } from '@/utils/joinClasses'
 import { useShallow } from 'zustand/react/shallow'
+import { WINDOW_ATTRS } from '@/state/windows'
 
 const borderPositions = [
   'left',
@@ -106,8 +107,8 @@ export const WindowBorderInternal: FC<{
       style={{
         ...(isFullScreen
           ? {
-              width: 'calc(50vw + 2px)',
-              height: 'calc(100vh - 198px)',
+              width: `calc(${WINDOW_ATTRS.defaultFullScreenSize.width}px + 2px)`,
+              height: `calc(${WINDOW_ATTRS.defaultFullScreenSize.height}px + 2px)`,
             }
           : {
               width: `${width + 2}px`,

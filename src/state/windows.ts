@@ -33,6 +33,7 @@ export type OpenWindowsStore = {
 
 export const WINDOW_ATTRS = {
   defaultSize: { width: 700, height: 500 },
+  defaultFullScreenSize: { width: 700, height: 750 },
   minSize: 300,
   maxSize: 1000,
   zIndex: 0,
