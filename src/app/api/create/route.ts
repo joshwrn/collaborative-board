@@ -9,6 +9,13 @@ export const POST = async (req: NextApiRequest) => {
     return NextResponse.json({ error: 'Method not allowed' }, { status: 405 })
   }
   console.log('body: ', req.body)
+  return NextResponse.json(
+    {
+      generatedImage:
+        'https://www.nylabone.com/-/media/project/oneweb/nylabone/images/dog101/10-intelligent-dog-breeds/golden-retriever-tongue-out.jpg',
+    },
+    { status: 200 },
+  )
 
   // @ts-expect-error
   const { image, prompt } = await req.json()

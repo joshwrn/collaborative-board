@@ -1,0 +1,20 @@
+.wrapper {
+  button {
+    background-color: rgb(0, 89, 213);
+    padding: 8px;
+    border-radius: 8px;
+  }
+}
+
+.isPending {
+  animation: glow 1s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 128, 255, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 10px 10px rgba(255, 255, 255, 0);
+  }
+}

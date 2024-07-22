@@ -17,6 +17,8 @@ import { RotationPoints } from './RotationPoints'
 import { Canvas } from '../Canvas/Canvas'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { WindowMenu } from './WindowMenu/WindowMenu'
+import { useMutation } from '@tanstack/react-query'
+import { GenerateButton } from './GenerateButton'
 
 const Text = ({
   content,
@@ -245,39 +247,23 @@ const WindowInternal: FC<{
           <section>
             <WindowMenu id={item.id} />
           </section>
-          <section className={styles.title}></section>
-          <section>
-            <button
-              onClick={async () => {
-                const img = item.body.find((b) => b.type === 'canvas')?.content
-                  .blob
-                // console.log('img', img)
-                const res = await fetch('/api/create', {
-                  method: 'POST',
-                  body: JSON.stringify({
-                    image: img,
-                    prompt: item.body.find((b) => b.type === 'text')?.content,
-                  }),
-                })
-                const json = await res.json()
-                console.log('json', json)
-              }}
-            >
-              <p>Generate</p>
-            </button>
-          </section>
-          <section className={styles.connections}>
-            <inner>
-              <p>
-                Incoming <strong>{toConnections.length}</strong>
-              </p>
-              <p>
-                Outgoing <strong>{fromConnections.length}</strong>
-              </p>
-            </inner>
-            <button onClick={() => state.setActiveConnection({ from: item.id })}>
-              <IoAddOutline />
-            </button>
+          <section className={styles.right}>
+            <GenerateButton item={item} />
+            <section className={styles.connections}>
+              <inner>
+                <p>
+                  Incoming <strong>{toConnections.length}</strong>
+                </p>
+                <p>
+                  Outgoing <strong>{fromConnections.length}</strong>
+                </p>
+              </inner>
+              <button
+                onClick={() => state.setActiveConnection({ from: item.id })}
+              >
+                <IoAddOutline />
+              </button>
+            </section>
           </section>
         </header>
 

@@ -11,6 +11,10 @@ import { DropDownMenu } from '@/components/DropDownMenu/DropDownMenu'
 import { Debug } from '@/components/Debug/Debug'
 import { useScenario } from '@/mock/scenarios'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
+
 export default function Home() {
   const state = useAppStore(
     useShallow((state) => ({
@@ -19,21 +23,23 @@ export default function Home() {
   )
   // useScenario({ scenario: 'rotation' })
   return (
-    <wrapper
-      className={styles.wrapper}
-      onMouseMove={(e) => {
-        state.setMousePosition({ x: e.clientX, y: e.clientY })
-      }}
-    >
-      <DropDownMenu />
-      <main>
-        {/* <Nav /> */}
-        <List />
-        <Space />
-        <ContextMenu />
-      </main>
-      <FPSStats left={'auto'} right={0} />
-      {/* <Debug /> */}
-    </wrapper>
+    <QueryClientProvider client={queryClient}>
+      <wrapper
+        className={styles.wrapper}
+        onMouseMove={(e) => {
+          state.setMousePosition({ x: e.clientX, y: e.clientY })
+        }}
+      >
+        <DropDownMenu />
+        <main>
+          {/* <Nav /> */}
+          <List />
+          <Space />
+          <ContextMenu />
+        </main>
+        <FPSStats left={'auto'} right={0} />
+        {/* <Debug /> */}
+      </wrapper>
+    </QueryClientProvider>
   )
 }

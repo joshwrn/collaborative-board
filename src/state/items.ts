@@ -1,6 +1,7 @@
 // import { updateArrayItem } from '@/utils/updateArrayItem'
 import { produce } from 'immer'
 import { AppStateCreator, produceState, Setter, stateSetter } from './state'
+import { nanoid } from 'nanoid'
 
 export type Iframe = {
   src: string
@@ -38,10 +39,24 @@ export type Item = {
   members: string[]
 }
 
+export const DEFAULT_ITEM: Item = {
+  id: 'default_id',
+  subject: 'default_subject',
+  body: [
+    {
+      type: 'text',
+      content: 'default content',
+      id: 'default_content_id',
+    },
+  ],
+  members: [],
+}
+
 export type ItemListStore = {
   items: Item[]
   setItems: Setter<Item[]>
   deleteItem: (id: string) => void
+  createItem: (item: Partial<Item>) => void
 
   hoveredItem: string | null
   setHoveredItem: Setter<string | null>
@@ -53,6 +68,15 @@ export type ItemListStore = {
 export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
   items: [],
   setItems: (setter) => stateSetter(set, setter, `items`),
+  createItem: (item: Partial<Item>) => {
+    produceState(set, (state) => {
+      state.items.push({
+        ...DEFAULT_ITEM,
+        id: nanoid(),
+        ...item,
+      })
+    })
+  },
   deleteItem: (id) =>
     set((state) => ({
       items: state.items.filter((item) => item.id !== id),
