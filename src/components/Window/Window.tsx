@@ -246,6 +246,26 @@ const WindowInternal: FC<{
             <WindowMenu id={item.id} />
           </section>
           <section className={styles.title}></section>
+          <section>
+            <button
+              onClick={async () => {
+                const img = item.body.find((b) => b.type === 'canvas')?.content
+                  .blob
+                // console.log('img', img)
+                const res = await fetch('/api/create', {
+                  method: 'POST',
+                  body: JSON.stringify({
+                    image: img,
+                    prompt: item.body.find((b) => b.type === 'text')?.content,
+                  }),
+                })
+                const json = await res.json()
+                console.log('json', json)
+              }}
+            >
+              <p>Generate</p>
+            </button>
+          </section>
           <section className={styles.connections}>
             <inner>
               <p>
