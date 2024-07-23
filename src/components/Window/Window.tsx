@@ -308,6 +308,7 @@ const WindowsInternal: FC = () => {
         const item = itemsMap[window.id]
         if (state.fullScreenWindow === window.id) return null
         if (!window) return null
+        if (!item) return null
         return (
           <Window
             key={item.id}

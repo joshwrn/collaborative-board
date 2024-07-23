@@ -1,26 +1,34 @@
-import { open } from 'fs'
 import { openai } from '../../openai'
-// next js endpoint
-import { NextApiRequest } from 'next'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { ApiResponse } from '@/server/response'
+import {
+  GenerateImageRequest,
+  GenerateImageResponse,
+} from '@/server/create/fetchGenerateImage'
+import { mockedEndpoints } from '@/server/mockedEndpoints'
+import { MOCK_GENERATED_IMAGE } from '@/mock/mockGeneratedImage'
 
-export const POST = async (req: NextApiRequest) => {
-  if (req.method !== 'POST') {
-    return NextResponse.json({ error: 'Method not allowed' }, { status: 405 })
+export const POST = async (
+  req: NextRequest,
+  res: NextResponse,
+): ApiResponse<GenerateImageResponse> => {
+  if (
+    process.env.USE_MOCK_ENDPOINTS === 'true' ||
+    mockedEndpoints.generateImage.post
+  ) {
+    return NextResponse.json(
+      {
+        generatedImage: MOCK_GENERATED_IMAGE,
+      },
+      { status: 200 },
+    )
   }
+
+  const { base64, prompt } = (await req.json()) as GenerateImageRequest
+
   console.log('body: ', req.body)
-  return NextResponse.json(
-    {
-      generatedImage:
-        'https://www.nylabone.com/-/media/project/oneweb/nylabone/images/dog101/10-intelligent-dog-breeds/golden-retriever-tongue-out.jpg',
-    },
-    { status: 200 },
-  )
 
-  // @ts-expect-error
-  const { image, prompt } = await req.json()
-
-  if (!image || !prompt) {
+  if (!base64 || !prompt) {
     return NextResponse.json(
       { error: 'Missing required fields' },
       { status: 400 },
@@ -39,7 +47,7 @@ export const POST = async (req: NextApiRequest) => {
           {
             type: 'image_url',
             image_url: {
-              url: `${image}`,
+              url: `${base64}`,
             },
           },
         ],
@@ -72,12 +80,22 @@ export const POST = async (req: NextApiRequest) => {
 
   console.log('generatedImage: ', generatedImage)
 
+  if (!generatedImage) {
+    return NextResponse.json(
+      { error: 'Failed to generate image' },
+      { status: 400 },
+    )
+  }
+
   return NextResponse.json(
     {
-      generatedImage,
+      generatedImage: generatedImage as string,
     },
     {
       status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     },
   )
 }

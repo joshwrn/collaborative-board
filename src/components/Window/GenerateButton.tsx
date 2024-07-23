@@ -7,8 +7,13 @@ import { joinClasses } from '@/utils/joinClasses'
 import { useAppStore } from '@/state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
 import { nanoid } from 'nanoid'
+import { convertImageToBase64 } from '@/utils/convertImageToBase64'
+import {
+  GenerateImageResponse,
+  fetchGenerateImage,
+} from '@/server/create/fetchGenerateImage'
+import { fetchImageUrlToBlob } from '@/server/imageUrlToBlob/fetchImageUrlToBlob'
 import { blobToBase64 } from '@/utils/blobToBase64'
-import { fetchImageAsBlob } from '@/utils/fetchImageAsBlob'
 
 export const GenerateButton: React.FC<{
   item: Item
@@ -23,17 +28,17 @@ export const GenerateButton: React.FC<{
     })),
   )
   const createdId = React.useRef<string | null>(null)
-  const generateImage = useMutation({
+  const generateImage = useMutation<GenerateImageResponse>({
     mutationFn: async () => {
-      const res = await fetch('/api/create', {
-        method: 'POST',
-        body: JSON.stringify({
-          image: item.body.find((b) => b.type === 'canvas')?.content.blob,
-          prompt: item.body.find((b) => b.type === 'text')?.content,
-        }),
+      const image = item.body.find((b) => b.type === 'canvas')?.content.blob
+      const prompt = item.body.find((b) => b.type === 'text')?.content
+      if (!image || !prompt) {
+        throw new Error(`no image or prompt`)
+      }
+      return await fetchGenerateImage({
+        base64: image,
+        prompt,
       })
-      const json = await res.json()
-      return json
     },
     onMutate: () => {
       const id = nanoid()
@@ -52,13 +57,16 @@ export const GenerateButton: React.FC<{
       if (!createdId.current) {
         throw new Error(`no id`)
       }
-      const blob = await fetchImageAsBlob(data.generatedImage)
-      const base64 = await blobToBase64(blob)
+      console.log('data: ', data.generatedImage)
+      const res = await fetchImageUrlToBlob({
+        url: data.generatedImage,
+      })
+      console.log('res: ', res)
       state.addContentToItem(createdId.current, {
         type: 'canvas',
         id: nanoid(),
         content: {
-          blob: base64,
+          blob: res.base64,
         },
       })
     },

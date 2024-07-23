@@ -77,13 +77,15 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
       })
     })
   },
-  deleteItem: (id) =>
+  deleteItem: (id) => {
     set((state) => ({
       items: state.items.filter((item) => item.id !== id),
       connections: state.connections.filter(
         (connection) => connection.id.includes(id) === false,
       ),
-    })),
+      windows: state.windows.filter((window) => window.id !== id),
+    }))
+  },
 
   hoveredItem: null,
   setHoveredItem: (setter) => stateSetter(set, setter, `hoveredItem`),
