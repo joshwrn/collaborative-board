@@ -36,7 +36,7 @@ export const WindowMenu: React.FC<{
               state.addContentToItem(id, {
                 type: 'canvas',
                 content: {
-                  blob: '',
+                  base64: '',
                 },
                 id: nanoid(),
               })

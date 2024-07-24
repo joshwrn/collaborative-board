@@ -4,7 +4,7 @@ import { ApiResponse } from '@/server/response'
 import {
   GenerateImageRequest,
   GenerateImageResponse,
-} from '@/server/create/fetchGenerateImage'
+} from '@/server/generateImage/fetchGenerateImage'
 import { mockedEndpoints } from '@/server/mockedEndpoints'
 import { MOCK_GENERATED_IMAGE } from '@/mock/mockGeneratedImage'
 

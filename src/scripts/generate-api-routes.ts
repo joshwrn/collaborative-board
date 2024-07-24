@@ -42,7 +42,7 @@ const writeDirectories = async () => {
   for (const folder of folders) {
     str += `  '${folder}',\n`
   }
-  str += `]\n ${TYPE}`
+  str += `] as const\n ${TYPE}`
   await fs.writeFile(outputFile, str)
 }
 

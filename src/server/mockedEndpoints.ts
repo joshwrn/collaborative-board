@@ -4,7 +4,7 @@ export const mockedEndpoints: Record<ApiRouteUrl, { [key: string]: boolean }> = 
   generateImage: {
     post: false,
   },
-  imageUrlToBlob: {
+  imageUrlToBase64: {
     get: false,
   },
 }

@@ -44,7 +44,7 @@ export const Canvas: React.FC<{
     img.onload = () => {
       ctx.drawImage(img, 0, 0)
     }
-    img.src = content.blob
+    img.src = content.base64
   }, [window, content])
 
   const attributes = {
@@ -122,7 +122,7 @@ export const Canvas: React.FC<{
 
           state.editItemContent(window.id, {
             content: {
-              blob: canvasRef.current.toDataURL(),
+              base64: canvasRef.current.toDataURL(),
             },
             id: contentId,
             type: 'canvas',

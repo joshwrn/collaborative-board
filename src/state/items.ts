@@ -9,7 +9,7 @@ export type Iframe = {
 }
 
 export type CanvasData = {
-  blob: string
+  base64: string
 }
 
 export const ItemBodyTypes = ['text', 'iframe', 'canvas'] as const

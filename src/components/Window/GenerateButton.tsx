@@ -11,8 +11,8 @@ import { convertImageToBase64 } from '@/utils/convertImageToBase64'
 import {
   GenerateImageResponse,
   fetchGenerateImage,
-} from '@/server/create/fetchGenerateImage'
-import { fetchImageUrlToBlob } from '@/server/imageUrlToBlob/fetchImageUrlToBlob'
+} from '@/server/generateImage/fetchGenerateImage'
+import { fetchImageUrlToBase64 } from '@/server/imageUrlToBase64/fetchImageUrlToBase64'
 
 export const GenerateButton: React.FC<{
   item: Item
@@ -29,7 +29,7 @@ export const GenerateButton: React.FC<{
   const createdId = React.useRef<string | null>(null)
   const generateImage = useMutation<GenerateImageResponse>({
     mutationFn: async () => {
-      const image = item.body.find((b) => b.type === 'canvas')?.content.blob
+      const image = item.body.find((b) => b.type === 'canvas')?.content.base64
       const prompt = item.body.find((b) => b.type === 'text')?.content
       if (!image || !prompt) {
         throw new Error(`no image or prompt`)
@@ -57,7 +57,7 @@ export const GenerateButton: React.FC<{
         throw new Error(`no id`)
       }
       console.log('data: ', data.generatedImage)
-      const res = await fetchImageUrlToBlob({
+      const res = await fetchImageUrlToBase64({
         url: data.generatedImage,
       })
       console.log('res: ', res)
@@ -65,7 +65,7 @@ export const GenerateButton: React.FC<{
         type: 'canvas',
         id: nanoid(),
         content: {
-          blob: res.base64,
+          base64: res.base64,
         },
       })
     },
