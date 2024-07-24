@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "gen-store": "npx ts-node ./src/scripts/generate-store.ts --watch",
-    "all": "concurrently \"npm run dev\" \"npm run gen-store\""
+    "gen-store": "node --loader ts-node/esm ./src/scripts/generate-store.ts --watch",
+    "gen-api-routes": "node --loader ts-node/esm ./src/scripts/generate-api-routes.ts --watch",
+    "all": "concurrently \"npm run dev\" \"npm run gen-store\" \"npm run gen-api-routes\""
   },
   "dependencies": {
     "@floating-ui/react": "^0.26.17",
@@ -52,6 +53,7 @@
     "eslint-config-next": "14.0.4",
     "sass": "^1.69.5",
     "simple-zustand-devtools": "^1.1.0",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
   }
 }

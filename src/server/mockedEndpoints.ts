@@ -1,4 +1,6 @@
-export const mockedEndpoints = {
+import { ApiRouteUrl } from './routes'
+
+export const mockedEndpoints: Record<ApiRouteUrl, { [key: string]: boolean }> = {
   generateImage: {
     post: false,
   },

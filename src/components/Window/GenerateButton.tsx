@@ -13,7 +13,6 @@ import {
   fetchGenerateImage,
 } from '@/server/create/fetchGenerateImage'
 import { fetchImageUrlToBlob } from '@/server/imageUrlToBlob/fetchImageUrlToBlob'
-import { blobToBase64 } from '@/utils/blobToBase64'
 
 export const GenerateButton: React.FC<{
   item: Item

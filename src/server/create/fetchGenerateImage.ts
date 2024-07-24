@@ -12,4 +12,4 @@ export type GenerateImageRequest = {
 export const fetchGenerateImage = fetchFromApi<
   GenerateImageRequest,
   GenerateImageResponse
->('/api/generateImage', 'POST')
+>('generateImage', 'POST')

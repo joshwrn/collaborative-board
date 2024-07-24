@@ -1,15 +1,16 @@
 import { NextResponse } from 'next/server'
+import { ApiRouteUrl } from './routes'
 
 export type ApiResponse<T> = Promise<
   NextResponse<T> | NextResponse<{ error: string }>
 >
 
 export function fetchFromApi<B, R>(
-  url: string,
+  url: ApiRouteUrl,
   method: 'POST',
 ): (body: B) => Promise<R>
 export function fetchFromApi<P extends Record<string, string>, R>(
-  url: string,
+  url: ApiRouteUrl,
   method: 'GET',
 ): (params?: P) => Promise<R>
 export function fetchFromApi<B, R>(url: string, method: 'POST' | 'GET') {
@@ -19,7 +20,7 @@ export function fetchFromApi<B, R>(url: string, method: 'POST' | 'GET') {
         let res = null
         if (params) {
           const createdParams = new URLSearchParams(params)
-          const urlWithParams = `${url}?${createdParams.toString()}`
+          const urlWithParams = `/api/${url}?${createdParams.toString()}`
           res = await fetch(urlWithParams)
         }
         if (!res) {
@@ -36,7 +37,7 @@ export function fetchFromApi<B, R>(url: string, method: 'POST' | 'GET') {
     if (method === 'POST') {
       const fn = async (body: B) => {
         console.log('body: ', body)
-        const res = await fetch(url, {
+        const res = await fetch(`/api/${url}`, {
           method: 'POST',
           body: JSON.stringify(body),
         })

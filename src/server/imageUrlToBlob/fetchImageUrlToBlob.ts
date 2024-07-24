@@ -11,4 +11,4 @@ export type ImageUrlToBlobRequest = {
 export const fetchImageUrlToBlob = fetchFromApi<
   ImageUrlToBlobRequest,
   ImageUrlToBlobResponse
->('/api/imageUrlToBlob', 'GET')
+>('imageUrlToBlob', 'GET')

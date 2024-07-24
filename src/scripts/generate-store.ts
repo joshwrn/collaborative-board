@@ -1,8 +1,11 @@
-const fs = require('fs-extra')
-const path = require('path')
-const { execSync } = require('child_process')
-const chokidar = require('chokidar')
+import fs from 'fs-extra'
+import path from 'path'
+import { execSync } from 'child_process'
+import chokidar from 'chokidar'
+import { fileURLToPath } from 'url'
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 const scriptDir = __dirname
 const sourceFolder = path.join(scriptDir, '../', 'state')
 const outputFile = path.join(scriptDir, '../', 'state', 'gen-state.ts')
