@@ -21,9 +21,9 @@ const generateCode = () => {
 
     execSync(`npx prettier --write ${outputFile}`)
 
-    console.log(`💅 Code generation successful. Output file: ${outputFile}`)
+    console.log(`💅 State generated.`)
   } catch (error) {
-    console.error('😡 Error during code generation:', error)
+    console.error('😡 Error generating state:', error)
   }
 }
 
@@ -105,17 +105,17 @@ const generateCodeFromFiles = (files: string[]): string => {
 
 const watchFolder = () => {
   const watcher = chokidar.watch(sourceFolder, { ignoreInitial: true })
-
+  console.log('👀 Watching state folder for changes...')
   watcher.on('all', (event: any, filePath: string) => {
     if (filePath.includes('gen-state')) {
       return
     }
-    console.log(`🤓 File ${filePath} changed. Regenerating code...`)
+    console.log(`🤓 File ${filePath} changed. Regenerating state...`)
     generateCode()
   })
 }
 
-const shouldWatch = process.argv[2] === '--watch'
+const shouldWatch = process.argv.includes('--watch')
 
 generateCode()
 

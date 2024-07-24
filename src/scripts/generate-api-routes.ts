@@ -1,7 +1,3 @@
-// const fs = require('fs/promises')
-// const path = require('path')
-// const chokidar = require('chokidar')
-
 import fs from 'fs/promises'
 import path from 'path'
 import chokidar from 'chokidar'
@@ -23,43 +19,48 @@ async function readDirectories() {
     const files = await fs.readdir(directoryPath, { withFileTypes: true })
     files.forEach((file: any) => {
       if (file.isDirectory()) {
-        console.log('Directory:', file.name)
+        console.log('📁 Directory:', file.name)
         folders.push(file.name)
       }
     })
     return folders
   } catch (err) {
-    console.error('Error reading directory:', err)
+    console.error('Error reading routes directory:', err)
   }
 }
 
 const writeDirectories = async () => {
-  const folders = await readDirectories()
-  if (!folders) {
-    return
+  try {
+    const folders = await readDirectories()
+    if (!folders) {
+      return
+    }
+    let str = `export const API_ROUTES = [\n`
+    for (const folder of folders) {
+      str += `  '${folder}',\n`
+    }
+    str += `] as const\n ${TYPE}`
+    await fs.writeFile(outputFile, str)
+    console.log(`💅 API routes generated.`)
+  } catch (error) {
+    console.error('😡 Error generating API routes:', error)
   }
-  let str = `export const API_ROUTES = [\n`
-  for (const folder of folders) {
-    str += `  '${folder}',\n`
-  }
-  str += `] as const\n ${TYPE}`
-  await fs.writeFile(outputFile, str)
 }
 
 const watchFolder = () => {
   const watcher = chokidar.watch(directoryPath, { ignoreInitial: true })
-
+  console.log('👀 Watching API routes folder for changes...')
   watcher.on('all', (event: any, filePath: string) => {
-    console.log(`🤓 File ${filePath} changed. Regenerating code...`)
+    console.log(`🤓 File ${filePath} changed. Regenerating API routes...`)
     writeDirectories()
   })
 }
 
-const shouldWatch1 = process.argv[2] === '--watch'
+const shouldWatch = process.argv.includes('--watch')
 
 writeDirectories()
 
-if (shouldWatch1) {
+if (shouldWatch) {
   watchFolder()
 }
 
