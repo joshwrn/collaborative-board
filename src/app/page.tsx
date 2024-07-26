@@ -12,8 +12,13 @@ import { Debug } from '@/components/Debug/Debug'
 import { useScenario } from '@/mock/scenarios'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import * as fal from '@fal-ai/serverless-client'
 
 const queryClient = new QueryClient()
+
+fal.config({
+  proxyUrl: '/api/fal/proxy',
+})
 
 export default function Home() {
   const state = useAppStore(

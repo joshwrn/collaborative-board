@@ -13,6 +13,7 @@ import {
   fetchGenerateImage,
 } from '@/server/generateImage/fetchGenerateImage'
 import { fetchImageUrlToBase64 } from '@/server/imageUrlToBase64/fetchImageUrlToBase64'
+import { describeImage } from '@/fal/api/describeImage'
 
 export const GenerateButton: React.FC<{
   item: Item
@@ -34,10 +35,12 @@ export const GenerateButton: React.FC<{
       if (!image || !prompt) {
         throw new Error(`no image or prompt`)
       }
-      return await fetchGenerateImage({
-        base64: image,
-        prompt,
-      })
+      // return await fetchGenerateImage({
+      //   base64: image,
+      //   prompt,
+      // })
+      const result = await describeImage()
+      console.log(result)
     },
     onMutate: () => {
       const id = nanoid()
@@ -53,6 +56,9 @@ export const GenerateButton: React.FC<{
       state.toggleOpenWindow(id)
     },
     onSuccess: async (data) => {
+      if (!data) {
+        throw new Error(`no data`)
+      }
       if (!createdId.current) {
         throw new Error(`no id`)
       }
@@ -81,6 +87,10 @@ export const GenerateButton: React.FC<{
     <section className={style.wrapper}>
       <motion.button
         onClick={async () => generateImage.mutateAsync()}
+        // onClick={async () => {
+        //   const result = await describeImage()
+        //   console.log(result)
+        // }}
         className={joinClasses(generateImage.isPending && style.isPending)}
       >
         <p>Generate</p>
