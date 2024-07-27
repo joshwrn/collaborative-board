@@ -9,7 +9,12 @@ import { useShallow } from 'zustand/react/shallow'
 import { nanoid } from 'nanoid'
 import { fetchImageUrlToBase64 } from '@/server/imageUrlToBase64/fetchImageUrlToBase64'
 import { convertSketchToImage } from '@/fal/api/convertSketchToImage'
-import { ImageToImageResponse } from '@/fal/api/imageToImage'
+import {
+  ImageToImageResponse,
+  mock_imageToImageResponse,
+} from '@/fal/api/imageToImage'
+
+const should_use_mock = true
 
 export const GenerateButton: React.FC<{
   item: Item
@@ -20,12 +25,17 @@ export const GenerateButton: React.FC<{
       makeConnection: state.makeConnection,
       toggleOpenWindow: state.toggleOpenWindow,
       addContentToItem: state.addContentToItem,
+      moveWindowNextTo: state.moveWindowNextTo,
       deleteItem: state.deleteItem,
     })),
   )
   const createdId = React.useRef<string | null>(null)
   const generateImage = useMutation<ImageToImageResponse>({
     mutationFn: async () => {
+      if (should_use_mock) {
+        return mock_imageToImageResponse
+      }
+
       const image = item.body.find((b) => b.type === 'canvas')?.content.base64
       const prompt = item.body.find((b) => b.type === 'text')?.content
       if (!image || !prompt) {
@@ -51,6 +61,7 @@ export const GenerateButton: React.FC<{
         from: item.id,
       })
       state.toggleOpenWindow(id)
+      state.moveWindowNextTo(item.id, id)
     },
     onSuccess: async (data) => {
       if (!data) {
@@ -84,10 +95,6 @@ export const GenerateButton: React.FC<{
     <section className={style.wrapper}>
       <motion.button
         onClick={async () => generateImage.mutateAsync()}
-        // onClick={async () => {
-        //   const result = await describeImage()
-        //   console.log(result)
-        // }}
         className={joinClasses(generateImage.isPending && style.isPending)}
       >
         <p>Generate</p>

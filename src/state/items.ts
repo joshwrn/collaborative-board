@@ -62,7 +62,7 @@ export type ItemListStore = {
   hoveredItem: string | null
   setHoveredItem: Setter<string | null>
 
-  addContentToItem: (id: string, content: ItemBody) => void
+  addContentToItem: (id: string, content: ItemBody | ItemBody[]) => void
   editItemContent: (id: string, content: ItemBody) => void
   showItemList: boolean
   setShowItemList: Setter<boolean>
@@ -96,7 +96,11 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
     produceState(set, (state) => {
       const item = state.items.find((item) => item.id === id)
       if (item) {
-        item.body.push(content)
+        if (Array.isArray(content)) {
+          item.body.push(...content)
+        } else {
+          item.body.push(content)
+        }
       }
     })
   },

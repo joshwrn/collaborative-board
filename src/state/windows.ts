@@ -29,6 +29,7 @@ export type OpenWindowsStore = {
   setHoveredWindow: Setter<string | null>
   selectedWindow: string | null
   setSelectedWindow: Setter<string | null>
+  moveWindowNextTo: (id: string, nextId: string) => void
 }
 
 export const WINDOW_ATTRS = {
@@ -115,6 +116,29 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           rotation: 0,
         },
       ],
+    }))
+  },
+
+  moveWindowNextTo: (id, nextId) => {
+    const openWindows = get().windows
+    const openWindow = openWindows.find((window) => window.id === id)
+    if (!openWindow) {
+      throw new Error(`window ${id} not found`)
+    }
+    set((state) => ({
+      windows: state.windows.map((window) => {
+        if (window.id === nextId) {
+          return {
+            ...window,
+            x: openWindow.x + openWindow.width + 100,
+            y: openWindow.y,
+          }
+        }
+        return {
+          ...window,
+          zIndex: window.zIndex - 1,
+        }
+      }),
     }))
   },
 
