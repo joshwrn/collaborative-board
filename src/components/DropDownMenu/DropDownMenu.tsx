@@ -5,6 +5,7 @@ import { useAppStore } from '@/state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
 import Dropdown from '@/ui/Dropdown'
 import { SPACE_ATTRS, resetPan } from '@/state/space'
+import { produceState } from '@/state/state'
 
 const MockItem = () => {
   const state = useAppStore(
@@ -125,6 +126,8 @@ const SpaceItem = () => {
       zoom: state.zoom,
       setZoom: state.setZoom,
       setPan: state.setPan,
+      setState: state.setState,
+      showItemList: state.showItemList,
     })),
   )
   return (
@@ -165,6 +168,18 @@ const SpaceItem = () => {
               <p>Reset</p>
             </button>
           </div>,
+          <Dropdown.Item
+            key={'Show Item List'}
+            onClick={() => {
+              state.setState((set) =>
+                produceState(set, (draft) => {
+                  draft.showItemList = !draft.showItemList
+                }),
+              )
+            }}
+            label1={'Show Item List'}
+            isChecked={state.showItemList}
+          />,
         ]}
       />
     </item>

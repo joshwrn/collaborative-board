@@ -1,7 +1,8 @@
 // import { updateArrayItem } from '@/utils/updateArrayItem'
 import { produce } from 'immer'
-import { AppStateCreator, produceState, Setter, stateSetter } from './state'
+import { AppStateCreator, produceState, Set, Setter, stateSetter } from './state'
 import { nanoid } from 'nanoid'
+import { AppStore } from './gen-state'
 
 export type Iframe = {
   src: string
@@ -63,6 +64,9 @@ export type ItemListStore = {
 
   addContentToItem: (id: string, content: ItemBody) => void
   editItemContent: (id: string, content: ItemBody) => void
+  showItemList: boolean
+  setShowItemList: Setter<boolean>
+  setState: (setter: (set: Set) => void) => void
 }
 
 export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
@@ -108,5 +112,12 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
         }
       }
     })
+  },
+
+  showItemList: false,
+  setShowItemList: (setter) => stateSetter(set, setter, `showItemList`),
+
+  setState: (setter: (set: Set) => void) => {
+    setter(set)
   },
 })

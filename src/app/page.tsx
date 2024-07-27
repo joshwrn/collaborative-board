@@ -24,6 +24,7 @@ export default function Home() {
   const state = useAppStore(
     useShallow((state) => ({
       setMousePosition: state.setMousePosition,
+      showItemList: state.showItemList,
     })),
   )
   // useScenario({ scenario: 'rotation' })
@@ -38,7 +39,7 @@ export default function Home() {
         <DropDownMenu />
         <main>
           {/* <Nav /> */}
-          <List />
+          {state.showItemList && <List />}
           <Space />
           <ContextMenu />
         </main>

@@ -24,13 +24,7 @@ export type StateCallback<T> = ((prev: T) => T) | T
 export type Setter<T> = (callback: StateCallback<T>) => void
 
 export const stateSetter = <T extends keyof AppStore>(
-  set: (
-    partial:
-      | AppStore
-      | Partial<AppStore>
-      | ((state: AppStore) => AppStore | Partial<AppStore>),
-    replace?: boolean | undefined,
-  ) => void,
+  set: Set,
   newValue: StateCallback<AppStore[T]>,
   key: T,
 ) => {
@@ -50,15 +44,14 @@ export const stateSetter = <T extends keyof AppStore>(
   })
 }
 
-export const produceState = (
-  set: (
-    partial:
-      | AppStore
-      | Partial<AppStore>
-      | ((state: AppStore) => AppStore | Partial<AppStore>),
-    replace?: boolean | undefined,
-  ) => void,
-  newState: (draft: AppStore) => void,
-) => {
+export type Set = (
+  partial:
+    | AppStore
+    | Partial<AppStore>
+    | ((state: AppStore) => AppStore | Partial<AppStore>),
+  replace?: boolean | undefined,
+) => void
+
+export const produceState = (set: Set, newState: (draft: AppStore) => void) => {
   return set(produce<AppStore>(newState))
 }

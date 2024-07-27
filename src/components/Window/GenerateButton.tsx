@@ -7,13 +7,9 @@ import { joinClasses } from '@/utils/joinClasses'
 import { useAppStore } from '@/state/gen-state'
 import { useShallow } from 'zustand/react/shallow'
 import { nanoid } from 'nanoid'
-import { convertImageToBase64 } from '@/utils/convertImageToBase64'
-import {
-  GenerateImageResponse,
-  fetchGenerateImage,
-} from '@/server/generateImage/fetchGenerateImage'
 import { fetchImageUrlToBase64 } from '@/server/imageUrlToBase64/fetchImageUrlToBase64'
-import { describeImage } from '@/fal/api/describeImage'
+import { convertSketchToImage } from '@/fal/api/convertSketchToImage'
+import { ImageToImageResponse } from '@/fal/api/imageToImage'
 
 export const GenerateButton: React.FC<{
   item: Item
@@ -28,19 +24,20 @@ export const GenerateButton: React.FC<{
     })),
   )
   const createdId = React.useRef<string | null>(null)
-  const generateImage = useMutation<GenerateImageResponse>({
+  const generateImage = useMutation<ImageToImageResponse>({
     mutationFn: async () => {
       const image = item.body.find((b) => b.type === 'canvas')?.content.base64
       const prompt = item.body.find((b) => b.type === 'text')?.content
       if (!image || !prompt) {
         throw new Error(`no image or prompt`)
       }
-      // return await fetchGenerateImage({
-      //   base64: image,
-      //   prompt,
-      // })
-      const result = await describeImage()
+      const result = await convertSketchToImage({
+        sketch_url: image,
+        style: prompt,
+        description_prompt: '',
+      })
       console.log(result)
+      return result
     },
     onMutate: () => {
       const id = nanoid()
@@ -62,9 +59,9 @@ export const GenerateButton: React.FC<{
       if (!createdId.current) {
         throw new Error(`no id`)
       }
-      console.log('data: ', data.generatedImage)
+      console.log('data: ', data.images[0].url)
       const res = await fetchImageUrlToBase64({
-        url: data.generatedImage,
+        url: data.images[0].url,
       })
       console.log('res: ', res)
       state.addContentToItem(createdId.current, {

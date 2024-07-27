@@ -9,7 +9,7 @@ export type GenerateImageRequest = {
   prompt: string
 }
 
-export const fetchGenerateImage = fetchFromApi<
+export const fetchOpenAiGenerateImage = fetchFromApi<
   GenerateImageRequest,
   GenerateImageResponse
 >('generateImage', 'POST')
