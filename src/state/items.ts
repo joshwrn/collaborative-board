@@ -66,7 +66,6 @@ export type ItemListStore = {
   editItemContent: (id: string, content: ItemBody) => void
   showItemList: boolean
   setShowItemList: Setter<boolean>
-  setState: (setter: (set: Set) => void) => void
 }
 
 export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
@@ -116,8 +115,4 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
 
   showItemList: false,
   setShowItemList: (setter) => stateSetter(set, setter, `showItemList`),
-
-  setState: (setter: (set: Set) => void) => {
-    setter(set)
-  },
 })

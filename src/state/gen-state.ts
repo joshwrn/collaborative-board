@@ -3,6 +3,7 @@ import { canvasStore, CanvasStore } from './canvas'
 import { connectedWindowsStore, ConnectedWindowsStore } from './connections'
 import { contextMenuStore, ContextMenuStore } from './contextMenu'
 import { debugStore, DebugStore } from './debug'
+import { generalStore, GeneralStore } from './general'
 import { itemListStore, ItemListStore } from './items'
 import { memberStore, MemberStore } from './members'
 import { mockStore, MockStore } from './mock'
@@ -16,6 +17,7 @@ export type AppStore = CanvasStore &
   ConnectedWindowsStore &
   ContextMenuStore &
   DebugStore &
+  GeneralStore &
   ItemListStore &
   MemberStore &
   MockStore &
@@ -31,6 +33,7 @@ export const useAppStore = create<AppStore>((...operators) => {
     ...connectedWindowsStore(...operators),
     ...contextMenuStore(...operators),
     ...debugStore(...operators),
+    ...generalStore(...operators),
     ...itemListStore(...operators),
     ...memberStore(...operators),
     ...mockStore(...operators),

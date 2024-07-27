@@ -12,7 +12,7 @@ const outputFile = path.join(scriptDir, '../', 'state', 'gen-state.ts')
 
 const baseImports = `import { create } from 'zustand'`
 
-const generateCode = () => {
+export const generateStores = () => {
   try {
     const files = fs.readdirSync(sourceFolder)
     const generatedCode = generateCodeFromFiles(files)
@@ -111,13 +111,13 @@ const watchFolder = () => {
       return
     }
     console.log(`🤓 File ${filePath} changed. Regenerating state...`)
-    generateCode()
+    generateStores()
   })
 }
 
 const shouldWatch = process.argv.includes('--watch')
 
-generateCode()
+generateStores()
 
 if (shouldWatch) {
   watchFolder()

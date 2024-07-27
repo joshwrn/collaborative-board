@@ -171,11 +171,9 @@ const SpaceItem = () => {
           <Dropdown.Item
             key={'Show Item List'}
             onClick={() => {
-              state.setState((set) =>
-                produceState(set, (draft) => {
-                  draft.showItemList = !draft.showItemList
-                }),
-              )
+              state.setState((draft) => {
+                draft.showItemList = !draft.showItemList
+              })
             }}
             label1={'Show Item List'}
             isChecked={state.showItemList}

@@ -7,16 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "gen-store": "node --loader ts-node/esm ./src/scripts/generate-store.ts --watch",
     "gen-api-routes": "node --loader ts-node/esm ./src/scripts/generate-api-routes.ts --watch",
-    "all": "concurrently \"npm run dev\" \"npm run gen-store\" \"npm run gen-api-routes\""
+    "create-new-store": "node --loader ts-node/esm ./src/scripts/create-new-store.ts && node --loader ts-node/esm ./src/scripts/generate-store.ts",
+    "all": "concurrently \"npm run dev\" \"npm run gen-api-routes\""
   },
   "dependencies": {
     "@fal-ai/serverless-client": "^0.13.0",
     "@fal-ai/serverless-proxy": "^0.7.4",
     "@floating-ui/react": "^0.26.17",
     "@react-three/fiber": "^8.15.14",
-    "@stylexjs/stylex": "^0.3.0",
     "@tanstack/react-query": "^5.51.11",
     "@types/three": "^0.160.0",
     "@use-gesture/react": "^10.3.0",
@@ -41,9 +40,6 @@
   "devDependencies": {
     "@faker-js/faker": "^8.3.1",
     "@playwright/test": "^1.44.1",
-    "@stylexjs/dev-runtime": "^0.3.0",
-    "@stylexjs/eslint-plugin": "^0.3.0",
-    "@stylexjs/nextjs-plugin": "^0.3.0",
     "@tanstack/eslint-plugin-query": "^5.51.12",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20",
