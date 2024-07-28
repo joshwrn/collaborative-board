@@ -3,7 +3,7 @@ import type { FC } from 'react'
 import React from 'react'
 
 import styles from './Window.module.scss'
-import { useAppStore } from '@/state/gen-state'
+import { useAppStore, useShallowAppStore } from '@/state/gen-state'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { WindowBorder } from './WindowBorder'
 import { IoAddOutline } from 'react-icons/io5'
@@ -17,7 +17,6 @@ import { RotationPoints } from './RotationPoints'
 import { Canvas } from '../Canvas/Canvas'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { WindowMenu } from './WindowMenu/WindowMenu'
-import { useMutation } from '@tanstack/react-query'
 import { GenerateButton } from './GenerateButton'
 
 const Text = ({
@@ -109,24 +108,22 @@ const WindowInternal: FC<{
   window: WindowType
   isFullScreen: boolean
 }> = ({ item, window, isFullScreen }) => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      close: state.toggleOpenWindow,
-      setWindow: state.setOneWindow,
-      bringToFront: state.reorderWindows,
-      connections: state.connections,
-      setActiveConnection: state.setActiveConnection,
-      makeConnection: state.makeConnection,
-      setFullScreen: state.setFullScreenWindow,
-      setHoveredWindow: state.setHoveredWindow,
-      snapToWindows: state.snapToWindows,
-      setSnappingToPositions: state.setSnapLines,
-      spaceMousePosition: state.spaceMousePosition,
-      zoom: state.zoom,
-      setSelectedWindow: state.setSelectedWindow,
-      selectedWindow: state.selectedWindow,
-    })),
-  )
+  const state = useShallowAppStore([
+    'toggleOpenWindow',
+    'setOneWindow',
+    'reorderWindows',
+    'connections',
+    'setActiveConnection',
+    'makeConnection',
+    'setFullScreenWindow',
+    'setHoveredWindow',
+    'snapToWindows',
+    'setSnapLines',
+    'spaceMousePosition',
+    'zoom',
+    'setSelectedWindow',
+    'selectedWindow',
+  ])
 
   const realPosition = React.useRef({ x: window.x, y: window.y })
   const nodeRef = React.useRef<HTMLDivElement>(null)
@@ -164,7 +161,7 @@ const WindowInternal: FC<{
   const onDragStart = (e: DraggableEvent, data: DraggableData) => {}
 
   const onDragStop = (e: DraggableEvent, data: DraggableData) => {
-    state.setSnappingToPositions([])
+    state.setSnapLines([])
   }
 
   const toConnections = React.useMemo(
@@ -218,27 +215,27 @@ const WindowInternal: FC<{
         }}
         onPointerDown={() => {
           state.setSelectedWindow(item.id)
-          state.bringToFront(item.id)
+          state.reorderWindows(item.id)
         }}
       >
         <RotationPoints id={item.id} window={window} />
         <nav
           className={`${styles.topBar} handle`}
           onDoubleClick={() =>
-            state.setFullScreen((prev) => (prev ? null : item.id))
+            state.setFullScreenWindow((prev) => (prev ? null : item.id))
           }
         >
           <button
             className={styles.close}
             onClick={() => {
-              state.setFullScreen(null)
-              state.close(item.id)
+              state.setFullScreenWindow(null)
+              state.toggleOpenWindow(item.id)
             }}
           />
           <button
             className={!isFullScreen ? styles.full : styles.min}
             onClick={() =>
-              state.setFullScreen((prev) => (prev ? null : item.id))
+              state.setFullScreenWindow((prev) => (prev ? null : item.id))
             }
           />
         </nav>

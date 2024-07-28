@@ -10,7 +10,21 @@ const scriptDir = __dirname
 const sourceFolder = path.join(scriptDir, '../', 'state')
 const outputFile = path.join(scriptDir, '../', 'state', 'gen-state.ts')
 
-const baseImports = `import { create } from 'zustand'`
+const baseImports = `import { create } from 'zustand'\nimport { useShallow } from 'zustand/react/shallow'`
+
+const shallowAppStore = `export const useShallowAppStore = (selected: (keyof AppStore)[]) => {
+  return useAppStore(
+    useShallow((state) => {
+      return {
+        ...selected.reduce((acc, key) => {
+          // @ts-expect-error
+          acc[key as keyof AppStore] = state[key]
+          return acc
+        }, {} as { [key in keyof AppStore]: AppStore[key] }),
+      }
+    }),
+  )
+}`
 
 export const generateStores = () => {
   try {
@@ -100,7 +114,14 @@ const generateCodeFromFiles = (files: string[]): string => {
     appStore += `${newLine},\n`
   }
 
-  return [baseImports, ...imports, [''], appStoreType, appStore].join('\n')
+  return [
+    baseImports,
+    ...imports,
+    [''],
+    appStoreType,
+    appStore,
+    shallowAppStore,
+  ].join('\n')
 }
 
 const watchFolder = () => {

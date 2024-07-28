@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "gen-store": "node --loader ts-node/esm ./src/scripts/generate-store.ts",
     "gen-api-routes": "node --loader ts-node/esm ./src/scripts/generate-api-routes.ts --watch",
     "create-new-store": "node --loader ts-node/esm ./src/scripts/create-new-store.ts && node --loader ts-node/esm ./src/scripts/generate-store.ts",
     "all": "concurrently \"npm run dev\" \"npm run gen-api-routes\""
@@ -33,6 +34,7 @@
     "react-draggable": "^4.4.6",
     "react-fps-stats": "^0.3.1",
     "react-icons": "^4.12.0",
+    "react-toastify": "^10.0.5",
     "three": "^0.160.0",
     "ts-pattern": "^5.0.6",
     "zustand": "^4.4.7"

@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { useShallow } from 'zustand/react/shallow'
 import { canvasStore, CanvasStore } from './canvas'
 import { connectedWindowsStore, ConnectedWindowsStore } from './connections'
 import { contextMenuStore, ContextMenuStore } from './contextMenu'
@@ -44,3 +45,16 @@ export const useAppStore = create<AppStore>((...operators) => {
     ...openWindowsStore(...operators),
   }
 })
+export const useShallowAppStore = (selected: (keyof AppStore)[]) => {
+  return useAppStore(
+    useShallow((state: AppStore) => {
+      return {
+        ...selected.reduce((acc, key) => {
+          // @ts-expect-error
+          acc[key as keyof AppStore] = state[key]
+          return acc
+        }, {} as { [key in keyof AppStore]: AppStore[key] }),
+      }
+    }),
+  )
+}

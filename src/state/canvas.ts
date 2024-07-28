@@ -1,5 +1,12 @@
 import { AppStateCreator, Setter, stateSetter } from './state'
 
+export type GeneratedCanvas = {
+  canvasId: string
+  itemId: string
+  lastDrawnAt: number
+  description: string
+}
+
 export type CanvasStore = {
   tool: 'draw'
   setTool: Setter<'draw'>
@@ -9,6 +16,8 @@ export type CanvasStore = {
   setDrawSize: Setter<number>
   canvasIsFocused: boolean
   setCanvasIsFocused: Setter<boolean>
+  generatedCanvas: GeneratedCanvas | null
+  setGeneratedCanvas: Setter<GeneratedCanvas | null>
 }
 
 export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
@@ -20,4 +29,6 @@ export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
   setDrawColor: (setter) => stateSetter(set, setter, `drawColor`),
   canvasIsFocused: false,
   setCanvasIsFocused: (setter) => stateSetter(set, setter, `canvasIsFocused`),
+  generatedCanvas: null,
+  setGeneratedCanvas: (setter) => stateSetter(set, setter, `generatedCanvas`),
 })

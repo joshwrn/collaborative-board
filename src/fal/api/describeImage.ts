@@ -17,7 +17,7 @@ export const describeImage = async ({
   top_p = 1,
 }: {
   image_url: string
-  prompt: string
+  prompt?: string
   max_tokens?: number
   temperature?: number
   top_p?: number

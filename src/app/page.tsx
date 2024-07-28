@@ -8,11 +8,12 @@ import { useShallow } from 'zustand/react/shallow'
 // @ts-ignore
 import FPSStats from 'react-fps-stats'
 import { DropDownMenu } from '@/components/DropDownMenu/DropDownMenu'
-import { Debug } from '@/components/Debug/Debug'
-import { useScenario } from '@/mock/scenarios'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import * as fal from '@fal-ai/serverless-client'
+import { ToastContainer } from 'react-toastify'
+
+import 'react-toastify/dist/ReactToastify.css'
 
 const queryClient = new QueryClient()
 
@@ -46,6 +47,7 @@ export default function Home() {
         <FPSStats left={'auto'} right={0} />
         {/* <Debug /> */}
       </wrapper>
+      <ToastContainer position="bottom-right" theme="dark" autoClose={2000} />
     </QueryClientProvider>
   )
 }
