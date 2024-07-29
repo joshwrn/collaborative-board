@@ -35,6 +35,20 @@ export type ImageToImageResponse = {
   prompt: string
 }
 
+export const MOCK_IMAGE_TO_IMAGE_RESPONSE = {
+  images: [
+    {
+      url: 'https://fal-cdn.batuhan-941.workers.dev/files/tiger/IExuP-WICqaIesLZAZPur.jpeg',
+      content_type: 'image/png',
+    },
+  ],
+  timings: {},
+  seed: 123,
+  has_nsfw_concepts: [false],
+  prompt:
+    'Convert this sketch to a portrait, using the following description: A tiger is standing in a forest.',
+}
+
 const mock_image_url =
   'https://fal-cdn.batuhan-941.workers.dev/files/tiger/IExuP-WICqaIesLZAZPur.jpeg'
 const mock_prompt =

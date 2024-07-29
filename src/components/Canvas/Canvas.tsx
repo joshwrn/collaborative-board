@@ -1,29 +1,33 @@
 import React from 'react'
 import style from './Canvas.module.scss'
 import { WINDOW_ATTRS, WindowType } from '@/state/windows'
-import { useAppStore } from '@/state/gen-state'
-import { useShallow } from 'zustand/react/shallow'
+import { useShallowAppStore } from '@/state/gen-state'
 import { rotatePointAroundCenter } from '@/logic/rotatePointAroundCenter'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { CanvasData } from '@/state/items'
 import { joinClasses } from '@/utils/joinClasses'
+import { useIterateOnSketch } from '@/fal/api/iterateOnSketch'
+import { toast } from 'react-toastify'
 
 export const Canvas: React.FC<{
   window: WindowType
   contentId: string
   content: CanvasData
 }> = ({ window, contentId, content }) => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      zoom: state.zoom,
-      drawColor: state.drawColor,
-      drawSize: state.drawSize,
-      setCanvasIsFocused: state.setCanvasIsFocused,
-      canvasIsFocused: state.canvasIsFocused,
-      fullScreenWindow: state.fullScreenWindow,
-      editItemContent: state.editItemContent,
-    })),
-  )
+  const state = useShallowAppStore([
+    'zoom',
+    'drawColor',
+    'drawSize',
+    'setCanvasIsFocused',
+    'canvasIsFocused',
+    'fullScreenWindow',
+    'editItemContent',
+    'generatedCanvas',
+  ])
+
+  const iterateOnSketch = useIterateOnSketch({
+    base64: content.base64,
+  })
 
   const isFullScreen = state.fullScreenWindow === window.id
 
@@ -83,6 +87,26 @@ export const Canvas: React.FC<{
           state.setCanvasIsFocused(true)
         }}
         ref={canvasRef}
+        onMouseUp={() => {
+          console.log('onMouseUp')
+          if (state.generatedCanvas?.generatedFromItemId === window.id) {
+            toast.promise(
+              iterateOnSketch.mutateAsync(),
+              {
+                pending: 'Generating...',
+                success: 'Generated!',
+                error: {
+                  render: ({ data }: { data: Error }) => {
+                    return data.message
+                  },
+                },
+              },
+              {
+                autoClose: 1000,
+              },
+            )
+          }
+        }}
         onMouseMove={(e) => {
           if (!canvasRef.current) return
           if (!counterRef.current) return

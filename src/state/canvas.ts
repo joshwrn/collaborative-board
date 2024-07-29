@@ -3,8 +3,10 @@ import { AppStateCreator, Setter, stateSetter } from './state'
 export type GeneratedCanvas = {
   canvasId: string
   itemId: string
+  generatedFromItemId: string
   lastDrawnAt: number
   description: string
+  style?: string
 }
 
 export type CanvasStore = {

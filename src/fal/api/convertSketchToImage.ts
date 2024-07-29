@@ -1,6 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 import { describeImage } from './describeImage'
-import { imageToImage, ImageToImageResponse } from './imageToImage'
+import {
+  imageToImage,
+  ImageToImageResponse,
+  MOCK_IMAGE_TO_IMAGE_RESPONSE,
+} from './imageToImage'
 import { Item } from '@/state/items'
 import React from 'react'
 import { nanoid } from 'nanoid'
@@ -9,19 +13,7 @@ import { useShallowAppStore } from '@/state/gen-state'
 
 export const mock_convertSketchToImageResponse = {
   description: 'A tiger is standing in a forest.',
-  image: {
-    images: [
-      {
-        url: 'https://fal-cdn.batuhan-941.workers.dev/files/tiger/IExuP-WICqaIesLZAZPur.jpeg',
-        content_type: 'image/png',
-      },
-    ],
-    timings: {},
-    seed: 123,
-    has_nsfw_concepts: [false],
-    prompt:
-      'Convert this sketch to a portrait, using the following description: A tiger is standing in a forest.',
-  },
+  image: MOCK_IMAGE_TO_IMAGE_RESPONSE,
 }
 
 export type ConvertSketchToImageResponse = {
@@ -70,11 +62,12 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
   const generateImage = useMutation<ConvertSketchToImageResponse>({
     mutationFn: async () => {
       if (should_use_mock) {
+        console.log('useConvertSketchToImage', 'use_mock')
         return mock_convertSketchToImageResponse
       }
       const image = item.body.find((b) => b.type === 'canvas')?.content.base64
       const style = item.body.find((b) => b.type === 'text')?.content
-      if (!image || !prompt) {
+      if (!image) {
         throw new Error(`Missing image or prompt.`)
       }
       const result = await convertSketchToImage({
@@ -121,6 +114,7 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
         itemId: createdId.current,
         lastDrawnAt: Date.now(),
         description: data.description,
+        generatedFromItemId: item.id,
       })
     },
     onError: () => {
