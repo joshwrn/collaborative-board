@@ -9,6 +9,27 @@ import { joinClasses } from '@/utils/joinClasses'
 import { useIterateOnSketch } from '@/fal/api/iterateOnSketch'
 import { toast } from 'react-toastify'
 
+const generateNoise = (
+  ctx: CanvasRenderingContext2D,
+  opacity: number,
+  width: number,
+  height: number,
+) => {
+  const imageData = ctx.createImageData(width, height)
+  const data = imageData.data
+
+  for (let i = 0; i < data.length; i += 4) {
+    // Generate random color values
+    const randomValue = Math.floor(Math.random() * 256)
+    data[i] = randomValue // Red
+    data[i + 1] = randomValue // Green
+    data[i + 2] = randomValue // Blue
+    data[i + 3] = Math.floor(255 * opacity) // Alpha
+  }
+
+  ctx.putImageData(imageData, 0, 0)
+}
+
 export const Canvas: React.FC<{
   window: WindowType
   contentId: string
@@ -89,6 +110,9 @@ export const Canvas: React.FC<{
         ref={canvasRef}
         onMouseUp={() => {
           console.log('onMouseUp')
+          const ctx = canvasRef.current?.getContext('2d')
+          if (!ctx) return
+          generateNoise(ctx, 0.5, attributes.width, attributes.height)
           if (state.generatedCanvas?.generatedFromItemId === window.id) {
             toast.promise(
               iterateOnSketch.mutateAsync(),

@@ -46,7 +46,7 @@ export const convertSketchToImage = async ({
   }
 }
 
-const should_use_mock = true
+const should_use_mock = false
 
 export const useConvertSketchToImage = ({ item }: { item: Item }) => {
   const state = useShallowAppStore([

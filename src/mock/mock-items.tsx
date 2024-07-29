@@ -5,34 +5,26 @@ import { faker } from '@faker-js/faker'
 export const createMockItem = (length: number): Item[] =>
   Array.from({ length }, () => {
     const subject = faker.word.words()
-    const body = faker.lorem.paragraphs(3)
+    const body = faker.helpers.arrayElement([
+      'watercolor painting',
+      'oil painting',
+      'acrylic painting',
+      'charcoal drawing',
+      'pastel drawing',
+    ])
     return {
       id: nanoid(),
       subject,
-      body: [{ id: nanoid(), type: 'text', content: body }],
+      body: [
+        { id: nanoid(), type: 'text', content: body },
+        {
+          id: nanoid(),
+          type: 'canvas',
+          content: {
+            base64: '',
+          },
+        },
+      ],
       members: [],
     }
   })
-
-export const MOCK_ITEMS: Item[] = [
-  {
-    id: nanoid(),
-    subject: 'New Windows',
-    members: [],
-    body: [
-      {
-        id: nanoid(),
-        type: 'iframe',
-        content: {
-          src: 'https://codesandbox.io/embed/sbf2i?view=preview&module=%2Fsrc%2FEffects.js&hidenavigation=1',
-          sandbox:
-            'allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts',
-          allow:
-            'accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking',
-          title: 'Sparks and effects',
-        },
-      },
-    ],
-  },
-  ...createMockItem(100),
-]

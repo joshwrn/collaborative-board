@@ -21,8 +21,8 @@ export const iterateOnSketch = async ({
     prompt: `Convert this sketch to a ${
       style ?? 'watercolor painting'
     }, using the following description: ${description}`,
-    num_inference_steps: 2,
-    guidance_scale: 2,
+    num_inference_steps: 65,
+    guidance_scale: 20,
     strength: 1,
   })
   return image
