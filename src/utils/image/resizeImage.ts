@@ -18,8 +18,8 @@ export const resizeImage = ({
     if (!ctx) throw new Error(`Canvas context not found.`)
 
     const resizedDimensions = {
-      width: width / 2,
-      height: height / 2,
+      width: width,
+      height: height,
     }
     canvas.width = resizedDimensions.width
     canvas.height = resizedDimensions.height

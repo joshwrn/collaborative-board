@@ -10,6 +10,7 @@ import {
   MOCK_CREATIVE_UPSCALE_RESPONSE,
 } from './creativeUpscale'
 import { resizeImage } from '@/utils/image/resizeImage'
+import { WINDOW_ATTRS } from '@/state/windows'
 
 export const mock_convertSketchToImageResponse = {
   description: 'A tiger is standing in a forest.',
@@ -118,12 +119,12 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
         },
       })
     },
-    onError: () => {
+    onError: (e) => {
       if (!createdId.current) {
         throw new Error(`Created id not found.`)
       }
       state.deleteItem(createdId.current)
-      throw new Error(`Failed to generate image.`)
+      throw new Error(`Failed to generate image: ${e}`)
     },
   })
 

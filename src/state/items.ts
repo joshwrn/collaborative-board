@@ -43,13 +43,7 @@ export type Item = {
 export const DEFAULT_ITEM: Item = {
   id: 'default_id',
   subject: 'default_subject',
-  body: [
-    {
-      type: 'text',
-      content: 'default content',
-      id: 'default_content_id',
-    },
-  ],
+  body: [],
   members: [],
 }
 

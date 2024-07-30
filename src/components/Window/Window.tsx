@@ -69,12 +69,15 @@ const matchBody = (
       />
     ))
     .with({ type: 'text' }, (value) => (
-      <Text
-        key={i}
-        content={value.content}
-        windowId={window.id}
-        contentId={body.id}
-      />
+      <div className={styles.textContainer}>
+        <h2>Prompt</h2>
+        <Text
+          key={i}
+          content={value.content}
+          windowId={window.id}
+          contentId={body.id}
+        />
+      </div>
     ))
     .with(
       {

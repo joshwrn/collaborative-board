@@ -33,7 +33,7 @@ export type OpenWindowsStore = {
 }
 
 export const WINDOW_ATTRS = {
-  defaultSize: { width: 700, height: 500 },
+  defaultSize: { width: 1000, height: 600 },
   defaultFullScreenSize: { width: 700, height: 750 },
   minSize: 300,
   maxSize: 1000,
@@ -85,6 +85,21 @@ const createNewWindowPosition = (windows: WindowType[]) => {
   return startingPosition
 }
 
+const createNextWindowPosition = (
+  windows: WindowType[],
+  startingPosition: Point2d,
+) => {
+  for (let i = 0; i < windows.length; i++) {
+    const window = windows[i]
+    if (window.x === startingPosition.x && window.y === startingPosition.y) {
+      startingPosition.x
+      startingPosition.y += window.height + 80
+      i = 0
+    }
+  }
+  return startingPosition
+}
+
 export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   set,
   get,
@@ -130,8 +145,10 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         if (window.id === nextId) {
           return {
             ...window,
-            x: openWindow.x + openWindow.width + 100,
-            y: openWindow.y,
+            ...createNextWindowPosition(state.windows, {
+              x: openWindow.x + openWindow.width + 100,
+              y: openWindow.y,
+            }),
           }
         }
         return {
