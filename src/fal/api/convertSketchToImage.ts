@@ -1,10 +1,4 @@
 import { useMutation } from '@tanstack/react-query'
-import { describeImage } from './describeImage'
-import {
-  imageToImage,
-  ImageToImageResponse,
-  MOCK_IMAGE_TO_IMAGE_RESPONSE,
-} from './imageToImage'
 import { Item } from '@/state/items'
 import React from 'react'
 import { nanoid } from 'nanoid'
@@ -15,6 +9,7 @@ import {
   CreativeUpscaleOutput,
   MOCK_CREATIVE_UPSCALE_RESPONSE,
 } from './creativeUpscale'
+import { resizeImage } from '@/utils/image/resizeImage'
 
 export const mock_convertSketchToImageResponse = {
   description: 'A tiger is standing in a forest.',
@@ -99,61 +94,36 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
       const res = await fetchImageUrlToBase64({
         url: data.image.url,
       })
-      const canvasId = nanoid()
-
-      // resize image
-      const img = new Image()
-      img.src = res.base64
-      img.onload = () => {
-        if (!createdId.current) {
-          throw new Error(`Created id not found.`)
-        }
-
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')
-        if (!ctx) throw new Error(`Canvas context not found.`)
-
-        const resizedDimensions = {
-          width: img.width / 2,
-          height: img.height / 2,
-        }
-        canvas.width = resizedDimensions.width
-        canvas.height = resizedDimensions.height
-
-        ctx.drawImage(
-          img,
-          0,
-          0,
-          img.width,
-          img.height,
-          0,
-          0,
-          resizedDimensions.width,
-          resizedDimensions.height,
-        )
-        const base64 = canvas.toDataURL()
-
-        state.addContentToItem(createdId.current, {
-          type: 'canvas',
-          id: canvasId,
-          content: {
-            base64: base64,
-          },
-        })
-        state.setGeneratedCanvas({
-          canvasId,
-          itemId: createdId.current,
-          lastDrawnAt: Date.now(),
-          description: data.description,
-          generatedFromItemId: item.id,
-        })
-      }
+      resizeImage({
+        base64: res.base64,
+        width: data.image.width / 2,
+        height: data.image.height / 2,
+        onSuccess: (base64) => {
+          const canvasId = nanoid()
+          if (!createdId.current) {
+            throw new Error(`Created id not found.`)
+          }
+          state.addContentToItem(createdId.current, {
+            type: 'canvas',
+            id: canvasId,
+            content: {
+              base64: base64,
+            },
+          })
+          state.setGeneratedCanvas({
+            canvasId,
+            itemId: createdId.current,
+            generatedFromItemId: item.id,
+          })
+        },
+      })
     },
     onError: () => {
       if (!createdId.current) {
         throw new Error(`Created id not found.`)
       }
       state.deleteItem(createdId.current)
+      throw new Error(`Failed to generate image.`)
     },
   })
 

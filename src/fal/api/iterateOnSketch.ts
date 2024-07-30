@@ -30,6 +30,7 @@ export const iterateOnSketch = async ({
 
 const should_use_mock = true
 
+// unused
 export const useIterateOnSketch = ({ base64 }: { base64: string }) => {
   const state = useShallowAppStore(['editItemContent', 'generatedCanvas'])
   const generateImage = useMutation<ImageToImageResponse>({
@@ -43,8 +44,8 @@ export const useIterateOnSketch = ({ base64 }: { base64: string }) => {
       }
       const result = await iterateOnSketch({
         sketch_url: base64,
-        description: state.generatedCanvas.description,
-        style: state.generatedCanvas.style,
+        description: '',
+        style: '',
       })
       console.log('iterateOnSketch', result)
       return result

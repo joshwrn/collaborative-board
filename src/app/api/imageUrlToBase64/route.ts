@@ -2,7 +2,7 @@ import { MOCK_BASE64 } from '@/mock/mockBlob'
 import { ImageUrlToBase64Response } from '@/server/imageUrlToBase64/fetchImageUrlToBase64'
 import { mockedEndpoints } from '@/server/mockedEndpoints'
 import { ApiResponse } from '@/server/response'
-import { convertImageToBase64 } from '@/utils/convertImageToBase64'
+import { convertImageToBase64 } from '@/utils/image/convertImageToBase64'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const GET = async (

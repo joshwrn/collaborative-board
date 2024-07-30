@@ -54,6 +54,7 @@ const mock_image_url =
 const mock_prompt =
   'an island near sea, with seagulls, moon shining over the sea, light house, boats int he background, fish flying over the sea'
 
+// unused
 export const imageToImage = async ({
   image_url = mock_image_url,
   prompt = mock_prompt,

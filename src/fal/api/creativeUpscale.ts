@@ -1,6 +1,4 @@
-import { useShallowAppStore } from '@/state/gen-state'
 import * as fal from '@fal-ai/serverless-client'
-import { useMutation } from '@tanstack/react-query'
 
 const mock_image_url =
   'https://storage.googleapis.com/falserverless/model_tests/upscale/owl.png'

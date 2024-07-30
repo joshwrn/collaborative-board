@@ -9,6 +9,7 @@ const mock_image_url = 'https://llava-vl.github.io/static/images/monalisa.jpg'
 const default_prompt =
   'what is this an image of? Use as much detail as possible.'
 
+// unused
 export const describeImage = async ({
   image_url = mock_image_url,
   prompt,
