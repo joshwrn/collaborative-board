@@ -8,7 +8,6 @@
   justify-content: center;
   align-items: center;
   position: relative;
-  padding: 0px 0 0 20px;
   overflow: hidden;
   touch-action: none;
 }
@@ -51,6 +50,23 @@ $size: 10000000px;
   top: calc(-#{$size} / 2);
   background-size: 100px 100px;
   z-index: -9999;
+
+  --dot-bg: black;
+  --dot-color: white;
+  --dot-size: 1px;
+  --dot-space: 22px;
+  // background: linear-gradient(
+  //       90deg,
+  //       var(--dot-bg) calc(var(--dot-space) - var(--dot-size)),
+  //       transparent 1%
+  //     )
+  //     center / var(--dot-space) var(--dot-space),
+  //   linear-gradient(
+  //       var(--dot-bg) calc(var(--dot-space) - var(--dot-size)),
+  //       transparent 1%
+  //     )
+  //     center / var(--dot-space) var(--dot-space),
+  //   var(--dot-color);
 }
 
 .button {

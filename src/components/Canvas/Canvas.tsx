@@ -110,26 +110,6 @@ export const Canvas: React.FC<{
         ref={canvasRef}
         onMouseUp={() => {
           console.log('onMouseUp')
-          const ctx = canvasRef.current?.getContext('2d')
-          if (!ctx) return
-          generateNoise(ctx, 0.5, attributes.width, attributes.height)
-          if (state.generatedCanvas?.generatedFromItemId === window.id) {
-            toast.promise(
-              iterateOnSketch.mutateAsync(),
-              {
-                pending: 'Generating...',
-                success: 'Generated!',
-                error: {
-                  render: ({ data }: { data: Error }) => {
-                    return data.message
-                  },
-                },
-              },
-              {
-                autoClose: 1000,
-              },
-            )
-          }
         }}
         onMouseMove={(e) => {
           if (!canvasRef.current) return

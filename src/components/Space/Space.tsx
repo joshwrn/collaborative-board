@@ -28,8 +28,10 @@ const Space_Internal: FC = () => {
     })),
   )
 
+  const dotSpace = 22 / state.zoom
+  const dotSize = 1 / state.zoom
+
   useGestures({ wrapperRef, spaceRef })
-  const lineSize = 1 / state.zoom
   return (
     <div className={styles.outer}>
       <wrapper
@@ -67,8 +69,9 @@ const Space_Internal: FC = () => {
           <div
             className={styles.background}
             style={{
-              backgroundImage: `linear-gradient(var(--space-grid-color) ${lineSize}px, transparent ${lineSize}px),
-          linear-gradient(90deg, var(--space-grid-color) ${lineSize}px, transparent ${lineSize}px)`,
+              background: `linear-gradient(90deg, black calc(${dotSpace}px - ${dotSize}px), transparent 1%) center / ${dotSpace}px ${dotSpace}px,
+		linear-gradient(black calc(${dotSpace}px - ${dotSize}px), transparent 1%) center / ${dotSpace}px ${dotSpace}px,
+		#ffffff47`,
             }}
           />
           <ActiveConnectionGuard />

@@ -10,14 +10,19 @@ import React from 'react'
 import { nanoid } from 'nanoid'
 import { fetchImageUrlToBase64 } from '@/server/imageUrlToBase64/fetchImageUrlToBase64'
 import { useShallowAppStore } from '@/state/gen-state'
+import {
+  creativeUpscale,
+  CreativeUpscaleOutput,
+  MOCK_CREATIVE_UPSCALE_RESPONSE,
+} from './creativeUpscale'
 
 export const mock_convertSketchToImageResponse = {
   description: 'A tiger is standing in a forest.',
-  image: MOCK_IMAGE_TO_IMAGE_RESPONSE,
+  image: MOCK_CREATIVE_UPSCALE_RESPONSE.image,
 }
 
 export type ConvertSketchToImageResponse = {
-  image: ImageToImageResponse
+  image: CreativeUpscaleOutput['image']
   description: string
 }
 
@@ -28,21 +33,17 @@ export const convertSketchToImage = async ({
   sketch_url: string
   style?: string
 }): Promise<ConvertSketchToImageResponse> => {
-  const description = await describeImage({
+  const image = await creativeUpscale({
     image_url: sketch_url,
-  })
-  const image = await imageToImage({
-    image_url: sketch_url,
-    prompt: `Convert this sketch to a ${
-      style ?? 'watercolor painting'
-    }, using the following description: ${description.output}`,
-    num_inference_steps: 64,
-    guidance_scale: 20,
-    strength: 1,
+    creativity: 0.75,
+    detail: 1.1,
+    numInferenceSteps: 30,
+    guidanceScale: 1,
+    prompt: style,
   })
   return {
-    image,
-    description: description.output,
+    image: image.image,
+    description: style ?? '',
   }
 }
 
@@ -95,27 +96,58 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
       if (!data) {
         throw new Error(`Data not found.`)
       }
-      if (!createdId.current) {
-        throw new Error(`Created id not found.`)
-      }
       const res = await fetchImageUrlToBase64({
-        url: data.image.images[0].url,
+        url: data.image.url,
       })
       const canvasId = nanoid()
-      state.addContentToItem(createdId.current, {
-        type: 'canvas',
-        id: canvasId,
-        content: {
-          base64: res.base64,
-        },
-      })
-      state.setGeneratedCanvas({
-        canvasId,
-        itemId: createdId.current,
-        lastDrawnAt: Date.now(),
-        description: data.description,
-        generatedFromItemId: item.id,
-      })
+
+      // resize image
+      const img = new Image()
+      img.src = res.base64
+      img.onload = () => {
+        if (!createdId.current) {
+          throw new Error(`Created id not found.`)
+        }
+
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        if (!ctx) throw new Error(`Canvas context not found.`)
+
+        const resizedDimensions = {
+          width: img.width / 2,
+          height: img.height / 2,
+        }
+        canvas.width = resizedDimensions.width
+        canvas.height = resizedDimensions.height
+
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          img.width,
+          img.height,
+          0,
+          0,
+          resizedDimensions.width,
+          resizedDimensions.height,
+        )
+        const base64 = canvas.toDataURL()
+
+        state.addContentToItem(createdId.current, {
+          type: 'canvas',
+          id: canvasId,
+          content: {
+            base64: base64,
+          },
+        })
+        state.setGeneratedCanvas({
+          canvasId,
+          itemId: createdId.current,
+          lastDrawnAt: Date.now(),
+          description: data.description,
+          generatedFromItemId: item.id,
+        })
+      }
     },
     onError: () => {
       if (!createdId.current) {
