@@ -94,7 +94,7 @@ export const creativeUpscale = async ({
   seed = 42,
   guidanceScale = 7.5,
   numInferenceSteps = 20,
-  enableSafetyChecks = false,
+  enableSafetyChecks = true,
   ...rest
 }: CreativeUpscaleInput): Promise<CreativeUpscaleOutput> => {
   const result = await fal.subscribe('fal-ai/creative-upscaler', {

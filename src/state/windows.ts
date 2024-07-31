@@ -34,7 +34,7 @@ export type OpenWindowsStore = {
 
 export const WINDOW_ATTRS = {
   defaultSize: { width: 1000, height: 600 },
-  defaultFullScreenSize: { width: 700, height: 750 },
+  defaultFullScreenSize: { width: 1000, height: 750 },
   minSize: 300,
   maxSize: 1000,
   zIndex: 0,
@@ -146,7 +146,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           return {
             ...window,
             ...createNextWindowPosition(state.windows, {
-              x: openWindow.x + openWindow.width + 100,
+              x: openWindow.x + openWindow.width + 130,
               y: openWindow.y,
             }),
           }

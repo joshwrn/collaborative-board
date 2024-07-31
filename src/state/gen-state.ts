@@ -45,15 +45,17 @@ export const useAppStore = create<AppStore>((...operators) => {
     ...openWindowsStore(...operators),
   }
 })
-export const useShallowAppStore = (selected: (keyof AppStore)[]) => {
+export const useShallowAppStore = <T extends (keyof AppStore)[]>(
+  selected: T,
+) => {
   return useAppStore(
     useShallow((state: AppStore) => {
       return {
         ...selected.reduce((acc, key) => {
           // @ts-expect-error
-          acc[key as keyof AppStore] = state[key]
+          acc[key as T[number]] = state[key]
           return acc
-        }, {} as { [key in keyof AppStore]: AppStore[key] }),
+        }, {} as { [key in T[number]]: AppStore[key] }),
       }
     }),
   )

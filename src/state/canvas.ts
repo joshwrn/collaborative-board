@@ -17,6 +17,8 @@ export type CanvasStore = {
   setCanvasIsFocused: Setter<boolean>
   generatedCanvas: GeneratedCanvas | null
   setGeneratedCanvas: Setter<GeneratedCanvas | null>
+  generatingCanvas: string[]
+  setGeneratingCanvas: Setter<string[]>
 }
 
 export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
@@ -30,4 +32,6 @@ export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
   setCanvasIsFocused: (setter) => stateSetter(set, setter, `canvasIsFocused`),
   generatedCanvas: null,
   setGeneratedCanvas: (setter) => stateSetter(set, setter, `generatedCanvas`),
+  generatingCanvas: [],
+  setGeneratingCanvas: (setter) => stateSetter(set, setter, `generatingCanvas`),
 })

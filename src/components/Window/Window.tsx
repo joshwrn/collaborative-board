@@ -18,6 +18,7 @@ import { Canvas } from '../Canvas/Canvas'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { WindowMenu } from './WindowMenu/WindowMenu'
 import { GenerateButton } from './GenerateButton'
+import { LoadingOverlay } from './LoadingOverlay'
 
 const Text = ({
   content,
@@ -271,6 +272,7 @@ const WindowInternal: FC<{
           {item.body.map((body, i) => matchBody(body, i, window))}
         </main>
         <ConnectorOverlay id={item.id} />
+        <LoadingOverlay itemId={item.id} />
 
         <WindowBorder
           width={width}
