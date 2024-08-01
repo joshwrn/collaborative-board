@@ -46,7 +46,10 @@ const ConnectionInternal = ({
     [from, to, mousePosition],
   )
 
-  const isSelected = state.contextMenu?.id === id
+  const isSelected =
+    state.contextMenu?.elementType === 'connections' &&
+    state.contextMenu?.id === id
+
   if (!properties) return null
   const { line, distance } = properties
   return (

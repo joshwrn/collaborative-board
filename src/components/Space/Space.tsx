@@ -1,35 +1,31 @@
 'use client'
 import type { FC } from 'react'
 import React from 'react'
-import { Window, Windows } from '../Window/Window'
+import { Windows } from '../Window/Window'
 
 import styles from './Space.module.scss'
-import { useAppStore } from '@/state/gen-state'
+import { useShallowAppStore } from '@/state/gen-state'
 import { useGestures } from '@/gestures'
 import { Connections } from '../Connections/Connections'
-import { useShallow } from 'zustand/react/shallow'
 import { ActiveConnectionGuard } from '../Connections/ActiveConnection'
 import { Debug } from '../Debug/Debug'
 import { SPACE_ATTRS } from '@/state/space'
 import { SnapLines } from '../SnapLine/SnapLine'
 import { Toolbar } from '../Toolbar/Toolbar'
 import { FullScreenWindow } from '../Window/FullScreenWindow/FullScreenWindow'
+import { dotBackground } from './dotBackground'
 
 const Space_Internal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
   const spaceRef = React.useRef<HTMLDivElement>(null)
-  const state = useAppStore(
-    useShallow((state) => ({
-      zoom: state.zoom,
-      pan: state.pan,
-      setSpaceMousePosition: state.setSpaceMousePosition,
-      setActiveConnection: state.setActiveConnection,
-      fullScreenWindow: state.fullScreenWindow,
-    })),
-  )
-
-  const dotSpace = 22 / state.zoom
-  const dotSize = 1 / state.zoom
+  const state = useShallowAppStore([
+    'zoom',
+    'pan',
+    'setSpaceMousePosition',
+    'setActiveConnection',
+    'fullScreenWindow',
+    'openContextMenu',
+  ])
 
   useGestures({ wrapperRef, spaceRef })
   return (
@@ -67,11 +63,12 @@ const Space_Internal: FC = () => {
           }}
         >
           <div
+            onContextMenu={(e) => {
+              state.openContextMenu({ id: 'space', elementType: 'space' })
+            }}
             className={styles.background}
             style={{
-              background: `linear-gradient(90deg, black calc(${dotSpace}px - ${dotSize}px), transparent 1%) center / ${dotSpace}px ${dotSpace}px,
-		linear-gradient(black calc(${dotSpace}px - ${dotSize}px), transparent 1%) center / ${dotSpace}px ${dotSpace}px,
-		#ffffff47`,
+              background: dotBackground({ zoom: state.zoom }),
             }}
           />
           <ActiveConnectionGuard />

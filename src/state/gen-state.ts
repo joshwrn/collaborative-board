@@ -50,13 +50,11 @@ export const useShallowAppStore = <T extends (keyof AppStore)[]>(
 ) => {
   return useAppStore(
     useShallow((state: AppStore) => {
-      return {
-        ...selected.reduce((acc, key) => {
-          // @ts-expect-error
-          acc[key as T[number]] = state[key]
-          return acc
-        }, {} as { [key in T[number]]: AppStore[key] }),
-      }
+      return selected.reduce((acc, key) => {
+        // @ts-expect-error
+        acc[key as T[number]] = state[key]
+        return acc
+      }, {})
     }),
-  )
+  ) as { [key in T[number]]: AppStore[key] }
 }
