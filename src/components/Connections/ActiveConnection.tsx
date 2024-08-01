@@ -1,22 +1,20 @@
-import { useAppStore } from '@/state/gen-state'
 import React from 'react'
-import { useShallow } from 'zustand/react/shallow'
 import { Connection } from './Connections'
+import { useStore } from '@/state/gen-state'
 
 export const ActiveConnection = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      openWindows: state.windows,
-      activeConnection: state.activeConnection,
-      hoveredConnection: state.hoveredConnection,
-      spaceMousePosition: state.spaceMousePosition,
-      zoom: state.zoom,
-    })),
-  )
-  const activeWindow = state.openWindows.find(
+  const state = useStore([
+    'windows',
+    'activeConnection',
+    'hoveredConnection',
+    'spaceMousePosition',
+    'zoom',
+  ])
+
+  const activeWindow = state.windows.find(
     (window) => window.id === state.activeConnection?.from,
   )
-  const hoveredWindow = state.openWindows.find(
+  const hoveredWindow = state.windows.find(
     (window) => window.id === state.hoveredConnection?.to,
   )
   if (!activeWindow) {
@@ -36,11 +34,7 @@ export const ActiveConnection = () => {
 }
 
 export const ActiveConnectionGuardInternal = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      activeConnection: state.activeConnection,
-    })),
-  )
+  const state = useStore(['activeConnection'])
   if (!state.activeConnection) {
     return null
   }

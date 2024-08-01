@@ -14,7 +14,7 @@ import { spaceStore, SpaceStore } from './space'
 import { userStore, UserStore } from './user'
 import { openWindowsStore, OpenWindowsStore } from './windows'
 
-export type AppStore = CanvasStore &
+export type Store = CanvasStore &
   ConnectedWindowsStore &
   ContextMenuStore &
   DebugStore &
@@ -28,7 +28,7 @@ export type AppStore = CanvasStore &
   UserStore &
   OpenWindowsStore
 
-export const useAppStore = create<AppStore>((...operators) => {
+export const useFullStore = create<Store>((...operators) => {
   return {
     ...canvasStore(...operators),
     ...connectedWindowsStore(...operators),
@@ -45,16 +45,27 @@ export const useAppStore = create<AppStore>((...operators) => {
     ...openWindowsStore(...operators),
   }
 })
-export const useShallowAppStore = <T extends (keyof AppStore)[]>(
-  selected: T,
-) => {
-  return useAppStore(
-    useShallow((state: AppStore) => {
+export const useStore = <T extends keyof Store>(selected: T[]) => {
+  return useFullStore(
+    useShallow((state: Store) => {
       return selected.reduce((acc, key) => {
-        // @ts-expect-error
-        acc[key as T[number]] = state[key]
+        acc[key] = state[key]
         return acc
-      }, {})
+      }, {} as Pick<Store, T>)
     }),
-  ) as { [key in T[number]]: AppStore[key] }
+  )
 }
+
+// type StateObject<T extends Partial<AppStore>> = {
+//   [key in keyof T]: T[key]
+// }
+
+// export const useShallowAppStore_dep = <T extends Partial<AppStore>>(
+//   selected: (state: AppStore) => StateObject<T>,
+// ) => {
+//   return useAppStore(
+//     useShallow((state: AppStore) => {
+//       return selected(state) as StateObject<T>
+//     }),
+//   )
+// }

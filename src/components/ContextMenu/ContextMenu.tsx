@@ -2,7 +2,7 @@
 import type { FC } from 'react'
 import React from 'react'
 import styles from './ContextMenu.module.scss'
-import { useShallowAppStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { BsTrash3 as TrashIcon } from 'react-icons/bs'
 import { usePreventScroll } from '@/utils/usePreventScroll'
@@ -11,12 +11,7 @@ import { nanoid } from 'nanoid'
 import { createMockPrompt } from '@/mock/mock-items'
 
 export const ContextMenu: FC = () => {
-  const state = useShallowAppStore([
-    'contextMenu',
-    'setContextMenu',
-    'zoom',
-    'pan',
-  ])
+  const state = useStore(['contextMenu', 'setContextMenu', 'zoom', 'pan'])
   const ref = React.useRef<HTMLDivElement>(null)
   usePreventScroll({ enabled: state.contextMenu !== null })
   useOutsideClick({ action: () => state.setContextMenu(null), refs: [ref] })
@@ -37,7 +32,7 @@ export const ContextMenu: FC = () => {
 }
 
 const MenuItems = () => {
-  const state = useShallowAppStore([
+  const state = useStore([
     'contextMenu',
     'setContextMenu',
     'removeConnection',

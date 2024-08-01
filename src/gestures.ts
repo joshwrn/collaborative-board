@@ -1,8 +1,7 @@
 import { useGesture } from '@use-gesture/react'
 
 import React from 'react'
-import { useAppStore } from './state/gen-state'
-import { useShallow } from 'zustand/react/shallow'
+import { useStore } from './state/gen-state'
 import { SPACE_ATTRS } from './state/space'
 
 export const clampInto =
@@ -23,18 +22,16 @@ export const useGestures = ({
   wrapperRef: React.RefObject<HTMLDivElement>
   spaceRef: React.RefObject<HTMLDivElement>
 }) => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      contextMenu: state.contextMenu,
-      zoom: state.zoom,
-      pan: state.pan,
-      setZoom: state.setZoom,
-      setPan: state.setPan,
-      debug_setZoomFocusPoint: state.debug_setZoomFocusPoint,
-      selectedWindow: state.selectedWindow,
-      hoveredWindow: state.hoveredWindow,
-    })),
-  )
+  const state = useStore([
+    'contextMenu',
+    'zoom',
+    'pan',
+    'setZoom',
+    'setPan',
+    'debug_setZoomFocusPoint',
+    'selectedWindow',
+    'hoveredWindow',
+  ])
 
   usePreventDefaults()
   useGesture(

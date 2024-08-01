@@ -12,18 +12,15 @@ const outputFile = path.join(scriptDir, '../', 'state', 'gen-state.ts')
 
 const baseImports = `import { create } from 'zustand'\nimport { useShallow } from 'zustand/react/shallow'`
 
-const shallowAppStore = `export const useShallowAppStore = <T extends (keyof AppStore)[]>(
-  selected: T,
-) => {
-  return useAppStore(
-    useShallow((state: AppStore) => {
+const shallowAppStore = `export const useStore = <T extends keyof Store>(selected: T[]) => {
+  return useFullStore(
+    useShallow((state: Store) => {
       return selected.reduce((acc, key) => {
-        // @ts-expect-error
-        acc[key as T[number]] = state[key]
+        acc[key] = state[key]
         return acc
-      }, {})
+      }, {} as Pick<Store, T>)
     }),
-  ) as { [key in T[number]]: AppStore[key] }
+  )
 }\n`
 
 export const generateStores = () => {
@@ -90,7 +87,7 @@ const generateCodeFromFiles = (files: string[]): string => {
     return ''
   }
 
-  let appStoreType = `export type AppStore = `
+  let appStoreType = `export type Store = `
   for (let i = 0; i < storesArr.length; i++) {
     const store = storesArr[i]
     const newLine = `${capitalizeFirstLetter(store)}Store`
@@ -101,7 +98,7 @@ const generateCodeFromFiles = (files: string[]): string => {
     appStoreType += `${newLine} &`
   }
 
-  let appStore = `export const useAppStore = create<AppStore>((...operators) => {
+  let appStore = `export const useFullStore = create<Store>((...operators) => {
     return {`
 
   for (let i = 0; i < storesArr.length; i++) {

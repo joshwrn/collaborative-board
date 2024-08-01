@@ -3,14 +3,13 @@ import { Item } from '@/state/items'
 import React from 'react'
 import { nanoid } from 'nanoid'
 import { fetchImageUrlToBase64 } from '@/server/imageUrlToBase64/fetchImageUrlToBase64'
-import { useShallowAppStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 import {
   creativeUpscale,
   CreativeUpscaleOutput,
   MOCK_CREATIVE_UPSCALE_RESPONSE,
 } from './creativeUpscale'
 import { resizeImage } from '@/utils/image/resizeImage'
-import { WINDOW_ATTRS } from '@/state/windows'
 
 export const mock_convertSketchToImageResponse = {
   description: 'A tiger is standing in a forest.',
@@ -51,7 +50,7 @@ export const convertSketchToImage = async ({
 const should_use_mock = false
 
 export const useConvertSketchToImage = ({ item }: { item: Item }) => {
-  const state = useShallowAppStore([
+  const state = useStore([
     'createItem',
     'makeConnection',
     'toggleOpenWindow',

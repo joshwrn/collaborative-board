@@ -5,7 +5,7 @@ import {
   MOCK_IMAGE_TO_IMAGE_RESPONSE,
 } from './imageToImage'
 import { fetchImageUrlToBase64 } from '@/server/imageUrlToBase64/fetchImageUrlToBase64'
-import { useShallowAppStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 
 export const iterateOnSketch = async ({
   sketch_url,
@@ -32,7 +32,7 @@ const should_use_mock = true
 
 // unused
 export const useIterateOnSketch = ({ base64 }: { base64: string }) => {
-  const state = useShallowAppStore(['editItemContent', 'generatedCanvas'])
+  const state = useStore(['editItemContent', 'generatedCanvas'])
   const generateImage = useMutation<ImageToImageResponse>({
     mutationFn: async () => {
       if (should_use_mock) {

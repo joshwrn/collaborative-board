@@ -1,41 +1,19 @@
 import React from 'react'
 import style from './Canvas.module.scss'
 import { WINDOW_ATTRS, WindowType } from '@/state/windows'
-import { useShallowAppStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 import { rotatePointAroundCenter } from '@/logic/rotatePointAroundCenter'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { CanvasData } from '@/state/items'
 import { joinClasses } from '@/utils/joinClasses'
 import { useIterateOnSketch } from '@/fal/api/iterateOnSketch'
-import { toast } from 'react-toastify'
-
-const generateNoise = (
-  ctx: CanvasRenderingContext2D,
-  opacity: number,
-  width: number,
-  height: number,
-) => {
-  const imageData = ctx.createImageData(width, height)
-  const data = imageData.data
-
-  for (let i = 0; i < data.length; i += 4) {
-    // Generate random color values
-    const randomValue = Math.floor(Math.random() * 256)
-    data[i] = randomValue // Red
-    data[i + 1] = randomValue // Green
-    data[i + 2] = randomValue // Blue
-    data[i + 3] = Math.floor(255 * opacity) // Alpha
-  }
-
-  ctx.putImageData(imageData, 0, 0)
-}
 
 export const Canvas: React.FC<{
   window: WindowType
   contentId: string
   content: CanvasData
 }> = ({ window, contentId, content }) => {
-  const state = useShallowAppStore([
+  const state = useStore([
     'zoom',
     'drawColor',
     'drawSize',

@@ -1,18 +1,13 @@
 import React from 'react'
 import style from './WindowMenu.module.scss'
 import Dropdown from '@/ui/Dropdown'
-import { useAppStore } from '@/state/gen-state'
-import { useShallow } from 'zustand/react/shallow'
+import { useStore } from '@/state/gen-state'
 import { nanoid } from 'nanoid'
 
 export const WindowMenu: React.FC<{
   id: string
 }> = ({ id }) => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      addContentToItem: state.addContentToItem,
-    })),
-  )
+  const state = useStore(['addContentToItem'])
   return (
     <div className={style.wrapper}>
       <Dropdown.Menu

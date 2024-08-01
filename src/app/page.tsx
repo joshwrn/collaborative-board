@@ -2,9 +2,8 @@
 import { List } from '@/components/List/List'
 import { Space } from '@/components/Space/Space'
 import styles from './page.module.scss'
-import { useAppStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 import { ContextMenu } from '@/components/ContextMenu/ContextMenu'
-import { useShallow } from 'zustand/react/shallow'
 // @ts-ignore
 import FPSStats from 'react-fps-stats'
 import { DropDownMenu } from '@/components/DropDownMenu/DropDownMenu'
@@ -22,12 +21,8 @@ fal.config({
 })
 
 export default function Home() {
-  const state = useAppStore(
-    useShallow((state) => ({
-      setMousePosition: state.setMousePosition,
-      showItemList: state.showItemList,
-    })),
-  )
+  const state = useStore(['setMousePosition', 'showItemList'])
+
   // useScenario({ scenario: 'rotation' })
   return (
     <QueryClientProvider client={queryClient}>

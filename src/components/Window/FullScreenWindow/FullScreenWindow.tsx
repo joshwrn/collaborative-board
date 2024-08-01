@@ -1,19 +1,16 @@
 import React from 'react'
 import style from './FullScreenWindow.module.scss'
-import { useAppStore } from '@/state/gen-state'
-import { useShallow } from 'zustand/react/shallow'
+import { useStore } from '@/state/gen-state'
 import { Window } from '../Window'
 import { FloatingPortal } from '@floating-ui/react'
 
 export const FullScreenWindow: React.FC = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      fullScreenWindow: state.fullScreenWindow,
-      setFullScreenWindow: state.setFullScreenWindow,
-      items: state.items,
-      windows: state.windows,
-    })),
-  )
+  const state = useStore([
+    'fullScreenWindow',
+    'setFullScreenWindow',
+    'items',
+    'windows',
+  ])
 
   const window = state.windows.find(
     (window) => window.id === state.fullScreenWindow,

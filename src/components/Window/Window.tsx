@@ -3,12 +3,11 @@ import type { FC } from 'react'
 import React from 'react'
 
 import styles from './Window.module.scss'
-import { useAppStore, useShallowAppStore } from '@/state/gen-state'
+import { useFullStore, useStore } from '@/state/gen-state'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { WindowBorder } from './WindowBorder'
 import { IoAddOutline } from 'react-icons/io5'
 import { ConnectorOverlay } from './ConnectorOverlay'
-import { useShallow } from 'zustand/react/shallow'
 import { Item, ItemBody } from '@/state/items'
 import { WINDOW_ATTRS, WindowType } from '@/state/windows'
 import { match } from 'ts-pattern'
@@ -30,11 +29,7 @@ const Text = ({
   contentId: string
 }) => {
   const ref = React.useRef<HTMLParagraphElement>(null)
-  const state = useAppStore(
-    useShallow((state) => ({
-      editItemContent: state.editItemContent,
-    })),
-  )
+  const state = useStore(['editItemContent'])
   const textRef = React.useRef(content)
   return (
     <p
@@ -112,7 +107,7 @@ const WindowInternal: FC<{
   window: WindowType
   isFullScreen: boolean
 }> = ({ item, window, isFullScreen }) => {
-  const state = useShallowAppStore([
+  const state = useStore([
     'toggleOpenWindow',
     'setOneWindow',
     'reorderWindows',
@@ -148,7 +143,7 @@ const WindowInternal: FC<{
     if (!(e instanceof MouseEvent)) return
     const { movementX, movementY } = e
     if (!movementX && !movementY) return
-    const zoom = useAppStore.getState().zoom
+    const zoom = useFullStore.getState().zoom
     const scaledPosition = {
       x: movementX / zoom,
       y: movementY / zoom,
@@ -289,13 +284,7 @@ const WindowInternal: FC<{
 export const Window = React.memo(WindowInternal)
 
 const WindowsInternal: FC = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      items: state.items,
-      windows: state.windows,
-      fullScreenWindow: state.fullScreenWindow,
-    })),
-  )
+  const state = useStore(['items', 'windows', 'fullScreenWindow'])
   const itemsMap = React.useMemo(
     () =>
       state.items.reduce((acc, item) => {

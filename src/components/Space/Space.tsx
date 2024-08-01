@@ -4,7 +4,7 @@ import React from 'react'
 import { Windows } from '../Window/Window'
 
 import styles from './Space.module.scss'
-import { useShallowAppStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 import { useGestures } from '@/gestures'
 import { Connections } from '../Connections/Connections'
 import { ActiveConnectionGuard } from '../Connections/ActiveConnection'
@@ -18,7 +18,7 @@ import { dotBackground } from './dotBackground'
 const Space_Internal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
   const spaceRef = React.useRef<HTMLDivElement>(null)
-  const state = useShallowAppStore([
+  const state = useStore([
     'zoom',
     'pan',
     'setSpaceMousePosition',

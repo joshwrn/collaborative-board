@@ -4,19 +4,13 @@ import React from 'react'
 
 import { ItemComponent } from '../Item/Item'
 import styles from './List.module.scss'
-import { useAppStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 import { TfiWrite } from 'react-icons/tfi'
-import { useShallow } from 'zustand/react/shallow'
 import { createMockItem } from '@/mock/mock-items'
 
 export const ListInternal: FC = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      items: state.items,
-      setItems: state.setItems,
-      windows: state.windows,
-    })),
-  )
+  const state = useStore(['items', 'setItems', 'windows'])
+
   return (
     <wrapper className={styles.wrapper}>
       <header className={styles.header}>

@@ -3,10 +3,9 @@ import React from 'react'
 
 import styles from './WindowBorder.module.scss'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
-import { useAppStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 import { setCursorStyle } from '@/utils/setCursor'
 import { joinClasses } from '@/utils/joinClasses'
-import { useShallow } from 'zustand/react/shallow'
 import { WINDOW_ATTRS } from '@/state/windows'
 
 const borderPositions = [
@@ -39,14 +38,12 @@ export const WindowBorderInternal: FC<{
   isFullScreen: boolean
   position: { x: number; y: number }
 }> = ({ width, height, id, position, isFullScreen }) => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      resizeWindow: state.resizeWindow,
-      activeConnection: state.activeConnection,
-      hoveredItem: state.hoveredItem,
-      selectedWindow: state.selectedWindow,
-    })),
-  )
+  const state = useStore([
+    'resizeWindow',
+    'activeConnection',
+    'hoveredItem',
+    'selectedWindow',
+  ])
 
   const startPosition = React.useRef<{ x: number; y: number } | null>(null)
   const startSize = React.useRef<{ width: number; height: number } | null>(null)

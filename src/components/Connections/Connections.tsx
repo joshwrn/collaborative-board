@@ -1,5 +1,3 @@
-import { useAppStore } from '@/state/gen-state'
-
 import type { FC } from 'react'
 import { WindowType } from '@/state/windows'
 import { IoIosArrowForward } from 'react-icons/io'
@@ -10,9 +8,9 @@ import {
   createLineBetweenWindows,
 } from '@/logic/createLineBetweenWindowSides'
 import { createLineFromWindowToMouse } from '@/logic/createLineFromWindowToMouse'
-import { useShallow } from 'zustand/react/shallow'
 import { Connection as ConnectionType } from '@/state/connections'
 import React from 'react'
+import { useStore } from '@/state/gen-state'
 
 const ConnectionInternal = ({
   from,
@@ -31,12 +29,7 @@ const ConnectionInternal = ({
   isActive?: boolean
   hoveredItem: 'none' | 'from' | 'to'
 }) => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      openContextMenu: state.openContextMenu,
-      contextMenu: state.contextMenu,
-    })),
-  )
+  const state = useStore(['openContextMenu', 'contextMenu'])
 
   const properties = React.useMemo(
     () =>
@@ -119,23 +112,21 @@ const createBackgroundClass = (
 }
 
 export const ConnectionsInternal: FC = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      connections: state.connections,
-      openWindows: state.windows,
-      hoveredItem: state.hoveredItem,
-      hoveredWindow: state.hoveredWindow,
-      showConnections: state.showConnections,
-      zoom: state.zoom,
-    })),
-  )
+  const state = useStore([
+    'connections',
+    'windows',
+    'hoveredItem',
+    'hoveredWindow',
+    'showConnections',
+    'zoom',
+  ])
   const windowsMap = React.useMemo(
     () =>
-      state.openWindows.reduce((acc, window) => {
+      state.windows.reduce((acc, window) => {
         acc[window.id] = window
         return acc
       }, {} as Record<string, WindowType>),
-    [state.openWindows],
+    [state.windows],
   )
   if (!state.showConnections) {
     return null

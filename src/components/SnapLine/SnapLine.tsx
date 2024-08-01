@@ -1,7 +1,6 @@
 import React from 'react'
 import style from './SnapLine.module.scss'
-import { useAppStore } from '@/state/gen-state'
-import { useShallow } from 'zustand/react/shallow'
+import { useStore } from '@/state/gen-state'
 import { distance } from 'mathjs'
 import { SnappingToPosition } from '@/state/snapping'
 
@@ -50,14 +49,7 @@ export const SnapLineX: React.FC<{
 }
 
 const SnapLines_Internal: React.FC = () => {
-  const state = useAppStore(
-    useShallow((state) => {
-      return {
-        snapLines: state.snapLines,
-        zoom: state.zoom,
-      }
-    }),
-  )
+  const state = useStore(['snapLines', 'zoom'])
   if (state.snapLines.length === 0) {
     return null
   }

@@ -1,20 +1,12 @@
 import React from 'react'
 import style from './DropDownMenu.module.scss'
 
-import { useAppStore } from '@/state/gen-state'
-import { useShallow } from 'zustand/react/shallow'
+import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
-import { SPACE_ATTRS, resetPan } from '@/state/space'
-import { produceState } from '@/state/state'
+import { SPACE_ATTRS } from '@/state/space'
 
 const MockItem = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      createMocks: state.createAllMocks,
-      createOneMock: state.createOneMock,
-      clear: state.clearMocks,
-    })),
-  )
+  const state = useStore(['createAllMocks', 'createOneMock', 'clearMocks'])
   const [amount, setAmount] = React.useState(0)
   const defaultAmounts = [100, 26, 10, 3]
   return (
@@ -27,7 +19,7 @@ const MockItem = () => {
             <Dropdown.Item
               key={`Create (${amount})`}
               onClick={() => {
-                state.createMocks(amount)
+                state.createAllMocks(amount)
               }}
               label1={`Create (${amount})`}
               isChecked={false}
@@ -45,17 +37,17 @@ const MockItem = () => {
           <Dropdown.Item
             key={'Create (Custom)'}
             onClick={() => {
-              state.createMocks(amount)
+              state.createAllMocks(amount)
             }}
             isChecked={false}
           >
             <form
               onSubmit={(e) => {
                 e.preventDefault()
-                state.createMocks(amount)
+                state.createAllMocks(amount)
               }}
               onClick={() => {
-                state.createMocks(amount)
+                state.createAllMocks(amount)
               }}
               className={style.customCreate}
             >
@@ -73,7 +65,7 @@ const MockItem = () => {
           <Dropdown.Item
             key={'Clear'}
             onClick={() => {
-              state.clear()
+              state.clearMocks()
             }}
             label1={'Clear'}
             isChecked={false}
@@ -85,14 +77,12 @@ const MockItem = () => {
 }
 
 const SnappingItem = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      isSnappingOn: state.isSnappingOn,
-      setIsSnappingOn: state.setIsSnappingOn,
-      showConnections: state.showConnections,
-      setShowConnections: state.setShowConnections,
-    })),
-  )
+  const state = useStore([
+    'isSnappingOn',
+    'setIsSnappingOn',
+    'showConnections',
+    'setShowConnections',
+  ])
   return (
     <item className={style.item}>
       <Dropdown.Menu
@@ -121,15 +111,13 @@ const SnappingItem = () => {
 }
 
 const SpaceItem = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      zoom: state.zoom,
-      setZoom: state.setZoom,
-      setPan: state.setPan,
-      setState: state.setState,
-      showItemList: state.showItemList,
-    })),
-  )
+  const state = useStore([
+    'zoom',
+    'setZoom',
+    'setPan',
+    'setState',
+    'showItemList',
+  ])
   return (
     <item className={style.item}>
       <Dropdown.Menu
