@@ -110,13 +110,20 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
         height: data.image.height / 2,
         onSuccess: (base64) => {
           const canvasId = nanoid()
-          state.addContentToItem(data.itemId, {
-            type: 'canvas',
-            id: canvasId,
-            content: {
-              base64: base64,
+          state.addContentToItem(data.itemId, [
+            {
+              type: 'text',
+              id: nanoid(),
+              content: data.description,
             },
-          })
+            {
+              type: 'canvas',
+              id: canvasId,
+              content: {
+                base64: base64,
+              },
+            },
+          ])
           state.setGeneratedCanvas({
             canvasId,
             itemId: data.itemId,

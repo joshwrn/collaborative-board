@@ -13,7 +13,6 @@ import { snappingStore, SnappingStore } from './snapping'
 import { spaceStore, SpaceStore } from './space'
 import { userStore, UserStore } from './user'
 import { openWindowsStore, OpenWindowsStore } from './windows'
-import { devtools, persist } from 'zustand/middleware'
 
 export type Store = CanvasStore &
   ConnectedWindowsStore &
@@ -29,30 +28,32 @@ export type Store = CanvasStore &
   UserStore &
   OpenWindowsStore
 
-export const useFullStore = create<Store>()((...operators) => {
-  return {
-    ...canvasStore(...operators),
-    ...connectedWindowsStore(...operators),
-    ...contextMenuStore(...operators),
-    ...debugStore(...operators),
-    ...generalStore(...operators),
-    ...itemListStore(...operators),
-    ...memberStore(...operators),
-    ...mockStore(...operators),
-    ...peripheralStore(...operators),
-    ...snappingStore(...operators),
-    ...spaceStore(...operators),
-    ...userStore(...operators),
-    ...openWindowsStore(...operators),
-  }
-})
+export const useFullStore = create<Store>()((set, get, store) => ({
+  ...canvasStore(set, get, store),
+  ...connectedWindowsStore(set, get, store),
+  ...contextMenuStore(set, get, store),
+  ...debugStore(set, get, store),
+  ...generalStore(set, get, store),
+  ...itemListStore(set, get, store),
+  ...memberStore(set, get, store),
+  ...mockStore(set, get, store),
+  ...peripheralStore(set, get, store),
+  ...snappingStore(set, get, store),
+  ...spaceStore(set, get, store),
+  ...userStore(set, get, store),
+  ...openWindowsStore(set, get, store),
+}))
+
 export const useStore = <T extends keyof Store>(selected: T[]) => {
   return useFullStore(
     useShallow((state: Store) => {
-      return selected.reduce((acc, key) => {
-        acc[key] = state[key]
-        return acc
-      }, {} as Pick<Store, T>)
+      return selected.reduce(
+        (acc, key) => {
+          acc[key] = state[key]
+          return acc
+        },
+        {} as Pick<Store, T>,
+      )
     }),
   )
 }

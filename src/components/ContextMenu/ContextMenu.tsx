@@ -59,7 +59,6 @@ const MenuItems = () => {
       )
     })
     .with({ elementType: 'item' }, (value) => {
-      console.log('value:', value)
       return (
         <item
           className={styles.item}
@@ -79,13 +78,15 @@ const MenuItems = () => {
           className={styles.item}
           onClick={() => {
             const id = nanoid()
+            const prompt = createMockPrompt()
             state.createItem({
               id: id,
+              subject: prompt,
               body: [
                 {
                   id: nanoid(),
                   type: 'text',
-                  content: createMockPrompt(),
+                  content: prompt,
                 },
                 {
                   id: nanoid(),

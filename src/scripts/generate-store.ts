@@ -98,12 +98,12 @@ const generateCodeFromFiles = (files: string[]): string => {
     appStoreType += `${newLine} &`
   }
 
-  let appStore = `export const useFullStore = create<Store>((...operators) => {
+  let appStore = `export const useFullStore = create<Store>((set, get, store) => {
     return {`
 
   for (let i = 0; i < storesArr.length; i++) {
     const store = storesArr[i]
-    const newLine = `...${store}Store(...operators)`
+    const newLine = `...${store}Store(set, get, store)`
     if (i === storesArr.length - 1) {
       appStore += `${newLine}\n }})`
       break

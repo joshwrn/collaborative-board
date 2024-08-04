@@ -67,12 +67,12 @@ export const useGestures = ({
           }))
         }
         if ((delta.x || delta.y) && !delta.z) {
-          if (
-            state.selectedWindow &&
-            state.hoveredWindow === state.selectedWindow
-          ) {
-            return
-          }
+          // if (
+          //   state.selectedWindow &&
+          //   state.hoveredWindow === state.selectedWindow
+          // ) {
+          //   return
+          // }
           state.setPan((prev) => ({
             x: prev.x + delta.x,
             y: prev.y + delta.y,

@@ -217,7 +217,7 @@ const WindowInternal: FC<{
           state.reorderWindows(item.id)
         }}
       >
-        <RotationPoints id={item.id} window={window} />
+        {/* <RotationPoints id={item.id} window={window} /> */}
         <nav
           className={`${styles.topBar} handle`}
           onDoubleClick={() =>
@@ -240,9 +240,7 @@ const WindowInternal: FC<{
         </nav>
 
         <header className={styles.titleBar}>
-          <section>
-            <WindowMenu id={item.id} />
-          </section>
+          <section>{/* <WindowMenu id={item.id} /> */}</section>
           <section className={styles.right}>
             <GenerateButton item={item} />
             <section className={styles.connections}>
@@ -254,16 +252,21 @@ const WindowInternal: FC<{
                   Outgoing <strong>{fromConnections.length}</strong>
                 </p>
               </inner>
-              <button
+              {/* <button
                 onClick={() => state.setActiveConnection({ from: item.id })}
               >
                 <IoAddOutline />
-              </button>
+              </button> */}
             </section>
           </section>
         </header>
 
-        <main className={styles.content}>
+        <main
+          className={styles.content}
+          style={{
+            overflowY: isFullScreen ? 'auto' : 'hidden',
+          }}
+        >
           {item.body.map((body, i) => matchBody(body, i, window))}
         </main>
         <ConnectorOverlay id={item.id} />
@@ -287,10 +290,13 @@ const WindowsInternal: FC = () => {
   const state = useStore(['items', 'windows', 'fullScreenWindow'])
   const itemsMap = React.useMemo(
     () =>
-      state.items.reduce((acc, item) => {
-        acc[item.id] = item
-        return acc
-      }, {} as Record<string, Item>),
+      state.items.reduce(
+        (acc, item) => {
+          acc[item.id] = item
+          return acc
+        },
+        {} as Record<string, Item>,
+      ),
     [state.items],
   )
   return (
