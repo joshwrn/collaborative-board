@@ -13,3 +13,5 @@ export const DevTools: React.FC = () => {
     />
   )
 }
+
+export default DevTools

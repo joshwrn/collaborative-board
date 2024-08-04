@@ -13,7 +13,8 @@ import * as fal from '@fal-ai/serverless-client'
 import { ToastContainer } from 'react-toastify'
 
 import 'react-toastify/dist/ReactToastify.css'
-import { DevTools } from '@/components/Debug/DevTools'
+import React from 'react'
+const DevTools = React.lazy(() => import('@/components/Debug/DevTools'))
 
 const queryClient = new QueryClient()
 
