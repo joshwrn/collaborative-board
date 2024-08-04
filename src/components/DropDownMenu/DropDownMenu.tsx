@@ -118,6 +118,7 @@ const SpaceItem = () => {
     'setState',
     'showItemList',
     'debug_showZustandDevTools',
+    'debug_showFps',
   ])
   return (
     <item className={style.item}>
@@ -177,6 +178,16 @@ const SpaceItem = () => {
             }}
             label1={'Show Dev Tools'}
             isChecked={state.debug_showZustandDevTools}
+          />,
+          <Dropdown.Item
+            key={'Show FPS'}
+            onClick={() => {
+              state.setState((draft) => {
+                draft.debug_showFps = !draft.debug_showFps
+              })
+            }}
+            label1={'Show FPS'}
+            isChecked={state.debug_showFps}
           />,
         ]}
       />

@@ -13,7 +13,7 @@ import * as fal from '@fal-ai/serverless-client'
 import { ToastContainer } from 'react-toastify'
 
 import 'react-toastify/dist/ReactToastify.css'
-import React from 'react'
+import React, { Suspense } from 'react'
 const DevTools = React.lazy(() => import('@/components/Debug/DevTools'))
 
 const queryClient = new QueryClient()
@@ -27,6 +27,7 @@ export default function Home() {
     'setMousePosition',
     'showItemList',
     'debug_showZustandDevTools',
+    'debug_showFps',
   ])
 
   // useScenario({ scenario: 'rotation' })
@@ -45,11 +46,34 @@ export default function Home() {
           <Space />
           <ContextMenu />
         </main>
-        <FPSStats left={'auto'} right={0} />
+        {state.debug_showFps && <FPSStats left={'auto'} right={0} />}
         {/* <Debug /> */}
       </wrapper>
       <ToastContainer position="bottom-right" theme="dark" autoClose={2000} />
-      {state.debug_showZustandDevTools && <DevTools />}
+      <Suspense
+        fallback={
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontSize: '30px',
+              zIndex: 9999999,
+            }}
+          >
+            Loading DevTools...
+          </div>
+        }
+      >
+        {state.debug_showZustandDevTools && <DevTools />}
+      </Suspense>
+      {state.debug_showFps && <FPSStats left={'auto'} right={0} />}
     </QueryClientProvider>
   )
 }

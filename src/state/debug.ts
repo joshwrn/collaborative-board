@@ -13,6 +13,8 @@ export type DebugStore = {
 
   debug_showZustandDevTools: boolean
   debug_setShowZustandDevTools: Setter<boolean>
+
+  debug_showFps: boolean
 }
 
 export const debugStore: AppStateCreator<DebugStore> = (set, get) => ({
@@ -27,4 +29,6 @@ export const debugStore: AppStateCreator<DebugStore> = (set, get) => ({
   debug_showZustandDevTools: false,
   debug_setShowZustandDevTools: (setter) =>
     stateSetter(set, setter, `debug_showZustandDevTools`),
+
+  debug_showFps: true,
 })
