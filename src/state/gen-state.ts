@@ -29,30 +29,23 @@ export type Store = CanvasStore &
   UserStore &
   OpenWindowsStore
 
-export const useFullStore = create<Store>()(
-  devtools(
-    persist(
-      (...operators) => {
-        return {
-          ...canvasStore(...operators),
-          ...connectedWindowsStore(...operators),
-          ...contextMenuStore(...operators),
-          ...debugStore(...operators),
-          ...generalStore(...operators),
-          ...itemListStore(...operators),
-          ...memberStore(...operators),
-          ...mockStore(...operators),
-          ...peripheralStore(...operators),
-          ...snappingStore(...operators),
-          ...spaceStore(...operators),
-          ...userStore(...operators),
-          ...openWindowsStore(...operators),
-        }
-      },
-      { name: 'app-store' },
-    ),
-  ),
-)
+export const useFullStore = create<Store>()((...operators) => {
+  return {
+    ...canvasStore(...operators),
+    ...connectedWindowsStore(...operators),
+    ...contextMenuStore(...operators),
+    ...debugStore(...operators),
+    ...generalStore(...operators),
+    ...itemListStore(...operators),
+    ...memberStore(...operators),
+    ...mockStore(...operators),
+    ...peripheralStore(...operators),
+    ...snappingStore(...operators),
+    ...spaceStore(...operators),
+    ...userStore(...operators),
+    ...openWindowsStore(...operators),
+  }
+})
 export const useStore = <T extends keyof Store>(selected: T[]) => {
   return useFullStore(
     useShallow((state: Store) => {

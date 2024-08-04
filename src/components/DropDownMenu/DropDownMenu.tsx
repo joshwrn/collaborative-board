@@ -117,6 +117,7 @@ const SpaceItem = () => {
     'setPan',
     'setState',
     'showItemList',
+    'debug_showZustandDevTools',
   ])
   return (
     <item className={style.item}>
@@ -165,6 +166,17 @@ const SpaceItem = () => {
             }}
             label1={'Show Item List'}
             isChecked={state.showItemList}
+          />,
+          <Dropdown.Item
+            key={'Show Dev Tools'}
+            onClick={() => {
+              state.setState((draft) => {
+                draft.debug_showZustandDevTools =
+                  !draft.debug_showZustandDevTools
+              })
+            }}
+            label1={'Show Dev Tools'}
+            isChecked={state.debug_showZustandDevTools}
           />,
         ]}
       />

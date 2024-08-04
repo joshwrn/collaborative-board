@@ -27,7 +27,6 @@ export const createMockPrompt = () => {
   const medium = faker.helpers.arrayElement([
     'ink',
     'charcoal',
-    'pencil',
     'pastel',
     'watercolor',
     'acrylic',
@@ -36,10 +35,6 @@ export const createMockPrompt = () => {
     'graphite',
     'pen',
     'brush',
-    'pencil',
-    'crayon',
-    'markers',
-    'paint',
   ])
   const style = faker.helpers.arrayElement([
     'realistic',

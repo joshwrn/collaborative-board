@@ -13,6 +13,7 @@ import * as fal from '@fal-ai/serverless-client'
 import { ToastContainer } from 'react-toastify'
 
 import 'react-toastify/dist/ReactToastify.css'
+import { DevTools } from '@/components/Debug/DevTools'
 
 const queryClient = new QueryClient()
 
@@ -21,7 +22,11 @@ fal.config({
 })
 
 export default function Home() {
-  const state = useStore(['setMousePosition', 'showItemList'])
+  const state = useStore([
+    'setMousePosition',
+    'showItemList',
+    'debug_showZustandDevTools',
+  ])
 
   // useScenario({ scenario: 'rotation' })
   return (
@@ -43,6 +48,7 @@ export default function Home() {
         {/* <Debug /> */}
       </wrapper>
       <ToastContainer position="bottom-right" theme="dark" autoClose={2000} />
+      {state.debug_showZustandDevTools && <DevTools />}
     </QueryClientProvider>
   )
 }

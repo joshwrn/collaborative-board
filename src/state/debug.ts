@@ -10,6 +10,9 @@ export type DebugStore = {
 
   debug_randomPoints: (Point2d & { label: string })[]
   debug_setRandomPoints: Setter<(Point2d & { label: string })[]>
+
+  debug_showZustandDevTools: boolean
+  debug_setShowZustandDevTools: Setter<boolean>
 }
 
 export const debugStore: AppStateCreator<DebugStore> = (set, get) => ({
@@ -20,4 +23,8 @@ export const debugStore: AppStateCreator<DebugStore> = (set, get) => ({
   debug_randomPoints: [],
   debug_setRandomPoints: (setter) =>
     stateSetter(set, setter, `debug_randomPoints`),
+
+  debug_showZustandDevTools: false,
+  debug_setShowZustandDevTools: (setter) =>
+    stateSetter(set, setter, `debug_showZustandDevTools`),
 })
