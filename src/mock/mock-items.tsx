@@ -59,16 +59,16 @@ export const createMockPrompt = () => {
 
 export const createMockItem = (length: number): Item[] =>
   Array.from({ length }, () => {
-    const subject = faker.word.words()
+    const prompt = createMockPrompt()
 
     return {
       id: nanoid(),
-      subject,
+      subject: prompt,
       body: [
         {
           id: nanoid(),
           type: 'text',
-          content: createMockPrompt(),
+          content: prompt,
         },
         {
           id: nanoid(),

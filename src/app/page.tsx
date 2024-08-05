@@ -30,7 +30,6 @@ export default function Home() {
     'debug_showFps',
   ])
 
-  // useScenario({ scenario: 'rotation' })
   return (
     <QueryClientProvider client={queryClient}>
       <wrapper
@@ -41,13 +40,11 @@ export default function Home() {
       >
         <DropDownMenu />
         <main>
-          {/* <Nav /> */}
-          {state.showItemList && <List />}
           <Space />
           <ContextMenu />
+          {state.showItemList && <List />}
         </main>
         {state.debug_showFps && <FPSStats left={'auto'} right={0} />}
-        {/* <Debug /> */}
       </wrapper>
       <ToastContainer position="bottom-right" theme="dark" autoClose={2000} />
       <Suspense

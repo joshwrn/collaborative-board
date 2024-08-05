@@ -5,7 +5,7 @@ import React from 'react'
 import styles from './Item.module.scss'
 import { useStore } from '@/state/gen-state'
 import { joinClasses } from '@/utils/joinClasses'
-import type { Item, ItemBody } from '@/state/items'
+import type { CanvasData, Item, ItemBody } from '@/state/items'
 import { match, P } from 'ts-pattern'
 
 const matchBody = (body?: ItemBody): JSX.Element | JSX.Element[] | null => {
@@ -31,6 +31,8 @@ const ItemInternal: FC<{ item: Item; isOpen: boolean }> = ({ item, isOpen }) => 
     'openContextMenu',
     'setHoveredItem',
   ])
+  const canvas = item.body.find((body) => body.type === 'canvas')
+    ?.content as CanvasData
   return (
     <wrapper
       className={joinClasses(styles.wrapper, isOpen && styles.isOpenWrapper)}
@@ -42,6 +44,12 @@ const ItemInternal: FC<{ item: Item; isOpen: boolean }> = ({ item, isOpen }) => 
         state.openContextMenu({ elementType: 'item', id: item.id })
       }}
     >
+      <div
+        className={styles.img}
+        style={{
+          backgroundImage: `url("${canvas?.base64}")`,
+        }}
+      />
       <h1>{item.subject}</h1>
       {matchBody(item.body[0])}
     </wrapper>

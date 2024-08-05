@@ -1,9 +1,8 @@
 import { useMutation } from '@tanstack/react-query'
 import { Item } from '@/state/items'
-import React from 'react'
 import { nanoid } from 'nanoid'
 import { fetchImageUrlToBase64 } from '@/server/imageUrlToBase64/fetchImageUrlToBase64'
-import { useStore } from '@/state/gen-state'
+import { useFullStore, useStore } from '@/state/gen-state'
 import {
   creativeUpscale,
   CreativeUpscaleOutput,
@@ -63,9 +62,13 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
   const generateImage = useMutation<ConvertSketchToImageResponse>({
     mutationFn: async () => {
       const id = nanoid()
+      const connections = useFullStore.getState().connections
+      const outgoingConnections = connections.filter(
+        (connection) => connection.from === item.id,
+      )
       state.createItem({
         id: id,
-        subject: `generated from ${item.subject}`,
+        subject: `${item.subject} - v${outgoingConnections.length + 1}`,
       })
       state.makeConnection({
         to: id,

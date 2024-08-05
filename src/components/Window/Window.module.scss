@@ -22,7 +22,7 @@ $inner-border-radius: 19px;
 
 .topBar {
   background-color: var(--window-header);
-  height: 40px;
+  height: var(--window-top-bar-height);
   border-bottom-width: 1px;
   border-bottom-style: solid;
   border-bottom-color: var(--window-outline);

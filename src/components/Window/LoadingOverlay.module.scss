@@ -9,6 +9,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  pointer-events: none;
 
   $loading-background-1: rgba(125, 117, 142, 0.101);
   $loading-background-2: rgba(125, 117, 142, 0.211);
@@ -26,6 +27,15 @@
     $loading-background-1 54%
   );
   background-size: 200% 100%;
+}
+
+.blocker {
+  z-index: 100;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - var(--window-top-bar-height));
 }
 
 @keyframes placeHolderShimmer {

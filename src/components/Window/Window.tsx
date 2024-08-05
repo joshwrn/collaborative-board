@@ -6,16 +6,13 @@ import styles from './Window.module.scss'
 import { useFullStore, useStore } from '@/state/gen-state'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { WindowBorder } from './WindowBorder'
-import { IoAddOutline } from 'react-icons/io5'
 import { ConnectorOverlay } from './ConnectorOverlay'
 import { Item, ItemBody } from '@/state/items'
 import { WINDOW_ATTRS, WindowType } from '@/state/windows'
 import { match } from 'ts-pattern'
 import { joinClasses } from '@/utils/joinClasses'
-import { RotationPoints } from './RotationPoints'
 import { Canvas } from '../Canvas/Canvas'
 import { useOutsideClick } from '@/utils/useOutsideClick'
-import { WindowMenu } from './WindowMenu/WindowMenu'
 import { GenerateButton } from './GenerateButton'
 import { LoadingOverlay } from './LoadingOverlay'
 
@@ -29,7 +26,7 @@ const Text = ({
   contentId: string
 }) => {
   const ref = React.useRef<HTMLParagraphElement>(null)
-  const state = useStore(['editItemContent'])
+  const state = useStore(['editItemContent', 'editItem'])
   const textRef = React.useRef(content)
   return (
     <p
@@ -38,6 +35,9 @@ const Text = ({
       suppressContentEditableWarning
       onInput={() => {
         if (!ref.current) return
+        state.editItem(windowId, {
+          subject: ref.current.innerText,
+        })
         state.editItemContent(windowId, {
           type: 'text',
           content: ref.current.innerText,

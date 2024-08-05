@@ -12,5 +12,9 @@ export const LoadingOverlay: React.FC<{
   ) {
     return null
   }
-  return <div className={style.wrapper}></div>
+  return (
+    <div className={style.wrapper}>
+      <div className={style.blocker}></div>
+    </div>
+  )
 }

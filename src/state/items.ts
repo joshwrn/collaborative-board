@@ -46,6 +46,7 @@ export const DEFAULT_ITEM: Item = {
 
 export type ItemListStore = {
   items: Item[]
+  editItem: (id: string, content: Partial<Omit<Item, 'body'>>) => void
   setItems: Setter<Item[]>
   deleteItem: (id: string) => void
   createItem: (item: Partial<Item>) => void
@@ -62,6 +63,14 @@ export type ItemListStore = {
 export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
   items: [],
   setItems: (setter) => stateSetter(set, setter, `items`),
+  editItem: (id, content) => {
+    produceState(set, (state) => {
+      const item = state.items.find((item) => item.id === id)
+      if (item) {
+        Object.assign(item, content)
+      }
+    })
+  },
   createItem: (item: Partial<Item>) => {
     produceState(set, (state) => {
       state.items.push({
