@@ -94,3 +94,6 @@ $handle-offset: -5px;
 .activeBorder {
   background-color: var(--window-border-active);
 }
+.hoveredBorder {
+  box-shadow: 0px 0px 0px 5px var(--window-border-hovered);
+}

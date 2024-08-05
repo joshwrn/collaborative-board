@@ -97,9 +97,8 @@ export const WindowBorderInternal: FC<{
       className={joinClasses(
         styles.border,
         isActive && styles.activeBorder,
-        (state.hoveredItem === id || state.selectedWindow === id) &&
-          !isFullScreen &&
-          styles.activeBorder,
+        state.selectedWindow === id && !isFullScreen && styles.activeBorder,
+        state.hoveredItem === id && !isFullScreen && styles.hoveredBorder,
       )}
       style={{
         ...(isFullScreen

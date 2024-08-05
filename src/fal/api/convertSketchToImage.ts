@@ -68,7 +68,7 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
       )
       state.createItem({
         id: id,
-        subject: `${item.subject} - v${outgoingConnections.length + 1}`,
+        subject: `${item.subject} - v${outgoingConnections.length + 2}`,
       })
       state.makeConnection({
         to: id,
@@ -94,7 +94,6 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
           style,
           itemId: id,
         })
-        console.log(result)
         return result
       } catch (e) {
         console.error(e)
