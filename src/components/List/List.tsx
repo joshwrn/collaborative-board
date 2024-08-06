@@ -6,6 +6,7 @@ import { ItemComponent } from '../Item/Item'
 import styles from './List.module.scss'
 import { useStore } from '@/state/gen-state'
 import { TfiWrite } from 'react-icons/tfi'
+import { IoClose } from 'react-icons/io5'
 import { createMockItem } from '@/mock/mock-items'
 
 export const ListInternal: FC = () => {
@@ -15,6 +16,17 @@ export const ListInternal: FC = () => {
     <wrapper className={styles.wrapper}>
       <header className={styles.header}>
         <button
+          className={styles.close}
+          onClick={() => {
+            state.setState((draft) => {
+              draft.showItemList = false
+            })
+          }}
+        >
+          <IoClose />
+        </button>
+        <button
+          className={styles.create}
           onClick={() => {
             state.setState((draft) => {
               draft.items = [...draft.items, ...createMockItem(1)]

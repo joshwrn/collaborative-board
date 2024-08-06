@@ -24,13 +24,22 @@
   height: 50px;
   border-bottom: 1px solid var(--border);
   padding: 0 25px;
-  svg {
-    path {
-      fill: var(--window-text);
-    }
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  > button {
+  .create {
+    svg {
+      path {
+        fill: var(--window-text);
+      }
+    }
     font-size: 20px;
+  }
+
+  .close {
+    font-size: 25px;
   }
 }
 
