@@ -12,7 +12,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    // "types": ["node"],
     "jsx": "preserve",
     "incremental": true,
     "rootDirs": ["."],

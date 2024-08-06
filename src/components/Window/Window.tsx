@@ -7,7 +7,7 @@ import { useFullStore, useStore } from '@/state/gen-state'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { WindowBorder } from './WindowBorder'
 import { ConnectorOverlay } from './ConnectorOverlay'
-import { Item, ItemBody } from '@/state/items'
+import { Item, ItemBody, ItemBodyText } from '@/state/items'
 import { WINDOW_ATTRS, WindowType } from '@/state/windows'
 import { match } from 'ts-pattern'
 import { joinClasses } from '@/utils/joinClasses'
@@ -15,19 +15,20 @@ import { Canvas } from '../Canvas/Canvas'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { GenerateButton } from './GenerateButton'
 import { LoadingOverlay } from './LoadingOverlay'
+import { RandomizePromptButton } from './RandomizePromptButton'
 
 const Text = ({
-  content,
+  textRef,
   windowId,
   contentId,
 }: {
-  content: string
+  textRef: React.MutableRefObject<string>
   windowId: string
   contentId: string
 }) => {
   const ref = React.useRef<HTMLParagraphElement>(null)
   const state = useStore(['editItemContent', 'editItem'])
-  const textRef = React.useRef(content)
+
   return (
     <p
       ref={ref}
@@ -50,6 +51,31 @@ const Text = ({
   )
 }
 
+const Prompt: React.FC<{ value: ItemBodyText; windowId: string }> = ({
+  value,
+  windowId,
+}) => {
+  const textRef = React.useRef(value.content)
+  return (
+    <div className={styles.textContainer}>
+      <header>
+        <h2>Prompt</h2>
+        <RandomizePromptButton
+          windowId={windowId}
+          contentId={value.id}
+          textRef={textRef}
+        />
+      </header>
+      <Text
+        textRef={textRef}
+        key={value.id}
+        windowId={windowId}
+        contentId={value.id}
+      />
+    </div>
+  )
+}
+
 const matchBody = (
   body: ItemBody,
   i: number,
@@ -64,41 +90,9 @@ const matchBody = (
         content={value.content}
       />
     ))
-    .with({ type: 'text' }, (value) => (
-      <div className={styles.textContainer}>
-        <h2>Prompt</h2>
-        <Text
-          key={i}
-          content={value.content}
-          windowId={window.id}
-          contentId={body.id}
-        />
-      </div>
-    ))
-    .with(
-      {
-        type: 'iframe',
-      },
-      (value) => (
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-          key={i}
-        >
-          <iframe
-            style={{
-              width: '100%',
-              height: '100%',
-              border: 'none',
-              borderRadius: '10px',
-            }}
-            {...value.content}
-          />
-        </div>
-      ),
-    )
+    .with({ type: 'text' }, (value) => {
+      return <Prompt key={i} value={value} windowId={window.id} />
+    })
     .otherwise(() => null)
 }
 

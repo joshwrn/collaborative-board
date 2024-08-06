@@ -13,12 +13,14 @@ export type CanvasData = {
 export const ItemBodyTypes = ['text', 'iframe', 'canvas'] as const
 export type ItemBodyType = (typeof ItemBodyTypes)[number]
 
+export type ItemBodyText = {
+  content: string
+  id: string
+  type: 'text'
+}
+
 export type ItemBody =
-  | {
-      content: string
-      id: string
-      type: 'text'
-    }
+  | ItemBodyText
   | {
       content: Iframe
       id: string

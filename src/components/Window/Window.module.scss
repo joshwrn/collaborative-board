@@ -134,6 +134,11 @@ $inner-border-radius: 19px;
 .textContainer {
   display: flex;
   flex-direction: column;
+  header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
   h2 {
     padding-left: 20px;
     font-size: var(--window-text);

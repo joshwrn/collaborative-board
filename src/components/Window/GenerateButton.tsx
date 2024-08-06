@@ -6,6 +6,8 @@ import { joinClasses } from '@/utils/joinClasses'
 import { useConvertSketchToImage } from '@/fal/api/convertSketchToImage'
 import { toast } from 'react-toastify'
 
+import { IoSparklesSharp } from 'react-icons/io5'
+
 export const GenerateButton: React.FC<{
   item: Item
 }> = ({ item }) => {
@@ -28,6 +30,7 @@ export const GenerateButton: React.FC<{
         className={joinClasses(generateImage.isPending && style.isPending)}
       >
         <p>Generate</p>
+        <IoSparklesSharp />
       </motion.button>
     </section>
   )
