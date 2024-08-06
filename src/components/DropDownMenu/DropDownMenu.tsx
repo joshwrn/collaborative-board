@@ -122,6 +122,7 @@ const DevMenu = () => {
     'createAllMocks',
     'createOneMock',
     'clearMocks',
+    'dev_allowWindowRotation',
   ])
   const [amount, setAmount] = React.useState(0)
   const defaultAmounts = [100, 26, 10, 3]
@@ -131,6 +132,16 @@ const DevMenu = () => {
         id="dropdown-dev-button"
         SelectedOption={() => <p>Dev</p>}
         Options={[
+          <Dropdown.Item
+            key={'Allow Window Rotation'}
+            onClick={() => {
+              state.setState((draft) => {
+                draft.dev_allowWindowRotation = !draft.dev_allowWindowRotation
+              })
+            }}
+            label1={'Allow Window Rotation'}
+            isChecked={state.dev_allowWindowRotation}
+          />,
           <Dropdown.Item
             key={'Show Dev Tools'}
             onClick={() => {

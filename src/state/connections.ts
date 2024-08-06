@@ -39,7 +39,6 @@ export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
           from: connector.from,
         }
       : get().activeConnection
-    console.log('activeConnection: ', activeConnection, 'connector: ', connector)
     if (!activeConnection) {
       throw new Error(`no active connection`)
     }

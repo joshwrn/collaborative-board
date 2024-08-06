@@ -1,4 +1,3 @@
-import { RotationPoint } from '@/components/Window/RotationPoints'
 import { Point2d } from '.'
 import { AppStateCreator, Setter, stateSetter } from './state'
 
@@ -13,6 +12,8 @@ export type DebugStore = {
   debug_setShowZustandDevTools: Setter<boolean>
 
   debug_showFps: boolean
+
+  dev_allowWindowRotation: boolean
 }
 
 export const debugStore: AppStateCreator<DebugStore> = (set, get) => ({
@@ -25,4 +26,6 @@ export const debugStore: AppStateCreator<DebugStore> = (set, get) => ({
     stateSetter(set, setter, `debug_showZustandDevTools`),
 
   debug_showFps: true,
+
+  dev_allowWindowRotation: false,
 })

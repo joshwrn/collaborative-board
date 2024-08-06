@@ -16,6 +16,7 @@ import { useOutsideClick } from '@/utils/useOutsideClick'
 import { GenerateButton } from './GenerateButton'
 import { LoadingOverlay } from './LoadingOverlay'
 import { RandomizePromptButton } from './RandomizePromptButton'
+import { RotationPoints } from './RotationPoints'
 
 const Text = ({
   textRef,
@@ -114,6 +115,7 @@ const WindowInternal: FC<{
     'zoom',
     'selectedWindow',
     'setState',
+    'dev_allowWindowRotation',
   ])
 
   const realPosition = React.useRef({ x: window.x, y: window.y })
@@ -127,7 +129,7 @@ const WindowInternal: FC<{
     action: () => {
       if (state.selectedWindow === item.id) {
         state.setState((draft) => {
-          draft.hoveredWindow = null
+          draft.selectedWindow = null
         })
       }
     },
@@ -221,7 +223,9 @@ const WindowInternal: FC<{
           state.reorderWindows(item.id)
         }}
       >
-        {/* <RotationPoints id={item.id} window={window} /> */}
+        {state.dev_allowWindowRotation && (
+          <RotationPoints id={item.id} window={window} />
+        )}
         <nav
           className={`${styles.topBar} handle`}
           onDoubleClick={() =>
