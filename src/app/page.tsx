@@ -1,5 +1,4 @@
 'use client'
-import { List } from '@/components/List/List'
 import { Space } from '@/components/Space/Space'
 import styles from './page.module.scss'
 import { useStore } from '@/state/gen-state'
@@ -14,6 +13,7 @@ import { ToastContainer } from 'react-toastify'
 
 import 'react-toastify/dist/ReactToastify.css'
 import React, { Suspense } from 'react'
+import { List } from '@/components/ItemList/List/List'
 const DevTools = React.lazy(() => import('@/components/Debug/DevTools'))
 
 const queryClient = new QueryClient()

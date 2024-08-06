@@ -9,7 +9,7 @@ import { TfiWrite } from 'react-icons/tfi'
 import { IoClose } from 'react-icons/io5'
 import { createMockItem } from '@/mock/mock-items'
 
-export const ListInternal: FC = () => {
+const ListInternal: FC = () => {
   const state = useStore(['items', 'setState', 'windows'])
 
   return (
