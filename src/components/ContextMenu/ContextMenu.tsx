@@ -11,10 +11,16 @@ import { nanoid } from 'nanoid'
 import { createMockPrompt } from '@/mock/mock-items'
 
 export const ContextMenu: FC = () => {
-  const state = useStore(['contextMenu', 'setContextMenu', 'zoom', 'pan'])
+  const state = useStore(['contextMenu', 'setState', 'zoom', 'pan'])
   const ref = React.useRef<HTMLDivElement>(null)
   usePreventScroll({ enabled: state.contextMenu !== null })
-  useOutsideClick({ action: () => state.setContextMenu(null), refs: [ref] })
+  useOutsideClick({
+    action: () =>
+      state.setState((draft) => {
+        draft.contextMenu = null
+      }),
+    refs: [ref],
+  })
   if (!state.contextMenu) return null
   return (
     <container
@@ -34,15 +40,18 @@ export const ContextMenu: FC = () => {
 const MenuItems = () => {
   const state = useStore([
     'contextMenu',
-    'setContextMenu',
     'removeConnection',
     'deleteItem',
     'createItem',
     'toggleOpenWindow',
     'setOneWindow',
+    'setState',
   ])
   if (state.contextMenu === null) return null
-  const close = () => state.setContextMenu(null)
+  const close = () =>
+    state.setState((draft) => {
+      draft.contextMenu = null
+    })
   return match(state.contextMenu)
     .with({ elementType: 'connections' }, (value) => {
       return (

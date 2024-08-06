@@ -79,9 +79,9 @@ const MockItem = () => {
 const SnappingItem = () => {
   const state = useStore([
     'isSnappingOn',
-    'setIsSnappingOn',
     'showConnections',
     'setShowConnections',
+    'setState',
   ])
   return (
     <item className={style.item}>
@@ -91,7 +91,9 @@ const SnappingItem = () => {
           <Dropdown.Item
             key={'Snapping'}
             onClick={() => {
-              state.setIsSnappingOn(!state.isSnappingOn)
+              state.setState((draft) => {
+                draft.isSnappingOn = !draft.isSnappingOn
+              })
             }}
             label1={'Snapping'}
             isChecked={state.isSnappingOn}

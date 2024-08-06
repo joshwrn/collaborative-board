@@ -56,8 +56,7 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
     'addContentToItem',
     'moveWindowNextTo',
     'deleteItem',
-    'setGeneratedCanvas',
-    'setGeneratingCanvas',
+    'setState',
   ])
   const generateImage = useMutation<ConvertSketchToImageResponse>({
     mutationFn: async () => {
@@ -74,7 +73,9 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
         to: id,
         from: item.id,
       })
-      state.setGeneratingCanvas((prev) => [...prev, id])
+      state.setState((draft) => {
+        draft.generatingCanvas = [...draft.generatingCanvas, id]
+      })
       state.toggleOpenWindow(id)
       state.moveWindowNextTo(item.id, id)
 
@@ -97,7 +98,9 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
         return result
       } catch (e) {
         console.error(e)
-        state.setGeneratingCanvas((prev) => prev.filter((i) => i !== id))
+        state.setState((draft) => {
+          draft.generatingCanvas = draft.generatingCanvas.filter((i) => i !== id)
+        })
         state.deleteItem(id)
         throw e
       }
@@ -126,14 +129,18 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
               },
             },
           ])
-          state.setGeneratedCanvas({
-            canvasId,
-            itemId: data.itemId,
-            generatedFromItemId: item.id,
+          state.setState((draft) => {
+            draft.generatedCanvas = {
+              canvasId,
+              itemId: data.itemId,
+              generatedFromItemId: item.id,
+            }
           })
-          state.setGeneratingCanvas((prev) =>
-            prev.filter((i) => i !== data.itemId),
-          )
+          state.setState((draft) => {
+            draft.generatingCanvas = draft.generatingCanvas.filter(
+              (i) => i !== data.itemId,
+            )
+          })
         },
       })
     },

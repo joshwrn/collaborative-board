@@ -14,12 +14,10 @@ import { joinClasses } from '@/utils/joinClasses'
 export const Toolbar: React.FC = () => {
   const state = useStore([
     'drawColor',
-    'setDrawColor',
     'tool',
-    'setTool',
     'drawSize',
-    'setDrawSize',
     'canvasIsFocused',
+    'setState',
   ])
 
   const [open, setOpen] = React.useState<boolean>(false)
@@ -50,7 +48,14 @@ export const Toolbar: React.FC = () => {
   return (
     <div className={style.wrapper} id="toolbar">
       <button>
-        <PiPaintBrushThin size={20} onClick={() => state.setTool('draw')} />
+        <PiPaintBrushThin
+          size={20}
+          onClick={() =>
+            state.setState((draft) => {
+              draft.tool = 'draw'
+            })
+          }
+        />
       </button>
       <button>
         <div
@@ -61,7 +66,11 @@ export const Toolbar: React.FC = () => {
           className={style.colorInput}
           type="color"
           value={state.drawColor}
-          onChange={(e) => state.setDrawColor(e.target.value)}
+          onChange={(e) =>
+            state.setState((draft) => {
+              draft.drawColor = e.target.value
+            })
+          }
         />
       </button>
       <button ref={refs.setReference} onClick={() => setOpen(!open)}>
@@ -74,7 +83,6 @@ export const Toolbar: React.FC = () => {
                 left: refs.reference.current?.getBoundingClientRect().left,
                 top: y,
                 width: 'fit-content',
-                // refs.reference.current?.getBoundingClientRect().width ?? 0,
               }}
               className={joinClasses(style.slider, 'dropdown-list')}
               onClick={() => setOpen(false)}
@@ -84,7 +92,11 @@ export const Toolbar: React.FC = () => {
                 min="1"
                 max="100"
                 value={state.drawSize}
-                onChange={(e) => state.setDrawSize(+e.target.value)}
+                onChange={(e) =>
+                  state.setState((draft) => {
+                    draft.drawSize = +e.target.value
+                  })
+                }
               />
             </section>
           </FloatingPortal>

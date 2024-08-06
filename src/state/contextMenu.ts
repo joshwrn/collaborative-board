@@ -1,5 +1,5 @@
 import { Point2d } from '.'
-import { AppStateCreator, Setter, stateSetter } from './state'
+import { AppStateCreator } from './state'
 
 export type ElementTypes = 'connections' | 'item' | 'space'
 
@@ -25,7 +25,6 @@ type ContextMenu =
 
 export type ContextMenuStore = {
   contextMenu: ContextMenu | null
-  setContextMenu: Setter<ContextMenu | null>
   openContextMenu: ({
     id,
     elementType,
@@ -40,7 +39,6 @@ export const contextMenuStore: AppStateCreator<ContextMenuStore> = (
   get,
 ) => ({
   contextMenu: null,
-  setContextMenu: (setter) => stateSetter(set, setter, `contextMenu`),
   openContextMenu: ({ id, elementType }) => {
     const state = get()
     const position = state.mousePosition

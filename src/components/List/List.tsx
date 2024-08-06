@@ -9,14 +9,16 @@ import { TfiWrite } from 'react-icons/tfi'
 import { createMockItem } from '@/mock/mock-items'
 
 export const ListInternal: FC = () => {
-  const state = useStore(['items', 'setItems', 'windows'])
+  const state = useStore(['items', 'setState', 'windows'])
 
   return (
     <wrapper className={styles.wrapper}>
       <header className={styles.header}>
         <button
           onClick={() => {
-            state.setItems((items) => [...items, ...createMockItem(1)])
+            state.setState((draft) => {
+              draft.items = [...draft.items, ...createMockItem(1)]
+            })
           }}
         >
           <TfiWrite />

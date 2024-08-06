@@ -12,9 +12,9 @@ export const useScenario = ({ scenario }: { scenario: Scenario }) => {
   const state = useStore([
     'createAllMocks',
     'setZoom',
-    'setIsSnappingOn',
     'windows',
     'setOneWindow',
+    'setState',
   ])
 
   const hasRan = React.useRef(false)
@@ -24,7 +24,9 @@ export const useScenario = ({ scenario }: { scenario: Scenario }) => {
       case 'rotation':
         state.createAllMocks(3)
         state.setZoom(0.25)
-        state.setIsSnappingOn(true)
+        state.setState((draft) => {
+          draft.isSnappingOn = true
+        })
         break
       default:
         break

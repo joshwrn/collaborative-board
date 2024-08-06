@@ -1,4 +1,4 @@
-import { AppStateCreator, produceState, Setter, stateSetter } from './state'
+import { AppStateCreator, produceState } from './state'
 import { nanoid } from 'nanoid'
 
 export type Iframe = {
@@ -47,22 +47,18 @@ export const DEFAULT_ITEM: Item = {
 export type ItemListStore = {
   items: Item[]
   editItem: (id: string, content: Partial<Omit<Item, 'body'>>) => void
-  setItems: Setter<Item[]>
   deleteItem: (id: string) => void
   createItem: (item: Partial<Item>) => void
 
   hoveredItem: string | null
-  setHoveredItem: Setter<string | null>
 
   addContentToItem: (id: string, content: ItemBody | ItemBody[]) => void
   editItemContent: (id: string, content: ItemBody) => void
   showItemList: boolean
-  setShowItemList: Setter<boolean>
 }
 
 export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
   items: [],
-  setItems: (setter) => stateSetter(set, setter, `items`),
   editItem: (id, content) => {
     produceState(set, (state) => {
       const item = state.items.find((item) => item.id === id)
@@ -91,7 +87,6 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
   },
 
   hoveredItem: null,
-  setHoveredItem: (setter) => stateSetter(set, setter, `hoveredItem`),
   addContentToItem: (id, content) => {
     produceState(set, (state) => {
       const item = state.items.find((item) => item.id === id)
@@ -118,5 +113,4 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
   },
 
   showItemList: false,
-  setShowItemList: (setter) => stateSetter(set, setter, `showItemList`),
 })

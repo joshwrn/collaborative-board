@@ -112,16 +112,14 @@ const WindowInternal: FC<{
     'setOneWindow',
     'reorderWindows',
     'connections',
-    'setActiveConnection',
     'makeConnection',
     'setFullScreenWindow',
-    'setHoveredWindow',
     'snapToWindows',
     'setSnapLines',
     'spaceMousePosition',
     'zoom',
-    'setSelectedWindow',
     'selectedWindow',
+    'setState',
   ])
 
   const realPosition = React.useRef({ x: window.x, y: window.y })
@@ -134,7 +132,9 @@ const WindowInternal: FC<{
     selectors: ['#toolbar', '.dropdown-list'],
     action: () => {
       if (state.selectedWindow === item.id) {
-        state.setSelectedWindow(null)
+        state.setState((draft) => {
+          draft.hoveredWindow = null
+        })
       }
     },
   })
@@ -207,13 +207,23 @@ const WindowInternal: FC<{
                 zIndex: window.zIndex,
               }),
         }}
-        onMouseEnter={() => state.setHoveredWindow(item.id)}
-        onMouseLeave={() => state.setHoveredWindow(null)}
+        onMouseEnter={() => {
+          state.setState((draft) => {
+            draft.hoveredWindow = item.id
+          })
+        }}
+        onMouseLeave={() => {
+          state.setState((draft) => {
+            draft.hoveredWindow = null
+          })
+        }}
         onClick={(e) => {
           e.stopPropagation()
         }}
         onPointerDown={() => {
-          state.setSelectedWindow(item.id)
+          state.setState((draft) => {
+            draft.selectedWindow = item.id
+          })
           state.reorderWindows(item.id)
         }}
       >

@@ -17,7 +17,6 @@ export type SnappingStore = {
   snapLines: SnappingToPosition[]
   setSnapLines: Setter<SnappingToPosition[]>
   isSnappingOn: boolean
-  setIsSnappingOn: Setter<boolean>
 }
 
 const degToRadians = (deg: number) => (deg * Math.PI) / 180
@@ -75,7 +74,6 @@ function getRectangleCorners(
 
 export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
   isSnappingOn: true,
-  setIsSnappingOn: (setter) => stateSetter(set, setter, `isSnappingOn`),
   snapLines: [],
   setSnapLines: (setter) => stateSetter(set, setter, `snapLines`),
 

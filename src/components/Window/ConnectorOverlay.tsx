@@ -12,10 +12,9 @@ export const ConnectorOverlayInternal: FC<{
 }> = ({ id }) => {
   const state = useStore([
     'activeConnection',
-    'setActiveConnection',
     'makeConnection',
     'connections',
-    'setHoveredConnection',
+    'setState',
   ])
   if (!state.activeConnection || state.activeConnection.from === id) return null
   const alreadyConnected = checkIfConnectionExists({
@@ -31,8 +30,16 @@ export const ConnectorOverlayInternal: FC<{
           state.makeConnection({ to: id })
         }
       }}
-      onMouseOver={() => state.setHoveredConnection({ to: id })}
-      onMouseOut={() => state.setHoveredConnection(null)}
+      onMouseOver={() => {
+        state.setState((draft) => {
+          draft.hoveredConnection = { to: id }
+        })
+      }}
+      onMouseOut={() => {
+        state.setState((draft) => {
+          draft.hoveredConnection = null
+        })
+      }}
     >
       {alreadyConnected && <IoWarningOutline className={styles.warning} />}
       {!alreadyConnected && <IoMdOutlet className={styles.icon} />}

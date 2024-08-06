@@ -1,4 +1,4 @@
-import { AppStateCreator, Setter, stateSetter } from './state'
+import { AppStateCreator } from './state'
 
 export type Member = {
   id: string
@@ -9,10 +9,8 @@ export type Member = {
 
 export type MemberStore = {
   members: Member[]
-  setMembers: Setter<Member[]>
 }
 
 export const memberStore: AppStateCreator<MemberStore> = (set) => ({
   members: [],
-  setMembers: (setter) => stateSetter(set, setter, `members`),
 })

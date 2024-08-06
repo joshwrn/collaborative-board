@@ -28,9 +28,9 @@ export const useGestures = ({
     'pan',
     'setZoom',
     'setPan',
-    'debug_setZoomFocusPoint',
     'selectedWindow',
     'hoveredWindow',
+    'setState',
   ])
 
   usePreventDefaults()
@@ -54,11 +54,6 @@ export const useGestures = ({
           const offset = newZoom - state.zoom
           const offSetX = zoomFocusPointOnScreenX * offset
           const offSetY = zoomFocusPointOnScreenY * offset
-
-          // state.debug_setZoomFocusPoint({
-          //   x: zoomFocusPointOnScreenX,
-          //   y: zoomFocusPointOnScreenY,
-          // })
 
           state.setZoom((prev) => newZoom)
           state.setPan((prev) => ({

@@ -17,11 +17,11 @@ export const Canvas: React.FC<{
     'zoom',
     'drawColor',
     'drawSize',
-    'setCanvasIsFocused',
     'canvasIsFocused',
     'fullScreenWindow',
     'editItemContent',
     'generatedCanvas',
+    'setState',
   ])
 
   const iterateOnSketch = useIterateOnSketch({
@@ -37,7 +37,10 @@ export const Canvas: React.FC<{
   useOutsideClick({
     refs: [],
     selectors: ['#toolbar', '.dropdown-list', '.canvas'],
-    action: () => state.setCanvasIsFocused(false),
+    action: () =>
+      state.setState((draft) => {
+        draft.canvasIsFocused = false
+      }),
   })
 
   React.useEffect(() => {
@@ -83,7 +86,9 @@ export const Canvas: React.FC<{
         height={attributes.height}
         className={joinClasses(style.canvas, 'canvas')}
         onMouseDown={() => {
-          state.setCanvasIsFocused(true)
+          state.setState((draft) => {
+            draft.canvasIsFocused = true
+          })
         }}
         ref={canvasRef}
         onMouseUp={() => {

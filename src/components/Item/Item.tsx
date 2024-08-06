@@ -26,19 +26,23 @@ const matchBody = (body?: ItemBody): JSX.Element | JSX.Element[] | null => {
 }
 
 const ItemInternal: FC<{ item: Item; isOpen: boolean }> = ({ item, isOpen }) => {
-  const state = useStore([
-    'toggleOpenWindow',
-    'openContextMenu',
-    'setHoveredItem',
-  ])
+  const state = useStore(['toggleOpenWindow', 'openContextMenu', 'setState'])
   const canvas = item.body.find((body) => body.type === 'canvas')
     ?.content as CanvasData
   return (
     <wrapper
       className={joinClasses(styles.wrapper, isOpen && styles.isOpenWrapper)}
       onClick={() => state.toggleOpenWindow(item.id)}
-      onMouseEnter={() => state.setHoveredItem(item.id)}
-      onMouseLeave={() => state.setHoveredItem(null)}
+      onMouseEnter={() =>
+        state.setState((draft) => {
+          draft.hoveredItem = item.id
+        })
+      }
+      onMouseLeave={() =>
+        state.setState((draft) => {
+          draft.hoveredItem = null
+        })
+      }
       onContextMenu={(e) => {
         e.preventDefault()
         state.openContextMenu({ elementType: 'item', id: item.id })

@@ -22,9 +22,9 @@ const Space_Internal: FC = () => {
     'zoom',
     'pan',
     'setSpaceMousePosition',
-    'setActiveConnection',
     'fullScreenWindow',
     'openContextMenu',
+    'setState',
   ])
 
   useGestures({ wrapperRef, spaceRef })
@@ -53,7 +53,9 @@ const Space_Internal: FC = () => {
           className={styles.container}
           ref={spaceRef}
           onClick={() => {
-            state.setActiveConnection(null)
+            state.setState((draft) => {
+              draft.activeConnection = null
+            })
           }}
           style={{
             width: SPACE_ATTRS.size,
