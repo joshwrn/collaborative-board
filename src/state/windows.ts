@@ -1,6 +1,8 @@
+import { nanoid } from 'nanoid'
 import { Point2d } from '.'
 import { SPACE_ATTRS } from './space'
 import { AppStateCreator, Setter, stateSetter } from './state'
+import { createMockPrompt } from '@/mock/mock-items'
 
 export type WindowType = {
   id: string
@@ -18,7 +20,7 @@ export type OpenWindowsStore = {
   resizeWindow: (
     id: string,
     start: { width: number; height: number; x: number; y: number },
-    movement: { x: number; y: number },
+    movement: Point2d,
     pos: string,
   ) => void
   setOneWindow: (id: string, update: Partial<WindowType>) => void
@@ -28,6 +30,7 @@ export type OpenWindowsStore = {
   hoveredWindow: string | null
   selectedWindow: string | null
   moveWindowNextTo: (id: string, nextId: string) => void
+  createNewWindow: () => string
 }
 
 export const WINDOW_ATTRS = {
@@ -130,6 +133,33 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         },
       ],
     }))
+  },
+
+  createNewWindow: () => {
+    const state = get()
+    const id = nanoid()
+    const prompt = createMockPrompt()
+    state.createItem({
+      id: id,
+      subject: prompt,
+      body: [
+        {
+          id: nanoid(),
+          type: 'text',
+          content: prompt,
+        },
+        {
+          id: nanoid(),
+          type: 'canvas',
+          content: {
+            base64: '',
+          },
+        },
+      ],
+    })
+    state.toggleOpenWindow(id)
+
+    return id
   },
 
   moveWindowNextTo: (id, nextId) => {

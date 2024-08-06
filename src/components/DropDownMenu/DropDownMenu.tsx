@@ -5,18 +5,27 @@ import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 import { SPACE_ATTRS } from '@/state/space'
 
-const SnappingMenu = () => {
+const WindowsMenu = () => {
   const state = useStore([
     'isSnappingOn',
     'showConnections',
     'setShowConnections',
     'setState',
+    'createNewWindow',
   ])
   return (
     <item className={style.item}>
       <Dropdown.Menu
         SelectedOption={() => <p>Windows</p>}
         Options={[
+          <Dropdown.Item
+            key={'New Window'}
+            onClick={() => {
+              state.createNewWindow()
+            }}
+            label1={'New Window'}
+            isChecked={false}
+          />,
           <Dropdown.Item
             key={'Snapping'}
             onClick={() => {
@@ -215,7 +224,7 @@ export const DropDownMenu = () => {
   return (
     <wrapper className={style.wrapper}>
       <SpaceMenu />
-      <SnappingMenu />
+      <WindowsMenu />
       <DevMenu />
     </wrapper>
   )

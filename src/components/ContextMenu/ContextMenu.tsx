@@ -46,6 +46,7 @@ const MenuItems = () => {
     'toggleOpenWindow',
     'setOneWindow',
     'setState',
+    'createNewWindow',
   ])
   if (state.contextMenu === null) return null
   const close = () =>
@@ -86,31 +87,12 @@ const MenuItems = () => {
         <item
           className={styles.item}
           onClick={() => {
-            const id = nanoid()
-            const prompt = createMockPrompt()
-            state.createItem({
-              id: id,
-              subject: prompt,
-              body: [
-                {
-                  id: nanoid(),
-                  type: 'text',
-                  content: prompt,
-                },
-                {
-                  id: nanoid(),
-                  type: 'canvas',
-                  content: {
-                    base64: '',
-                  },
-                },
-              ],
-            })
-            state.toggleOpenWindow(id)
+            const id = state.createNewWindow()
             state.setOneWindow(id, {
               x: value.data.x,
               y: value.data.y,
             })
+
             close()
           }}
         >
