@@ -9,6 +9,7 @@ import type { Variants } from 'framer-motion'
 import { AnimatePresence, motion } from 'framer-motion'
 import React from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
+import { IoIosArrowForward } from 'react-icons/io'
 import { IoCheckmarkSharp as CheckIcon } from 'react-icons/io5'
 import type { IconType } from 'react-icons/lib'
 
@@ -209,8 +210,70 @@ export const Item: React.FC<{
     </motion.div>
   )
 }
+
+const SubMenu = ({
+  SelectedOption,
+  Options,
+  NullableOption = null,
+  id,
+}: {
+  SelectedOption: React.FC
+  disabled?: boolean
+  Options: (JSX.Element | null)[]
+  NullableOption?: JSX.Element | null
+  id?: string
+}): React.ReactElement => {
+  const [open, setOpen] = React.useState<boolean>(false)
+  return (
+    <>
+      <div
+        id={id ?? ''}
+        data-open={open}
+        data-role="dropdown-menu"
+        className={style.subMenu}
+        style={{
+          position: 'relative',
+        }}
+        onPointerOver={() => setOpen(true)}
+        onPointerOut={() => setOpen(false)}
+      >
+        <div className={style.selectedOptionWrapper}>
+          <SelectedOption />
+        </div>
+        <div className={style.arrow}>
+          <IoIosArrowForward />
+        </div>
+        <AnimatePresence>
+          {open && (
+            <motion.section
+              variants={listVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              style={{
+                position: 'absolute',
+                left: '100%',
+                top: 0,
+              }}
+              className={joinClasses(style.list, 'dropdown-list')}
+              onClick={() => setOpen(false)}
+            >
+              <DropdownOptions
+                Options={Options}
+                setOpen={setOpen}
+                NullableOption={NullableOption}
+              />
+            </motion.section>
+          )}
+        </AnimatePresence>
+      </div>
+    </>
+  )
+}
+
 const exports = {
   Menu: Dropdown,
   Item,
+  SubMenu,
 }
 export default exports

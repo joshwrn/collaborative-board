@@ -33,6 +33,30 @@
   }
 }
 
+.subMenu {
+  user-select: none;
+  display: flex;
+  gap: 10px;
+  transition: border 0.3s;
+  &[data-open='true'] {
+    .selectedOptionWrapper {
+      p {
+        color: var(--white);
+      }
+    }
+  }
+  padding: 10px 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  border-radius: 5px;
+  &:hover {
+    background-color: var(--white-15);
+  }
+}
+
 .arrow {
   // border: 1px solid red;
   height: 100%;
@@ -47,12 +71,17 @@
 }
 
 .list {
+  position: absolute;
   background-color: var(--color-dropdown-list);
-  box-shadow: 0 3px 6px #00000030, 0 23px 14px #0000001a, 0 41px 17px #00000008;
+  box-shadow:
+    0 3px 6px #00000030,
+    0 23px 14px #0000001a,
+    0 41px 17px #00000008;
   backdrop-filter: blur(25px);
   z-index: 999;
   border: 1px solid var(--white-15);
   border-radius: 10px;
+  flex-shrink: 0;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -69,6 +98,7 @@
   form {
     display: flex;
     gap: 5px;
+    padding-right: 5px;
   }
   p {
     font-size: var(--font--2);
@@ -84,7 +114,8 @@
     border: none;
     border: 1px solid var(--border);
   }
-  & + .item {
+  & + .item,
+  & + .subMenu {
     &::before {
       background-color: var(--white-15);
       // @include mixins.divider(var(--white-15));

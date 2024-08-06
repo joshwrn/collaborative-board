@@ -5,78 +5,7 @@ import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 import { SPACE_ATTRS } from '@/state/space'
 
-const MockItem = () => {
-  const state = useStore(['createAllMocks', 'createOneMock', 'clearMocks'])
-  const [amount, setAmount] = React.useState(0)
-  const defaultAmounts = [100, 26, 10, 3]
-  return (
-    <item className={style.item}>
-      <Dropdown.Menu
-        SelectedOption={() => <p>Mocks</p>}
-        id="dropdown-create-mocks-button"
-        Options={[
-          ...defaultAmounts.map((amount) => (
-            <Dropdown.Item
-              key={`Create (${amount})`}
-              onClick={() => {
-                state.createAllMocks(amount)
-              }}
-              label1={`Create (${amount})`}
-              isChecked={false}
-            />
-          )),
-          <Dropdown.Item
-            key={'Create One'}
-            onClick={() => {
-              state.createOneMock()
-            }}
-            label1={'Create (1)'}
-            isChecked={false}
-            id="dropdown-create-mocks-1"
-          />,
-          <Dropdown.Item
-            key={'Create (Custom)'}
-            onClick={() => {
-              state.createAllMocks(amount)
-            }}
-            isChecked={false}
-          >
-            <form
-              onSubmit={(e) => {
-                e.preventDefault()
-                state.createAllMocks(amount)
-              }}
-              onClick={() => {
-                state.createAllMocks(amount)
-              }}
-              className={style.customCreate}
-            >
-              <p>Create (</p>
-              <input
-                onClick={(e) => e.stopPropagation()}
-                type="text"
-                placeholder="Custom"
-                value={amount === 0 ? '' : amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
-              />
-              <p>)</p>
-            </form>
-          </Dropdown.Item>,
-          <Dropdown.Item
-            key={'Clear'}
-            onClick={() => {
-              state.clearMocks()
-            }}
-            label1={'Clear'}
-            isChecked={false}
-          />,
-        ]}
-      />
-    </item>
-  )
-}
-
-const SnappingItem = () => {
+const SnappingMenu = () => {
   const state = useStore([
     'isSnappingOn',
     'showConnections',
@@ -112,7 +41,7 @@ const SnappingItem = () => {
   )
 }
 
-const SpaceItem = () => {
+const SpaceMenu = () => {
   const state = useStore([
     'zoom',
     'setZoom',
@@ -170,6 +99,29 @@ const SpaceItem = () => {
             label1={'Show Item List'}
             isChecked={state.showItemList}
           />,
+        ]}
+      />
+    </item>
+  )
+}
+
+const DevMenu = () => {
+  const state = useStore([
+    'debug_showZustandDevTools',
+    'debug_showFps',
+    'setState',
+    'createAllMocks',
+    'createOneMock',
+    'clearMocks',
+  ])
+  const [amount, setAmount] = React.useState(0)
+  const defaultAmounts = [100, 26, 10, 3]
+  return (
+    <item className={style.item}>
+      <Dropdown.Menu
+        id="dropdown-dev-button"
+        SelectedOption={() => <p>Dev</p>}
+        Options={[
           <Dropdown.Item
             key={'Show Dev Tools'}
             onClick={() => {
@@ -191,6 +143,68 @@ const SpaceItem = () => {
             label1={'Show FPS'}
             isChecked={state.debug_showFps}
           />,
+          <Dropdown.SubMenu
+            key={'Mocks'}
+            SelectedOption={() => <p>Mocks</p>}
+            id="dropdown-create-mocks-button"
+            Options={[
+              ...defaultAmounts.map((amount) => (
+                <Dropdown.Item
+                  key={`Create (${amount})`}
+                  onClick={() => {
+                    state.createAllMocks(amount)
+                  }}
+                  label1={`Create (${amount})`}
+                  isChecked={false}
+                />
+              )),
+              <Dropdown.Item
+                key={'Create One'}
+                onClick={() => {
+                  state.createOneMock()
+                }}
+                label1={'Create (1)'}
+                isChecked={false}
+                id="dropdown-create-mocks-1"
+              />,
+              <Dropdown.Item
+                key={'Create (Custom)'}
+                onClick={() => {
+                  state.createAllMocks(amount)
+                }}
+                isChecked={false}
+              >
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                    state.createAllMocks(amount)
+                  }}
+                  onClick={() => {
+                    state.createAllMocks(amount)
+                  }}
+                  className={style.customCreate}
+                >
+                  <p>Create (</p>
+                  <input
+                    onClick={(e) => e.stopPropagation()}
+                    type="text"
+                    placeholder="Custom"
+                    value={amount === 0 ? '' : amount}
+                    onChange={(e) => setAmount(Number(e.target.value))}
+                  />
+                  <p>)</p>
+                </form>
+              </Dropdown.Item>,
+              <Dropdown.Item
+                key={'Clear'}
+                onClick={() => {
+                  state.clearMocks()
+                }}
+                label1={'Clear'}
+                isChecked={false}
+              />,
+            ]}
+          />,
         ]}
       />
     </item>
@@ -200,9 +214,9 @@ const SpaceItem = () => {
 export const DropDownMenu = () => {
   return (
     <wrapper className={style.wrapper}>
-      <MockItem />
-      <SnappingItem />
-      <SpaceItem />
+      <SpaceMenu />
+      <SnappingMenu />
+      <DevMenu />
     </wrapper>
   )
 }
