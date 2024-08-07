@@ -9,7 +9,7 @@
     "lint": "next lint",
     "gen-store": "node --loader ts-node/esm ./src/scripts/generate-store.ts",
     "gen-api-routes": "node --loader ts-node/esm ./src/scripts/generate-api-routes.ts --watch",
-    "create-new-store": "node --loader ts-node/esm ./src/scripts/create-new-store.ts && node --loader ts-node/esm ./src/scripts/generate-store.ts",
+    "create-new-store": "node --loader ts-node/esm ./src/scripts/create-new-store.ts",
     "all": "concurrently \"npm run dev\" \"npm run gen-api-routes\""
   },
   "dependencies": {
