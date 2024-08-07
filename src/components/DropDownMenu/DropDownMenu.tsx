@@ -4,6 +4,8 @@ import style from './DropDownMenu.module.scss'
 import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 import { SPACE_ATTRS } from '@/state/space'
+import { nanoid } from 'nanoid'
+import { mockProgress } from '@/mock/mock-progress'
 
 const WindowsMenu = () => {
   const state = useStore([
@@ -231,12 +233,102 @@ const DevMenu = () => {
   )
 }
 
+const NotificationsMenu = () => {
+  const state = useStore([
+    'notifications',
+    'setState',
+    'setNotificationProgress',
+  ])
+  return (
+    <item className={style.item}>
+      <Dropdown.Menu
+        id="dropdown-notifications-button"
+        SelectedOption={() => <p>Notifications</p>}
+        Options={[
+          <Dropdown.Item
+            key={'Set Notification Progress'}
+            onClick={async (e) => {
+              e.stopPropagation()
+              const mock_progress = await mockProgress(5000, (progress) => {
+                const notification = state.notifications.find(
+                  (n) => n.progress === undefined || n.progress === 100,
+                )
+                state.setNotificationProgress(
+                  notification?.id ?? '',
+                  progress * 100,
+                )
+              })
+            }}
+            label1={'Set Notification Progress'}
+            isChecked={false}
+          />,
+          <Dropdown.Item
+            key={'Test Notification'}
+            onClick={(e) => {
+              e.stopPropagation()
+              state.setState((draft) => {
+                draft.notifications.push({
+                  type: 'info',
+                  message: `Test Notification ${draft.notifications.length}`,
+                  id: nanoid(),
+                  isLoading: true,
+                })
+              })
+            }}
+            label1={'Test Notification'}
+            isChecked={false}
+          />,
+          <Dropdown.Item
+            key={'Remove Earliest'}
+            onClick={(e) => {
+              e.stopPropagation()
+              state.setState((draft) => {
+                draft.notifications.shift()
+              })
+            }}
+            label1={'Remove Earliest'}
+            isChecked={false}
+          />,
+          <Dropdown.Item
+            key={'Remove Newest'}
+            onClick={(e) => {
+              e.stopPropagation()
+              state.setState((draft) => {
+                draft.notifications.pop()
+              })
+            }}
+            label1={'Remove Newest'}
+            isChecked={false}
+          />,
+          <Dropdown.Item
+            key={'Change Notification Type'}
+            onClick={(e) => {
+              e.stopPropagation()
+              state.setState((draft) => {
+                const notification = draft.notifications[0]
+                notification.type =
+                  notification.type === 'success' ? 'error' : 'success'
+                notification.isLoading =
+                  notification.type === 'error' ? false : true
+              })
+            }}
+            label1={'Change Notification Type'}
+            isChecked={false}
+          />,
+        ]}
+      />
+    </item>
+  )
+}
+
 export const DropDownMenu = () => {
+  const state = useStore(['setState'])
   return (
     <wrapper className={style.wrapper}>
       <SpaceMenu />
       <WindowsMenu />
       <DevMenu />
+      <NotificationsMenu />
     </wrapper>
   )
 }

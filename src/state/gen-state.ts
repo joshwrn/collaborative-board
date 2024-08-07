@@ -8,6 +8,7 @@ import { generalStore, GeneralStore } from './general'
 import { itemListStore, ItemListStore } from './items'
 import { memberStore, MemberStore } from './members'
 import { mockStore, MockStore } from './mock'
+import { notificationsStore, NotificationsStore } from './notifications'
 import { peripheralStore, PeripheralStore } from './peripheral'
 import { snappingStore, SnappingStore } from './snapping'
 import { spaceStore, SpaceStore } from './space'
@@ -22,28 +23,31 @@ export type Store = CanvasStore &
   ItemListStore &
   MemberStore &
   MockStore &
+  NotificationsStore &
   PeripheralStore &
   SnappingStore &
   SpaceStore &
   UserStore &
   OpenWindowsStore
 
-export const useFullStore = create<Store>()((set, get, store) => ({
-  ...canvasStore(set, get, store),
-  ...connectedWindowsStore(set, get, store),
-  ...contextMenuStore(set, get, store),
-  ...debugStore(set, get, store),
-  ...generalStore(set, get, store),
-  ...itemListStore(set, get, store),
-  ...memberStore(set, get, store),
-  ...mockStore(set, get, store),
-  ...peripheralStore(set, get, store),
-  ...snappingStore(set, get, store),
-  ...spaceStore(set, get, store),
-  ...userStore(set, get, store),
-  ...openWindowsStore(set, get, store),
-}))
-
+export const useFullStore = create<Store>((set, get, store) => {
+  return {
+    ...canvasStore(set, get, store),
+    ...connectedWindowsStore(set, get, store),
+    ...contextMenuStore(set, get, store),
+    ...debugStore(set, get, store),
+    ...generalStore(set, get, store),
+    ...itemListStore(set, get, store),
+    ...memberStore(set, get, store),
+    ...mockStore(set, get, store),
+    ...notificationsStore(set, get, store),
+    ...peripheralStore(set, get, store),
+    ...snappingStore(set, get, store),
+    ...spaceStore(set, get, store),
+    ...userStore(set, get, store),
+    ...openWindowsStore(set, get, store),
+  }
+})
 export const useStore = <T extends keyof Store>(selected: T[]) => {
   return useFullStore(
     useShallow((state: Store) => {
@@ -57,17 +61,3 @@ export const useStore = <T extends keyof Store>(selected: T[]) => {
     }),
   )
 }
-
-// type StateObject<T extends Partial<AppStore>> = {
-//   [key in keyof T]: T[key]
-// }
-
-// export const useShallowAppStore_dep = <T extends Partial<AppStore>>(
-//   selected: (state: AppStore) => StateObject<T>,
-// ) => {
-//   return useAppStore(
-//     useShallow((state: AppStore) => {
-//       return selected(state) as StateObject<T>
-//     }),
-//   )
-// }

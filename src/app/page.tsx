@@ -14,6 +14,7 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import React, { Suspense } from 'react'
 import { List } from '@/components/ItemList/List/List'
+import { Toaster } from '@/ui/Toast'
 const DevTools = React.lazy(() => import('@/components/Debug/DevTools'))
 
 const queryClient = new QueryClient()
@@ -47,6 +48,7 @@ export default function Home() {
         {state.debug_showFps && <FPSStats left={'auto'} right={0} />}
       </wrapper>
       <ToastContainer position="bottom-right" theme="dark" autoClose={2000} />
+      <Toaster />
       <Suspense
         fallback={
           <div

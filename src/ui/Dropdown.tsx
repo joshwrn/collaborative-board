@@ -160,7 +160,7 @@ const DropdownOptionsInternal: React.FC<{
 const DropdownOptions = React.memo(DropdownOptionsInternal)
 
 export const Item: React.FC<{
-  onClick: () => void
+  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   Icon?: IconType
   label1?: string
   label2?: string
@@ -187,8 +187,8 @@ export const Item: React.FC<{
         stiffness: 500,
         damping: 30,
       }}
-      onClick={() => {
-        onClick()
+      onClick={(e) => {
+        onClick(e)
       }}
       data-role="dropdown-item"
       data-checked={isChecked && showCheck}
