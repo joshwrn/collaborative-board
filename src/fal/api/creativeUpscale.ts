@@ -95,8 +95,11 @@ export const creativeUpscale = async ({
   guidanceScale = 7.5,
   numInferenceSteps = 20,
   enableSafetyChecks = true,
+  onUpdate,
   ...rest
-}: CreativeUpscaleInput): Promise<CreativeUpscaleOutput> => {
+}: CreativeUpscaleInput & {
+  onUpdate: (update: any) => void
+}): Promise<CreativeUpscaleOutput> => {
   const result = await fal.subscribe('fal-ai/creative-upscaler', {
     input: {
       image_url,
@@ -104,6 +107,8 @@ export const creativeUpscale = async ({
     },
     logs: true,
     onQueueUpdate: (update) => {
+      console.log('onQueueUpdate', update)
+      onUpdate(update)
       if (update.status === 'IN_PROGRESS') {
         if (update.logs) {
           update.logs.map((log) => log.message).forEach(console.log)

@@ -9,11 +9,20 @@ import {
   MOCK_CREATIVE_UPSCALE_RESPONSE,
 } from './creativeUpscale'
 import { resizeImage } from '@/utils/image/resizeImage'
+import { toast } from 'react-toastify'
+import * as fal from '@fal-ai/serverless-client'
+import { mockProgress } from '@/mock/mock-progress'
 
-export const mock_convertSketchToImageResponse = {
-  description: 'A tiger is standing in a forest.',
-  image: MOCK_CREATIVE_UPSCALE_RESPONSE.image,
-  itemId: 'fake-item-id',
+export const createFakeMockConvertSketchToImageResponse = ({
+  itemId,
+}: {
+  itemId: string
+}) => {
+  return {
+    description: 'A tiger is standing in a forest.',
+    image: MOCK_CREATIVE_UPSCALE_RESPONSE.image,
+    itemId,
+  }
 }
 
 export type ConvertSketchToImageResponse = {
@@ -26,10 +35,12 @@ export const convertSketchToImage = async ({
   sketch_url,
   style,
   itemId,
+  onUpdate,
 }: {
   sketch_url: string
   style?: string
   itemId: string
+  onUpdate: (update: any) => void
 }): Promise<ConvertSketchToImageResponse> => {
   const image = await creativeUpscale({
     image_url: sketch_url,
@@ -38,6 +49,7 @@ export const convertSketchToImage = async ({
     numInferenceSteps: 30,
     guidanceScale: 1,
     prompt: style,
+    onUpdate,
   })
   return {
     image: image.image,
@@ -57,9 +69,17 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
     'moveWindowNextTo',
     'deleteItem',
     'setState',
+    'removeGeneratingCanvasItem',
+    'updateGeneratingCanvasProgress',
   ])
-  const generateImage = useMutation<ConvertSketchToImageResponse>({
-    mutationFn: async () => {
+  const generateImage = useMutation<
+    ConvertSketchToImageResponse,
+    Error,
+    {
+      toastId: string
+    }
+  >({
+    mutationFn: async ({ toastId }: { toastId: string }) => {
       const id = nanoid()
       const connections = useFullStore.getState().connections
       const outgoingConnections = connections.filter(
@@ -74,14 +94,39 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
         from: item.id,
       })
       state.setState((draft) => {
-        draft.generatingCanvas = [...draft.generatingCanvas, id]
+        draft.generatingCanvas = [
+          ...draft.generatingCanvas,
+          { itemId: id, progress: 0 },
+        ]
       })
       state.toggleOpenWindow(id)
       state.moveWindowNextTo(item.id, id)
 
       if (should_use_mock) {
         console.log('useConvertSketchToImage', 'use_mock')
-        return mock_convertSketchToImageResponse
+        const mock_progress = await mockProgress(1000, (progress) => {
+          toast.update(toastId, {
+            progress,
+          })
+          state.updateGeneratingCanvasProgress(id, progress)
+        })
+        if (mock_progress === 'success') {
+          // need to do two updates because the toast disappears immediately when set to 1
+          toast.update(toastId, {
+            render: 'Image generated!',
+            type: 'success',
+            progress: 0.99,
+            isLoading: false,
+          })
+          toast.update(toastId, {
+            progress: 1,
+            type: 'success',
+            render: 'Image generated!',
+            delay: 1000,
+            isLoading: false,
+          })
+        }
+        return createFakeMockConvertSketchToImageResponse({ itemId: id })
       }
 
       try {
@@ -94,14 +139,44 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
           sketch_url: image,
           style,
           itemId: id,
+          onUpdate: (update: fal.QueueStatus) => {
+            if (update.status === 'IN_PROGRESS') {
+              let progress = 0
+              if (update.logs) {
+                update.logs
+                  .map((log) => log.message)
+                  .forEach((message) => {
+                    const newProgress = progress + 0.01
+                    progress = newProgress >= 0.95 ? 0.95 : newProgress
+                  })
+              }
+              toast.update(toastId, {
+                progress,
+              })
+              state.updateGeneratingCanvasProgress(id, progress)
+            }
+
+            if (update.status === 'COMPLETED') {
+              toast.update(toastId, {
+                render: 'Image generated!',
+                type: 'success',
+                progress: 1,
+                isLoading: false,
+              })
+            }
+          },
         })
         return result
       } catch (e) {
         console.error(e)
-        state.setState((draft) => {
-          draft.generatingCanvas = draft.generatingCanvas.filter((i) => i !== id)
-        })
+        state.removeGeneratingCanvasItem(id)
         state.deleteItem(id)
+        toast.update(toastId, {
+          render: 'Failed to generate image',
+          type: 'error',
+          progress: 1,
+          isLoading: false,
+        })
         throw e
       }
     },
@@ -136,11 +211,7 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
               generatedFromItemId: item.id,
             }
           })
-          state.setState((draft) => {
-            draft.generatingCanvas = draft.generatingCanvas.filter(
-              (i) => i !== data.itemId,
-            )
-          })
+          state.removeGeneratingCanvasItem(data.itemId)
         },
       })
     },

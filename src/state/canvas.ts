@@ -1,4 +1,4 @@
-import { AppStateCreator } from './state'
+import { AppStateCreator, produceState } from './state'
 
 export type GeneratedCanvas = {
   canvasId: string
@@ -12,7 +12,12 @@ export type CanvasStore = {
   drawSize: number
   canvasIsFocused: boolean
   generatedCanvas: GeneratedCanvas | null
-  generatingCanvas: string[]
+  generatingCanvas: {
+    itemId: string
+    progress: number
+  }[]
+  updateGeneratingCanvasProgress: (itemId: string, progress: number) => void
+  removeGeneratingCanvasItem: (itemId: string) => void
 }
 
 export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
@@ -22,4 +27,24 @@ export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
   canvasIsFocused: false,
   generatedCanvas: null,
   generatingCanvas: [],
+  updateGeneratingCanvasProgress: (itemId: string, progress: number) => {
+    produceState(set, (draft) => {
+      draft.generatingCanvas = draft.generatingCanvas.map((i) => {
+        if (i.itemId === itemId) {
+          return {
+            ...i,
+            progress,
+          }
+        }
+        return i
+      })
+    })
+  },
+  removeGeneratingCanvasItem: (itemId: string) => {
+    produceState(set, (draft) => {
+      draft.generatingCanvas = draft.generatingCanvas.filter(
+        (i) => i.itemId !== itemId,
+      )
+    })
+  },
 })

@@ -8,7 +8,7 @@ export const LoadingOverlay: React.FC<{
   const state = useStore(['generatingCanvas'])
   if (
     !state.generatingCanvas.length ||
-    !state.generatingCanvas.includes(itemId)
+    !state.generatingCanvas.find((c) => c.itemId === itemId)
   ) {
     return null
   }
