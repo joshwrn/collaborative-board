@@ -20,7 +20,7 @@ export const GenerateButton: React.FC<{
         onClick={async () => {
           toastId.current = nanoid()
           generateImage.mutateAsync({ toastId: toastId.current })
-          toast.loading('Generating...', {
+          toast.loading('In queue...', {
             toastId: toastId.current,
           })
         }}

@@ -152,6 +152,7 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
               }
               toast.update(toastId, {
                 progress,
+                render: 'Generating...',
               })
               state.updateGeneratingCanvasProgress(id, progress)
             }
@@ -172,10 +173,10 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
         state.removeGeneratingCanvasItem(id)
         state.deleteItem(id)
         toast.update(toastId, {
-          render: 'Failed to generate image',
           type: 'error',
-          progress: 1,
-          isLoading: false,
+          render: 'Failed to generate image',
+          closeOnClick: true,
+          closeButton: true,
         })
         throw e
       }
