@@ -8,6 +8,7 @@ import { useConvertSketchToImage } from '@/fal/workflows/convertSketchToImage'
 import { IoSparklesSharp } from 'react-icons/io5'
 import { nanoid } from 'nanoid'
 import { useStore } from '@/state/gen-state'
+import { useWithRateLimit } from '@/utils/useWithRateLimit'
 
 export const GenerateButton: React.FC<{
   item: Item
@@ -15,33 +16,39 @@ export const GenerateButton: React.FC<{
   const generateImage = useConvertSketchToImage({ item })
   const toastId = React.useRef<string>(nanoid())
   const state = useStore(['promiseNotification'])
+  const [disabled, limit] = useWithRateLimit()
   return (
     <section className={style.wrapper}>
       <motion.button
         onClick={async () => {
-          toastId.current = nanoid()
-          state.promiseNotification(
-            async () => {
-              await generateImage.mutateAsync({
-                toastId: toastId.current,
-              })
-            },
-            {
-              type: 'info',
-              message: `In Queue...`,
-              id: toastId.current,
-              isLoading: true,
-            },
-            {
-              onSuccess: {
-                update: {
-                  message: `Image generated!`,
+          limit(() => {
+            toastId.current = nanoid()
+            state.promiseNotification(
+              async () => {
+                await generateImage.mutateAsync({
+                  toastId: toastId.current,
+                })
+              },
+              {
+                type: 'info',
+                message: `In Queue...`,
+                id: toastId.current,
+                isLoading: true,
+              },
+              {
+                onSuccess: {
+                  update: {
+                    message: `Image generated!`,
+                  },
                 },
               },
-            },
-          )
+            )
+          }, 2000)
         }}
-        className={joinClasses(generateImage.isPending && style.isPending)}
+        className={joinClasses(
+          generateImage.isPending && style.isPending,
+          disabled && style.isDisabled,
+        )}
       >
         <p>Generate</p>
         <IoSparklesSharp />
