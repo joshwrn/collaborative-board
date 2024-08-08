@@ -1,7 +1,14 @@
-export const mockProgress = async (
-  time: number,
-  onProgress: (progress: number) => void,
-) => {
+import { randomNumberBetween } from '@/utils/randomNumberBetween'
+
+// subtract progress from 100 to get reverse progress
+export const mockProgress = async (options: {
+  onProgress: (progress: number) => void
+  time?: number
+}) => {
+  let { onProgress, time } = options
+  if (!time) {
+    time = randomNumberBetween(1000, 5000)
+  }
   let curProgress = 0
   const totalUpdates = time / 100
   const increment = 1 / totalUpdates
@@ -10,7 +17,7 @@ export const mockProgress = async (
     if (curProgress >= 1) {
       curProgress = 1
     }
-    onProgress(curProgress)
+    onProgress(curProgress * 100)
   }, 100)
   return new Promise((resolve) => {
     setTimeout(() => {

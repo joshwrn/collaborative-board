@@ -249,14 +249,16 @@ const NotificationsMenu = () => {
             key={'Set Notification Progress'}
             onClick={async (e) => {
               e.stopPropagation()
-              const mock_progress = await mockProgress(5000, (progress) => {
-                const notification = state.notifications.find(
-                  (n) => n.progress === undefined || n.progress === 100,
-                )
-                state.setNotificationProgress(
-                  notification?.id ?? '',
-                  progress * 100,
-                )
+              await mockProgress({
+                onProgress: (progress) => {
+                  const notification = state.notifications.find(
+                    (n) => n.progress === undefined || n.progress === 100,
+                  )
+                  state.setNotificationProgress(
+                    notification?.id ?? '',
+                    progress * 100,
+                  )
+                },
               })
             }}
             label1={'Set Notification Progress'}
@@ -301,18 +303,20 @@ const NotificationsMenu = () => {
             isChecked={false}
           />,
           <Dropdown.Item
-            key={'Change Notification Type'}
+            key={'Set Notification Success'}
             onClick={(e) => {
               e.stopPropagation()
               state.setState((draft) => {
-                const notification = draft.notifications[0]
-                notification.type =
-                  notification.type === 'success' ? 'error' : 'success'
-                notification.isLoading =
-                  notification.type === 'error' ? false : true
+                const notification = draft.notifications.find(
+                  (n) => n.progress === 100,
+                )
+                if (notification) {
+                  notification.type = 'success'
+                  notification.isLoading = false
+                }
               })
             }}
-            label1={'Change Notification Type'}
+            label1={'Set Notification Success'}
             isChecked={false}
           />,
         ]}

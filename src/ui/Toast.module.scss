@@ -1,11 +1,12 @@
 .toast {
   background-color: var(--toast-background);
+  backdrop-filter: blur(10px);
   border: 1px solid var(--toast-border);
   color: var(--toast-text);
   padding: 0 20px;
-  height: 60px;
+  height: 65px;
   width: 312px;
-  border-radius: 5px;
+  border-radius: 20px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
