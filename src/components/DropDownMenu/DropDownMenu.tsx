@@ -227,13 +227,14 @@ const DevMenu = () => {
               />,
             ]}
           />,
+          <NotificationsSubMenu key={'Notifications'} />,
         ]}
       />
     </item>
   )
 }
 
-const NotificationsMenu = () => {
+const NotificationsSubMenu = () => {
   const state = useStore([
     'notifications',
     'setState',
@@ -271,26 +272,24 @@ const NotificationsMenu = () => {
     )
   }
   return (
-    <item className={style.item}>
-      <Dropdown.Menu
-        id="dropdown-notifications-button"
-        SelectedOption={() => <p>Notifications</p>}
-        Options={[
-          <Dropdown.Item
-            key={'Fake Success Notification'}
-            onClick={(e) => createFakeNotification(e, 'success')}
-            label1={'Fake Success Notification'}
-            isChecked={false}
-          />,
-          <Dropdown.Item
-            key={'Fake Error Notification'}
-            onClick={(e) => createFakeNotification(e, 'error')}
-            label1={'Fake Error Notification'}
-            isChecked={false}
-          />,
-        ]}
-      />
-    </item>
+    <Dropdown.SubMenu
+      id="dropdown-notifications-button"
+      SelectedOption={() => <p>Notifications</p>}
+      Options={[
+        <Dropdown.Item
+          key={'Fake Success Notification'}
+          onClick={(e) => createFakeNotification(e, 'success')}
+          label1={'Fake Success Notification'}
+          isChecked={false}
+        />,
+        <Dropdown.Item
+          key={'Fake Error Notification'}
+          onClick={(e) => createFakeNotification(e, 'error')}
+          label1={'Fake Error Notification'}
+          isChecked={false}
+        />,
+      ]}
+    />
   )
 }
 
@@ -301,7 +300,6 @@ export const DropDownMenu = () => {
       <SpaceMenu />
       <WindowsMenu />
       <DevMenu />
-      <NotificationsMenu />
     </wrapper>
   )
 }

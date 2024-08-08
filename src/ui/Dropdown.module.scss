@@ -101,6 +101,7 @@
     padding-right: 5px;
   }
   p {
+    white-space: nowrap;
     font-size: var(--font--2);
     text-transform: capitalize;
     color: var(--white-65);
