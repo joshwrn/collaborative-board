@@ -1,7 +1,7 @@
 import React from 'react'
 import style from './Toast.module.scss'
 import { useStore } from '@/state/gen-state'
-import { LayoutGroup, motion } from 'framer-motion'
+import { AnimatePresence, LayoutGroup, motion, Variants } from 'framer-motion'
 import { Notification } from '@/state/notifications'
 import UseAnimations from 'react-useanimations'
 import loading from 'react-useanimations/lib/loading'
@@ -11,13 +11,35 @@ import { IoCheckmarkCircleOutline as CheckIcon } from 'react-icons/io5'
 const TOAST_COLORS = {
   error: '#ff3030db',
   success: '#32ff73db',
-  info: '#ffffffa5',
+  info: '#0070f3',
+}
+
+export const itemVariants: Variants = {
+  initial: {
+    right: '-100%',
+  },
+  animate: () => ({
+    right: 0,
+  }),
+  exit: () => ({
+    right: '-100%',
+  }),
 }
 
 const Toast_Internal: React.FC<{ notification: Notification }> = ({
   notification,
 }) => {
   let Icon = null
+  if (notification.isLoading) {
+    Icon = (
+      <UseAnimations
+        animation={loading}
+        size={28}
+        strokeColor={TOAST_COLORS.info}
+        pathCss={style.loading}
+      />
+    )
+  }
   if (notification.type === 'error') {
     Icon = (
       <ErrorIcon
@@ -31,33 +53,34 @@ const Toast_Internal: React.FC<{ notification: Notification }> = ({
   if (notification.type === 'success') {
     Icon = (
       <CheckIcon
-        size={22}
+        size={27}
         style={{
-          fill: TOAST_COLORS.success,
+          stroke: TOAST_COLORS.success,
         }}
       />
     )
   }
-  if (notification.isLoading) {
-    Icon = (
-      <UseAnimations
-        animation={loading}
-        size={28}
-        strokeColor={TOAST_COLORS.info}
-        pathCss={style.loading}
-      />
-    )
-  }
+
   return (
-    <motion.div layout layoutId={notification.id} className={style.toast}>
+    <motion.div
+      layout
+      layoutId={notification.id}
+      className={style.toast}
+      variants={itemVariants}
+      initial={`initial`}
+      animate={`animate`}
+      exit={`exit`}
+    >
       <div className={style.iconContainer}>{Icon}</div>
       {notification.message}
-      {notification.progress && (
-        <motion.div
-          className={style.progress}
-          animate={{ width: `${notification.progress}%` }}
-        />
-      )}
+      <motion.div
+        className={style.progress}
+        transition={{ type: 'spring', stiffness: 1000, damping: 50 }}
+        animate={{
+          width: `${notification.progress}%`,
+          backgroundColor: TOAST_COLORS[notification.type],
+        }}
+      />
     </motion.div>
   )
 }
@@ -69,9 +92,11 @@ export const Toaster: React.FC = () => {
   return (
     <div className={style.wrapper}>
       <LayoutGroup>
-        {state.notifications.map((notification, index) => {
-          return <Toast key={notification.id} notification={notification} />
-        })}
+        <AnimatePresence>
+          {state.notifications.map((notification, index) => {
+            return <Toast key={notification.id} notification={notification} />
+          })}
+        </AnimatePresence>
       </LayoutGroup>
     </div>
   )

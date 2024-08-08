@@ -9,7 +9,6 @@ import {
   MOCK_CREATIVE_UPSCALE_RESPONSE,
 } from './creativeUpscale'
 import { resizeImage } from '@/utils/image/resizeImage'
-import { toast } from 'react-toastify'
 import * as fal from '@fal-ai/serverless-client'
 import { mockProgress } from '@/mock/mock-progress'
 
@@ -71,6 +70,7 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
     'setState',
     'removeGeneratingCanvasItem',
     'updateGeneratingCanvasProgress',
+    'updateNotification',
   ])
   const generateImage = useMutation<
     ConvertSketchToImageResponse,
@@ -79,7 +79,7 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
       toastId: string
     }
   >({
-    mutationFn: async ({ toastId }: { toastId: string }) => {
+    mutationFn: async ({ toastId }) => {
       const id = nanoid()
       const connections = useFullStore.getState().connections
       const outgoingConnections = connections.filter(
@@ -103,29 +103,16 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
       state.moveWindowNextTo(item.id, id)
 
       if (should_use_mock) {
-        console.log('useConvertSketchToImage', 'use_mock')
-        const mock_progress = await mockProgress(1000, (progress) => {
-          toast.update(toastId, {
-            progress,
-          })
-          state.updateGeneratingCanvasProgress(id, progress)
+        await mockProgress({
+          onProgress: (progress) => {
+            state.updateNotification(toastId, {
+              progress,
+              message: `Generating...`,
+            })
+            state.updateGeneratingCanvasProgress(id, progress)
+          },
+          time: 1000,
         })
-        if (mock_progress === 'success') {
-          // need to do two updates because the toast disappears immediately when set to 1
-          toast.update(toastId, {
-            render: 'Image generated!',
-            type: 'success',
-            progress: 0.99,
-            isLoading: false,
-          })
-          toast.update(toastId, {
-            progress: 1,
-            type: 'success',
-            render: 'Image generated!',
-            delay: 1000,
-            isLoading: false,
-          })
-        }
         return createFakeMockConvertSketchToImageResponse({ itemId: id })
       }
 
@@ -143,27 +130,16 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
             if (update.status === 'IN_PROGRESS') {
               let progress = 0
               if (update.logs) {
-                update.logs
-                  .map((log) => log.message)
-                  .forEach((message) => {
-                    const newProgress = progress + 0.01
-                    progress = newProgress >= 0.95 ? 0.95 : newProgress
-                  })
+                update.logs.forEach((message) => {
+                  const newProgress = progress + 1
+                  progress = newProgress >= 95 ? 95 : newProgress
+                })
               }
-              toast.update(toastId, {
-                progress,
-                render: 'Generating...',
+              state.updateNotification(toastId, {
+                progress: progress,
+                message: `Generating...`,
               })
               state.updateGeneratingCanvasProgress(id, progress)
-            }
-
-            if (update.status === 'COMPLETED') {
-              toast.update(toastId, {
-                render: 'Image generated!',
-                type: 'success',
-                progress: 1,
-                isLoading: false,
-              })
             }
           },
         })
@@ -172,12 +148,6 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
         console.error(e)
         state.removeGeneratingCanvasItem(id)
         state.deleteItem(id)
-        toast.update(toastId, {
-          type: 'error',
-          render: 'Failed to generate image',
-          closeOnClick: true,
-          closeButton: true,
-        })
         throw e
       }
     },
@@ -217,7 +187,7 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
       })
     },
     onError: (e) => {
-      throw new Error(`Failed to generate image: ${e}`)
+      throw new Error(`Failed to generate image: ${e.message}`)
     },
   })
 

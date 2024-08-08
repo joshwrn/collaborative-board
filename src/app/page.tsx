@@ -9,9 +9,7 @@ import { DropDownMenu } from '@/components/DropDownMenu/DropDownMenu'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import * as fal from '@fal-ai/serverless-client'
-import { ToastContainer } from 'react-toastify'
 
-import 'react-toastify/dist/ReactToastify.css'
 import React, { Suspense } from 'react'
 import { List } from '@/components/ItemList/List/List'
 import { Toaster } from '@/ui/Toast'
@@ -47,7 +45,6 @@ export default function Home() {
         </main>
         {state.debug_showFps && <FPSStats left={'auto'} right={0} />}
       </wrapper>
-      <ToastContainer position="bottom-right" theme="dark" autoClose={2000} />
       <Toaster />
       <Suspense
         fallback={

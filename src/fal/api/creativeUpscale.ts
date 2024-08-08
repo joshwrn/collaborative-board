@@ -107,13 +107,7 @@ export const creativeUpscale = async ({
     },
     logs: true,
     onQueueUpdate: (update) => {
-      console.log('onQueueUpdate', update)
       onUpdate(update)
-      if (update.status === 'IN_PROGRESS') {
-        if (update.logs) {
-          update.logs.map((log) => log.message).forEach(console.log)
-        }
-      }
     },
   })
 

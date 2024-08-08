@@ -238,7 +238,38 @@ const NotificationsMenu = () => {
     'notifications',
     'setState',
     'setNotificationProgress',
+    'promiseNotification',
   ])
+  const createFakeNotification = async (
+    e: React.MouseEvent,
+    type: 'success' | 'error',
+  ) => {
+    e.stopPropagation()
+    const id = nanoid()
+    await state.promiseNotification(
+      async () => {
+        await mockProgress({
+          shouldReject: type === 'error',
+          onProgress: (progress) => {
+            state.setNotificationProgress(id, progress)
+          },
+        })
+      },
+      {
+        type: 'info',
+        message: `${state.notifications.length} Testing ${type}...`,
+        id: id,
+        isLoading: true,
+      },
+      {
+        onSuccess: {
+          update: {
+            message: `${state.notifications.length} Success!`,
+          },
+        },
+      },
+    )
+  }
   return (
     <item className={style.item}>
       <Dropdown.Menu
@@ -246,73 +277,15 @@ const NotificationsMenu = () => {
         SelectedOption={() => <p>Notifications</p>}
         Options={[
           <Dropdown.Item
-            key={'Set Notification Progress'}
-            onClick={async (e) => {
-              e.stopPropagation()
-              const mock_progress = await mockProgress(5000, (progress) => {
-                const notification = state.notifications.find(
-                  (n) => n.progress === undefined || n.progress === 100,
-                )
-                state.setNotificationProgress(
-                  notification?.id ?? '',
-                  progress * 100,
-                )
-              })
-            }}
-            label1={'Set Notification Progress'}
+            key={'Fake Success Notification'}
+            onClick={(e) => createFakeNotification(e, 'success')}
+            label1={'Fake Success Notification'}
             isChecked={false}
           />,
           <Dropdown.Item
-            key={'Test Notification'}
-            onClick={(e) => {
-              e.stopPropagation()
-              state.setState((draft) => {
-                draft.notifications.push({
-                  type: 'info',
-                  message: `Test Notification ${draft.notifications.length}`,
-                  id: nanoid(),
-                  isLoading: true,
-                })
-              })
-            }}
-            label1={'Test Notification'}
-            isChecked={false}
-          />,
-          <Dropdown.Item
-            key={'Remove Earliest'}
-            onClick={(e) => {
-              e.stopPropagation()
-              state.setState((draft) => {
-                draft.notifications.shift()
-              })
-            }}
-            label1={'Remove Earliest'}
-            isChecked={false}
-          />,
-          <Dropdown.Item
-            key={'Remove Newest'}
-            onClick={(e) => {
-              e.stopPropagation()
-              state.setState((draft) => {
-                draft.notifications.pop()
-              })
-            }}
-            label1={'Remove Newest'}
-            isChecked={false}
-          />,
-          <Dropdown.Item
-            key={'Change Notification Type'}
-            onClick={(e) => {
-              e.stopPropagation()
-              state.setState((draft) => {
-                const notification = draft.notifications[0]
-                notification.type =
-                  notification.type === 'success' ? 'error' : 'success'
-                notification.isLoading =
-                  notification.type === 'error' ? false : true
-              })
-            }}
-            label1={'Change Notification Type'}
+            key={'Fake Error Notification'}
+            onClick={(e) => createFakeNotification(e, 'error')}
+            label1={'Fake Error Notification'}
             isChecked={false}
           />,
         ]}
