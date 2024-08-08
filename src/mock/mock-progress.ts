@@ -4,6 +4,7 @@ import { randomNumberBetween } from '@/utils/randomNumberBetween'
 export const mockProgress = async (options: {
   onProgress: (progress: number) => void
   time?: number
+  shouldReject?: boolean
 }) => {
   let { onProgress, time } = options
   if (!time) {
@@ -12,14 +13,24 @@ export const mockProgress = async (options: {
   let curProgress = 0
   const totalUpdates = time / 100
   const increment = 1 / totalUpdates
-  const interval = setInterval(() => {
-    curProgress += increment
-    if (curProgress >= 1) {
-      curProgress = 1
-    }
-    onProgress(curProgress * 100)
-  }, 100)
-  return new Promise((resolve) => {
+
+  return new Promise((resolve, reject) => {
+    const interval = setInterval(() => {
+      try {
+        curProgress += increment
+        if (curProgress >= 1) {
+          curProgress = 1
+        }
+        if (options.shouldReject && curProgress > 0.5) {
+          throw new Error('Fake Error')
+        }
+        onProgress(curProgress * 100)
+      } catch (e) {
+        clearInterval(interval)
+        reject(e)
+      }
+    }, 100)
+
     setTimeout(() => {
       clearInterval(interval)
       resolve('success')

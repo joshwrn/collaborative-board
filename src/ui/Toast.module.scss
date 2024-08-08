@@ -3,8 +3,9 @@
   backdrop-filter: blur(10px);
   border: 1px solid var(--toast-border);
   color: var(--toast-text);
-  padding: 0 20px;
-  height: 65px;
+  padding: 20px 20px;
+  min-height: 65px;
+  height: fit-content;
   width: 312px;
   border-radius: 20px;
   display: flex;

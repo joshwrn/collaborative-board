@@ -6,7 +6,7 @@ export type Notification = {
   type: 'success' | 'error' | 'info'
   message: string
   id: string
-  progress?: number
+  progress: number
   isLoading?: boolean
 }
 
@@ -15,10 +15,7 @@ export type NotificationsStore = {
   setNotificationProgress: (id: string, progress: number) => void
   createNotification: (notification: Partial<Notification>) => Notification
   removeNotification: (id: string) => void
-  updateNotification: (
-    id: string,
-    update: Partial<Omit<Notification, 'id'>>,
-  ) => void
+  updateNotification: (id: string, update: Partial<Notification>) => void
   promiseNotification: (
     promise: () => Promise<any>,
     notification: Partial<Notification>,
@@ -45,6 +42,7 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
       type: 'info' as const,
       message: ``,
       id: nanoid(),
+      progress: 0,
       ...notification,
     }
     produceState(set, (draft) => {
@@ -78,8 +76,7 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
   },
   promiseNotification: async (promise, notificationPartial, options) => {
     const state = get()
-    const createNotification = state.createNotification
-    const newNotification = createNotification(notificationPartial)
+    const newNotification = state.createNotification(notificationPartial)
     try {
       await promise()
       produceState(set, (draft) => {
@@ -88,7 +85,7 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
         )
         if (notification) {
           notification.type = 'success'
-
+          notification.progress = 100
           if (options?.onSuccess?.update) {
             Object.assign(notification, options.onSuccess.update)
           }

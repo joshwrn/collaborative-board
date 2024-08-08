@@ -130,15 +130,13 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
             if (update.status === 'IN_PROGRESS') {
               let progress = 0
               if (update.logs) {
-                update.logs
-                  .map((log) => log.message)
-                  .forEach((message) => {
-                    const newProgress = progress + 0.01
-                    progress = newProgress >= 0.95 ? 0.95 : newProgress
-                  })
+                update.logs.forEach((message) => {
+                  const newProgress = progress + 1
+                  progress = newProgress >= 95 ? 95 : newProgress
+                })
               }
               state.updateNotification(toastId, {
-                progress,
+                progress: progress,
                 message: `Generating...`,
               })
               state.updateGeneratingCanvasProgress(id, progress)

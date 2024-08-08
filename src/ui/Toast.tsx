@@ -73,13 +73,12 @@ const Toast_Internal: React.FC<{ notification: Notification }> = ({
     >
       <div className={style.iconContainer}>{Icon}</div>
       {notification.message}
-
       <motion.div
         className={style.progress}
         transition={{ type: 'spring', stiffness: 1000, damping: 50 }}
         animate={{
           width: `${notification.progress}%`,
-          backgroundColor: TOAST_COLORS['success'],
+          backgroundColor: TOAST_COLORS[notification.type],
         }}
       />
     </motion.div>
