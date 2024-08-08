@@ -30,33 +30,6 @@ export type ConvertSketchToImageResponse = {
   itemId: string
 }
 
-export const convertSketchToImage = async ({
-  sketch_url,
-  style,
-  itemId,
-  onUpdate,
-}: {
-  sketch_url: string
-  style?: string
-  itemId: string
-  onUpdate: (update: any) => void
-}): Promise<ConvertSketchToImageResponse> => {
-  const image = await creativeUpscale({
-    image_url: sketch_url,
-    creativity: 0.75,
-    detail: 1.1,
-    numInferenceSteps: 30,
-    guidanceScale: 1,
-    prompt: style,
-    onUpdate,
-  })
-  return {
-    image: image.image,
-    description: style ?? '',
-    itemId,
-  }
-}
-
 const should_use_mock = false
 
 export const useConvertSketchToImage = ({ item }: { item: Item }) => {
@@ -122,10 +95,9 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
         if (!image) {
           throw new Error(`Missing image or prompt.`)
         }
-        const result = await convertSketchToImage({
-          sketch_url: image,
-          style,
-          itemId: id,
+        const result = await creativeUpscale({
+          image_url: image,
+          prompt: style,
           onUpdate: (update: fal.QueueStatus) => {
             if (update.status === 'IN_PROGRESS') {
               let progress = 0
@@ -143,7 +115,11 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
             }
           },
         })
-        return result
+        return {
+          image: result.image,
+          description: style ?? '',
+          itemId: id,
+        }
       } catch (e) {
         console.error(e)
         state.removeGeneratingCanvasItem(id)
