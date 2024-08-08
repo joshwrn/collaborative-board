@@ -3,7 +3,7 @@ import style from './GenerateButton.module.scss'
 import { Item } from '@/state/items'
 import { motion } from 'framer-motion'
 import { joinClasses } from '@/utils/joinClasses'
-import { useConvertSketchToImage } from '@/fal/api/convertSketchToImage'
+import { useConvertSketchToImage } from '@/fal/workflows/convertSketchToImage'
 
 import { IoSparklesSharp } from 'react-icons/io5'
 import { nanoid } from 'nanoid'

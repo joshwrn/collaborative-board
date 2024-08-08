@@ -7,7 +7,7 @@ import {
   creativeUpscale,
   CreativeUpscaleOutput,
   MOCK_CREATIVE_UPSCALE_RESPONSE,
-} from './creativeUpscale'
+} from '../api/creativeUpscale'
 import { resizeImage } from '@/utils/image/resizeImage'
 import * as fal from '@fal-ai/serverless-client'
 import { mockProgress } from '@/mock/mock-progress'

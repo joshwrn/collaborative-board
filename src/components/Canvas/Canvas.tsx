@@ -6,7 +6,6 @@ import { rotatePointAroundCenter } from '@/logic/rotatePointAroundCenter'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { CanvasData } from '@/state/items'
 import { joinClasses } from '@/utils/joinClasses'
-import { useIterateOnSketch } from '@/fal/api/iterateOnSketch'
 
 export const Canvas: React.FC<{
   window: WindowType
@@ -23,10 +22,6 @@ export const Canvas: React.FC<{
     'generatedCanvas',
     'setState',
   ])
-
-  const iterateOnSketch = useIterateOnSketch({
-    base64: content.base64,
-  })
 
   const isFullScreen = state.fullScreenWindow === window.id
 
