@@ -109,6 +109,10 @@ export const useConvertSketchToImage = ({
         const result = await creativeUpscale({
           image_url: image,
           prompt: style,
+          creativity: 0.75,
+          detail: 1.1,
+          numInferenceSteps: 30,
+          guidanceScale: 1,
           onUpdate: (update: fal.QueueStatus) => {
             if (update.status === 'IN_PROGRESS') {
               let progress = 0
