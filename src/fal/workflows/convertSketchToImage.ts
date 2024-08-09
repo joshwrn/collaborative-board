@@ -30,9 +30,13 @@ export type ConvertSketchToImageResponse = {
   itemId: string
 }
 
-const should_use_mock = false
+const USE_MOCK = false
 
-export const useConvertSketchToImage = ({ item }: { item: Item }) => {
+export const useConvertSketchToImage = ({
+  generatedFromItem,
+}: {
+  generatedFromItem: Item
+}) => {
   const state = useStore([
     'createItem',
     'makeConnection',
@@ -53,45 +57,52 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
     }
   >({
     mutationFn: async ({ toastId }) => {
-      const id = nanoid()
+      const newItemId = nanoid()
       const connections = useFullStore.getState().connections
       const outgoingConnections = connections.filter(
-        (connection) => connection.from === item.id,
+        (connection) => connection.from === generatedFromItem.id,
       )
       state.createItem({
-        id: id,
-        subject: `${item.subject} - v${outgoingConnections.length + 2}`,
+        id: newItemId,
+        subject: `${generatedFromItem.subject} - v${outgoingConnections.length + 2}`,
       })
       state.makeConnection({
-        to: id,
-        from: item.id,
+        to: newItemId,
+        from: generatedFromItem.id,
       })
       state.setState((draft) => {
         draft.generatingCanvas = [
           ...draft.generatingCanvas,
-          { itemId: id, progress: 0 },
+          {
+            newItemId,
+            generatedFromItemId: generatedFromItem.id,
+            progress: 0,
+          },
         ]
       })
-      state.toggleOpenWindow(id)
-      state.moveWindowNextTo(item.id, id)
+      state.toggleOpenWindow(newItemId)
+      state.moveWindowNextTo(generatedFromItem.id, newItemId)
 
-      if (should_use_mock) {
+      if (USE_MOCK) {
         await mockProgress({
           onProgress: (progress) => {
             state.updateNotification(toastId, {
               progress,
               message: `Generating...`,
             })
-            state.updateGeneratingCanvasProgress(id, progress)
+            state.updateGeneratingCanvasProgress(newItemId, progress)
           },
           time: 1000,
         })
-        return createFakeMockConvertSketchToImageResponse({ itemId: id })
+        return createFakeMockConvertSketchToImageResponse({ itemId: newItemId })
       }
 
       try {
-        const image = item.body.find((b) => b.type === 'canvas')?.content.base64
-        const style = item.body.find((b) => b.type === 'text')?.content
+        const image = generatedFromItem.body.find((b) => b.type === 'canvas')
+          ?.content.base64
+        const style = generatedFromItem.body.find(
+          (b) => b.type === 'text',
+        )?.content
         if (!image) {
           throw new Error(`Missing image or prompt.`)
         }
@@ -111,19 +122,19 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
                 progress: progress,
                 message: `Generating...`,
               })
-              state.updateGeneratingCanvasProgress(id, progress)
+              state.updateGeneratingCanvasProgress(newItemId, progress)
             }
           },
         })
         return {
           image: result.image,
           description: style ?? '',
-          itemId: id,
+          itemId: newItemId,
         }
       } catch (e) {
         console.error(e)
-        state.removeGeneratingCanvasItem(id)
-        state.deleteItem(id)
+        state.removeGeneratingCanvasItem(newItemId)
+        state.deleteItem(newItemId)
         throw e
       }
     },
@@ -155,7 +166,7 @@ export const useConvertSketchToImage = ({ item }: { item: Item }) => {
             draft.generatedCanvas = {
               canvasId,
               itemId: data.itemId,
-              generatedFromItemId: item.id,
+              generatedFromItemId: generatedFromItem.id,
             }
           })
           state.removeGeneratingCanvasItem(data.itemId)

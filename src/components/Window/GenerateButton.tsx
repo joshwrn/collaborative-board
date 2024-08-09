@@ -13,7 +13,7 @@ import { useWithRateLimit } from '@/utils/useWithRateLimit'
 export const GenerateButton: React.FC<{
   item: Item
 }> = ({ item }) => {
-  const generateImage = useConvertSketchToImage({ item })
+  const generateImage = useConvertSketchToImage({ generatedFromItem: item })
   const toastId = React.useRef<string>(nanoid())
   const state = useStore(['promiseNotification'])
   const [disabled, limit] = useWithRateLimit()

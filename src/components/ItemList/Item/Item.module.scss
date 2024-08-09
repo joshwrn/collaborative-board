@@ -13,6 +13,10 @@
   border: 1px solid var(--item-border);
   h1 {
     font-size: 16px;
+    max-width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
     color: var(--window-text);
     position: relative;
     text-shadow: 0px 1px 1px black;
@@ -22,6 +26,10 @@
     color: var(--window-text-bold);
     position: relative;
     text-shadow: 0px 1px 1px black;
+    max-width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 }
 .img {

@@ -116,6 +116,7 @@ const WindowInternal: FC<{
     'selectedWindow',
     'setState',
     'dev_allowWindowRotation',
+    'generatingCanvas',
   ])
 
   const realPosition = React.useRef({ x: window.x, y: window.y })
@@ -159,9 +160,10 @@ const WindowInternal: FC<{
     state.setSnapLines([])
   }
 
-  const toConnections = React.useMemo(
-    () => state.connections.filter((c) => c.to === item.id),
-    [state.connections, item.id],
+  const canvasesLoading = React.useMemo(
+    () =>
+      state.generatingCanvas.filter((c) => c.generatedFromItemId === item.id),
+    [state.generatingCanvas, item.id],
   )
 
   const fromConnections = React.useMemo(
@@ -254,10 +256,10 @@ const WindowInternal: FC<{
             <section className={styles.connections}>
               <inner>
                 <p>
-                  Incoming <strong>{toConnections.length}</strong>
+                  Loading <strong>{canvasesLoading.length}</strong>
                 </p>
                 <p>
-                  Outgoing <strong>{fromConnections.length}</strong>
+                  Finished <strong>{fromConnections.length}</strong>
                 </p>
               </inner>
               {/* <button

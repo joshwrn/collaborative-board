@@ -92,6 +92,7 @@ $inner-border-radius: 19px;
   p {
     display: flex;
     gap: 8px;
+    justify-content: space-between;
     color: var(--window-text);
     strong {
       color: var(--window-text-bold);

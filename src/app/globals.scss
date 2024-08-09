@@ -55,6 +55,24 @@
   font-family: 'Roboto', sans-serif;
   user-select: none;
   color: #d8d8d8;
+
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-scrollbar);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  ::-webkit-scrollbar-corner {
+    background: rgba(0, 0, 0, 0);
+  }
 }
 
 nextjs-portal {
@@ -89,22 +107,42 @@ button {
   color: white;
 }
 
-* {
-  ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+.loadingShimmer {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+
+  $loading-background-1: rgba(125, 117, 142, 0.101);
+  $loading-background-2: rgba(125, 117, 142, 0.211);
+
+  animation-duration: 1.8s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: $loading-background-1;
+  background: linear-gradient(
+    to right,
+    $loading-background-1 8%,
+    $loading-background-2 38%,
+    $loading-background-1 54%
+  );
+  background-size: 200% 100%;
+}
+
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: 100% 0;
   }
-  ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0);
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--color-scrollbar);
-    border-radius: 10px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-  ::-webkit-scrollbar-corner {
-    background: rgba(0, 0, 0, 0);
+  100% {
+    background-position: -90% 0;
   }
 }

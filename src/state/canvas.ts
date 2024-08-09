@@ -13,7 +13,8 @@ export type CanvasStore = {
   canvasIsFocused: boolean
   generatedCanvas: GeneratedCanvas | null
   generatingCanvas: {
-    itemId: string
+    newItemId: string
+    generatedFromItemId: string
     progress: number
   }[]
   updateGeneratingCanvasProgress: (itemId: string, progress: number) => void
@@ -30,7 +31,7 @@ export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
   updateGeneratingCanvasProgress: (itemId: string, progress: number) => {
     produceState(set, (draft) => {
       draft.generatingCanvas = draft.generatingCanvas.map((i) => {
-        if (i.itemId === itemId) {
+        if (i.newItemId === itemId) {
           return {
             ...i,
             progress,
@@ -43,7 +44,7 @@ export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
   removeGeneratingCanvasItem: (itemId: string) => {
     produceState(set, (draft) => {
       draft.generatingCanvas = draft.generatingCanvas.filter(
-        (i) => i.itemId !== itemId,
+        (i) => i.newItemId !== itemId,
       )
     })
   },

@@ -8,12 +8,12 @@ export const LoadingOverlay: React.FC<{
   const state = useStore(['generatingCanvas'])
   if (
     !state.generatingCanvas.length ||
-    !state.generatingCanvas.find((c) => c.itemId === itemId)
+    !state.generatingCanvas.find((c) => c.newItemId === itemId)
   ) {
     return null
   }
   return (
-    <div className={style.wrapper}>
+    <div className={'loadingShimmer'}>
       <div className={style.blocker}></div>
     </div>
   )

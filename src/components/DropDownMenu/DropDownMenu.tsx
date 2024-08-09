@@ -294,7 +294,6 @@ const NotificationsSubMenu = () => {
 }
 
 export const DropDownMenu = () => {
-  const state = useStore(['setState'])
   return (
     <wrapper className={style.wrapper}>
       <SpaceMenu />

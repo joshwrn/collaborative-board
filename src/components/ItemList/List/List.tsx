@@ -10,7 +10,7 @@ import { IoClose } from 'react-icons/io5'
 import { createMockItem } from '@/mock/mock-items'
 
 const ListInternal: FC = () => {
-  const state = useStore(['items', 'setState', 'windows'])
+  const state = useStore(['items', 'setState', 'windows', 'generatingCanvas'])
 
   return (
     <wrapper className={styles.wrapper}>
@@ -41,6 +41,11 @@ const ListInternal: FC = () => {
           <ItemComponent
             key={item.id}
             item={item}
+            isGeneratingCanvas={
+              !!state.generatingCanvas.find(
+                (canvas) => canvas.newItemId === item.id,
+              )
+            }
             isOpen={state.windows.some((window) => window.id === item.id)}
           />
         ))}

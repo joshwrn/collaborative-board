@@ -22,10 +22,14 @@ const matchBody = (body?: ItemBody): JSX.Element | JSX.Element[] | null => {
       },
       (value) => <p>One Attachment</p>,
     )
-    .otherwise(() => null)
+    .otherwise(() => <p>...</p>)
 }
 
-const ItemInternal: FC<{ item: Item; isOpen: boolean }> = ({ item, isOpen }) => {
+const ItemInternal: FC<{
+  item: Item
+  isOpen: boolean
+  isGeneratingCanvas: boolean
+}> = ({ item, isOpen, isGeneratingCanvas }) => {
   const state = useStore(['toggleOpenWindow', 'openContextMenu', 'setState'])
   const canvas = item.body.find((body) => body.type === 'canvas')
     ?.content as CanvasData
@@ -48,6 +52,7 @@ const ItemInternal: FC<{ item: Item; isOpen: boolean }> = ({ item, isOpen }) => 
         state.openContextMenu({ elementType: 'item', id: item.id })
       }}
     >
+      {isGeneratingCanvas && <div className="loadingShimmer" />}
       <div
         className={styles.img}
         style={{
