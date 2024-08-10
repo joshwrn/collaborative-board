@@ -8,7 +8,7 @@ $inner-border-radius: 19px;
   align-items: center;
   width: 100%;
   position: absolute;
-  box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.35);
+  box-shadow: var(--window-box-shadow);
   z-index: 10;
   border-radius: $border-radius;
   [data-role='connectors'] {
@@ -42,12 +42,12 @@ $inner-border-radius: 19px;
 }
 
 .close {
-  background-color: #f14971;
+  background-color: var(--window-close-button-color);
   @include windowButton;
 }
 
 .full {
-  background-color: #3fcd6f;
+  background-color: var(--window-full-button-color);
   @include windowButton;
 }
 

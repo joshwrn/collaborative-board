@@ -25,7 +25,7 @@ export const debugStore: AppStateCreator<DebugStore> = (set, get) => ({
   debug_setShowZustandDevTools: (setter) =>
     stateSetter(set, setter, `debug_showZustandDevTools`),
 
-  debug_showFps: true,
+  debug_showFps: false,
 
   dev_allowWindowRotation: false,
 })

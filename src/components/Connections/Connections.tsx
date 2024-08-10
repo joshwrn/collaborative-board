@@ -47,14 +47,14 @@ const ConnectionInternal = ({
   const { line, distance } = properties
   return (
     <div
-      onContextMenu={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        state.openContextMenu({
-          id,
-          elementType: 'connections',
-        })
-      }}
+      // onContextMenu={(e) => {
+      //   e.preventDefault()
+      //   e.stopPropagation()
+      //   state.openContextMenu({
+      //     id,
+      //     elementType: 'connections',
+      //   })
+      // }}
       className={joinClasses(
         styles.line,
         createBackgroundClass(!!isActive, isSelected, hoveredItem),
@@ -122,10 +122,13 @@ export const ConnectionsInternal: FC = () => {
   ])
   const windowsMap = React.useMemo(
     () =>
-      state.windows.reduce((acc, window) => {
-        acc[window.id] = window
-        return acc
-      }, {} as Record<string, WindowType>),
+      state.windows.reduce(
+        (acc, window) => {
+          acc[window.id] = window
+          return acc
+        },
+        {} as Record<string, WindowType>,
+      ),
     [state.windows],
   )
   if (!state.showConnections) {

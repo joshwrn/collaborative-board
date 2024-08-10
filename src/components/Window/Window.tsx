@@ -6,7 +6,6 @@ import styles from './Window.module.scss'
 import { useFullStore, useStore } from '@/state/gen-state'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { WindowBorder } from './WindowBorder'
-import { ConnectorOverlay } from './ConnectorOverlay'
 import { Item, ItemBody, ItemBodyText } from '@/state/items'
 import { WINDOW_ATTRS, WindowType } from '@/state/windows'
 import { match } from 'ts-pattern'
@@ -313,7 +312,6 @@ const WindowInternal: FC<{
         >
           {item.body.map((body, i) => matchBody(body, i, window, !!isPinned))}
         </main>
-        <ConnectorOverlay id={item.id} />
         <LoadingOverlay itemId={item.id} />
 
         <WindowBorder

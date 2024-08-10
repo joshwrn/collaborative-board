@@ -1,6 +1,6 @@
 .wrapper {
   button {
-    background-color: rgb(0, 89, 213);
+    background-color: var(--window-generate-button-color);
     padding: 8px;
     padding-left: 10px;
     border-radius: 8px;
@@ -12,7 +12,7 @@
       transition: transform 0.2s ease-in-out;
     }
     &:hover {
-      background-color: rgb(0, 102, 213);
+      background-color: var(--window-generate-button-color-hover);
       svg {
         transform: scale(1.2);
       }
@@ -26,7 +26,7 @@
 
 .isDisabled {
   cursor: progress;
-  background-color: rgb(92, 127, 175) !important;
+  background-color: var(--window-generate-button-color-disabled) !important;
 }
 
 @keyframes glow {

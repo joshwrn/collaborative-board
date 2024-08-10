@@ -156,7 +156,7 @@
   }
   .checkIcon {
     font-size: var(--font--2);
-    color: var(--color-accent);
+    stroke: var(--color-accent);
   }
   &[data-checked='true'] {
     .checkIcon {

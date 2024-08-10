@@ -19,13 +19,13 @@
     overflow: hidden;
     color: var(--window-text);
     position: relative;
-    text-shadow: 0px 1px 1px black;
+    text-shadow: var(--item-list-text-shadow);
   }
   p {
     font-size: 12px;
     color: var(--window-text-bold);
     position: relative;
-    text-shadow: 0px 1px 1px black;
+    text-shadow: var(--item-list-text-shadow);
     max-width: 100%;
     white-space: nowrap;
     text-overflow: ellipsis;

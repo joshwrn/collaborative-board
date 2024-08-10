@@ -25,16 +25,6 @@ const ListInternal: FC = () => {
         >
           <IoClose />
         </button>
-        <button
-          className={styles.create}
-          onClick={() => {
-            state.setState((draft) => {
-              draft.items = [...draft.items, ...createMockItem(1)]
-            })
-          }}
-        >
-          <TfiWrite />
-        </button>
       </header>
       <container className={styles.listContainer}>
         {state.items.map((item) => (

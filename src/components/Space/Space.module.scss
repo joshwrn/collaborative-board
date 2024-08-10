@@ -18,7 +18,7 @@
   display: flex;
   flex-shrink: 1;
   background-color: var(--space-background);
-  border: 1px solid var(--space-grid-color);
+  border: 1px solid var(--space-border-color);
   border-radius: 10px 0 0 0;
   flex-direction: column;
   justify-content: center;
@@ -50,23 +50,6 @@ $size: 10000000px;
   top: calc(-#{$size} / 2);
   background-size: 100px 100px;
   z-index: -9999;
-
-  --dot-bg: black;
-  --dot-color: white;
-  --dot-size: 1px;
-  --dot-space: 22px;
-  // background: linear-gradient(
-  //       90deg,
-  //       var(--dot-bg) calc(var(--dot-space) - var(--dot-size)),
-  //       transparent 1%
-  //     )
-  //     center / var(--dot-space) var(--dot-space),
-  //   linear-gradient(
-  //       var(--dot-bg) calc(var(--dot-space) - var(--dot-size)),
-  //       transparent 1%
-  //     )
-  //     center / var(--dot-space) var(--dot-space),
-  //   var(--dot-color);
 }
 
 .button {
