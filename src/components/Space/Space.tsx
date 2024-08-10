@@ -14,6 +14,7 @@ import { SnapLines } from '../SnapLine/SnapLine'
 import { Toolbar } from '../Toolbar/Toolbar'
 import { FullScreenWindow } from '../Window/FullScreenWindow/FullScreenWindow'
 import { dotBackground } from './dotBackground'
+import { PinnedWindow } from '../Window/PinnedWindow/PinnedWindow'
 
 const Space_Internal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
@@ -25,6 +26,7 @@ const Space_Internal: FC = () => {
     'fullScreenWindow',
     'openContextMenu',
     'setState',
+    'pinnedWindow',
   ])
 
   useGestures({ wrapperRef, spaceRef })
@@ -82,6 +84,7 @@ const Space_Internal: FC = () => {
         </container>
         <Toolbar />
       </wrapper>
+      {state.pinnedWindow && <PinnedWindow />}
       {state.fullScreenWindow && <FullScreenWindow />}
     </div>
   )

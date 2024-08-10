@@ -6,6 +6,7 @@ $inner-border-radius: 19px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
   position: absolute;
   box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.35);
   z-index: 10;
@@ -47,11 +48,6 @@ $inner-border-radius: 19px;
 
 .full {
   background-color: #3fcd6f;
-  @include windowButton;
-}
-
-.min {
-  background-color: #fbbd5c;
   @include windowButton;
 }
 
@@ -145,6 +141,7 @@ $inner-border-radius: 19px;
     font-size: var(--window-text);
   }
   p {
+    cursor: text;
     padding: 0 20px 0 20px;
     color: var(--window-text);
     border: 1px solid transparent;

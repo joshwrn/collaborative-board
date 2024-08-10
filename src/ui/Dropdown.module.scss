@@ -148,27 +148,30 @@
     border: none;
     border: 1px solid var(--border);
   }
+  svg {
+    pointer-events: none;
+  }
   &:hover {
     background-color: var(--white-15);
   }
-  svg {
+  .checkIcon {
     font-size: var(--font--2);
     color: var(--color-accent);
   }
   &[data-checked='true'] {
-    svg {
+    .checkIcon {
       opacity: 1;
     }
   }
   &[data-checked='false'] {
-    svg {
+    .checkIcon {
       opacity: 0;
     }
   }
   > div {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
     svg {
       color: var(--white-65);
     }

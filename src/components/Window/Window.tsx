@@ -82,10 +82,12 @@ const matchBody = (
   body: ItemBody,
   i: number,
   window: WindowType,
+  isPinned: boolean,
 ): JSX.Element | JSX.Element[] | null => {
   return match(body)
     .with({ type: 'canvas' }, (value) => (
       <Canvas
+        isPinned={isPinned}
         key={i}
         window={window}
         contentId={body.id}
@@ -98,11 +100,50 @@ const matchBody = (
     .otherwise(() => null)
 }
 
+const returnWindowStyle = (
+  window: WindowType,
+  isFullScreen: boolean,
+  isPinned?: boolean,
+): React.CSSProperties => {
+  if (isFullScreen) {
+    return {
+      left: 0,
+      top: 0,
+      position: 'relative',
+      width: WINDOW_ATTRS.defaultFullScreenSize.width + 'px',
+      height: WINDOW_ATTRS.defaultFullScreenSize.height + 'px',
+      rotate: '0deg',
+      zIndex: 'var(--fullscreen-window-z-index)',
+    }
+  }
+  if (isPinned) {
+    return {
+      left: 0,
+      top: 0,
+      position: 'relative',
+      width: WINDOW_ATTRS.defaultSize.width + 'px',
+      height: WINDOW_ATTRS.defaultSize.height + 'px',
+      rotate: '0deg',
+    }
+  }
+  return {
+    left: window.x,
+    top: window.y,
+    // transformOrigin: '0 0',
+    width: `${window.width}px`,
+    height: `${window.height}px`,
+    rotate: `${window.rotation}deg`,
+    zIndex: window.zIndex,
+  }
+}
+
 const WindowInternal: FC<{
   item: Item
   window: WindowType
+  type: 'default' | 'fullScreen' | 'pinned'
   isFullScreen: boolean
-}> = ({ item, window, isFullScreen }) => {
+  isPinned: boolean
+}> = ({ item, window, isFullScreen, isPinned }) => {
   const state = useStore([
     'toggleOpenWindow',
     'setOneWindow',
@@ -185,27 +226,7 @@ const WindowInternal: FC<{
         ref={nodeRef}
         className={joinClasses(styles.wrapper, 'window')}
         id={`window-${item.id}`}
-        style={{
-          ...(isFullScreen
-            ? {
-                left: 0,
-                top: 0,
-                position: 'relative',
-                width: WINDOW_ATTRS.defaultFullScreenSize.width + 'px',
-                height: WINDOW_ATTRS.defaultFullScreenSize.height + 'px',
-                rotate: '0deg',
-                zIndex: 'var(--fullscreen-window-z-index)',
-              }
-            : {
-                left: window.x,
-                top: window.y,
-                // transformOrigin: '0 0',
-                width: `${window.width}px`,
-                height: `${window.height}px`,
-                rotate: `${window.rotation}deg`,
-                zIndex: window.zIndex,
-              }),
-        }}
+        style={returnWindowStyle(window, isFullScreen, isPinned)}
         onMouseEnter={() => {
           state.setState((draft) => {
             draft.hoveredWindow = item.id
@@ -238,16 +259,27 @@ const WindowInternal: FC<{
           <button
             className={styles.close}
             onClick={() => {
-              state.setFullScreenWindow(null)
+              if (isPinned) {
+                state.setState((draft) => {
+                  draft.pinnedWindow = null
+                })
+                return
+              }
+              if (isFullScreen) {
+                state.setFullScreenWindow(null)
+                return
+              }
               state.toggleOpenWindow(item.id)
             }}
           />
-          <button
-            className={!isFullScreen ? styles.full : styles.min}
-            onClick={() =>
-              state.setFullScreenWindow((prev) => (prev ? null : item.id))
-            }
-          />
+          {!isFullScreen && !isPinned && (
+            <button
+              className={styles.full}
+              onClick={() =>
+                state.setFullScreenWindow((prev) => (prev ? null : item.id))
+              }
+            />
+          )}
         </nav>
 
         <header className={styles.titleBar}>
@@ -277,10 +309,10 @@ const WindowInternal: FC<{
         <main
           className={styles.content}
           style={{
-            overflowY: isFullScreen ? 'auto' : 'hidden',
+            overflowY: (isFullScreen ?? isPinned) ? 'auto' : 'hidden',
           }}
         >
-          {item.body.map((body, i) => matchBody(body, i, window))}
+          {item.body.map((body, i) => matchBody(body, i, window, !!isPinned))}
         </main>
         <ConnectorOverlay id={item.id} />
         <LoadingOverlay itemId={item.id} />
@@ -291,6 +323,7 @@ const WindowInternal: FC<{
           id={item.id}
           position={{ x: window.x, y: window.y }}
           isFullScreen={isFullScreen}
+          isPinned={isPinned}
         />
       </div>
     </DraggableCore>
@@ -300,7 +333,12 @@ const WindowInternal: FC<{
 export const Window = React.memo(WindowInternal)
 
 const WindowsInternal: FC = () => {
-  const state = useStore(['items', 'windows', 'fullScreenWindow'])
+  const state = useStore([
+    'items',
+    'windows',
+    'fullScreenWindow',
+    'pinnedWindow',
+  ])
   const itemsMap = React.useMemo(
     () =>
       state.items.reduce(
@@ -317,14 +355,17 @@ const WindowsInternal: FC = () => {
       {state.windows.map((window) => {
         const item = itemsMap[window.id]
         if (state.fullScreenWindow === window.id) return null
+        // if (state.pinnedWindow === window.id) return null
         if (!window) return null
         if (!item) return null
         return (
           <Window
+            type="default"
             key={item.id}
             item={item}
             window={window}
             isFullScreen={false}
+            isPinned={false}
           />
         )
       })}

@@ -27,7 +27,12 @@ export const FullScreenWindow: React.FC = () => {
           className={style.backdrop}
           onClick={() => state.setFullScreenWindow(null)}
         />
-        <Window window={window} item={item} isFullScreen={true} />
+        <Window
+          window={window}
+          item={item}
+          isFullScreen={true}
+          isPinned={false}
+        />
       </div>
     </FloatingPortal>
   )

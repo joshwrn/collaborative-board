@@ -28,6 +28,7 @@ export type OpenWindowsStore = {
   fullScreenWindow: string | null
   setFullScreenWindow: Setter<string | null>
   hoveredWindow: string | null
+  pinnedWindow: string | null
   selectedWindow: string | null
   moveWindowNextTo: (id: string, nextId: string) => void
   createNewWindow: () => string
@@ -106,6 +107,8 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   get,
 ) => ({
   windows: [],
+
+  pinnedWindow: null,
 
   toggleOpenWindow: (id: string) => {
     const openWindows = get().windows

@@ -204,7 +204,7 @@ export const Item: React.FC<{
             <p>{label1}</p>
             <span>{label2}</span>
           </div>
-          <CheckIcon />
+          <CheckIcon className={style.checkIcon} />
         </>
       )}
     </motion.div>

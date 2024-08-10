@@ -6,12 +6,44 @@ import { rotatePointAroundCenter } from '@/logic/rotatePointAroundCenter'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { CanvasData } from '@/state/items'
 import { joinClasses } from '@/utils/joinClasses'
+import { DEFAULT_PINNED_WINDOW_ZOOM } from '../Window/PinnedWindow/PinnedWindow'
+
+const returnAttributes = (
+  window: WindowType,
+  zoom: number,
+  isFullScreen: boolean,
+  isPinned?: boolean,
+) => {
+  if (isFullScreen) {
+    return {
+      width: WINDOW_ATTRS.defaultFullScreenSize.width - 40,
+      height: 400,
+      rotation: 0,
+      zoom: 1,
+    }
+  }
+  if (isPinned) {
+    return {
+      width: WINDOW_ATTRS.defaultSize.width - 40,
+      height: 400,
+      rotation: 0,
+      zoom: DEFAULT_PINNED_WINDOW_ZOOM,
+    }
+  }
+  return {
+    width: window.width - 40,
+    height: 400,
+    rotation: window.rotation,
+    zoom: zoom,
+  }
+}
 
 export const Canvas: React.FC<{
   window: WindowType
   contentId: string
   content: CanvasData
-}> = ({ window, contentId, content }) => {
+  isPinned: boolean
+}> = ({ window, contentId, content, isPinned }) => {
   const state = useStore([
     'zoom',
     'drawColor',
@@ -48,15 +80,7 @@ export const Canvas: React.FC<{
     img.src = content.base64
   }, [window, content])
 
-  const attributes = {
-    width:
-      (isFullScreen ? WINDOW_ATTRS.defaultFullScreenSize.width : window.width) -
-      40,
-    height: 400,
-    rotation: isFullScreen ? 0 : window.rotation,
-    zoom: isFullScreen ? 1 : state.zoom,
-  }
-
+  const attributes = returnAttributes(window, state.zoom, isFullScreen, isPinned)
   return (
     <div
       style={{
