@@ -45,8 +45,8 @@ const returnStyle = (
   }
   if (isPinned) {
     return {
-      width: WINDOW_ATTRS.defaultSize.width + 'px',
-      height: WINDOW_ATTRS.defaultSize.height + 'px',
+      width: WINDOW_ATTRS.defaultSize.width + 2 + 'px',
+      height: WINDOW_ATTRS.defaultSize.height + 2 + 'px',
     }
   }
   return {

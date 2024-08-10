@@ -1,3 +1,7 @@
+$padding: 10px;
+$border-radius: 3px;
+$border-radius-outer: calc(#{$border-radius} + #{$padding});
+
 .inner {
   user-select: none;
   // width: 100%;
@@ -8,17 +12,19 @@
   // align-items: center;
   // border: 1px solid green;
   transition: border 0.3s;
+
+  // border: 1px solid red;
+  cursor: pointer;
+  position: relative;
+  padding: 5px 0px;
+
   &[data-open='true'] {
     // border: 1px solid rgba(255, 255, 255, 0.15);
+
     p {
       color: var(--white);
     }
   }
-  // border: 1px solid red;
-  border-radius: 10px;
-  cursor: pointer;
-  position: relative;
-  padding: 5px 0px;
 }
 
 .selectedOptionWrapper {
@@ -56,20 +62,13 @@
   display: flex;
   gap: 10px;
   transition: border 0.3s;
-  &[data-open='true'] {
-    .selectedOptionWrapper {
-      p {
-        color: var(--white);
-      }
-    }
-  }
-  padding: 10px 10px;
+  padding: $padding;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: $border-radius;
   &:hover {
     background-color: var(--white-15);
   }
@@ -104,30 +103,30 @@
 
 .list {
   position: absolute;
-  background-color: var(--color-dropdown-list);
+  background-color: var(--dropdown-list-background-color);
   box-shadow:
     0 3px 6px #00000030,
     0 23px 14px #0000001a,
     0 41px 17px #00000008;
   backdrop-filter: blur(25px);
   z-index: 999;
-  border: 1px solid var(--white-15);
-  border-radius: 10px;
+  border: 1px solid var(--dropdown-list-border-color);
+  border-radius: 13px;
   flex-shrink: 0;
-  padding: 10px;
+  padding: $padding;
   display: flex;
   flex-direction: column;
 }
 
 .item {
   @include line;
-  padding: 10px 10px;
+  padding: $padding;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: $border-radius;
   form {
     display: flex;
     gap: 5px;
@@ -152,7 +151,7 @@
     pointer-events: none;
   }
   &:hover {
-    background-color: var(--white-15);
+    background-color: var(--dropdown-item-hover-background-color);
   }
   .checkIcon {
     font-size: var(--font--2);

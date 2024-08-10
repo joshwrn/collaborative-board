@@ -1,17 +1,17 @@
 :root {
-  // space
-  --space-background: #000000;
-  --space-grid-color: #ffffff47;
-  --space-border-color: #1f1f1f;
+  // container
+  --container-background-color: var(--charcoal);
 
-  --charcoal: #020202;
-  --border: #262626;
+  // space
+  --space-background: #0c0c0c;
+  --space-grid-color: #474747;
+  --space-border-color: #1f1f1f;
+  --space-outer-padding: 10px;
 
   // snap lines
   --snap-line-color: #ff00b3;
 
   // window
-  // colors
   --window-outline: #5e5e5e;
   --window-header: #101010;
   --window-content: #262626;
@@ -28,32 +28,32 @@
   --window-generate-button-color: rgb(0, 89, 213);
   --window-generate-button-color-disabled: rgb(92, 127, 175);
   --window-generate-button-color-hover: rgb(0, 102, 213);
-
-  // canvas
-  --canvas-background: black;
-
   // dimensions
   --window-top-bar-height: 40px;
+
+  // canvas
+  --canvas-background: rgb(8, 8, 8);
 
   // connections
   --connection-color: #434343;
   --connections-from-color: #3fcd6f;
   --connections-to-color: #f14971;
 
-  --color-scrollbar: #333;
-
   // toast
   --toast-background: #0e0e0ea7;
   --toast-border: #262626;
   --toast-text: #d2d2d2;
 
+  // misc
   --font--2: 14px;
   --white-65: #a6a6a6;
   --white-15: #262626;
   --white: #ffffff;
-  --color-dropdown-list: #000000;
   --font--1: 20px;
   --color-accent: rgb(0, 112, 243);
+  --charcoal: #020202;
+  --border: #262626;
+  --color-scrollbar: #333;
 
   // item / list
   --item-list-background: rgba(0, 0, 0, 0.75);
@@ -66,8 +66,16 @@
   --toolbar-background: rgba(0, 0, 0, 0.75);
 
   // context menu
-  --context-menu-background: rgb(47, 47, 47);
-  --context-menu-item-background: #3f3f3f;
+  --context-menu-background: var(--charcoal);
+  --context-menu-item-background: var(--white-15);
+  --context-menu-item-hover-background: var(--white-15);
+
+  // dropdown
+  --dropdown-list-background-color: #000000;
+  --dropdown-list-border-color: var(--white-15);
+  --dropdown-item-hover-background-color: var(--white-15);
+  // dimensions
+  --dropdown-menu-height: 45px;
 
   // z-indexes
   --fullscreen-window-z-index: 100;

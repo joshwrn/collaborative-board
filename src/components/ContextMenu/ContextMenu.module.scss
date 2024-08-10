@@ -1,13 +1,17 @@
+$padding: 10px;
+$border-radius: 3px;
+$border-radius-outer: calc(#{$border-radius} + #{$padding});
+
 .container {
   position: absolute;
   width: 200px;
   height: fit-content;
   background: var(--context-menu-background);
-  border: 1px solid var(--window-outline);
-  border-radius: 10px;
+  border: 1px solid var(--context-menu-item-background);
+  border-radius: $border-radius-outer;
   z-index: 99999;
   overflow: hidden;
-  padding: 10px;
+  padding: $padding;
 }
 
 .item {
@@ -15,8 +19,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  border-radius: 5px;
+  padding: $padding;
+  border-radius: $border-radius;
   cursor: pointer;
   &:hover {
     background: var(--context-menu-item-background);

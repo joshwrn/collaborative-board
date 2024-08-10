@@ -24,7 +24,7 @@ export type CanvasStore = {
 export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
   tool: 'draw',
   drawSize: 10,
-  drawColor: '#ff0000',
+  drawColor: 'rgb(0, 112, 243)',
   canvasIsFocused: false,
   generatedCanvas: null,
   generatingCanvas: [],

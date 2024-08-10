@@ -3,6 +3,7 @@
   height: 100vh;
   position: relative;
   overflow: hidden;
+  background-color: var(--container-background-color);
   > main {
     display: flex;
     flex-direction: row;
