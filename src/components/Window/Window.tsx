@@ -140,7 +140,6 @@ const returnWindowStyle = (
 const WindowInternal: FC<{
   item: Item
   window: WindowType
-  type: 'default' | 'fullScreen' | 'pinned'
   isFullScreen: boolean
   isPinned: boolean
 }> = ({ item, window, isFullScreen, isPinned }) => {
@@ -360,7 +359,6 @@ const WindowsInternal: FC = () => {
         if (!item) return null
         return (
           <Window
-            type="default"
             key={item.id}
             item={item}
             window={window}
