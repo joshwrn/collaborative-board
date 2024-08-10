@@ -17,6 +17,7 @@ import { GenerateButton } from './GenerateButton'
 import { LoadingOverlay } from './LoadingOverlay'
 import { RandomizePromptButton } from './RandomizePromptButton'
 import { RotationPoints } from './RotationPoints'
+import { WindowMenu } from './WindowMenu/WindowMenu'
 
 const Text = ({
   textRef,
@@ -250,7 +251,9 @@ const WindowInternal: FC<{
         </nav>
 
         <header className={styles.titleBar}>
-          <section>{/* <WindowMenu id={item.id} /> */}</section>
+          <section>
+            <WindowMenu id={item.id} />
+          </section>
           <section className={styles.right}>
             <GenerateButton item={item} />
             <section className={styles.connections}>

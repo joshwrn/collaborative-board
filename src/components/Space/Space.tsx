@@ -34,7 +34,7 @@ const Space_Internal: FC = () => {
         ref={wrapperRef}
         className={styles.wrapper}
         onContextMenu={(e) => {
-          e.preventDefault()
+          // e.preventDefault()
         }}
         onMouseMove={(e) => {
           const rect = spaceRef.current?.getBoundingClientRect() ?? {
@@ -66,6 +66,7 @@ const Space_Internal: FC = () => {
         >
           <div
             onContextMenu={(e) => {
+              e.preventDefault()
               state.openContextMenu({ id: 'space', elementType: 'space' })
             }}
             className={styles.background}

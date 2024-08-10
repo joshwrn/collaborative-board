@@ -4,6 +4,7 @@ import { canvasStore, CanvasStore } from './canvas'
 import { connectedWindowsStore, ConnectedWindowsStore } from './connections'
 import { contextMenuStore, ContextMenuStore } from './contextMenu'
 import { debugStore, DebugStore } from './debug'
+import { falStore, FalStore } from './fal'
 import { generalStore, GeneralStore } from './general'
 import { itemListStore, ItemListStore } from './items'
 import { memberStore, MemberStore } from './members'
@@ -19,6 +20,7 @@ export type Store = CanvasStore &
   ConnectedWindowsStore &
   ContextMenuStore &
   DebugStore &
+  FalStore &
   GeneralStore &
   ItemListStore &
   MemberStore &
@@ -36,6 +38,7 @@ export const useFullStore = create<Store>((set, get, store) => {
     ...connectedWindowsStore(set, get, store),
     ...contextMenuStore(set, get, store),
     ...debugStore(set, get, store),
+    ...falStore(set, get, store),
     ...generalStore(set, get, store),
     ...itemListStore(set, get, store),
     ...memberStore(set, get, store),

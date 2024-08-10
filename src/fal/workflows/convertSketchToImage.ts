@@ -48,6 +48,7 @@ export const useConvertSketchToImage = ({
     'removeGeneratingCanvasItem',
     'updateGeneratingCanvasProgress',
     'updateNotification',
+    'fal_num_inference_steps',
   ])
   const generateImage = useMutation<
     ConvertSketchToImageResponse,
@@ -110,9 +111,11 @@ export const useConvertSketchToImage = ({
           image_url: image,
           prompt: style,
           creativity: 0.75,
+          scale: 1,
           detail: 1.1,
-          numInferenceSteps: 30,
-          guidanceScale: 1,
+          num_inference_steps: state.fal_num_inference_steps,
+          shape_preservation: 0.25,
+          guidance_scale: 7.5,
           onUpdate: (update: fal.QueueStatus) => {
             if (update.status === 'IN_PROGRESS') {
               let progress = 0
@@ -146,36 +149,30 @@ export const useConvertSketchToImage = ({
       const res = await fetchImageUrlToBase64({
         url: data.image.url,
       })
-      resizeImage({
-        base64: res.base64,
-        width: data.image.width / 2,
-        height: data.image.height / 2,
-        onSuccess: (base64) => {
-          const canvasId = nanoid()
-          state.addContentToItem(data.itemId, [
-            {
-              type: 'text',
-              id: nanoid(),
-              content: data.description,
-            },
-            {
-              type: 'canvas',
-              id: canvasId,
-              content: {
-                base64: base64,
-              },
-            },
-          ])
-          state.setState((draft) => {
-            draft.generatedCanvas = {
-              canvasId,
-              itemId: data.itemId,
-              generatedFromItemId: generatedFromItem.id,
-            }
-          })
-          state.removeGeneratingCanvasItem(data.itemId)
+      const base64 = res.base64
+      const canvasId = nanoid()
+      state.addContentToItem(data.itemId, [
+        {
+          type: 'text',
+          id: nanoid(),
+          content: data.description,
         },
+        {
+          type: 'canvas',
+          id: canvasId,
+          content: {
+            base64: base64,
+          },
+        },
+      ])
+      state.setState((draft) => {
+        draft.generatedCanvas = {
+          canvasId,
+          itemId: data.itemId,
+          generatedFromItemId: generatedFromItem.id,
+        }
       })
+      state.removeGeneratingCanvasItem(data.itemId)
     },
     onError: (e) => {
       throw new Error(`Failed to generate image: ${e.message}`)

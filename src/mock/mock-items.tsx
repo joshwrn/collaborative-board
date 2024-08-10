@@ -23,13 +23,9 @@ export const createMockPrompt = () => {
     'illustration',
     'digital art',
     'photograph',
-    'comic book',
     'graphic design',
-    '3D modeling',
     'watercolor painting',
-    'installation art',
     'abstract art',
-    'pop art',
   ])
   const subject = faker.helpers.arrayElement(MOCK_NOUNS)
 
@@ -41,10 +37,8 @@ export const createMockPrompt = () => {
     'surreal',
     'fantasy',
     'magical realism',
-    'minimalist',
     'photorealistic',
     'expressionist',
-    'minimalism',
     'gothic',
     'renaissance',
   ])

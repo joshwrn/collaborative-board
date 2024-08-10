@@ -225,49 +225,52 @@ const SubMenu = ({
 }): React.ReactElement => {
   const [open, setOpen] = React.useState<boolean>(false)
   return (
-    <>
-      <div
-        id={id ?? ''}
-        data-open={open}
-        data-role="dropdown-menu"
-        className={style.subMenu}
-        style={{
-          position: 'relative',
-        }}
-        onPointerOver={() => setOpen(true)}
-        onPointerOut={() => setOpen(false)}
-      >
-        <div className={style.selectedOptionWrapper}>
-          <SelectedOption />
-        </div>
-        <div className={style.arrow}>
-          <IoIosArrowForward />
-        </div>
-        <AnimatePresence>
-          {open && (
-            <motion.section
-              variants={listVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              style={{
-                position: 'absolute',
-                left: '100%',
-                top: 0,
-              }}
-              className={joinClasses(style.list, 'dropdown-list')}
-              onClick={() => setOpen(false)}
-            >
-              <DropdownOptions
-                Options={Options}
-                setOpen={setOpen}
-                NullableOption={NullableOption}
-              />
-            </motion.section>
-          )}
-        </AnimatePresence>
+    <motion.div
+      id={id ?? ''}
+      data-open={open}
+      data-role="dropdown-sub-menu"
+      className={style.subMenu}
+      style={{
+        position: 'relative',
+      }}
+      onPointerOver={() => setOpen(true)}
+      onPointerOut={() => setOpen(false)}
+      variants={itemVariants}
+      transition={{
+        type: `spring`,
+        stiffness: 500,
+        damping: 30,
+      }}
+    >
+      <div className={style.selectedOptionWrapper}>
+        <SelectedOption />
       </div>
-    </>
+      <div className={style.arrow}>
+        <IoIosArrowForward />
+      </div>
+      <AnimatePresence>
+        {open && (
+          <motion.section
+            variants={listVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className={joinClasses(
+              style.list,
+              style.subMenuList,
+              'dropdown-list',
+            )}
+            onClick={() => setOpen(false)}
+          >
+            <DropdownOptions
+              Options={Options}
+              setOpen={setOpen}
+              NullableOption={NullableOption}
+            />
+          </motion.section>
+        )}
+      </AnimatePresence>
+    </motion.div>
   )
 }
 
