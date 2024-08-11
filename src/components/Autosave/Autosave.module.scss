@@ -1,0 +1,16 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 35px;
+  > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    p {
+      font-size: var(--font--2);
+      color: var(--white-65);
+    }
+  }
+}

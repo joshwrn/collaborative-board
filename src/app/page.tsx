@@ -14,6 +14,7 @@ import React, { Suspense } from 'react'
 import { List } from '@/components/ItemList/List/List'
 import { Toaster } from '@/ui/Toast'
 import { useLoadFromLocalStorage } from '@/utils/useLoadFromLocalStorage'
+import { Autosave } from '@/components/Autosave/Autosave'
 const DevTools = React.lazy(() => import('@/components/Debug/DevTools'))
 
 const queryClient = new QueryClient()
@@ -28,6 +29,7 @@ export default function Home() {
     'showItemList',
     'debug_showZustandDevTools',
     'debug_showFps',
+    'autoSaveEnabled',
   ])
 
   useLoadFromLocalStorage()
@@ -40,7 +42,10 @@ export default function Home() {
           state.setMousePosition({ x: e.clientX, y: e.clientY })
         }}
       >
-        <DropDownMenu />
+        <header>
+          <DropDownMenu />
+          {state.autoSaveEnabled && <Autosave />}
+        </header>
         <main>
           <Space />
           <ContextMenu />
