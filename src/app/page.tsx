@@ -13,6 +13,7 @@ import * as fal from '@fal-ai/serverless-client'
 import React, { Suspense } from 'react'
 import { List } from '@/components/ItemList/List/List'
 import { Toaster } from '@/ui/Toast'
+import { useLoadFromLocalStorage } from '@/utils/useLoadFromLocalStorage'
 const DevTools = React.lazy(() => import('@/components/Debug/DevTools'))
 
 const queryClient = new QueryClient()
@@ -28,6 +29,8 @@ export default function Home() {
     'debug_showZustandDevTools',
     'debug_showFps',
   ])
+
+  useLoadFromLocalStorage()
 
   return (
     <QueryClientProvider client={queryClient}>

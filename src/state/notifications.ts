@@ -16,6 +16,7 @@ export type NotificationsStore = {
   createNotification: (notification: Partial<Notification>) => Notification
   removeNotification: (id: string) => void
   updateNotification: (id: string, update: Partial<Notification>) => void
+  successNotification: (message: string) => Promise<void>
   promiseNotification: (
     promise: () => Promise<any>,
     notification: Partial<Notification>,
@@ -73,6 +74,20 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
         notification.progress = progress
       }
     })
+  },
+  successNotification: async (message) => {
+    const state = get()
+    const newNotification = state.createNotification({
+      type: 'success',
+      message,
+    })
+    await mockProgress({
+      onProgress: (progress) => {
+        state.setNotificationProgress(newNotification.id, 100 - progress)
+      },
+      time: 3000,
+    })
+    state.removeNotification(newNotification.id)
   },
   promiseNotification: async (promise, notificationPartial, options) => {
     const state = get()
