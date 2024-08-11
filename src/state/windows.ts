@@ -1,6 +1,8 @@
+import { nanoid } from 'nanoid'
 import { Point2d } from '.'
 import { SPACE_ATTRS } from './space'
 import { AppStateCreator, Setter, stateSetter } from './state'
+import { createMockPrompt } from '@/mock/mock-items'
 
 export type WindowType = {
   id: string
@@ -18,7 +20,7 @@ export type OpenWindowsStore = {
   resizeWindow: (
     id: string,
     start: { width: number; height: number; x: number; y: number },
-    movement: { x: number; y: number },
+    movement: Point2d,
     pos: string,
   ) => void
   setOneWindow: (id: string, update: Partial<WindowType>) => void
@@ -26,14 +28,15 @@ export type OpenWindowsStore = {
   fullScreenWindow: string | null
   setFullScreenWindow: Setter<string | null>
   hoveredWindow: string | null
-  setHoveredWindow: Setter<string | null>
+  pinnedWindow: string | null
   selectedWindow: string | null
-  setSelectedWindow: Setter<string | null>
+  moveWindowNextTo: (id: string, nextId: string) => void
+  createNewWindow: () => string
 }
 
 export const WINDOW_ATTRS = {
-  defaultSize: { width: 700, height: 500 },
-  defaultFullScreenSize: { width: 700, height: 750 },
+  defaultSize: { width: 1000, height: 600 },
+  defaultFullScreenSize: { width: 1000, height: 750 },
   minSize: 300,
   maxSize: 1000,
   zIndex: 0,
@@ -84,11 +87,28 @@ const createNewWindowPosition = (windows: WindowType[]) => {
   return startingPosition
 }
 
+const createNextWindowPosition = (
+  windows: WindowType[],
+  startingPosition: Point2d,
+) => {
+  for (let i = 0; i < windows.length; i++) {
+    const window = windows[i]
+    if (window.x === startingPosition.x && window.y === startingPosition.y) {
+      startingPosition.x
+      startingPosition.y += window.height + 80
+      i = 0
+    }
+  }
+  return startingPosition
+}
+
 export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   set,
   get,
 ) => ({
   windows: [],
+
+  pinnedWindow: null,
 
   toggleOpenWindow: (id: string) => {
     const openWindows = get().windows
@@ -115,6 +135,58 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           rotation: 0,
         },
       ],
+    }))
+  },
+
+  createNewWindow: () => {
+    const state = get()
+    const id = nanoid()
+    const prompt = createMockPrompt()
+    state.createItem({
+      id: id,
+      subject: prompt,
+      body: [
+        {
+          id: nanoid(),
+          type: 'text',
+          content: prompt,
+        },
+        {
+          id: nanoid(),
+          type: 'canvas',
+          content: {
+            base64: '',
+          },
+        },
+      ],
+    })
+    state.toggleOpenWindow(id)
+
+    return id
+  },
+
+  moveWindowNextTo: (id, nextId) => {
+    const openWindows = get().windows
+    const openWindow = openWindows.find((window) => window.id === id)
+    if (!openWindow) {
+      throw new Error(`window ${id} not found`)
+    }
+    set((state) => ({
+      windows: state.windows.map((window) => {
+        if (window.id === nextId) {
+          return {
+            ...window,
+            ...createNextWindowPosition(state.windows, {
+              x: openWindow.x + openWindow.width + 130,
+              y: openWindow.y,
+            }),
+          }
+        }
+        return {
+          ...window,
+          zIndex: window.zIndex - 1,
+        }
+      }),
     }))
   },
 
@@ -255,8 +327,6 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   setFullScreenWindow: (setter) => stateSetter(set, setter, `fullScreenWindow`),
 
   hoveredWindow: null,
-  setHoveredWindow: (setter) => stateSetter(set, setter, `hoveredWindow`),
 
   selectedWindow: null,
-  setSelectedWindow: (setter) => stateSetter(set, setter, `selectedWindow`),
 })

@@ -1,0 +1,40 @@
+.wrapper {
+  button {
+    background-color: var(--window-generate-button-color);
+    padding: 9px 0;
+    padding-right: 10px;
+    padding-left: 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.4s ease-in-out;
+    svg {
+      transition: transform 0.2s ease-in-out;
+    }
+    &:hover {
+      background-color: var(--window-generate-button-color-hover);
+      svg {
+        transform: scale(1.2);
+      }
+    }
+  }
+}
+
+.isPending {
+  animation: glow 1s ease-in-out infinite;
+}
+
+.isDisabled {
+  cursor: progress;
+  background-color: var(--window-generate-button-color-disabled) !important;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 128, 255, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 10px 10px rgba(255, 255, 255, 0);
+  }
+}

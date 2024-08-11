@@ -9,6 +9,7 @@ import type { Variants } from 'framer-motion'
 import { AnimatePresence, motion } from 'framer-motion'
 import React from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
+import { IoIosArrowForward } from 'react-icons/io'
 import { IoCheckmarkSharp as CheckIcon } from 'react-icons/io5'
 import type { IconType } from 'react-icons/lib'
 
@@ -113,7 +114,9 @@ const DropdownInternal = ({
               exit="exit"
               style={{
                 position: strategy,
-                left: refs.reference.current?.getBoundingClientRect().left,
+                left:
+                  (refs.reference.current?.getBoundingClientRect().left ?? 0) -
+                  10,
                 top: y,
                 width: 'fit-content',
                 // refs.reference.current?.getBoundingClientRect().width ?? 0,
@@ -159,7 +162,7 @@ const DropdownOptionsInternal: React.FC<{
 const DropdownOptions = React.memo(DropdownOptionsInternal)
 
 export const Item: React.FC<{
-  onClick: () => void
+  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   Icon?: IconType
   label1?: string
   label2?: string
@@ -186,8 +189,8 @@ export const Item: React.FC<{
         stiffness: 500,
         damping: 30,
       }}
-      onClick={() => {
-        onClick()
+      onClick={(e) => {
+        onClick(e)
       }}
       data-role="dropdown-item"
       data-checked={isChecked && showCheck}
@@ -203,14 +206,79 @@ export const Item: React.FC<{
             <p>{label1}</p>
             <span>{label2}</span>
           </div>
-          <CheckIcon />
+          <CheckIcon className={style.checkIcon} />
         </>
       )}
     </motion.div>
   )
 }
+
+const SubMenu = ({
+  SelectedOption,
+  Options,
+  NullableOption = null,
+  id,
+}: {
+  SelectedOption: React.FC
+  disabled?: boolean
+  Options: (JSX.Element | null)[]
+  NullableOption?: JSX.Element | null
+  id?: string
+}): React.ReactElement => {
+  const [open, setOpen] = React.useState<boolean>(false)
+  return (
+    <motion.div
+      id={id ?? ''}
+      data-open={open}
+      data-role="dropdown-sub-menu"
+      className={style.subMenu}
+      style={{
+        position: 'relative',
+      }}
+      onPointerOver={() => setOpen(true)}
+      onPointerOut={() => setOpen(false)}
+      variants={itemVariants}
+      transition={{
+        type: `spring`,
+        stiffness: 500,
+        damping: 30,
+      }}
+    >
+      <div className={style.selectedOptionWrapper}>
+        <SelectedOption />
+      </div>
+      <div className={style.arrow}>
+        <IoIosArrowForward />
+      </div>
+      <AnimatePresence>
+        {open && (
+          <motion.section
+            variants={listVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className={joinClasses(
+              style.list,
+              style.subMenuList,
+              'dropdown-list',
+            )}
+            onClick={() => setOpen(false)}
+          >
+            <DropdownOptions
+              Options={Options}
+              setOpen={setOpen}
+              NullableOption={NullableOption}
+            />
+          </motion.section>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
 const exports = {
   Menu: Dropdown,
   Item,
+  SubMenu,
 }
 export default exports

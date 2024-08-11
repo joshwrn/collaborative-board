@@ -3,6 +3,11 @@
   height: 100vh;
   position: relative;
   overflow: hidden;
+  background-color: var(--container-background-color);
+  > header {
+    display: flex;
+    justify-content: space-between;
+  }
   > main {
     display: flex;
     flex-direction: row;

@@ -3,11 +3,10 @@ import React from 'react'
 
 import styles from './WindowBorder.module.scss'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
-import { useAppStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 import { setCursorStyle } from '@/utils/setCursor'
 import { joinClasses } from '@/utils/joinClasses'
-import { useShallow } from 'zustand/react/shallow'
-import { WINDOW_ATTRS } from '@/state/windows'
+import { WINDOW_ATTRS, WindowType } from '@/state/windows'
 
 const borderPositions = [
   'left',
@@ -32,21 +31,44 @@ const cursorsForBorderPositions: Record<BorderPosition, string> = {
   bottomLeft: 'nesw-resize',
 }
 
+const returnStyle = (
+  width: number,
+  height: number,
+  isFullScreen: boolean,
+  isPinned: boolean,
+): React.CSSProperties => {
+  if (isFullScreen) {
+    return {
+      width: `calc(${WINDOW_ATTRS.defaultFullScreenSize.width}px + 2px)`,
+      height: `calc(${WINDOW_ATTRS.defaultFullScreenSize.height}px + 2px)`,
+    }
+  }
+  if (isPinned) {
+    return {
+      width: WINDOW_ATTRS.defaultSize.width + 2 + 'px',
+      height: WINDOW_ATTRS.defaultSize.height + 2 + 'px',
+    }
+  }
+  return {
+    width: width + 2 + 'px',
+    height: height + 2 + 'px',
+  }
+}
+
 export const WindowBorderInternal: FC<{
   id: string
   width: number
   height: number
   isFullScreen: boolean
+  isPinned: boolean
   position: { x: number; y: number }
-}> = ({ width, height, id, position, isFullScreen }) => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      resizeWindow: state.resizeWindow,
-      activeConnection: state.activeConnection,
-      hoveredItem: state.hoveredItem,
-      selectedWindow: state.selectedWindow,
-    })),
-  )
+}> = ({ width, height, id, position, isFullScreen, isPinned }) => {
+  const state = useStore([
+    'resizeWindow',
+    'activeConnection',
+    'hoveredItem',
+    'selectedWindow',
+  ])
 
   const startPosition = React.useRef<{ x: number; y: number } | null>(null)
   const startSize = React.useRef<{ width: number; height: number } | null>(null)
@@ -100,21 +122,10 @@ export const WindowBorderInternal: FC<{
       className={joinClasses(
         styles.border,
         isActive && styles.activeBorder,
-        (state.hoveredItem === id || state.selectedWindow === id) &&
-          !isFullScreen &&
-          styles.activeBorder,
+        state.selectedWindow === id && !isFullScreen && styles.activeBorder,
+        state.hoveredItem === id && !isFullScreen && styles.hoveredBorder,
       )}
-      style={{
-        ...(isFullScreen
-          ? {
-              width: `calc(${WINDOW_ATTRS.defaultFullScreenSize.width}px + 2px)`,
-              height: `calc(${WINDOW_ATTRS.defaultFullScreenSize.height}px + 2px)`,
-            }
-          : {
-              width: `${width + 2}px`,
-              height: `${height + 2}px`,
-            }),
-      }}
+      style={returnStyle(width, height, isFullScreen, isPinned)}
     >
       {borderPositions.map((pos) => (
         <DraggableCore
@@ -122,7 +133,7 @@ export const WindowBorderInternal: FC<{
           onDrag={(e, data) => onDrag(e, data, pos)}
           onStart={(e, data) => onDragStart(e, data, pos)}
           onStop={(e, data) => onDragStop(e, data, pos)}
-          disabled={isFullScreen}
+          disabled={isFullScreen || isPinned}
         >
           <div
             className={styles[pos]}

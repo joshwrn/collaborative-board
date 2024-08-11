@@ -1,39 +1,83 @@
 'use client'
-import { List } from '@/components/List/List'
 import { Space } from '@/components/Space/Space'
 import styles from './page.module.scss'
-import { useAppStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 import { ContextMenu } from '@/components/ContextMenu/ContextMenu'
-import { useShallow } from 'zustand/react/shallow'
 // @ts-ignore
 import FPSStats from 'react-fps-stats'
 import { DropDownMenu } from '@/components/DropDownMenu/DropDownMenu'
-import { Debug } from '@/components/Debug/Debug'
-import { useScenario } from '@/mock/scenarios'
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import * as fal from '@fal-ai/serverless-client'
+
+import React, { Suspense } from 'react'
+import { List } from '@/components/ItemList/List/List'
+import { Toaster } from '@/ui/Toast'
+import { useLoadFromLocalStorage } from '@/utils/useLoadFromLocalStorage'
+import { Autosave } from '@/components/Autosave/Autosave'
+const DevTools = React.lazy(() => import('@/components/Debug/DevTools'))
+
+const queryClient = new QueryClient()
+
+fal.config({
+  proxyUrl: '/api/fal/proxy',
+})
 
 export default function Home() {
-  const state = useAppStore(
-    useShallow((state) => ({
-      setMousePosition: state.setMousePosition,
-    })),
-  )
-  // useScenario({ scenario: 'rotation' })
+  const state = useStore([
+    'setMousePosition',
+    'showItemList',
+    'debug_showZustandDevTools',
+    'debug_showFps',
+    'autoSaveEnabled',
+  ])
+
+  useLoadFromLocalStorage()
+
   return (
-    <wrapper
-      className={styles.wrapper}
-      onMouseMove={(e) => {
-        state.setMousePosition({ x: e.clientX, y: e.clientY })
-      }}
-    >
-      <DropDownMenu />
-      <main>
-        {/* <Nav /> */}
-        <List />
-        <Space />
-        <ContextMenu />
-      </main>
-      <FPSStats left={'auto'} right={0} />
-      {/* <Debug /> */}
-    </wrapper>
+    <QueryClientProvider client={queryClient}>
+      <wrapper
+        className={styles.wrapper}
+        onMouseMove={(e) => {
+          state.setMousePosition({ x: e.clientX, y: e.clientY })
+        }}
+      >
+        <header>
+          <DropDownMenu />
+          {state.autoSaveEnabled && <Autosave />}
+        </header>
+        <main>
+          <Space />
+          <ContextMenu />
+          {state.showItemList && <List />}
+        </main>
+        {state.debug_showFps && <FPSStats left={'auto'} right={0} />}
+      </wrapper>
+      <Toaster />
+      <Suspense
+        fallback={
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontSize: '30px',
+              zIndex: 9999999,
+            }}
+          >
+            Loading DevTools...
+          </div>
+        }
+      >
+        {state.debug_showZustandDevTools && <DevTools />}
+      </Suspense>
+      {state.debug_showFps && <FPSStats left={'auto'} right={0} />}
+    </QueryClientProvider>
   )
 }

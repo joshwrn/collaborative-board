@@ -2,8 +2,7 @@ import React from 'react'
 import style from './RotationPoints.module.scss'
 import { joinClasses } from '@/utils/joinClasses'
 import { DraggableCore, DraggableEvent } from 'react-draggable'
-import { useShallow } from 'zustand/react/shallow'
-import { useAppStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 import { WindowType } from '@/state/windows'
 
 export const ROTATION_POINTS = [
@@ -46,14 +45,12 @@ const RotationPoints_Internal: React.FC<{
   id: string
   window: WindowType
 }> = ({ id, window }) => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      setOneWindow: state.setOneWindow,
-      zoom: state.zoom,
-      spaceMousePosition: state.spaceMousePosition,
-      selectedWindow: state.selectedWindow,
-    })),
-  )
+  const state = useStore([
+    'setOneWindow',
+    'zoom',
+    'spaceMousePosition',
+    'selectedWindow',
+  ])
 
   const centerPoint = React.useMemo(
     () => ({

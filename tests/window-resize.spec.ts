@@ -1,17 +1,20 @@
 import { test, expect, Locator } from '@playwright/test'
-import { SPACE_ATTRS } from '@/state/space'
-import { WINDOW_ATTRS } from '@/state/windows'
 
-// default zoom (0.15) + (5 * 0.05) = 0.4
+export const WINDOW_ATTRS = {
+  defaultSize: { width: 1000, height: 600 },
+  defaultFullScreenSize: { width: 1000, height: 750 },
+  minSize: 300,
+  maxSize: 1000,
+  zIndex: 0,
+}
+
+// default zoom (0.5) + (2 * 0.05) = 0.4
 const ZOOM = 0.4
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
   await page.locator('#dropdown-space-button').click()
-  await page.locator('#dropdown-space-zoom-in-button').click()
-  await page.locator('#dropdown-space-zoom-in-button').click()
-  await page.locator('#dropdown-space-zoom-in-button').click()
-  await page.locator('#dropdown-space-zoom-in-button').click()
-  await page.locator('#dropdown-space-zoom-in-button').click()
+  await page.locator('#dropdown-space-zoom-out-button').click()
+  await page.locator('#dropdown-space-zoom-out-button').click()
 })
 
 test.describe('can resize window', () => {
@@ -41,7 +44,8 @@ test.describe('can resize window', () => {
   }
 
   test.beforeEach(async ({ page }) => {
-    await page.locator('#dropdown-create-mocks-button').click()
+    await page.locator('#dropdown-dev-button').click()
+    await page.locator('#dropdown-create-mocks-button').hover()
     await page.locator('#dropdown-create-mocks-1').click()
 
     selected_window = page.locator('.window').first()

@@ -1,5 +1,5 @@
 .line {
   pointer-events: none;
   position: absolute;
-  background-color: #ff00b3;
+  background-color: var(--snap-line-color);
 }

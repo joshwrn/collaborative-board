@@ -13,12 +13,10 @@ export type HoveredConnection = Pick<Connection, 'to'>
 
 export type ConnectedWindowsStore = {
   activeConnection: ActiveConnection | null
-  setActiveConnection: Setter<ActiveConnection | null>
   hoveredConnection: HoveredConnection | null
-  setHoveredConnection: Setter<HoveredConnection | null>
   connections: Connection[]
   setConnections: Setter<Connection[]>
-  makeConnection: (connection: Pick<Connection, 'to'>) => void
+  makeConnection: (connection: { to: string; from?: string }) => void
   removeConnection: (connectionId: string) => void
   showConnections: boolean
   setShowConnections: Setter<boolean>
@@ -29,17 +27,18 @@ export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
   get,
 ) => ({
   activeConnection: null,
-  setActiveConnection: (setter) => stateSetter(set, setter, `activeConnection`),
 
   hoveredConnection: null,
-  setHoveredConnection: (setter) =>
-    stateSetter(set, setter, `hoveredConnection`),
 
   showConnections: true,
   setShowConnections: (setter) => stateSetter(set, setter, `showConnections`),
 
   makeConnection: (connector) => {
-    const activeConnection = get().activeConnection
+    const activeConnection = connector.from
+      ? {
+          from: connector.from,
+        }
+      : get().activeConnection
     if (!activeConnection) {
       throw new Error(`no active connection`)
     }

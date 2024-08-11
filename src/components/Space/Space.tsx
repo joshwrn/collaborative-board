@@ -1,42 +1,42 @@
 'use client'
 import type { FC } from 'react'
 import React from 'react'
-import { Window, Windows } from '../Window/Window'
+import { Windows } from '../Window/Window'
 
 import styles from './Space.module.scss'
-import { useAppStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 import { useGestures } from '@/gestures'
 import { Connections } from '../Connections/Connections'
-import { useShallow } from 'zustand/react/shallow'
 import { ActiveConnectionGuard } from '../Connections/ActiveConnection'
 import { Debug } from '../Debug/Debug'
 import { SPACE_ATTRS } from '@/state/space'
 import { SnapLines } from '../SnapLine/SnapLine'
 import { Toolbar } from '../Toolbar/Toolbar'
 import { FullScreenWindow } from '../Window/FullScreenWindow/FullScreenWindow'
+import { dotBackground } from './dotBackground'
+import { PinnedWindow } from '../Window/PinnedWindow/PinnedWindow'
 
 const Space_Internal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
   const spaceRef = React.useRef<HTMLDivElement>(null)
-  const state = useAppStore(
-    useShallow((state) => ({
-      zoom: state.zoom,
-      pan: state.pan,
-      setSpaceMousePosition: state.setSpaceMousePosition,
-      setActiveConnection: state.setActiveConnection,
-      fullScreenWindow: state.fullScreenWindow,
-    })),
-  )
+  const state = useStore([
+    'zoom',
+    'pan',
+    'setSpaceMousePosition',
+    'fullScreenWindow',
+    'openContextMenu',
+    'setState',
+    'pinnedWindow',
+  ])
 
   useGestures({ wrapperRef, spaceRef })
-  const lineSize = 1 / state.zoom
   return (
     <div className={styles.outer}>
       <wrapper
         ref={wrapperRef}
         className={styles.wrapper}
         onContextMenu={(e) => {
-          e.preventDefault()
+          // e.preventDefault()
         }}
         onMouseMove={(e) => {
           const rect = spaceRef.current?.getBoundingClientRect() ?? {
@@ -55,7 +55,9 @@ const Space_Internal: FC = () => {
           className={styles.container}
           ref={spaceRef}
           onClick={() => {
-            state.setActiveConnection(null)
+            state.setState((draft) => {
+              draft.activeConnection = null
+            })
           }}
           style={{
             width: SPACE_ATTRS.size,
@@ -65,10 +67,13 @@ const Space_Internal: FC = () => {
           }}
         >
           <div
+            onContextMenu={(e) => {
+              e.preventDefault()
+              state.openContextMenu({ id: 'space', elementType: 'space' })
+            }}
             className={styles.background}
             style={{
-              backgroundImage: `linear-gradient(var(--space-grid-color) ${lineSize}px, transparent ${lineSize}px),
-          linear-gradient(90deg, var(--space-grid-color) ${lineSize}px, transparent ${lineSize}px)`,
+              background: dotBackground({ zoom: state.zoom }),
             }}
           />
           <ActiveConnectionGuard />
@@ -79,6 +84,7 @@ const Space_Internal: FC = () => {
         </container>
         <Toolbar />
       </wrapper>
+      {state.pinnedWindow && <PinnedWindow />}
       {state.fullScreenWindow && <FullScreenWindow />}
     </div>
   )

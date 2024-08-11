@@ -1,3 +1,7 @@
+$padding: 10px;
+$border-radius: 3px;
+$border-radius-outer: calc(#{$border-radius} + #{$padding});
+
 .inner {
   user-select: none;
   // width: 100%;
@@ -8,17 +12,19 @@
   // align-items: center;
   // border: 1px solid green;
   transition: border 0.3s;
+
+  // border: 1px solid red;
+  cursor: pointer;
+  position: relative;
+  padding: 5px 0px;
+
   &[data-open='true'] {
     // border: 1px solid rgba(255, 255, 255, 0.15);
+
     p {
       color: var(--white);
     }
   }
-  // border: 1px solid red;
-  border-radius: 10px;
-  cursor: pointer;
-  position: relative;
-  padding: 5px 0px;
 }
 
 .selectedOptionWrapper {
@@ -30,6 +36,55 @@
     text-transform: capitalize;
     color: var(--white-65);
     font-size: var(--font--2);
+  }
+}
+
+@mixin line {
+  & + .item,
+  & + .subMenu {
+    &::before {
+      background-color: var(--white-15);
+      opacity: 0.5;
+      position: absolute;
+      top: 0;
+      left: 0;
+      content: '';
+      width: 90%;
+      transform: translateX(5%);
+      height: 1px;
+    }
+  }
+}
+
+.subMenu {
+  @include line;
+  user-select: none;
+  display: flex;
+  gap: 10px;
+  transition: border 0.3s;
+  padding: $padding;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  border-radius: $border-radius;
+  &:hover {
+    background-color: var(--white-15);
+  }
+  .subMenuList {
+    left: calc(100% + 10px);
+    position: absolute;
+    top: 0;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -10px;
+      width: 10px;
+      height: 100%;
+      opacity: 0.5;
+    }
   }
 }
 
@@ -47,30 +102,38 @@
 }
 
 .list {
-  background-color: var(--color-dropdown-list);
-  box-shadow: 0 3px 6px #00000030, 0 23px 14px #0000001a, 0 41px 17px #00000008;
+  position: absolute;
+  background-color: var(--dropdown-list-background-color);
+  box-shadow:
+    0 3px 6px #00000030,
+    0 23px 14px #0000001a,
+    0 41px 17px #00000008;
   backdrop-filter: blur(25px);
   z-index: 999;
-  border: 1px solid var(--white-15);
-  border-radius: 10px;
-  padding: 10px;
+  border: 1px solid var(--dropdown-list-border-color);
+  border-radius: 13px;
+  flex-shrink: 0;
+  padding: $padding;
   display: flex;
   flex-direction: column;
 }
 
 .item {
-  padding: 10px 10px;
+  @include line;
+  padding: $padding;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: $border-radius;
   form {
     display: flex;
     gap: 5px;
+    padding-right: 5px;
   }
   p {
+    white-space: nowrap;
     font-size: var(--font--2);
     text-transform: capitalize;
     color: var(--white-65);
@@ -84,41 +147,30 @@
     border: none;
     border: 1px solid var(--border);
   }
-  & + .item {
-    &::before {
-      background-color: var(--white-15);
-      // @include mixins.divider(var(--white-15));
-      opacity: 0.5;
-      position: absolute;
-      top: 0;
-      left: 0;
-      content: '';
-      width: 90%;
-      transform: translateX(5%);
-      height: 1px;
-    }
+  svg {
+    pointer-events: none;
   }
   &:hover {
-    background-color: var(--white-15);
+    background-color: var(--dropdown-item-hover-background-color);
   }
-  svg {
+  .checkIcon {
     font-size: var(--font--2);
-    color: var(--color-accent);
+    stroke: var(--color-accent);
   }
   &[data-checked='true'] {
-    svg {
+    .checkIcon {
       opacity: 1;
     }
   }
   &[data-checked='false'] {
-    svg {
+    .checkIcon {
       opacity: 0;
     }
   }
   > div {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
     svg {
       color: var(--white-65);
     }

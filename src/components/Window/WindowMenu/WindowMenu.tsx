@@ -1,48 +1,35 @@
 import React from 'react'
 import style from './WindowMenu.module.scss'
 import Dropdown from '@/ui/Dropdown'
-import { useAppStore } from '@/state/gen-state'
-import { useShallow } from 'zustand/react/shallow'
+import { useStore } from '@/state/gen-state'
 import { nanoid } from 'nanoid'
+import { BsFillPinAngleFill as PinIcon } from 'react-icons/bs'
 
 export const WindowMenu: React.FC<{
   id: string
 }> = ({ id }) => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      addContentToItem: state.addContentToItem,
-    })),
-  )
+  const state = useStore(['setState', 'pinnedWindow'])
   return (
     <div className={style.wrapper}>
       <Dropdown.Menu
         id="dropdown-window-button"
-        SelectedOption={() => <p>New</p>}
+        SelectedOption={() => <p>Menu</p>}
         Options={[
           <Dropdown.Item
+            Icon={() => (
+              <PinIcon
+                style={{
+                  stroke: 'white',
+                }}
+              />
+            )}
             onClick={() => {
-              state.addContentToItem(id, {
-                content: 'New Text',
-                type: 'text',
-                id: nanoid(),
+              state.setState((draft) => {
+                draft.pinnedWindow = draft.pinnedWindow === id ? null : id
               })
             }}
-            key={'Text'}
-            label1="Text Block"
-            isChecked={false}
-          />,
-          <Dropdown.Item
-            onClick={() => {
-              state.addContentToItem(id, {
-                type: 'canvas',
-                content: {
-                  blob: '',
-                },
-                id: nanoid(),
-              })
-            }}
-            key={'Canvas'}
-            label1="Canvas"
+            key={'Pin'}
+            label1={state.pinnedWindow === id ? 'Unpin' : 'Pin'}
             isChecked={false}
           />,
         ]}

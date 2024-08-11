@@ -1,29 +1,59 @@
 import React from 'react'
 import style from './Canvas.module.scss'
 import { WINDOW_ATTRS, WindowType } from '@/state/windows'
-import { useAppStore } from '@/state/gen-state'
-import { useShallow } from 'zustand/react/shallow'
+import { useStore } from '@/state/gen-state'
 import { rotatePointAroundCenter } from '@/logic/rotatePointAroundCenter'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { CanvasData } from '@/state/items'
 import { joinClasses } from '@/utils/joinClasses'
+import { DEFAULT_PINNED_WINDOW_ZOOM } from '../Window/PinnedWindow/PinnedWindow'
+
+const returnAttributes = (
+  window: WindowType,
+  zoom: number,
+  isFullScreen: boolean,
+  isPinned?: boolean,
+) => {
+  if (isFullScreen) {
+    return {
+      width: WINDOW_ATTRS.defaultFullScreenSize.width - 40,
+      height: 400,
+      rotation: 0,
+      zoom: 1,
+    }
+  }
+  if (isPinned) {
+    return {
+      width: WINDOW_ATTRS.defaultSize.width - 40,
+      height: 400,
+      rotation: 0,
+      zoom: DEFAULT_PINNED_WINDOW_ZOOM,
+    }
+  }
+  return {
+    width: window.width - 40,
+    height: 400,
+    rotation: window.rotation,
+    zoom: zoom,
+  }
+}
 
 export const Canvas: React.FC<{
   window: WindowType
   contentId: string
   content: CanvasData
-}> = ({ window, contentId, content }) => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      zoom: state.zoom,
-      drawColor: state.drawColor,
-      drawSize: state.drawSize,
-      setCanvasIsFocused: state.setCanvasIsFocused,
-      canvasIsFocused: state.canvasIsFocused,
-      fullScreenWindow: state.fullScreenWindow,
-      editItemContent: state.editItemContent,
-    })),
-  )
+  isPinned: boolean
+}> = ({ window, contentId, content, isPinned }) => {
+  const state = useStore([
+    'zoom',
+    'drawColor',
+    'drawSize',
+    'canvasIsFocused',
+    'fullScreenWindow',
+    'editItemContent',
+    'generatedCanvas',
+    'setState',
+  ])
 
   const isFullScreen = state.fullScreenWindow === window.id
 
@@ -34,7 +64,10 @@ export const Canvas: React.FC<{
   useOutsideClick({
     refs: [],
     selectors: ['#toolbar', '.dropdown-list', '.canvas'],
-    action: () => state.setCanvasIsFocused(false),
+    action: () =>
+      state.setState((draft) => {
+        draft.canvasIsFocused = false
+      }),
   })
 
   React.useEffect(() => {
@@ -44,18 +77,10 @@ export const Canvas: React.FC<{
     img.onload = () => {
       ctx.drawImage(img, 0, 0)
     }
-    img.src = content.blob
+    img.src = content.base64
   }, [window, content])
 
-  const attributes = {
-    width:
-      (isFullScreen ? WINDOW_ATTRS.defaultFullScreenSize.width : window.width) -
-      40,
-    height: 400,
-    rotation: isFullScreen ? 0 : window.rotation,
-    zoom: isFullScreen ? 1 : state.zoom,
-  }
-
+  const attributes = returnAttributes(window, state.zoom, isFullScreen, isPinned)
   return (
     <div
       style={{
@@ -80,9 +105,14 @@ export const Canvas: React.FC<{
         height={attributes.height}
         className={joinClasses(style.canvas, 'canvas')}
         onMouseDown={() => {
-          state.setCanvasIsFocused(true)
+          state.setState((draft) => {
+            draft.canvasIsFocused = true
+          })
         }}
         ref={canvasRef}
+        onMouseUp={() => {
+          console.log('onMouseUp')
+        }}
         onMouseMove={(e) => {
           if (!canvasRef.current) return
           if (!counterRef.current) return
@@ -122,7 +152,7 @@ export const Canvas: React.FC<{
 
           state.editItemContent(window.id, {
             content: {
-              blob: canvasRef.current.toDataURL(),
+              base64: canvasRef.current.toDataURL(),
             },
             id: contentId,
             type: 'canvas',

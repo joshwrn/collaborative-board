@@ -1,10 +1,9 @@
 .wrapper {
   width: 350px;
-  height: 90%;
-  top: 50%;
-  left: 25px;
-  transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.75);
+  height: calc(100% - var(--dropdown-menu-height) - 40px);
+  top: calc(20px + var(--dropdown-menu-height));
+  left: 30px;
+  background-color: var(--item-list-background);
   backdrop-filter: blur(20px);
   border-radius: 10px;
   border: 1px solid var(--border);
@@ -24,13 +23,22 @@
   height: 50px;
   border-bottom: 1px solid var(--border);
   padding: 0 25px;
-  svg {
-    path {
-      fill: var(--window-text);
-    }
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  > button {
+  .create {
+    svg {
+      path {
+        fill: var(--window-text);
+      }
+    }
     font-size: 20px;
+  }
+
+  .close {
+    font-size: 25px;
   }
 }
 

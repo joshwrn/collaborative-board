@@ -2,24 +2,25 @@
 import type { FC } from 'react'
 import React from 'react'
 import styles from './ContextMenu.module.scss'
-import { useAppStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { BsTrash3 as TrashIcon } from 'react-icons/bs'
 import { usePreventScroll } from '@/utils/usePreventScroll'
-import { useShallow } from 'zustand/react/shallow'
+import { match } from 'ts-pattern'
+import { nanoid } from 'nanoid'
+import { createMockPrompt } from '@/mock/mock-items'
 
 export const ContextMenu: FC = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      contextMenu: state.contextMenu,
-      setContextMenu: state.setContextMenu,
-      zoom: state.zoom,
-      pan: state.pan,
-    })),
-  )
+  const state = useStore(['contextMenu', 'setState', 'zoom', 'pan'])
   const ref = React.useRef<HTMLDivElement>(null)
   usePreventScroll({ enabled: state.contextMenu !== null })
-  useOutsideClick({ action: () => state.setContextMenu(null), refs: [ref] })
+  useOutsideClick({
+    action: () =>
+      state.setState((draft) => {
+        draft.contextMenu = null
+      }),
+    refs: [ref],
+  })
   if (!state.contextMenu) return null
   return (
     <container
@@ -37,21 +38,28 @@ export const ContextMenu: FC = () => {
 }
 
 const MenuItems = () => {
-  const state = useAppStore((state) => ({
-    contextMenu: state.contextMenu,
-    setContextMenu: state.setContextMenu,
-    removeConnection: state.removeConnection,
-    deleteItem: state.deleteItem,
-  }))
+  const state = useStore([
+    'contextMenu',
+    'removeConnection',
+    'deleteItem',
+    'createItem',
+    'toggleOpenWindow',
+    'setOneWindow',
+    'setState',
+    'createNewWindow',
+  ])
   if (state.contextMenu === null) return null
-  const close = () => state.setContextMenu(null)
-  switch (state.contextMenu.elementType) {
-    case 'connections': {
+  const close = () =>
+    state.setState((draft) => {
+      draft.contextMenu = null
+    })
+  return match(state.contextMenu)
+    .with({ elementType: 'connections' }, (value) => {
       return (
         <item
           className={styles.item}
           onClick={() => {
-            state.removeConnection(state.contextMenu?.id ?? '')
+            state.removeConnection(value.id ?? '')
             close()
           }}
         >
@@ -59,13 +67,13 @@ const MenuItems = () => {
           <TrashIcon />
         </item>
       )
-    }
-    case 'item': {
+    })
+    .with({ elementType: 'item' }, (value) => {
       return (
         <item
           className={styles.item}
           onClick={() => {
-            state.deleteItem(state.contextMenu?.id ?? '')
+            state.deleteItem(value.id ?? '')
             close()
           }}
         >
@@ -73,6 +81,24 @@ const MenuItems = () => {
           <TrashIcon />
         </item>
       )
-    }
-  }
+    })
+    .with({ elementType: 'space' }, (value) => {
+      return (
+        <item
+          className={styles.item}
+          onClick={() => {
+            const id = state.createNewWindow()
+            state.setOneWindow(id, {
+              x: value.data.x,
+              y: value.data.y,
+            })
+
+            close()
+          }}
+        >
+          <p>New Window</p>
+        </item>
+      )
+    })
+    .otherwise(() => null)
 }

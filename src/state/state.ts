@@ -1,6 +1,6 @@
 import type { Mutate, StoreApi, StoreMutatorIdentifier } from 'zustand'
 
-import { AppStore } from './gen-state'
+import { Store } from './gen-state'
 import { produce } from 'immer'
 
 type Get<T, K, F> = K extends keyof T ? T[K] : F
@@ -10,8 +10,8 @@ export type AppStateCreator<
   Mos extends [StoreMutatorIdentifier, unknown][] = [],
   U = T,
 > = ((
-  setState: Get<Mutate<StoreApi<AppStore>, Mis>, `setState`, never>,
-  getState: Get<Mutate<StoreApi<AppStore>, Mis>, `getState`, never>,
+  setState: Get<Mutate<StoreApi<Store>, Mis>, `setState`, never>,
+  getState: Get<Mutate<StoreApi<Store>, Mis>, `getState`, never>,
   store: Mutate<StoreApi<T>, Mis>,
 ) => U) & {
   $$storeMutators?: Mos
@@ -23,15 +23,9 @@ export type StateCallback<T> = ((prev: T) => T) | T
 
 export type Setter<T> = (callback: StateCallback<T>) => void
 
-export const stateSetter = <T extends keyof AppStore>(
-  set: (
-    partial:
-      | AppStore
-      | Partial<AppStore>
-      | ((state: AppStore) => AppStore | Partial<AppStore>),
-    replace?: boolean | undefined,
-  ) => void,
-  newValue: StateCallback<AppStore[T]>,
+export const stateSetter = <T extends keyof Store>(
+  set: Set,
+  newValue: StateCallback<Store[T]>,
   key: T,
 ) => {
   set((state) => {
@@ -50,15 +44,11 @@ export const stateSetter = <T extends keyof AppStore>(
   })
 }
 
-export const produceState = (
-  set: (
-    partial:
-      | AppStore
-      | Partial<AppStore>
-      | ((state: AppStore) => AppStore | Partial<AppStore>),
-    replace?: boolean | undefined,
-  ) => void,
-  newState: (draft: AppStore) => void,
-) => {
-  return set(produce<AppStore>(newState))
+export type Set = (
+  partial: Store | Partial<Store> | ((state: Store) => Store | Partial<Store>),
+  replace?: boolean | undefined,
+) => void
+
+export const produceState = (set: Set, newState: (draft: Store) => void) => {
+  return set(produce<Store>(newState))
 }

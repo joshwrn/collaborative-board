@@ -1,0 +1,12 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  svg {
+    transition: transform 0.2s ease-in-out;
+  }
+  &:hover {
+    svg {
+      transform: scale(1.2) rotate(-40deg);
+    }
+  }
+}

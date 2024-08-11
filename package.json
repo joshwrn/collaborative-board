@@ -7,13 +7,17 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "gen-store": "npx ts-node ./src/scripts/generate-store.ts --watch",
-    "all": "concurrently \"npm run dev\" \"npm run gen-store\""
+    "gen-store": "node --loader ts-node/esm ./src/scripts/generate-store.ts",
+    "gen-api-routes": "node --loader ts-node/esm ./src/scripts/generate-api-routes.ts --watch",
+    "create-new-store": "node --loader ts-node/esm ./src/scripts/create-new-store.ts",
+    "all": "concurrently \"npm run dev\" \"npm run gen-api-routes\""
   },
   "dependencies": {
+    "@fal-ai/serverless-client": "^0.13.0",
+    "@fal-ai/serverless-proxy": "^0.7.4",
     "@floating-ui/react": "^0.26.17",
     "@react-three/fiber": "^8.15.14",
-    "@stylexjs/stylex": "^0.3.0",
+    "@tanstack/react-query": "^5.51.11",
     "@types/three": "^0.160.0",
     "@use-gesture/react": "^10.3.0",
     "axios": "^1.6.2",
@@ -29,16 +33,16 @@
     "react-draggable": "^4.4.6",
     "react-fps-stats": "^0.3.1",
     "react-icons": "^4.12.0",
+    "react-useanimations": "^2.10.0",
     "three": "^0.160.0",
     "ts-pattern": "^5.0.6",
-    "zustand": "^4.4.7"
+    "zustand": "^4.4.7",
+    "zustand-state-inspector": "^0.1.4"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.3.1",
     "@playwright/test": "^1.44.1",
-    "@stylexjs/dev-runtime": "^0.3.0",
-    "@stylexjs/eslint-plugin": "^0.3.0",
-    "@stylexjs/nextjs-plugin": "^0.3.0",
+    "@tanstack/eslint-plugin-query": "^5.51.12",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20",
     "@types/react": "^18",
@@ -48,7 +52,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "sass": "^1.69.5",
-    "simple-zustand-devtools": "^1.1.0",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
   }
 }

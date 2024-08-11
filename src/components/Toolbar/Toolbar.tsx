@@ -1,7 +1,6 @@
 import React from 'react'
 import style from './Toolbar.module.scss'
-import { useAppStore } from '@/state/gen-state'
-import { useShallow } from 'zustand/react/shallow'
+import { useStore } from '@/state/gen-state'
 import { PiPaintBrushThin } from 'react-icons/pi'
 import {
   FloatingPortal,
@@ -13,17 +12,13 @@ import { useOutsideClick } from '@/utils/useOutsideClick'
 import { joinClasses } from '@/utils/joinClasses'
 
 export const Toolbar: React.FC = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      color: state.drawColor,
-      setColor: state.setDrawColor,
-      tool: state.tool,
-      setTool: state.setTool,
-      drawSize: state.drawSize,
-      setDrawSize: state.setDrawSize,
-      canvasIsFocused: state.canvasIsFocused,
-    })),
-  )
+  const state = useStore([
+    'drawColor',
+    'tool',
+    'drawSize',
+    'canvasIsFocused',
+    'setState',
+  ])
 
   const [open, setOpen] = React.useState<boolean>(false)
   const { refs, strategy, x, y } = useFloating({
@@ -53,18 +48,29 @@ export const Toolbar: React.FC = () => {
   return (
     <div className={style.wrapper} id="toolbar">
       <button>
-        <PiPaintBrushThin size={20} onClick={() => state.setTool('draw')} />
+        <PiPaintBrushThin
+          size={20}
+          onClick={() =>
+            state.setState((draft) => {
+              draft.tool = 'draw'
+            })
+          }
+        />
       </button>
       <button>
         <div
           className={style.colorButton}
-          style={{ backgroundColor: state.color }}
+          style={{ backgroundColor: state.drawColor }}
         />
         <input
           className={style.colorInput}
           type="color"
-          value={state.color}
-          onChange={(e) => state.setColor(e.target.value)}
+          value={state.drawColor}
+          onChange={(e) =>
+            state.setState((draft) => {
+              draft.drawColor = e.target.value
+            })
+          }
         />
       </button>
       <button ref={refs.setReference} onClick={() => setOpen(!open)}>
@@ -77,7 +83,6 @@ export const Toolbar: React.FC = () => {
                 left: refs.reference.current?.getBoundingClientRect().left,
                 top: y,
                 width: 'fit-content',
-                // refs.reference.current?.getBoundingClientRect().width ?? 0,
               }}
               className={joinClasses(style.slider, 'dropdown-list')}
               onClick={() => setOpen(false)}
@@ -87,7 +92,11 @@ export const Toolbar: React.FC = () => {
                 min="1"
                 max="100"
                 value={state.drawSize}
-                onChange={(e) => state.setDrawSize(+e.target.value)}
+                onChange={(e) =>
+                  state.setState((draft) => {
+                    draft.drawSize = +e.target.value
+                  })
+                }
               />
             </section>
           </FloatingPortal>

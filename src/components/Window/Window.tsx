@@ -3,37 +3,33 @@ import type { FC } from 'react'
 import React from 'react'
 
 import styles from './Window.module.scss'
-import { useAppStore } from '@/state/gen-state'
+import { useFullStore, useStore } from '@/state/gen-state'
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
 import { WindowBorder } from './WindowBorder'
-import { IoAddOutline } from 'react-icons/io5'
-import { ConnectorOverlay } from './ConnectorOverlay'
-import { useShallow } from 'zustand/react/shallow'
-import { Item, ItemBody } from '@/state/items'
+import { Item, ItemBody, ItemBodyText } from '@/state/items'
 import { WINDOW_ATTRS, WindowType } from '@/state/windows'
 import { match } from 'ts-pattern'
 import { joinClasses } from '@/utils/joinClasses'
-import { RotationPoints } from './RotationPoints'
 import { Canvas } from '../Canvas/Canvas'
 import { useOutsideClick } from '@/utils/useOutsideClick'
+import { GenerateButton } from './GenerateButton'
+import { LoadingOverlay } from './LoadingOverlay'
+import { RandomizePromptButton } from './RandomizePromptButton'
+import { RotationPoints } from './RotationPoints'
 import { WindowMenu } from './WindowMenu/WindowMenu'
 
 const Text = ({
-  content,
+  textRef,
   windowId,
   contentId,
 }: {
-  content: string
+  textRef: React.MutableRefObject<string>
   windowId: string
   contentId: string
 }) => {
   const ref = React.useRef<HTMLParagraphElement>(null)
-  const state = useAppStore(
-    useShallow((state) => ({
-      editItemContent: state.editItemContent,
-    })),
-  )
-  const textRef = React.useRef(content)
+  const state = useStore(['editItemContent', 'editItem'])
+
   return (
     <p
       ref={ref}
@@ -41,6 +37,9 @@ const Text = ({
       suppressContentEditableWarning
       onInput={() => {
         if (!ref.current) return
+        state.editItem(windowId, {
+          subject: ref.current.innerText,
+        })
         state.editItemContent(windowId, {
           type: 'text',
           content: ref.current.innerText,
@@ -53,78 +52,112 @@ const Text = ({
   )
 }
 
+const Prompt: React.FC<{ value: ItemBodyText; windowId: string }> = ({
+  value,
+  windowId,
+}) => {
+  const textRef = React.useRef(value.content)
+  return (
+    <div className={styles.textContainer}>
+      <header>
+        <h2>Prompt</h2>
+        <RandomizePromptButton
+          windowId={windowId}
+          contentId={value.id}
+          textRef={textRef}
+        />
+      </header>
+      <Text
+        textRef={textRef}
+        key={value.id}
+        windowId={windowId}
+        contentId={value.id}
+      />
+    </div>
+  )
+}
+
 const matchBody = (
   body: ItemBody,
   i: number,
   window: WindowType,
+  isPinned: boolean,
 ): JSX.Element | JSX.Element[] | null => {
   return match(body)
     .with({ type: 'canvas' }, (value) => (
       <Canvas
+        isPinned={isPinned}
         key={i}
         window={window}
         contentId={body.id}
         content={value.content}
       />
     ))
-    .with({ type: 'text' }, (value) => (
-      <Text
-        key={i}
-        content={value.content}
-        windowId={window.id}
-        contentId={body.id}
-      />
-    ))
-    .with(
-      {
-        type: 'iframe',
-      },
-      (value) => (
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-          key={i}
-        >
-          <iframe
-            style={{
-              width: '100%',
-              height: '100%',
-              border: 'none',
-              borderRadius: '10px',
-            }}
-            {...value.content}
-          />
-        </div>
-      ),
-    )
+    .with({ type: 'text' }, (value) => {
+      return <Prompt key={i} value={value} windowId={window.id} />
+    })
     .otherwise(() => null)
+}
+
+const returnWindowStyle = (
+  window: WindowType,
+  isFullScreen: boolean,
+  isPinned?: boolean,
+): React.CSSProperties => {
+  if (isFullScreen) {
+    return {
+      left: 0,
+      top: 0,
+      position: 'relative',
+      width: WINDOW_ATTRS.defaultFullScreenSize.width + 'px',
+      height: WINDOW_ATTRS.defaultFullScreenSize.height + 'px',
+      rotate: '0deg',
+      zIndex: 'var(--fullscreen-window-z-index)',
+    }
+  }
+  if (isPinned) {
+    return {
+      left: 0,
+      top: 0,
+      position: 'relative',
+      width: WINDOW_ATTRS.defaultSize.width + 'px',
+      height: WINDOW_ATTRS.defaultSize.height + 'px',
+      rotate: '0deg',
+    }
+  }
+  return {
+    left: window.x,
+    top: window.y,
+    // transformOrigin: '0 0',
+    width: `${window.width}px`,
+    height: `${window.height}px`,
+    rotate: `${window.rotation}deg`,
+    zIndex: window.zIndex,
+  }
 }
 
 const WindowInternal: FC<{
   item: Item
   window: WindowType
   isFullScreen: boolean
-}> = ({ item, window, isFullScreen }) => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      close: state.toggleOpenWindow,
-      setWindow: state.setOneWindow,
-      bringToFront: state.reorderWindows,
-      connections: state.connections,
-      setActiveConnection: state.setActiveConnection,
-      makeConnection: state.makeConnection,
-      setFullScreen: state.setFullScreenWindow,
-      setHoveredWindow: state.setHoveredWindow,
-      snapToWindows: state.snapToWindows,
-      setSnappingToPositions: state.setSnapLines,
-      spaceMousePosition: state.spaceMousePosition,
-      zoom: state.zoom,
-      setSelectedWindow: state.setSelectedWindow,
-      selectedWindow: state.selectedWindow,
-    })),
-  )
+  isPinned: boolean
+}> = ({ item, window, isFullScreen, isPinned }) => {
+  const state = useStore([
+    'toggleOpenWindow',
+    'setOneWindow',
+    'reorderWindows',
+    'connections',
+    'makeConnection',
+    'setFullScreenWindow',
+    'snapToWindows',
+    'setSnapLines',
+    'spaceMousePosition',
+    'zoom',
+    'selectedWindow',
+    'setState',
+    'dev_allowWindowRotation',
+    'generatingCanvas',
+  ])
 
   const realPosition = React.useRef({ x: window.x, y: window.y })
   const nodeRef = React.useRef<HTMLDivElement>(null)
@@ -136,7 +169,9 @@ const WindowInternal: FC<{
     selectors: ['#toolbar', '.dropdown-list'],
     action: () => {
       if (state.selectedWindow === item.id) {
-        state.setSelectedWindow(null)
+        state.setState((draft) => {
+          draft.selectedWindow = null
+        })
       }
     },
   })
@@ -145,7 +180,7 @@ const WindowInternal: FC<{
     if (!(e instanceof MouseEvent)) return
     const { movementX, movementY } = e
     if (!movementX && !movementY) return
-    const zoom = useAppStore.getState().zoom
+    const zoom = useFullStore.getState().zoom
     const scaledPosition = {
       x: movementX / zoom,
       y: movementY / zoom,
@@ -162,12 +197,13 @@ const WindowInternal: FC<{
   const onDragStart = (e: DraggableEvent, data: DraggableData) => {}
 
   const onDragStop = (e: DraggableEvent, data: DraggableData) => {
-    state.setSnappingToPositions([])
+    state.setSnapLines([])
   }
 
-  const toConnections = React.useMemo(
-    () => state.connections.filter((c) => c.to === item.id),
-    [state.connections, item.id],
+  const canvasesLoading = React.useMemo(
+    () =>
+      state.generatingCanvas.filter((c) => c.generatedFromItemId === item.id),
+    [state.generatingCanvas, item.id],
   )
 
   const fromConnections = React.useMemo(
@@ -188,83 +224,95 @@ const WindowInternal: FC<{
         ref={nodeRef}
         className={joinClasses(styles.wrapper, 'window')}
         id={`window-${item.id}`}
-        style={{
-          ...(isFullScreen
-            ? {
-                left: 0,
-                top: 0,
-                position: 'relative',
-                width: WINDOW_ATTRS.defaultFullScreenSize.width + 'px',
-                height: WINDOW_ATTRS.defaultFullScreenSize.height + 'px',
-                rotate: '0deg',
-                zIndex: 'var(--fullscreen-window-z-index)',
-              }
-            : {
-                left: window.x,
-                top: window.y,
-                // transformOrigin: '0 0',
-                width: `${window.width}px`,
-                height: `${window.height}px`,
-                rotate: `${window.rotation}deg`,
-                zIndex: window.zIndex,
-              }),
+        style={returnWindowStyle(window, isFullScreen, isPinned)}
+        onMouseEnter={() => {
+          state.setState((draft) => {
+            draft.hoveredWindow = item.id
+          })
         }}
-        onMouseEnter={() => state.setHoveredWindow(item.id)}
-        onMouseLeave={() => state.setHoveredWindow(null)}
+        onMouseLeave={() => {
+          state.setState((draft) => {
+            draft.hoveredWindow = null
+          })
+        }}
         onClick={(e) => {
           e.stopPropagation()
         }}
         onPointerDown={() => {
-          state.setSelectedWindow(item.id)
-          state.bringToFront(item.id)
+          state.setState((draft) => {
+            draft.selectedWindow = item.id
+          })
+          state.reorderWindows(item.id)
         }}
       >
-        <RotationPoints id={item.id} window={window} />
+        {state.dev_allowWindowRotation && (
+          <RotationPoints id={item.id} window={window} />
+        )}
         <nav
           className={`${styles.topBar} handle`}
           onDoubleClick={() =>
-            state.setFullScreen((prev) => (prev ? null : item.id))
+            state.setFullScreenWindow((prev) => (prev ? null : item.id))
           }
         >
           <button
             className={styles.close}
             onClick={() => {
-              state.setFullScreen(null)
-              state.close(item.id)
+              if (isPinned) {
+                state.setState((draft) => {
+                  draft.pinnedWindow = null
+                })
+                return
+              }
+              if (isFullScreen) {
+                state.setFullScreenWindow(null)
+                return
+              }
+              state.toggleOpenWindow(item.id)
             }}
           />
-          <button
-            className={!isFullScreen ? styles.full : styles.min}
-            onClick={() =>
-              state.setFullScreen((prev) => (prev ? null : item.id))
-            }
-          />
+          {!isFullScreen && !isPinned && (
+            <button
+              className={styles.full}
+              onClick={() =>
+                state.setFullScreenWindow((prev) => (prev ? null : item.id))
+              }
+            />
+          )}
         </nav>
 
         <header className={styles.titleBar}>
           <section>
             <WindowMenu id={item.id} />
           </section>
-          <section className={styles.title}></section>
-          <section className={styles.connections}>
-            <inner>
-              <p>
-                Incoming <strong>{toConnections.length}</strong>
-              </p>
-              <p>
-                Outgoing <strong>{fromConnections.length}</strong>
-              </p>
-            </inner>
-            <button onClick={() => state.setActiveConnection({ from: item.id })}>
-              <IoAddOutline />
-            </button>
+          <section className={styles.right}>
+            <GenerateButton item={item} />
+            <section className={styles.connections}>
+              <inner>
+                <p>
+                  Loading <strong>{canvasesLoading.length}</strong>
+                </p>
+                <p>
+                  Finished <strong>{fromConnections.length}</strong>
+                </p>
+              </inner>
+              {/* <button
+                onClick={() => state.setActiveConnection({ from: item.id })}
+              >
+                <IoAddOutline />
+              </button> */}
+            </section>
           </section>
         </header>
 
-        <main className={styles.content}>
-          {item.body.map((body, i) => matchBody(body, i, window))}
+        <main
+          className={styles.content}
+          style={{
+            overflowY: (isFullScreen ?? isPinned) ? 'auto' : 'hidden',
+          }}
+        >
+          {item.body.map((body, i) => matchBody(body, i, window, !!isPinned))}
         </main>
-        <ConnectorOverlay id={item.id} />
+        <LoadingOverlay itemId={item.id} />
 
         <WindowBorder
           width={width}
@@ -272,6 +320,7 @@ const WindowInternal: FC<{
           id={item.id}
           position={{ x: window.x, y: window.y }}
           isFullScreen={isFullScreen}
+          isPinned={isPinned}
         />
       </div>
     </DraggableCore>
@@ -281,19 +330,21 @@ const WindowInternal: FC<{
 export const Window = React.memo(WindowInternal)
 
 const WindowsInternal: FC = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      items: state.items,
-      windows: state.windows,
-      fullScreenWindow: state.fullScreenWindow,
-    })),
-  )
+  const state = useStore([
+    'items',
+    'windows',
+    'fullScreenWindow',
+    'pinnedWindow',
+  ])
   const itemsMap = React.useMemo(
     () =>
-      state.items.reduce((acc, item) => {
-        acc[item.id] = item
-        return acc
-      }, {} as Record<string, Item>),
+      state.items.reduce(
+        (acc, item) => {
+          acc[item.id] = item
+          return acc
+        },
+        {} as Record<string, Item>,
+      ),
     [state.items],
   )
   return (
@@ -301,13 +352,16 @@ const WindowsInternal: FC = () => {
       {state.windows.map((window) => {
         const item = itemsMap[window.id]
         if (state.fullScreenWindow === window.id) return null
+        // if (state.pinnedWindow === window.id) return null
         if (!window) return null
+        if (!item) return null
         return (
           <Window
             key={item.id}
             item={item}
             window={window}
             isFullScreen={false}
+            isPinned={false}
           />
         )
       })}

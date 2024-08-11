@@ -1,10 +1,8 @@
 .wrapper {
   width: 100%;
-  height: 30px;
+  height: var(--dropdown-menu-height);
   // border: 1px solid red;
   flex-shrink: 1;
-  background-color: var(--charcoal);
-  border-bottom: 1px solid var(--border);
   padding: 0 35px;
   display: flex;
   gap: 20px;
@@ -19,39 +17,14 @@
   // border: 1px solid red;
 }
 
-.submenu {
-  position: absolute;
-  top: 30px;
-  left: 0;
-  width: fit-content;
-  height: 100%;
-  background-color: red;
-  z-index: 99999;
-  li {
-    list-style: none;
-    padding: 10px;
-    background-color: var(--charcoal);
-    color: var(--window-text);
-    border: 1px solid var(--border);
-    border-top: none;
-    cursor: pointer;
-    .customCreate {
-      display: flex;
-      gap: 5px;
-      input {
-        width: 50px;
-        padding: 0px;
-        background-color: var(--charcoal);
-        color: var(--window-text);
-        outline: none;
-        border: none;
-        border: 1px solid var(--border);
-      }
-    }
-  }
-}
-
 .zoom {
+  width: 100%;
+  align-items: center;
+  text-align: center;
+  padding: 0 10px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border);
   p {
     font-size: var(--font--2);
     text-transform: capitalize;
@@ -61,7 +34,9 @@
   flex-direction: column;
   gap: 10px;
   > section {
+    width: 100%;
     display: flex;
+    justify-content: space-between;
     gap: 20px;
     > button {
       &[disabled] {

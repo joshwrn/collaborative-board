@@ -1,38 +1,72 @@
 import { Item } from '@/state/items'
 import { nanoid } from 'nanoid'
 import { faker } from '@faker-js/faker'
+import { MOCK_NOUNS } from './mockNouns'
+
+const VOWELS = ['a', 'e', 'i', 'o', 'u']
+
+const wordWithArticle = (word: string) => {
+  const lWord = word.toLowerCase()
+  if (lWord.endsWith('s')) {
+    return lWord
+  }
+  if (VOWELS.includes(lWord[0])) {
+    return 'an ' + lWord
+  }
+  return 'a ' + lWord
+}
+
+export const createMockPrompt = () => {
+  const typeOfArt = faker.helpers.arrayElement([
+    'painting',
+    'drawing',
+    'illustration',
+    'digital art',
+    'photograph',
+    'graphic design',
+    'watercolor painting',
+    'abstract art',
+  ])
+  const subject = faker.helpers.arrayElement(MOCK_NOUNS)
+
+  const style = faker.helpers.arrayElement([
+    'realistic',
+    'abstract',
+    'surrealistic',
+    'hyperrealistic',
+    'surreal',
+    'fantasy',
+    'magical realism',
+    'photorealistic',
+    'expressionist',
+    'gothic',
+    'renaissance',
+  ])
+
+  return [style, typeOfArt, 'of', wordWithArticle(subject)].join(' ')
+}
 
 export const createMockItem = (length: number): Item[] =>
   Array.from({ length }, () => {
-    const subject = faker.word.words()
-    const body = faker.lorem.paragraphs(3)
+    const prompt = createMockPrompt()
+
     return {
       id: nanoid(),
-      subject,
-      body: [{ id: nanoid(), type: 'text', content: body }],
+      subject: prompt,
+      body: [
+        {
+          id: nanoid(),
+          type: 'text',
+          content: prompt,
+        },
+        {
+          id: nanoid(),
+          type: 'canvas',
+          content: {
+            base64: '',
+          },
+        },
+      ],
       members: [],
     }
   })
-
-export const MOCK_ITEMS: Item[] = [
-  {
-    id: nanoid(),
-    subject: 'New Windows',
-    members: [],
-    body: [
-      {
-        id: nanoid(),
-        type: 'iframe',
-        content: {
-          src: 'https://codesandbox.io/embed/sbf2i?view=preview&module=%2Fsrc%2FEffects.js&hidenavigation=1',
-          sandbox:
-            'allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts',
-          allow:
-            'accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking',
-          title: 'Sparks and effects',
-        },
-      },
-    ],
-  },
-  ...createMockItem(100),
-]

@@ -1,0 +1,41 @@
+.toast {
+  background-color: var(--toast-background);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--toast-border);
+  color: var(--toast-text);
+  padding: 20px 20px;
+  min-height: 65px;
+  height: fit-content;
+  width: 312px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  position: relative;
+}
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  overflow: hidden;
+}
+.wrapper {
+  position: absolute;
+  bottom: 40px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 99999;
+}
+.progress {
+  background-color: var(--toast-progress-bar);
+  height: 3px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}

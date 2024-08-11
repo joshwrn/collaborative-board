@@ -10,7 +10,7 @@
   justify-content: center;
   align-items: center;
   gap: 10px;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: var(--toolbar-background);
   border: 1px solid var(--border);
   z-index: var(--toolbar-z-index);
   button {

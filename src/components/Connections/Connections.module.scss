@@ -48,14 +48,14 @@
   }
 }
 
-.selected {
-  @include line(var(--blue-highlight));
-}
+// .selected {
+//   @include line(var(--blue-highlight));
+// }
 
 .from {
-  @include line(#3fcd6f);
+  @include line(var(--connections-from-color));
 }
 
 .to {
-  @include line(#f14971);
+  @include line(var(--connections-to-color));
 }

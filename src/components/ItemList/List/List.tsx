@@ -4,28 +4,26 @@ import React from 'react'
 
 import { ItemComponent } from '../Item/Item'
 import styles from './List.module.scss'
-import { useAppStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 import { TfiWrite } from 'react-icons/tfi'
-import { useShallow } from 'zustand/react/shallow'
+import { IoClose } from 'react-icons/io5'
 import { createMockItem } from '@/mock/mock-items'
 
-export const ListInternal: FC = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      items: state.items,
-      setItems: state.setItems,
-      windows: state.windows,
-    })),
-  )
+const ListInternal: FC = () => {
+  const state = useStore(['items', 'setState', 'windows', 'generatingCanvas'])
+
   return (
     <wrapper className={styles.wrapper}>
       <header className={styles.header}>
         <button
+          className={styles.close}
           onClick={() => {
-            state.setItems((items) => [...items, ...createMockItem(1)])
+            state.setState((draft) => {
+              draft.showItemList = false
+            })
           }}
         >
-          <TfiWrite />
+          <IoClose />
         </button>
       </header>
       <container className={styles.listContainer}>
@@ -33,6 +31,11 @@ export const ListInternal: FC = () => {
           <ItemComponent
             key={item.id}
             item={item}
+            isGeneratingCanvas={
+              !!state.generatingCanvas.find(
+                (canvas) => canvas.newItemId === item.id,
+              )
+            }
             isOpen={state.windows.some((window) => window.id === item.id)}
           />
         ))}

@@ -1,0 +1,10 @@
+.container {
+  position: fixed;
+  bottom: 20px;
+  left: calc(var(--space-outer-padding) + 20px);
+  transform-origin: 0 100%;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

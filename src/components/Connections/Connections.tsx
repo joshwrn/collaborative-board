@@ -1,5 +1,3 @@
-import { useAppStore } from '@/state/gen-state'
-
 import type { FC } from 'react'
 import { WindowType } from '@/state/windows'
 import { IoIosArrowForward } from 'react-icons/io'
@@ -10,9 +8,9 @@ import {
   createLineBetweenWindows,
 } from '@/logic/createLineBetweenWindowSides'
 import { createLineFromWindowToMouse } from '@/logic/createLineFromWindowToMouse'
-import { useShallow } from 'zustand/react/shallow'
 import { Connection as ConnectionType } from '@/state/connections'
 import React from 'react'
+import { useStore } from '@/state/gen-state'
 
 const ConnectionInternal = ({
   from,
@@ -31,12 +29,7 @@ const ConnectionInternal = ({
   isActive?: boolean
   hoveredItem: 'none' | 'from' | 'to'
 }) => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      openContextMenu: state.openContextMenu,
-      contextMenu: state.contextMenu,
-    })),
-  )
+  const state = useStore(['openContextMenu', 'contextMenu'])
 
   const properties = React.useMemo(
     () =>
@@ -46,19 +39,22 @@ const ConnectionInternal = ({
     [from, to, mousePosition],
   )
 
-  const isSelected = state.contextMenu?.id === id
+  const isSelected =
+    state.contextMenu?.elementType === 'connections' &&
+    state.contextMenu?.id === id
+
   if (!properties) return null
   const { line, distance } = properties
   return (
     <div
-      onContextMenu={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        state.openContextMenu({
-          id,
-          elementType: 'connections',
-        })
-      }}
+      // onContextMenu={(e) => {
+      //   e.preventDefault()
+      //   e.stopPropagation()
+      //   state.openContextMenu({
+      //     id,
+      //     elementType: 'connections',
+      //   })
+      // }}
       className={joinClasses(
         styles.line,
         createBackgroundClass(!!isActive, isSelected, hoveredItem),
@@ -116,23 +112,24 @@ const createBackgroundClass = (
 }
 
 export const ConnectionsInternal: FC = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      connections: state.connections,
-      openWindows: state.windows,
-      hoveredItem: state.hoveredItem,
-      hoveredWindow: state.hoveredWindow,
-      showConnections: state.showConnections,
-      zoom: state.zoom,
-    })),
-  )
+  const state = useStore([
+    'connections',
+    'windows',
+    'hoveredItem',
+    'hoveredWindow',
+    'showConnections',
+    'zoom',
+  ])
   const windowsMap = React.useMemo(
     () =>
-      state.openWindows.reduce((acc, window) => {
-        acc[window.id] = window
-        return acc
-      }, {} as Record<string, WindowType>),
-    [state.openWindows],
+      state.windows.reduce(
+        (acc, window) => {
+          acc[window.id] = window
+          return acc
+        },
+        {} as Record<string, WindowType>,
+      ),
+    [state.windows],
   )
   if (!state.showConnections) {
     return null

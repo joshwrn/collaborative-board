@@ -1,23 +1,51 @@
-import { AppStateCreator, Setter, stateSetter } from './state'
+import { AppStateCreator, produceState } from './state'
+
+export type GeneratedCanvas = {
+  canvasId: string
+  itemId: string
+  generatedFromItemId: string
+}
 
 export type CanvasStore = {
   tool: 'draw'
-  setTool: Setter<'draw'>
   drawColor: string
-  setDrawColor: Setter<string>
   drawSize: number
-  setDrawSize: Setter<number>
   canvasIsFocused: boolean
-  setCanvasIsFocused: Setter<boolean>
+  generatedCanvas: GeneratedCanvas | null
+  generatingCanvas: {
+    newItemId: string
+    generatedFromItemId: string
+    progress: number
+  }[]
+  updateGeneratingCanvasProgress: (itemId: string, progress: number) => void
+  removeGeneratingCanvasItem: (itemId: string) => void
 }
 
 export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
   tool: 'draw',
-  setTool: (setter) => stateSetter(set, setter, `tool`),
   drawSize: 10,
-  setDrawSize: (setter) => stateSetter(set, setter, `drawSize`),
-  drawColor: '#ff0000',
-  setDrawColor: (setter) => stateSetter(set, setter, `drawColor`),
+  drawColor: 'rgb(0, 112, 243)',
   canvasIsFocused: false,
-  setCanvasIsFocused: (setter) => stateSetter(set, setter, `canvasIsFocused`),
+  generatedCanvas: null,
+  generatingCanvas: [],
+  updateGeneratingCanvasProgress: (itemId: string, progress: number) => {
+    produceState(set, (draft) => {
+      draft.generatingCanvas = draft.generatingCanvas.map((i) => {
+        if (i.newItemId === itemId) {
+          return {
+            ...i,
+            progress,
+          }
+        }
+        return i
+      })
+    })
+  },
+  removeGeneratingCanvasItem: (itemId: string) => {
+    produceState(set, (draft) => {
+      draft.generatingCanvas = draft.generatingCanvas.filter(
+        (i) => i.newItemId !== itemId,
+      )
+    })
+  },
 })

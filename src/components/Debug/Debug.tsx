@@ -1,33 +1,27 @@
 'use client'
 import React from 'react'
 import style from './Debug.module.scss'
-import { useAppStore } from '@/state/gen-state'
-import { useShallow } from 'zustand/react/shallow'
-import { joinClasses } from '@/utils/joinClasses'
+import { useStore } from '@/state/gen-state'
 
 const showDebug = true
 
 export const Debug: React.FC = () => {
-  const state = useAppStore(
-    useShallow((state) => ({
-      zoomFocusPoint: state.debug_zoomFocusPoint,
-      randomPoints: state.debug_randomPoints,
-    })),
-  )
+  const state = useStore(['debug_zoomFocusPoint', 'debug_randomPoints'])
+
   if (process.env.NEXT_PUBLIC_SHOW_DEBUG !== 'true' || !showDebug) {
     return null
   }
   return (
     <>
-      {state.zoomFocusPoint && (
+      {state.debug_zoomFocusPoint && (
         <div
           className={style.zoomFocusPoint}
           style={{
-            transform: `translate(${state.zoomFocusPoint.x}px, ${state.zoomFocusPoint.y}px)`,
+            transform: `translate(${state.debug_zoomFocusPoint.x}px, ${state.debug_zoomFocusPoint.y}px)`,
           }}
         />
       )}
-      {state.randomPoints.map((point, i) => {
+      {state.debug_randomPoints.map((point, i) => {
         return (
           <div
             key={i}
