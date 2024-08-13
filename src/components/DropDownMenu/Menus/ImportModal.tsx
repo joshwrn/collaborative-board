@@ -72,11 +72,7 @@ export const ImportModal: React.FC = () => {
             </div>
             <input type="file" onChange={handleFileChange} />
           </button>
-          <button
-            className={style.importButton}
-            disabled={!file}
-            // onClick={handleImport}
-          >
+          <button className={style.importButton} disabled={!file} type="submit">
             Import
           </button>
         </form>

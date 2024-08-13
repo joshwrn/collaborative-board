@@ -4,7 +4,6 @@ import style from '../DropDownMenu.module.scss'
 import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 
-import { IoSaveOutline } from 'react-icons/io5'
 import { FiTrash } from 'react-icons/fi'
 import { CiImport } from 'react-icons/ci'
 import { CiExport } from 'react-icons/ci'
@@ -15,7 +14,6 @@ export const FileMenu: React.FC = () => {
     'setState',
     'importState',
     'exportState',
-    'autoSaveEnabled',
     'promiseNotification',
     'showImportModal',
   ])
