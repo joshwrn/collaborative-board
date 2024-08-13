@@ -38,7 +38,7 @@ const returnAttributes = (
   }
 }
 
-export const Canvas: React.FC<{
+export const Canvas_Internal: React.FC<{
   window: WindowType
   contentId: string
   content: CanvasData
@@ -110,9 +110,6 @@ export const Canvas: React.FC<{
           })
         }}
         ref={canvasRef}
-        onMouseUp={() => {
-          console.log('onMouseUp')
-        }}
         onMouseMove={(e) => {
           if (!canvasRef.current) return
           if (!counterRef.current) return
@@ -162,3 +159,5 @@ export const Canvas: React.FC<{
     </div>
   )
 }
+
+export const Canvas = React.memo(Canvas_Internal)

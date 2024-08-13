@@ -151,7 +151,6 @@ const WindowInternal: FC<{
     'setFullScreenWindow',
     'snapToWindows',
     'setSnapLines',
-    'spaceMousePosition',
     'zoom',
     'selectedWindow',
     'setState',

@@ -5,7 +5,7 @@ import { useStore } from '@/state/gen-state'
 import { nanoid } from 'nanoid'
 import { BsFillPinAngleFill as PinIcon } from 'react-icons/bs'
 
-export const WindowMenu: React.FC<{
+export const WindowMenu_Internal: React.FC<{
   id: string
 }> = ({ id }) => {
   const state = useStore(['setState', 'pinnedWindow'])
@@ -37,3 +37,5 @@ export const WindowMenu: React.FC<{
     </div>
   )
 }
+
+export const WindowMenu = React.memo(WindowMenu_Internal)

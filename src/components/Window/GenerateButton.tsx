@@ -10,7 +10,7 @@ import { nanoid } from 'nanoid'
 import { useStore } from '@/state/gen-state'
 import { useWithRateLimit } from '@/utils/useWithRateLimit'
 
-export const GenerateButton: React.FC<{
+export const GenerateButton_Internal: React.FC<{
   item: Item
 }> = ({ item }) => {
   const generateImage = useConvertSketchToImage({ generatedFromItem: item })
@@ -56,3 +56,5 @@ export const GenerateButton: React.FC<{
     </section>
   )
 }
+
+export const GenerateButton = React.memo(GenerateButton_Internal)
