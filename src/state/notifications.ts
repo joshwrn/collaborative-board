@@ -10,6 +10,8 @@ export type Notification = {
   isLoading?: boolean
 }
 
+const NOTIFICATION_TIMEOUT = 3000
+
 export type NotificationsStore = {
   notifications: Notification[]
   setNotificationProgress: (id: string, progress: number) => void
@@ -18,7 +20,7 @@ export type NotificationsStore = {
   updateNotification: (id: string, update: Partial<Notification>) => void
   successNotification: (message: string) => Promise<void>
   promiseNotification: (
-    promise: () => Promise<any>,
+    promise: () => Promise<any> | void | undefined,
     notification: Partial<Notification>,
     options?: {
       onSuccess?: {
@@ -85,7 +87,7 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
       onProgress: (progress) => {
         state.setNotificationProgress(newNotification.id, 100 - progress)
       },
-      time: 3000,
+      time: NOTIFICATION_TIMEOUT,
     })
     state.removeNotification(newNotification.id)
   },
@@ -111,7 +113,7 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
         onProgress: (progress) => {
           state.setNotificationProgress(newNotification.id, 100 - progress)
         },
-        time: 3000,
+        time: NOTIFICATION_TIMEOUT,
       })
       state.removeNotification(newNotification.id)
     } catch (e: any) {
@@ -129,11 +131,12 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
         }
       })
       options?.onError?.run?.()
+      console.error('error', e)
       await mockProgress({
         onProgress: (progress) => {
           state.setNotificationProgress(newNotification.id, 100 - progress)
         },
-        time: 3000,
+        time: NOTIFICATION_TIMEOUT,
       })
       state.removeNotification(newNotification.id)
     }

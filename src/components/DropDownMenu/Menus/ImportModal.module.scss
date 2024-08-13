@@ -1,0 +1,109 @@
+.importModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999999;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: fit-content;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background-color: var(--window-header);
+  padding: 10px;
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    gap: 20px;
+  }
+}
+
+.chooseFileButton {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 300px;
+  border-radius: 5px;
+  font-size: 16px;
+  overflow: hidden;
+  position: relative;
+  .iconContainer {
+    padding: 10px;
+  }
+  &[data-role='uploaded'] {
+    border: 1px solid var(--success-color);
+    cursor: pointer;
+    svg {
+      stroke: var(--success-color);
+    }
+    .iconContainer {
+      border-right: 1px solid var(--success-color);
+    }
+    p {
+      color: var(--success-color);
+    }
+  }
+  &[data-role='not-uploaded'] {
+    border: 1px dashed var(--color-accent);
+    cursor: pointer;
+    svg {
+      fill: var(--color-accent);
+    }
+    .iconContainer {
+      border-right: 1px dashed var(--color-accent);
+    }
+    p {
+      color: var(--color-accent);
+    }
+  }
+  .textContainer {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  > input {
+    position: absolute;
+    transform: scale(9999);
+    opacity: 0;
+    cursor: pointer;
+  }
+}
+
+.importButton {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: var(--color-accent);
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  color: white;
+  cursor: pointer;
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: -2;
+}

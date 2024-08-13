@@ -2,6 +2,7 @@ import { Item } from '@/state/items'
 import { nanoid } from 'nanoid'
 import { faker } from '@faker-js/faker'
 import { MOCK_NOUNS } from './mockNouns'
+import { MOCK_BASE64 } from './mockBlob'
 
 const VOWELS = ['a', 'e', 'i', 'o', 'u']
 
@@ -63,7 +64,7 @@ export const createMockItem = (length: number): Item[] =>
           id: nanoid(),
           type: 'canvas',
           content: {
-            base64: '',
+            base64: MOCK_BASE64,
           },
         },
       ],
