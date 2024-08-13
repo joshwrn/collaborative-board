@@ -161,6 +161,14 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       ],
     })
     state.toggleOpenWindow(id)
+    state.setOneWindow(id, {
+      x:
+        (SPACE_ATTRS.size / 2) * state.zoom -
+        WINDOW_ATTRS.defaultSize.width / 2 / state.zoom,
+      y:
+        (SPACE_ATTRS.size / 2) * state.zoom -
+        WINDOW_ATTRS.defaultSize.height / 2 / state.zoom,
+    })
 
     return id
   },

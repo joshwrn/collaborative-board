@@ -139,13 +139,14 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
     color: var(--white-65);
   }
   input {
-    width: 50px;
-    padding: 0px;
+    max-width: 60px;
+    width: fit-content !important;
+    padding: 0 5px;
     background-color: var(--charcoal);
     color: var(--window-text);
     outline: none;
     border: none;
-    border: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
   }
   svg {
     pointer-events: none;
