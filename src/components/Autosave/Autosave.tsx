@@ -3,6 +3,7 @@ import style from './Autosave.module.scss'
 import { useAutoSave } from '@/utils/useAutoSave'
 import { joinClasses } from '@/utils/joinClasses'
 import { IoCheckmarkSharp as CheckIcon } from 'react-icons/io5'
+import { BsExclamationCircle as ErrorIcon } from 'react-icons/bs'
 import { RiRefreshLine } from 'react-icons/ri'
 import { AnimatePresence, motion } from 'framer-motion'
 
@@ -43,6 +44,22 @@ export const Autosave: React.FC = () => {
               }}
             />
             <p>Unsaved</p>
+          </motion.div>
+        ) : saveState.error ? (
+          <motion.div
+            key="error"
+            variants={variants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            <ErrorIcon
+              size={20}
+              style={{
+                stroke: '#ff0000',
+              }}
+            />
+            <p>{saveState.error}</p>
           </motion.div>
         ) : (
           <motion.div

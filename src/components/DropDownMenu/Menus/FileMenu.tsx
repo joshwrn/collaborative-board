@@ -6,15 +6,20 @@ import Dropdown from '@/ui/Dropdown'
 
 import { IoSaveOutline } from 'react-icons/io5'
 import { FiTrash } from 'react-icons/fi'
-import { RiRefreshLine } from 'react-icons/ri'
+import { CiImport } from 'react-icons/ci'
+import { CiExport } from 'react-icons/ci'
+import { ImportModal } from './ImportModal'
 
 export const FileMenu: React.FC = () => {
   const state = useStore([
     'setState',
-    'successNotification',
-    'saveToLocalStorage',
+    'importState',
+    'exportState',
     'autoSaveEnabled',
+    'promiseNotification',
+    'showImportModal',
   ])
+
   return (
     <item className={style.item}>
       <Dropdown.Menu
@@ -22,25 +27,43 @@ export const FileMenu: React.FC = () => {
         SelectedOption={() => <p>File</p>}
         Options={[
           <Dropdown.Item
-            key={'Save'}
-            onClick={() => {
-              state.saveToLocalStorage()
-              state.successNotification('Saved!')
-            }}
-            isChecked={false}
-            Icon={() => <IoSaveOutline />}
-            label1="Save"
-          />,
-          <Dropdown.Item
-            key={'Auto Save'}
+            key={'Import'}
             onClick={() => {
               state.setState((draft) => {
-                draft.autoSaveEnabled = !state.autoSaveEnabled
+                draft.showImportModal = true
               })
             }}
-            isChecked={state.autoSaveEnabled}
-            Icon={() => <RiRefreshLine />}
-            label1="Auto Save"
+            isChecked={false}
+            Icon={() => <CiImport />}
+            label1="Import"
+          />,
+          <Dropdown.Item
+            key={'Export'}
+            onClick={() => {
+              state.promiseNotification(
+                async () => {
+                  state.exportState()
+                },
+                {
+                  message: 'Exporting...',
+                },
+                {
+                  onSuccess: {
+                    update: {
+                      message: 'Exported!',
+                    },
+                  },
+                  onError: {
+                    update: {
+                      message: 'Failed to Export!',
+                    },
+                  },
+                },
+              )
+            }}
+            isChecked={false}
+            Icon={() => <CiExport />}
+            label1="Export"
           />,
           <Dropdown.Item
             key={'Clear All'}
@@ -57,6 +80,7 @@ export const FileMenu: React.FC = () => {
           />,
         ]}
       />
+      {state.showImportModal && <ImportModal />}
     </item>
   )
 }

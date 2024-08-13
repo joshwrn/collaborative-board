@@ -44,7 +44,7 @@ export default function Home() {
       >
         <header>
           <DropDownMenu />
-          {state.autoSaveEnabled && <Autosave />}
+          {/* {state.autoSaveEnabled && <Autosave />} */}
         </header>
         <main>
           <Space />
