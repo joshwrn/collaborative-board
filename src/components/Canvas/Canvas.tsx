@@ -17,7 +17,7 @@ const returnAttributes = (
   if (isFullScreen) {
     return {
       width: WINDOW_ATTRS.defaultFullScreenSize.width - 40,
-      height: 400,
+      height: WINDOW_ATTRS.defaultFullScreenSize.height - 200,
       rotation: 0,
       zoom: 1,
     }
@@ -25,14 +25,14 @@ const returnAttributes = (
   if (isPinned) {
     return {
       width: WINDOW_ATTRS.defaultSize.width - 40,
-      height: 400,
+      height: WINDOW_ATTRS.defaultSize.height - 200,
       rotation: 0,
       zoom: DEFAULT_PINNED_WINDOW_ZOOM,
     }
   }
   return {
     width: window.width - 40,
-    height: 400,
+    height: window.height - 200,
     rotation: window.rotation,
     zoom: zoom,
   }
