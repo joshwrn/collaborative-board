@@ -1,3 +1,4 @@
+import { ensureAllFieldsDefined } from '@/utils/ensureAllFieldsDefined'
 import { Store } from './gen-state'
 import { AppStateCreator, produceState } from './state'
 
@@ -45,12 +46,19 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
     reader.onload = (e) => {
       try {
         const savedState = JSON.parse(e.target?.result as string)
+        const saveObject = ensureAllFieldsDefined({
+          windows: savedState.windows,
+          items: savedState.items,
+          connections: savedState.connections,
+          zoom: savedState.zoom,
+          pan: savedState.pan,
+        })
         produceState(set, (draft) => {
-          draft.windows = savedState.windows
-          draft.items = savedState.items
-          draft.connections = savedState.connections
-          draft.zoom = savedState.zoom
-          draft.pan = savedState.pan
+          draft.windows = saveObject.windows
+          draft.items = saveObject.items
+          draft.connections = saveObject.connections
+          draft.zoom = saveObject.zoom
+          draft.pan = saveObject.pan
         })
       } catch (e) {
         console.error(e)
