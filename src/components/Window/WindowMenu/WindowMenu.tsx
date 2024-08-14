@@ -3,12 +3,14 @@ import style from './WindowMenu.module.scss'
 import Dropdown from '@/ui/Dropdown'
 import { useStore } from '@/state/gen-state'
 import { nanoid } from 'nanoid'
-import { BsFillPinAngleFill as PinIcon } from 'react-icons/bs'
+import { TiPinOutline as PinIcon } from 'react-icons/ti'
+
+import { BsTrash3 as TrashIcon } from 'react-icons/bs'
 
 export const WindowMenu_Internal: React.FC<{
   id: string
 }> = ({ id }) => {
-  const state = useStore(['setState', 'pinnedWindow'])
+  const state = useStore(['setState', 'pinnedWindow', 'deleteItem'])
   return (
     <div className={style.wrapper}>
       <Dropdown.Menu
@@ -21,6 +23,7 @@ export const WindowMenu_Internal: React.FC<{
                 style={{
                   stroke: 'white',
                 }}
+                size={21}
               />
             )}
             onClick={() => {
@@ -29,8 +32,22 @@ export const WindowMenu_Internal: React.FC<{
               })
             }}
             key={'Pin'}
-            label1={state.pinnedWindow === id ? 'Unpin' : 'Pin'}
-            isChecked={false}
+            isChecked={state.pinnedWindow === id}
+            label1={'Pin'}
+          />,
+          <Dropdown.Item
+            Icon={() => (
+              <TrashIcon
+                style={{
+                  stroke: 'white',
+                }}
+              />
+            )}
+            onClick={() => {
+              state.deleteItem(id)
+            }}
+            key={'Delete'}
+            label1={'Delete'}
           />,
         ]}
       />
