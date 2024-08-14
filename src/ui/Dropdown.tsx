@@ -167,19 +167,9 @@ export const Item: React.FC<{
   label1?: string
   label2?: string
   isChecked?: boolean
-  showCheck?: boolean
   id?: string
   children?: React.ReactNode
-}> = ({
-  onClick,
-  Icon,
-  label1,
-  label2,
-  isChecked,
-  showCheck = true,
-  children,
-  id,
-}) => {
+}> = ({ onClick, Icon, label1, label2, isChecked, children, id }) => {
   return (
     <motion.div
       key={label1}
@@ -193,7 +183,7 @@ export const Item: React.FC<{
         onClick(e)
       }}
       data-role="dropdown-item"
-      data-checked={isChecked && showCheck}
+      data-checked={!!isChecked}
       className={style.item}
       id={id ?? ''}
     >
