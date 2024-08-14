@@ -5,6 +5,7 @@ import { CiImport } from 'react-icons/ci'
 import { IoCheckmarkCircleOutline as CheckIcon } from 'react-icons/io5'
 
 import { useStore } from '@/state/gen-state'
+import { nanoid } from 'nanoid'
 
 export const ImportModal: React.FC = () => {
   const state = useStore(['setState', 'promiseNotification', 'importState'])
@@ -20,12 +21,14 @@ export const ImportModal: React.FC = () => {
     e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
   ) => {
     e.preventDefault()
+    const notificationId = nanoid()
     state.promiseNotification(
       () => {
-        state.importState(file)
+        state.importState(file, notificationId)
       },
       {
         message: 'Importing...',
+        id: notificationId,
       },
       {
         onSuccess: {
@@ -70,7 +73,7 @@ export const ImportModal: React.FC = () => {
             <div className={style.textContainer}>
               {file ? <p>Ready to Import</p> : <p>Choose a File</p>}
             </div>
-            <input type="file" onChange={handleFileChange} />
+            <input type="file" onChange={handleFileChange} accept=".json" />
           </button>
           <button className={style.importButton} disabled={!file} type="submit">
             Import

@@ -8,7 +8,7 @@ export type SavedState = Pick<
 
 export type GeneralStore = {
   setState: (setter: (draft: Store) => void) => void
-  importState: (savedState: File | null) => void
+  importState: (savedState: File | null, notificationId: string) => void
   exportState: () => void
   showImportModal: boolean
 }
@@ -39,18 +39,28 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
   },
-  importState: (saveFile) => {
+  importState: (saveFile, notificationId) => {
+    const state = get()
     const reader = new FileReader()
     reader.onload = (e) => {
-      const savedState = JSON.parse(e.target?.result as string)
-      produceState(set, (draft) => {
-        draft.windows = savedState.windows
-        draft.items = savedState.items
-        draft.connections = savedState.connections
-        draft.zoom = savedState.zoom
-        draft.pan = savedState.pan
-      })
+      try {
+        const savedState = JSON.parse(e.target?.result as string)
+        produceState(set, (draft) => {
+          draft.windows = savedState.windows
+          draft.items = savedState.items
+          draft.connections = savedState.connections
+          draft.zoom = savedState.zoom
+          draft.pan = savedState.pan
+        })
+      } catch (e) {
+        console.error(e)
+        state.updateNotification(notificationId, {
+          message: 'Failed to import file',
+          type: 'error',
+        })
+      }
     }
+
     if (!saveFile) {
       throw new Error('No file selected')
     }
