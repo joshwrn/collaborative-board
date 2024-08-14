@@ -5,8 +5,10 @@ import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 
 import { FiTrash } from 'react-icons/fi'
-import { CiImport } from 'react-icons/ci'
-import { CiExport } from 'react-icons/ci'
+
+import { TfiImport } from 'react-icons/tfi'
+import { TfiExport } from 'react-icons/tfi'
+
 import { ImportModal } from './ImportModal'
 
 export const FileMenu: React.FC = () => {
@@ -32,7 +34,7 @@ export const FileMenu: React.FC = () => {
               })
             }}
             isChecked={false}
-            Icon={() => <CiImport />}
+            Icon={() => <TfiImport size={17} />}
             label1="Import"
           />,
           <Dropdown.Item
@@ -60,7 +62,7 @@ export const FileMenu: React.FC = () => {
               )
             }}
             isChecked={false}
-            Icon={() => <CiExport />}
+            Icon={() => <TfiExport size={16} />}
             label1="Export"
           />,
           <Dropdown.Item
