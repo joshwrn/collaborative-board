@@ -3,6 +3,7 @@ import { Point2d } from '.'
 import { SPACE_ATTRS } from './space'
 import { AppStateCreator, Setter, stateSetter } from './state'
 import { createMockPrompt } from '@/mock/mock-items'
+import { spaceCenterPoint } from '@/utils/spaceCenterPoint'
 
 export type WindowType = {
   id: string
@@ -71,10 +72,15 @@ export const newWindowSizeInBounds = (newSize: {
   return size
 }
 
-const createNewWindowPosition = (windows: WindowType[]) => {
+const createNewWindowPosition = (
+  windows: WindowType[],
+  zoom: number,
+  pan: Point2d,
+) => {
+  const centerPoint = spaceCenterPoint(zoom, pan)
   const startingPosition = {
-    x: SPACE_ATTRS.size / 2 - WINDOW_ATTRS.defaultSize.width / 2,
-    y: SPACE_ATTRS.size / 2 - WINDOW_ATTRS.defaultSize.height / 2,
+    x: centerPoint.x - WINDOW_ATTRS.defaultSize.width / 2,
+    y: centerPoint.y - WINDOW_ATTRS.defaultSize.height / 2,
   }
   for (let i = 0; i < windows.length; i++) {
     const window = windows[i]
@@ -111,7 +117,8 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   pinnedWindow: null,
 
   toggleOpenWindow: (id: string) => {
-    const openWindows = get().windows
+    const state = get()
+    const openWindows = state.windows
     const openWindow = openWindows.find((window) => window.id === id)
     if (openWindow) {
       set((state) => ({
@@ -128,7 +135,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         ...state.windows,
         {
           id,
-          ...createNewWindowPosition(state.windows),
+          ...createNewWindowPosition(state.windows, state.zoom, state.pan),
           width: WINDOW_ATTRS.defaultSize.width,
           height: WINDOW_ATTRS.defaultSize.height,
           zIndex: highestZIndex + 1,
@@ -161,14 +168,6 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       ],
     })
     state.toggleOpenWindow(id)
-    state.setOneWindow(id, {
-      x:
-        (SPACE_ATTRS.size / 2) * state.zoom -
-        WINDOW_ATTRS.defaultSize.width / 2 / state.zoom,
-      y:
-        (SPACE_ATTRS.size / 2) * state.zoom -
-        WINDOW_ATTRS.defaultSize.height / 2 / state.zoom,
-    })
 
     return id
   },

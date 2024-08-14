@@ -27,14 +27,14 @@ export const SpaceMenu = () => {
               <button
                 onClick={() => state.setZoom(state.zoom - 0.05)}
                 id="dropdown-space-zoom-out-button"
-                disabled={state.zoom <= SPACE_ATTRS.min.zoom}
+                disabled={state.zoom <= SPACE_ATTRS.zoom.min}
               >
                 <p>-</p>
               </button>
               <p>{state.zoom.toFixed(2)}</p>
               <button
                 onClick={() => state.setZoom(state.zoom + 0.05)}
-                disabled={state.zoom >= SPACE_ATTRS.max.zoom}
+                disabled={state.zoom >= SPACE_ATTRS.zoom.max}
                 id="dropdown-space-zoom-in-button"
               >
                 <p>+</p>
@@ -43,11 +43,8 @@ export const SpaceMenu = () => {
             <button
               className={style.reset}
               onClick={() => {
-                state.setZoom(SPACE_ATTRS.default.zoom)
-                state.setPan(() => ({
-                  x: SPACE_ATTRS.default.pan.x,
-                  y: SPACE_ATTRS.default.pan.y,
-                }))
+                state.setZoom(SPACE_ATTRS.zoom.default)
+                state.setPan(() => SPACE_ATTRS.pan.default)
               }}
             >
               <p>Reset</p>

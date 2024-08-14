@@ -7,36 +7,31 @@ export type SpaceStore = {
   setPan: Setter<{ x: number; y: number }>
 }
 
-export const SPACE_ATTRS = {
-  size: 5000,
-  default: {
-    zoom: 0.5,
-    pan: { x: 2190, y: 2035 },
-  },
-  max: {
-    zoom: 1,
-  },
-  min: {
-    zoom: 0.1,
-  },
+const DEFAULT_ZOOM = 0.5
+const DEFAULT_SIZE = 2000000
+
+const DEFAULT_PAN = {
+  x: (DEFAULT_SIZE / 2) * DEFAULT_ZOOM,
+  y: (DEFAULT_SIZE / 2) * DEFAULT_ZOOM,
 }
 
-export const resetPan = (wrapperRef: React.RefObject<HTMLDivElement>) => {
-  if (!wrapperRef.current) {
-    throw new Error(`wrapperRef.current is null`)
-  }
-  const wrapper = wrapperRef.current.getBoundingClientRect()
-  const x = (SPACE_ATTRS.size - window.innerWidth + wrapper.left + 725) / 2
-  const y = (SPACE_ATTRS.size - window.innerHeight + wrapper.top) / 2
-  return {
-    x: x,
-    y: y,
-  }
+export const SPACE_ATTRS = {
+  size: {
+    default: DEFAULT_SIZE,
+  },
+  pan: {
+    default: DEFAULT_PAN,
+  },
+  zoom: {
+    min: 0.1,
+    max: 1,
+    default: DEFAULT_ZOOM,
+  },
 }
 
 export const spaceStore: AppStateCreator<SpaceStore> = (set) => ({
-  zoom: SPACE_ATTRS.default.zoom,
-  pan: SPACE_ATTRS.default.pan,
+  zoom: SPACE_ATTRS.zoom.default,
+  pan: SPACE_ATTRS.pan.default,
   setZoom: (setter) => stateSetter(set, setter, `zoom`),
   setPan: (setter) => stateSetter(set, setter, `pan`),
 })

@@ -8,7 +8,6 @@ import { useStore } from '@/state/gen-state'
 import { useGestures } from '@/gestures'
 import { Connections } from '../Connections/Connections'
 import { ActiveConnectionGuard } from '../Connections/ActiveConnection'
-import { Debug } from '../Debug/Debug'
 import { SPACE_ATTRS } from '@/state/space'
 import { SnapLines } from '../SnapLine/SnapLine'
 import { Toolbar } from '../Toolbar/Toolbar'
@@ -35,19 +34,19 @@ const Space_Internal: FC = () => {
       <wrapper
         ref={wrapperRef}
         className={styles.wrapper}
-        onContextMenu={(e) => {
-          // e.preventDefault()
-        }}
         onMouseMove={(e) => {
-          const rect = spaceRef.current?.getBoundingClientRect() ?? {
-            left: 0,
-            top: 0,
-          }
-          const x = (e.clientX - rect.left) / state.zoom
-          const y = (e.clientY - rect.top) / state.zoom
+          const left = SPACE_ATTRS.size.default / 2 - state.pan.x
+          const top = SPACE_ATTRS.size.default / 2 - state.pan.y
+          const x = left
+          const y = top
+          const distFromCenterX = window.innerWidth / 2 - e.clientX
+          const distFromCenterY = window.innerHeight / 2 - e.clientY
+          // 5 = (padding / 2). 22 = (toolbar height / 2)
+          const x2 = x - distFromCenterX + 5
+          const y2 = y - distFromCenterY - 22
           state.setSpaceMousePosition({
-            x,
-            y,
+            x: x2 / state.zoom,
+            y: y2 / state.zoom,
           })
         }}
       >
@@ -60,8 +59,9 @@ const Space_Internal: FC = () => {
             })
           }}
           style={{
-            width: SPACE_ATTRS.size,
-            height: SPACE_ATTRS.size,
+            width: SPACE_ATTRS.size.default,
+            height: SPACE_ATTRS.size.default,
+            // order is important
             transformOrigin: `0 0`,
             transform: `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`,
           }}
@@ -80,7 +80,7 @@ const Space_Internal: FC = () => {
           <Connections />
           <Windows />
           <SnapLines />
-          <Debug />
+          {/* <Debug /> */}
         </container>
         <Toolbar />
       </wrapper>

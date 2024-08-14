@@ -6,6 +6,7 @@ import {
 import { createMockItem } from '@/mock/mock-items'
 import { createMockWindow } from '@/mock/mock-windows'
 import { WINDOW_ATTRS } from './windows'
+import { spaceCenterPoint } from '@/utils/spaceCenterPoint'
 
 export type MockStore = {
   createAllMocks: (length: number) => void
@@ -15,15 +16,18 @@ export type MockStore = {
 
 export const mockStore: AppStateCreator<MockStore> = (set, get) => ({
   createOneMock: () => {
+    const state = get()
     const items = createMockItem(1)
     const connections = createMockConnection(items)
+    const centerPoint = spaceCenterPoint(state.zoom, state.pan)
+    const startingPosition = {
+      x: centerPoint.x - WINDOW_ATTRS.defaultSize.width / 2,
+      y: centerPoint.y - WINDOW_ATTRS.defaultSize.height / 2,
+    }
     set((state) => ({
       items: items,
       connections: connections,
-      windows: createMockWindow(items, {
-        x: WINDOW_ATTRS.defaultSize.width,
-        y: WINDOW_ATTRS.defaultSize.height + 300,
-      }),
+      windows: createMockWindow(items, startingPosition),
     }))
   },
   createAllMocks: (length: number) => {

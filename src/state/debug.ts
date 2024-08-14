@@ -14,12 +14,14 @@ export type DebugStore = {
   debug_showFps: boolean
 
   dev_allowWindowRotation: boolean
+  debug_centerPoint: Point2d | null
 }
 
 export const debugStore: AppStateCreator<DebugStore> = (set, get) => ({
   debug_zoomFocusPoint: null,
 
   debug_randomPoints: [],
+  debug_centerPoint: null,
 
   debug_showZustandDevTools: false,
   debug_setShowZustandDevTools: (setter) =>

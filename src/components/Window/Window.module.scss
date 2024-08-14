@@ -11,6 +11,7 @@ $inner-border-radius: 19px;
   box-shadow: var(--window-box-shadow);
   z-index: 10;
   border-radius: $border-radius;
+  transform-origin: 0 0;
   [data-role='connectors'] {
     opacity: 0;
   }

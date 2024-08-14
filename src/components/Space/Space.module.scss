@@ -38,15 +38,10 @@
   background-size: 100px 100px;
 }
 
-$size: 10000000px;
 .background {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: $size;
-  height: $size;
-  left: calc(-#{$size} / 2);
-  top: calc(-#{$size} / 2);
+  width: 100%;
+  height: 100%;
   background-size: 100px 100px;
   z-index: -9999;
 }

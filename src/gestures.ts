@@ -9,7 +9,7 @@ export const clampInto =
   (value: number): number =>
     value < min ? min : value > max ? max : value
 
-const clampZ = clampInto([SPACE_ATTRS.min.zoom, SPACE_ATTRS.max.zoom])
+const clampZ = clampInto([SPACE_ATTRS.zoom.min, SPACE_ATTRS.zoom.max])
 
 const MOUSE_BUTTONS = {
   middle: 4,

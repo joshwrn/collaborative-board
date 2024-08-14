@@ -5,11 +5,11 @@ import { Item } from '@/state/items'
 export const AMT_OF_WINDOWS = 99
 
 const randomPosition = (x: boolean) => {
-  const pos = Math.floor(Math.random() * SPACE_ATTRS.size)
-  if (x && pos > SPACE_ATTRS.size - DEFAULT_WINDOW.width) {
+  const pos = Math.floor(Math.random() * SPACE_ATTRS.size.default)
+  if (x && pos > SPACE_ATTRS.size.default - DEFAULT_WINDOW.width) {
     return pos - DEFAULT_WINDOW.width
   }
-  if (!x && pos > SPACE_ATTRS.size - DEFAULT_WINDOW.height) {
+  if (!x && pos > SPACE_ATTRS.size.default - DEFAULT_WINDOW.height) {
     return pos - DEFAULT_WINDOW.height
   }
   return pos
