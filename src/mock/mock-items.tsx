@@ -44,7 +44,11 @@ export const createMockPrompt = () => {
     'renaissance',
   ])
 
-  return [style, typeOfArt, 'of', wordWithArticle(subject)].join(' ')
+  return [
+    `a ${style} rushed messy minimalist watercolor painting`,
+    'of',
+    wordWithArticle(subject),
+  ].join(' ')
 }
 
 export const createMockItem = (length: number): Item[] =>
