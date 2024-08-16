@@ -4,19 +4,19 @@
 
   --test: hsl(0, 100%, 50%);
   --hue: 230;
-  --saturation: 4%;
+  --saturation: -8%;
   --lightness: 1%;
 
   // space
   --space-background: hsl(
     var(--hue),
     calc(var(--saturation) + 21%),
-    calc(var(--lightness) + 5%)
+    calc(var(--lightness) + 4%)
   );
   --space-grid-color: hsl(
     var(--hue),
     calc(var(--saturation) + 23%),
-    calc(var(--lightness) + 30%)
+    calc(var(--lightness) + 35%)
   );
   --space-border-color: hsl(
     var(--hue),
@@ -38,7 +38,7 @@
   --window-header: hsl(
     var(--hue),
     calc(var(--saturation) + 20%),
-    calc(var(--lightness) + 8%)
+    calc(var(--lightness) + 7%)
   );
   --window-content: hsl(
     var(--hue),
@@ -47,12 +47,12 @@
   );
   --window-text: hsl(
     var(--hue),
-    calc(var(--saturation) + 21%),
+    calc(var(--saturation) + 25%),
     calc(var(--lightness) + 83%)
   );
   --window-text-bold: hsl(
     var(--hue),
-    calc(var(--saturation) + 6%),
+    calc(var(--saturation) + 10%),
     calc(var(--lightness) + 46%)
   );
   --window-text-title: hsl(0, 0%, calc(var(--lightness) + 100%));
@@ -133,7 +133,7 @@
   --white: hsl(
     var(--hue),
     calc(var(--saturation) + 100%),
-    calc(var(--lightness) + 97%)
+    calc(var(--lightness) + 95%)
   );
   --font--1: 20px;
   --color-accent: hsl(215, 100%, 55%);
@@ -143,22 +143,41 @@
     calc(var(--lightness) + 1%)
   );
   --border: #262626;
-  --color-scrollbar: #333;
+  --color-scrollbar: hsl(
+    var(--hue),
+    calc(var(--saturation) + 20%),
+    calc(var(--lightness) + 18%)
+  );
 
   // item / list
-  --item-list-background: rgba(0, 0, 0, 0.75);
+  --item-list-background: hsla(
+    var(--hue),
+    calc(var(--saturation) + 20%),
+    calc(var(--lightness) + 7%),
+    0.75
+  );
+  --item-list-border: var(--white-15);
   --item-list-text-shadow: 0px 1px 1px black;
-  --item-background: #11111178;
-  --item-border: #1d1d1d;
-  --item-border-open: #232323;
+  --item-border: var(--white-15);
+  --item-border-open: hsla(
+    var(--hue),
+    calc(var(--saturation) + 20%),
+    calc(var(--lightness) + 30%),
+    0.75
+  );
 
   // toolbar
-  --toolbar-background: rgba(0, 0, 0, 0.75);
+  --toolbar-background: hsla(
+    var(--hue),
+    calc(var(--saturation) + 20%),
+    calc(var(--lightness) + 1%),
+    0.75
+  );
+  --toolbar-border: var(--white-15);
 
   // context menu
   --context-menu-background: var(--dropdown-list-background-color);
   --context-menu-border: var(--dropdown-list-border-color);
-  --context-menu-item-background: var(--dropdown-item-hover-background-color);
 
   // dropdown
   --dropdown-list-background-color: hsl(
@@ -169,7 +188,7 @@
   --dropdown-list-border-color: var(--white-15);
   --dropdown-item-hover-background-color: hsla(
     var(--hue),
-    calc(var(--saturation) + 35%),
+    calc(var(--saturation) + 24%),
     calc(var(--lightness) + 30%),
     0.5
   );

@@ -72,8 +72,8 @@ export const ThemeModal: React.FC = () => {
             <input
               id="lightness"
               type="range"
-              min="-100"
-              max="100"
+              min="-20"
+              max="20"
               value={parseInt(state.lightness)}
               onChange={(e) => {
                 state.updateTheme({

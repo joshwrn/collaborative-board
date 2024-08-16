@@ -12,8 +12,8 @@ import { SPACE_ATTRS } from '@/state/space'
 import { SnapLines } from '../SnapLine/SnapLine'
 import { Toolbar } from '../Toolbar/Toolbar'
 import { FullScreenWindow } from '../Window/FullScreenWindow/FullScreenWindow'
-import { dotBackground } from './dotBackground'
 import { PinnedWindow } from '../Window/PinnedWindow/PinnedWindow'
+import { SpaceBackground } from './SpaceBackground'
 
 const Space_Internal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
@@ -66,16 +66,7 @@ const Space_Internal: FC = () => {
             transform: `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`,
           }}
         >
-          <div
-            onContextMenu={(e) => {
-              e.preventDefault()
-              state.openContextMenu({ id: 'space', elementType: 'space' })
-            }}
-            className={styles.background}
-            style={{
-              background: dotBackground({ zoom: state.zoom }),
-            }}
-          />
+          <SpaceBackground />
           <ActiveConnectionGuard />
           <Connections />
           <Windows />

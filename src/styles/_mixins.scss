@@ -1,20 +1,23 @@
 @mixin dropdownHoverBackground {
-  border: 1px solid transparent;
-  border-bottom: 2px solid transparent;
+  // border-top: 1px solid transparent;
+  // border-bottom: 2px solid transparent;
   &:hover {
-    border-top: var(--dropdown-item-hover-border-top-color) 1px solid;
-    border-bottom: var(--dropdown-item-hover-border-bottom-color) 2px solid;
+    // border-top: var(--dropdown-item-hover-border-top-color) 1px solid;
+    // border-bottom: var(--dropdown-item-hover-border-bottom-color) 2px solid;
     background-color: var(--dropdown-item-hover-background-color);
   }
 }
 
 @mixin actionButton {
   background-color: var(--window-generate-button-color);
+  box-shadow: hsla(214, 60%, 17%, 0.9) 0px 0px 0px 1px;
+  background-repeat: no-repeat;
   background: linear-gradient(
-    to top,
+    -60deg,
     var(--window-generate-button-color) 0%,
     var(--window-generate-button-color-2) 100%
   );
+  border: 1px solid transparent;
   border-top: var(--window-generate-button-border-top) 1px solid;
-  border-bottom: var(--window-generate-button-border-bottom) 1px solid;
+  // border-bottom: var(--window-generate-button-border-bottom) 1px solid;
 }

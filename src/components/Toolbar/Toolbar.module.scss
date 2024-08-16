@@ -11,8 +11,11 @@
   align-items: center;
   gap: 10px;
   background-color: var(--toolbar-background);
-  border: 1px solid var(--border);
+  border: 1px solid var(--toolbar-border);
   z-index: var(--toolbar-z-index);
+  * {
+    color: var(--white);
+  }
   button {
     overflow: hidden;
     position: relative;

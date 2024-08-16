@@ -17,7 +17,7 @@ export type HSL = {
 
 const DEFAULT_THEME: HSL = {
   hue: 230,
-  saturation: '4%',
+  saturation: '-8%',
   lightness: '1%',
 }
 
