@@ -1,5 +1,5 @@
 import React from 'react'
-import style from './spaceBackground.module.scss'
+import style from './SpaceBackground.module.scss'
 import { useStore } from '@/state/gen-state'
 
 export const SpaceBackground: React.FC = () => {
