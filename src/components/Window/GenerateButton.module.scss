@@ -1,6 +1,13 @@
 .wrapper {
   button {
     background-color: var(--window-generate-button-color);
+    background: linear-gradient(
+      to top,
+      var(--window-generate-button-color) 0%,
+      var(--window-generate-button-color-2) 100%
+    );
+    border-top: var(--window-generate-button-border-top) 1px solid;
+    border-bottom: var(--window-generate-button-border-bottom) 1px solid;
     padding: 9px 0;
     padding-right: 10px;
     padding-left: 12px;

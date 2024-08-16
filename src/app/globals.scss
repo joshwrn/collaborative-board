@@ -3,57 +3,61 @@
   --container-background-color: var(--charcoal);
 
   // space
-  --space-background: #0c0c0c;
-  --space-grid-color: #474747;
-  --space-border-color: #1f1f1f;
+  --space-background: hsl(230, 21%, 5%);
+  --space-grid-color: hsl(230, 23%, 30%);
+  --space-border-color: hsl(230, 23%, 14%);
   --space-outer-padding: 10px;
 
   // snap lines
-  --snap-line-color: #ff00b3;
+  --snap-line-color: #ac2283;
   --success-color: #32ff73db;
 
   // window
-  --window-outline: #5e5e5e;
-  --window-header: #101010;
-  --window-content: #262626;
-  --window-text: #d2d2d2;
-  --window-text-bold: #888888;
-  --window-text-title: #ffffff;
-  --window-border-active: #c0c0c0;
+  --window-outline: hsl(230, 15%, 30%);
+  --window-header: hsl(230, 20%, 8%);
+  --window-content: hsl(230, 19%, 13%);
+  --window-text: hsl(230, 21%, 83%);
+  --window-text-bold: hsl(230, 6%, 46%);
+  --window-text-title: hsl(0, 0%, 100%);
+  --window-border-active: hsl(230, 15%, 30%);
   --window-border-hovered: rgba(242, 230, 255, 0.441);
-  --window-box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.35);
+  --window-box-shadow: 0 10px 30px 0 hsla(230, 30%, 5%, 0.35);
   --window-close-button-color: #f14971;
   --window-full-button-color: #3fcd6f;
   --window-fullscreen-backdrop-color: rgba(0, 0, 0, 0.5);
   // generate button
-  --window-generate-button-color: rgb(0, 89, 213);
-  --window-generate-button-color-disabled: rgb(92, 127, 175);
-  --window-generate-button-color-hover: rgb(0, 102, 213);
+  --window-generate-button-color: hsl(215, 100%, 42%);
+  --window-generate-button-color-2: hsl(215, 97%, 54%);
+  --window-generate-button-border-top: hsla(230, 100%, 85%, 0.469);
+  --window-generate-button-border-bottom: hsla(230, 100%, 9%, 0.469);
+  --window-generate-button-color-disabled: hsl(215, 34%, 52%);
+  --window-generate-button-color-hover: hsl(215, 100%, 42%);
   // dimensions
   --window-top-bar-height: 40px;
 
   // canvas
-  --canvas-background: rgb(8, 8, 8);
+  --canvas-background: hsl(225, 22%, 4%);
 
   // connections
-  --connection-color: #434343;
+  --connection-color: hsl(230, 15%, 40%);
   --connections-from-color: #3fcd6f;
   --connections-to-color: #f14971;
 
   // toast
-  --toast-background: #0e0e0ea7;
-  --toast-border: #262626;
+  --toast-background: var(--canvas-background);
+  --toast-border: hsl(230, 20%, 17%);
   --toast-text: #d2d2d2;
 
   // misc
   --font--3: 12px;
   --font--2: 14px;
-  --white-65: #a6a6a6;
-  --white-15: #262626;
-  --white: #ffffff;
+  --white-65: hsl(230, 10%, 69%);
+  --white-45: hsl(230, 10%, 45%);
+  --white-15: hsl(230, 21%, 14%);
+  --white: hsl(230, 100%, 97%);
   --font--1: 20px;
-  --color-accent: rgb(0, 112, 243);
-  --charcoal: #020202;
+  --color-accent: hsl(215, 100%, 55%);
+  --charcoal: hsl(230, 21%, 1%);
   --border: #262626;
   --color-scrollbar: #333;
 
@@ -73,9 +77,9 @@
   --context-menu-item-hover-background: var(--white-15);
 
   // dropdown
-  --dropdown-list-background-color: #000000;
+  --dropdown-list-background-color: hsl(230, 20%, 1%);
   --dropdown-list-border-color: var(--white-15);
-  --dropdown-item-hover-background-color: var(--white-15);
+  --dropdown-item-hover-background-color: hsla(230, 35%, 30%, 0.5);
   // dimensions
   --dropdown-menu-height: 45px;
 
@@ -157,8 +161,8 @@ button {
   align-items: center;
   pointer-events: none;
 
-  $loading-background-1: rgba(125, 117, 142, 0.101);
-  $loading-background-2: rgba(125, 117, 142, 0.211);
+  $loading-background-1: hsla(230, 10%, 51%, 0.101);
+  $loading-background-2: hsla(230, 10%, 51%, 0.211);
 
   animation-duration: 1.8s;
   animation-fill-mode: forwards;

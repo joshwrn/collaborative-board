@@ -34,7 +34,7 @@ export const FileMenu: React.FC = () => {
               })
             }}
             isChecked={false}
-            Icon={() => <TfiImport size={17} />}
+            Icon={() => <TfiImport size={17} fill="var(--white)" />}
             label1="Import"
           />,
           <Dropdown.Item
@@ -62,7 +62,7 @@ export const FileMenu: React.FC = () => {
               )
             }}
             isChecked={false}
-            Icon={() => <TfiExport size={16} />}
+            Icon={() => <TfiExport size={16} fill="var(--white)" />}
             label1="Export"
           />,
           <Dropdown.Item
@@ -75,7 +75,7 @@ export const FileMenu: React.FC = () => {
               })
             }
             isChecked={false}
-            Icon={() => <FiTrash />}
+            Icon={() => <FiTrash stroke="var(--white)" />}
             label1="Clear All"
           />,
         ]}

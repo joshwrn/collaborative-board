@@ -21,7 +21,7 @@ export const WindowMenu_Internal: React.FC<{
             Icon={() => (
               <PinIcon
                 style={{
-                  stroke: 'white',
+                  fill: 'var(--white)',
                 }}
                 size={21}
               />
@@ -39,7 +39,7 @@ export const WindowMenu_Internal: React.FC<{
             Icon={() => (
               <TrashIcon
                 style={{
-                  stroke: 'white',
+                  fill: 'var(--white)',
                 }}
               />
             )}

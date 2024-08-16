@@ -54,10 +54,29 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
       height: 1px;
     }
   }
+
+  &:hover {
+    & + .item,
+    & + .subMenu {
+      &::before {
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+@mixin hoverEffect {
+  border: 1px solid transparent;
+  &:hover {
+    border-top: hsla(230, 100%, 81%, 0.125) 1px solid;
+    border-bottom: hsla(227, 42%, 9%, 0.39) 1px solid;
+    background-color: var(--dropdown-item-hover-background-color);
+  }
 }
 
 .subMenu {
   @include line;
+  @include hoverEffect;
   user-select: none;
   display: flex;
   gap: 10px;
@@ -69,9 +88,6 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
   justify-content: space-between;
   cursor: pointer;
   border-radius: $border-radius;
-  &:hover {
-    background-color: var(--white-15);
-  }
   .subMenuList {
     left: calc(100% + 10px);
     position: absolute;
@@ -97,7 +113,7 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
   svg {
     transform: translateY(1px);
     font-size: var(--font--2);
-    color: var(--white-65);
+    fill: var(--white-65);
   }
 }
 
@@ -120,6 +136,7 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
 
 .item {
   @include line;
+  @include hoverEffect;
   padding: $padding;
   position: relative;
   display: flex;
@@ -127,6 +144,7 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
   justify-content: space-between;
   cursor: pointer;
   border-radius: $border-radius;
+  border: transparent 1px solid;
   form {
     display: flex;
     gap: 5px;
@@ -147,13 +165,14 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
     outline: none;
     border: none;
     border-bottom: 1px solid var(--border);
+    &::placeholder {
+      color: var(--white-45);
+    }
   }
   svg {
     pointer-events: none;
   }
-  &:hover {
-    background-color: var(--dropdown-item-hover-background-color);
-  }
+
   .checkIcon {
     font-size: var(--font--2);
     stroke: var(--color-accent);
@@ -172,8 +191,5 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
     display: flex;
     align-items: center;
     gap: 10px;
-    svg {
-      color: var(--white-65);
-    }
   }
 }
