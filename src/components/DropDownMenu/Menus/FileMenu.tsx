@@ -8,8 +8,7 @@ import { FiTrash } from 'react-icons/fi'
 
 import { TfiImport } from 'react-icons/tfi'
 import { TfiExport } from 'react-icons/tfi'
-
-import { ImportModal } from './ImportModal'
+import { ImportModal } from '../Modals/ImportModal'
 
 export const FileMenu: React.FC = () => {
   const state = useStore([

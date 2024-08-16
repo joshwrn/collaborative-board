@@ -13,6 +13,7 @@ import { notificationsStore, NotificationsStore } from './notifications'
 import { peripheralStore, PeripheralStore } from './peripheral'
 import { snappingStore, SnappingStore } from './snapping'
 import { spaceStore, SpaceStore } from './space'
+import { uiStore, UiStore } from './ui'
 import { userStore, UserStore } from './user'
 import { openWindowsStore, OpenWindowsStore } from './windows'
 
@@ -29,6 +30,7 @@ export type Store = CanvasStore &
   PeripheralStore &
   SnappingStore &
   SpaceStore &
+  UiStore &
   UserStore &
   OpenWindowsStore
 
@@ -47,6 +49,7 @@ export const useFullStore = create<Store>((set, get, store) => {
     ...peripheralStore(set, get, store),
     ...snappingStore(set, get, store),
     ...spaceStore(set, get, store),
+    ...uiStore(set, get, store),
     ...userStore(set, get, store),
     ...openWindowsStore(set, get, store),
   }

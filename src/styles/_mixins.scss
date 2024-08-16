@@ -7,3 +7,14 @@
     background-color: var(--dropdown-item-hover-background-color);
   }
 }
+
+@mixin actionButton {
+  background-color: var(--window-generate-button-color);
+  background: linear-gradient(
+    to top,
+    var(--window-generate-button-color) 0%,
+    var(--window-generate-button-color-2) 100%
+  );
+  border-top: var(--window-generate-button-border-top) 1px solid;
+  border-bottom: var(--window-generate-button-border-bottom) 1px solid;
+}

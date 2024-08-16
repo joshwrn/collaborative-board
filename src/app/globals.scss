@@ -71,12 +71,6 @@
     );
   --window-close-button-color: #f14971;
   --window-full-button-color: #3fcd6f;
-  --window-fullscreen-backdrop-color: hsla(
-    0,
-    0%,
-    calc(var(--lightness) + 0%),
-    0.5
-  );
   // generate button
   --window-generate-button-color: hsl(215, 100%, 42%);
   --window-generate-button-color-2: hsl(215, 97%, 54%);
@@ -197,6 +191,13 @@
   // z-indexes
   --fullscreen-window-z-index: 100;
   --toolbar-z-index: 101;
+
+  --modal-backdrop-color: hsla(
+    var(--hue),
+    calc(var(--saturation) + 30%),
+    calc(var(--lightness) + 4%),
+    0.5
+  );
 }
 
 * {
@@ -257,6 +258,29 @@ button {
   cursor: pointer;
   outline: none;
   color: white;
+}
+
+.modalContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999999;
+}
+
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--modal-backdrop-color);
+  z-index: -2;
 }
 
 .loadingShimmer {
