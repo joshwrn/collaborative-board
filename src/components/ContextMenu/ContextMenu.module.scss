@@ -7,7 +7,7 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
   width: 200px;
   height: fit-content;
   background: var(--context-menu-background);
-  border: 1px solid var(--context-menu-item-background);
+  border: 1px solid var(--context-menu-border);
   border-radius: $border-radius-outer;
   z-index: 99999;
   overflow: hidden;
@@ -15,6 +15,7 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
 }
 
 .item {
+  @include mixins.dropdownHoverBackground;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -22,9 +23,6 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
   padding: $padding;
   border-radius: $border-radius;
   cursor: pointer;
-  &:hover {
-    background: var(--context-menu-item-background);
-  }
   > p {
     font-size: 14px;
   }

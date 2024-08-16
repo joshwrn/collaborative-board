@@ -1,0 +1,9 @@
+@mixin dropdownHoverBackground {
+  border: 1px solid transparent;
+  border-bottom: 2px solid transparent;
+  &:hover {
+    border-top: var(--dropdown-item-hover-border-top-color) 1px solid;
+    border-bottom: var(--dropdown-item-hover-border-bottom-color) 2px solid;
+    background-color: var(--dropdown-item-hover-background-color);
+  }
+}

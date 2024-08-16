@@ -12,6 +12,10 @@ const nextConfig = {
       },
     ],
   },
+  sassOptions: {
+    includePaths: ['./src/styles'],
+    prependData: `@use '_mixins' as mixins;`,
+  },
 }
 
 module.exports = nextConfig
