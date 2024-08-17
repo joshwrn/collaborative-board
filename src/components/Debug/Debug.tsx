@@ -1,10 +1,10 @@
 'use client'
 import React from 'react'
 
+import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
 import { Point2d } from '@/state'
 import { useStore } from '@/state/gen-state'
 import { SPACE_ATTRS } from '@/state/space'
-import { spaceCenterPoint } from '@/utils/spaceCenterPoint'
 
 import style from './Debug.module.scss'
 

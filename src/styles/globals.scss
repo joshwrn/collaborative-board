@@ -11,7 +11,7 @@
   --space-background: hsl(
     var(--hue),
     calc(var(--saturation) + 21%),
-    calc(var(--lightness) + 4%)
+    calc(var(--lightness) + 6%)
   );
   --space-grid-color: hsl(
     var(--hue),
@@ -115,6 +115,7 @@
   // misc
   --font--3: 12px;
   --font--2: 14px;
+  --font--1: 20px;
   --white-65: hsl(
     var(--hue),
     calc(var(--saturation) + 10%),
@@ -135,14 +136,12 @@
     calc(var(--saturation) + 100%),
     calc(var(--lightness) + 95%)
   );
-  --font--1: 20px;
   --color-accent: hsl(215, 100%, 55%);
   --charcoal: hsl(
     var(--hue),
     calc(var(--saturation) + 21%),
     calc(var(--lightness) + 1%)
   );
-  --border: #262626;
   --color-scrollbar: hsl(
     var(--hue),
     calc(var(--saturation) + 20%),

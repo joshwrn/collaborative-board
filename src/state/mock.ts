@@ -1,10 +1,10 @@
+import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
 import {
   createManyMockConnectionsToOneWindow,
   createMockConnection,
 } from '@/mock/mock-connections'
 import { createMockItem } from '@/mock/mock-items'
 import { createMockWindow } from '@/mock/mock-windows'
-import { spaceCenterPoint } from '@/utils/spaceCenterPoint'
 
 import type { AppStateCreator } from './state'
 import { WINDOW_ATTRS } from './windows'

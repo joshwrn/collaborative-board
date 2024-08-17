@@ -82,6 +82,7 @@ const Toast_Internal: React.FC<{ notification: Notification }> = ({
         animate={{
           width: `${notification.progress}%`,
           backgroundColor: TOAST_COLORS[notification.type],
+          boxShadow: `0 0 20px ${TOAST_COLORS[notification.type]}`,
         }}
       />
     </motion.div>

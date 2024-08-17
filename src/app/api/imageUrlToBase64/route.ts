@@ -1,11 +1,11 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
-import { MOCK_BASE64 } from '@/mock/mockBlob'
+import { convertImageToBase64 } from '@/logic/image/convertImageToBase64'
+import { MOCK_BASE64 } from '@/mock/mock-blob'
 import type { ImageUrlToBase64Response } from '@/server/imageUrlToBase64/fetchImageUrlToBase64'
 import { mockedEndpoints } from '@/server/mockedEndpoints'
 import type { ApiResponse } from '@/server/response'
-import { convertImageToBase64 } from '@/utils/image/convertImageToBase64'
 
 export const GET = async (
   req: NextRequest,

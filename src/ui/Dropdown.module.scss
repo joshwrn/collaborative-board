@@ -144,7 +144,7 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
     color: var(--window-text);
     outline: none;
     border: none;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--dropdown-list-border-color);
     &::placeholder {
       color: var(--white-45);
     }

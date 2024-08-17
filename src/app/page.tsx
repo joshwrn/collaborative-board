@@ -9,6 +9,7 @@ import { ContextMenu } from '@/components/ContextMenu/ContextMenu'
 import { DropDownMenu } from '@/components/DropDownMenu/DropDownMenu'
 import { List } from '@/components/ItemList/List/List'
 import { Space } from '@/components/Space/Space'
+import { StatsBar } from '@/components/StatsBar/StatsBar'
 import { useScenario } from '@/mock/scenarios'
 import { useStore } from '@/state/gen-state'
 import { Toaster } from '@/ui/Toast'
@@ -43,6 +44,7 @@ export default function Home() {
       >
         <header>
           <DropDownMenu />
+          <StatsBar />
         </header>
         <main>
           <Space />
