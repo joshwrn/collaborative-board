@@ -76,9 +76,9 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
     &::before {
       content: '';
       position: absolute;
-      top: 0;
+      top: -10px;
       left: -10px;
-      width: 10px;
+      width: 100%;
       height: 100%;
       opacity: 0.5;
     }
@@ -86,7 +86,6 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
 }
 
 .arrow {
-  // border: 1px solid red;
   height: 100%;
   display: flex;
   justify-content: center;

@@ -77,6 +77,7 @@ const ConnectionInternal = ({
         `,
       }}
     >
+      {/* svg causes visual glitches when there are many connections */}
       <IoIosArrowForward size={35} />
     </div>
   )

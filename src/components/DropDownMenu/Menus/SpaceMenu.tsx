@@ -17,6 +17,7 @@ export const SpaceMenu = () => {
     `debug_showZustandDevTools`,
     `debug_showFps`,
     `showThemeModal`,
+    `incrementZoom`,
   ])
   return (
     <item className={style.item}>
@@ -28,7 +29,7 @@ export const SpaceMenu = () => {
             <p>Zoom</p>
             <section onClick={(e) => e.stopPropagation()}>
               <button
-                onClick={() => state.setZoom(state.zoom - 0.05)}
+                onClick={() => state.incrementZoom(-0.05)}
                 id="dropdown-space-zoom-out-button"
                 disabled={state.zoom <= SPACE_ATTRS.zoom.min}
               >
@@ -36,7 +37,7 @@ export const SpaceMenu = () => {
               </button>
               <p>{state.zoom.toFixed(2)}</p>
               <button
-                onClick={() => state.setZoom(state.zoom + 0.05)}
+                onClick={() => state.incrementZoom(0.05)}
                 disabled={state.zoom >= SPACE_ATTRS.zoom.max}
                 id="dropdown-space-zoom-in-button"
               >

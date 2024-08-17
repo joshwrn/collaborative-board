@@ -1,3 +1,5 @@
+import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
+
 import type { AppStateCreator, Setter } from './state'
 import { stateSetter } from './state'
 
@@ -6,6 +8,7 @@ export interface SpaceStore {
   pan: { x: number; y: number }
   setZoom: Setter<number>
   setPan: Setter<{ x: number; y: number }>
+  incrementZoom: (amount?: number) => void
 }
 
 const DEFAULT_ZOOM = 0.5
@@ -30,9 +33,22 @@ export const SPACE_ATTRS = {
   },
 }
 
-export const spaceStore: AppStateCreator<SpaceStore> = (set) => ({
+export const spaceStore: AppStateCreator<SpaceStore> = (set, get) => ({
   zoom: SPACE_ATTRS.zoom.default,
   pan: SPACE_ATTRS.pan.default,
   setZoom: (setter) => stateSetter(set, setter, `zoom`),
   setPan: (setter) => stateSetter(set, setter, `pan`),
+  incrementZoom: (amount = 0.05) => {
+    const state = get()
+    const center = spaceCenterPoint(state.zoom, state.pan)
+    const newZoom = state.zoom + amount
+    const offset = newZoom - state.zoom
+    const offSetX = center.x * offset
+    const offSetY = center.y * offset
+    state.setZoom(newZoom)
+    state.setPan((prev) => ({
+      x: prev.x - offSetX,
+      y: prev.y - offSetY,
+    }))
+  },
 })
