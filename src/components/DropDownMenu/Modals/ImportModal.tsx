@@ -51,9 +51,9 @@ export const ImportModal: React.FC = () => {
   }
 
   return (
-    <section className={style.importModal}>
+    <section className={'modalContainer'}>
       <div
-        className={style.backdrop}
+        className={'modalBackdrop'}
         onClick={() => {
           state.setState((draft) => {
             draft.showImportModal = false

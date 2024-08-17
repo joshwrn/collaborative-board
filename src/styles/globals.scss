@@ -1,0 +1,343 @@
+:root {
+  // container
+  --container-background-color: var(--charcoal);
+
+  --test: hsl(0, 100%, 50%);
+  --hue: 230;
+  --saturation: -8%;
+  --lightness: 1%;
+
+  // space
+  --space-background: hsl(
+    var(--hue),
+    calc(var(--saturation) + 21%),
+    calc(var(--lightness) + 4%)
+  );
+  --space-grid-color: hsl(
+    var(--hue),
+    calc(var(--saturation) + 23%),
+    calc(var(--lightness) + 35%)
+  );
+  --space-border-color: hsl(
+    var(--hue),
+    calc(var(--saturation) + 23%),
+    calc(var(--lightness) + 14%)
+  );
+  --space-outer-padding: 10px;
+
+  // snap lines
+  --snap-line-color: #ac2283;
+  --success-color: #32ff73db;
+
+  // window
+  --window-outline: hsl(
+    var(--hue),
+    calc(var(--saturation) + 15%),
+    calc(var(--lightness) + 30%)
+  );
+  --window-header: hsl(
+    var(--hue),
+    calc(var(--saturation) + 20%),
+    calc(var(--lightness) + 7%)
+  );
+  --window-content: hsl(
+    var(--hue),
+    calc(var(--saturation) + 19%),
+    calc(var(--lightness) + 13%)
+  );
+  --window-text: hsl(
+    var(--hue),
+    calc(var(--saturation) + 25%),
+    calc(var(--lightness) + 83%)
+  );
+  --window-text-bold: hsl(
+    var(--hue),
+    calc(var(--saturation) + 10%),
+    calc(var(--lightness) + 46%)
+  );
+  --window-text-title: hsl(0, 0%, calc(var(--lightness) + 100%));
+  --window-border-active: hsl(
+    var(--hue),
+    calc(var(--saturation) + 15%),
+    calc(var(--lightness) + 30%)
+  );
+  --window-border-hovered: rgba(242, var(--hue), 255, 0.441);
+  --window-box-shadow: 0 10px 30px 0
+    hsla(
+      var(--hue),
+      calc(var(--saturation) + 30%),
+      calc(var(--lightness) + 5%),
+      0.35
+    );
+  --window-close-button-color: #f14971;
+  --window-full-button-color: #3fcd6f;
+  // generate button
+  --window-generate-button-color: hsl(215, 100%, 42%);
+  --window-generate-button-color-2: hsl(215, 97%, 54%);
+  --window-generate-button-border-top: hsla(
+    var(--hue),
+    calc(var(--saturation) + 100%),
+    calc(var(--lightness) + 85%),
+    0.469
+  );
+  --window-generate-button-border-bottom: hsla(
+    var(--hue),
+    calc(var(--saturation) + 100%),
+    calc(var(--lightness) + 9%),
+    0.469
+  );
+  --window-generate-button-color-disabled: hsl(215, 34%, 52%);
+  --window-generate-button-color-hover: hsl(215, 100%, 42%);
+  // dimensions
+  --window-top-bar-height: 40px;
+
+  // canvas
+  --canvas-background: hsl(
+    var(--hue),
+    calc(var(--saturation) + 22%),
+    calc(var(--lightness) + 4%)
+  );
+
+  // connections
+  --connection-color: hsl(var(--hue), 15%, calc(var(--lightness) + 40%));
+  --connections-from-color: #3fcd6f;
+  --connections-to-color: #f14971;
+
+  // toast
+  --toast-background: var(--canvas-background);
+  --toast-border: hsl(var(--hue), 20%, calc(var(--lightness) + 17%));
+  --toast-text: hsl(
+    var(--hue),
+    calc(var(--saturation) + 100%),
+    calc(var(--lightness) + 90%)
+  );
+
+  // misc
+  --font--3: 12px;
+  --font--2: 14px;
+  --white-65: hsl(
+    var(--hue),
+    calc(var(--saturation) + 10%),
+    calc(var(--lightness) + 69%)
+  );
+  --white-45: hsl(
+    var(--hue),
+    calc(var(--saturation) + 10%),
+    calc(var(--lightness) + 45%)
+  );
+  --white-15: hsl(
+    var(--hue),
+    calc(var(--saturation) + 21%),
+    calc(var(--lightness) + 14%)
+  );
+  --white: hsl(
+    var(--hue),
+    calc(var(--saturation) + 100%),
+    calc(var(--lightness) + 95%)
+  );
+  --font--1: 20px;
+  --color-accent: hsl(215, 100%, 55%);
+  --charcoal: hsl(
+    var(--hue),
+    calc(var(--saturation) + 21%),
+    calc(var(--lightness) + 1%)
+  );
+  --border: #262626;
+  --color-scrollbar: hsl(
+    var(--hue),
+    calc(var(--saturation) + 20%),
+    calc(var(--lightness) + 18%)
+  );
+
+  // item / list
+  --item-list-background: hsla(
+    var(--hue),
+    calc(var(--saturation) + 20%),
+    calc(var(--lightness) + 7%),
+    0.75
+  );
+  --item-list-border: var(--white-15);
+  --item-list-text-shadow: 0px 1px 1px black;
+  --item-border: var(--white-15);
+  --item-border-open: hsla(
+    var(--hue),
+    calc(var(--saturation) + 20%),
+    calc(var(--lightness) + 30%),
+    0.75
+  );
+
+  // toolbar
+  --toolbar-background: hsla(
+    var(--hue),
+    calc(var(--saturation) + 20%),
+    calc(var(--lightness) + 1%),
+    0.75
+  );
+  --toolbar-border: var(--white-15);
+
+  // context menu
+  --context-menu-background: var(--dropdown-list-background-color);
+  --context-menu-border: var(--dropdown-list-border-color);
+
+  // dropdown
+  --dropdown-list-background-color: hsl(
+    var(--hue),
+    calc(var(--saturation) + 20%),
+    calc(var(--lightness) + 1%)
+  );
+  --dropdown-list-border-color: var(--white-15);
+  --dropdown-item-hover-background-color: hsla(
+    var(--hue),
+    calc(var(--saturation) + 24%),
+    calc(var(--lightness) + 30%),
+    0.5
+  );
+  --dropdown-item-hover-border-top-color: hsla(
+    var(--hue),
+    calc(var(--saturation) + 100%),
+    calc(var(--lightness) + 85%),
+    0.125
+  );
+  --dropdown-item-hover-border-bottom-color: hsla(
+    var(--hue),
+    calc(var(--saturation) + 30%),
+    calc(var(--lightness) + 14%),
+    0.726
+  );
+  // dimensions
+  --dropdown-menu-height: 45px;
+
+  // z-indexes
+  --fullscreen-window-z-index: 100;
+  --toolbar-z-index: 101;
+
+  --modal-backdrop-color: hsla(
+    var(--hue),
+    calc(var(--saturation) + 30%),
+    calc(var(--lightness) + 4%),
+    0.5
+  );
+}
+
+* {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  user-select: none;
+  color: #d8d8d8;
+
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-scrollbar);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  ::-webkit-scrollbar-corner {
+    background: rgba(0, 0, 0, 0);
+  }
+}
+
+nextjs-portal {
+  display: none;
+}
+
+html {
+  background-color: black;
+}
+body {
+  overscroll-behavior: none;
+  overflow: hidden;
+}
+
+wrapper,
+inner,
+container,
+outer,
+shadow,
+overlay,
+placeholder,
+divider,
+item {
+  display: block;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  outline: none;
+  color: white;
+}
+
+.modalContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999999;
+}
+
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--modal-backdrop-color);
+  z-index: -2;
+}
+
+.loadingShimmer {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+
+  $loading-background-1: hsla(230, 10%, 51%, 0.101);
+  $loading-background-2: hsla(230, 10%, 51%, 0.211);
+
+  animation-duration: 1.8s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: $loading-background-1;
+  background: linear-gradient(
+    to right,
+    $loading-background-1 8%,
+    $loading-background-2 38%,
+    $loading-background-1 54%
+  );
+  background-size: 200% 100%;
+}
+
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -90% 0;
+  }
+}

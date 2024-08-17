@@ -17,8 +17,8 @@
   align-items: center;
   position: relative;
   width: fit-content;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
+  border: 1px solid var(--window-border-active);
+  border-radius: 15px;
   background-color: var(--window-header);
   padding: 10px;
   form {
@@ -85,6 +85,7 @@
 }
 
 .importButton {
+  @include mixins.actionButton;
   width: 100%;
   padding: 10px;
   border-radius: 5px;
@@ -94,16 +95,6 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
-  color: white;
+  color: var(--white);
   cursor: pointer;
-}
-
-.backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.2);
-  z-index: -2;
 }

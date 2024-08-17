@@ -4,23 +4,14 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
 
 .inner {
   user-select: none;
-  // width: 100%;
-  // height: 50px;
   display: flex;
   gap: 10px;
-  // justify-content: center;
-  // align-items: center;
-  // border: 1px solid green;
   transition: border 0.3s;
-
-  // border: 1px solid red;
   cursor: pointer;
   position: relative;
   padding: 5px 0px;
 
   &[data-open='true'] {
-    // border: 1px solid rgba(255, 255, 255, 0.15);
-
     p {
       color: var(--white);
     }
@@ -31,7 +22,6 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
   display: flex;
   gap: 20px;
   align-items: center;
-  // border: 1px solid blue;
   p {
     text-transform: capitalize;
     color: var(--white-65);
@@ -54,10 +44,20 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
       height: 1px;
     }
   }
+
+  &:hover {
+    & + .item,
+    & + .subMenu {
+      &::before {
+        background-color: transparent;
+      }
+    }
+  }
 }
 
 .subMenu {
   @include line;
+  @include mixins.dropdownHoverBackground;
   user-select: none;
   display: flex;
   gap: 10px;
@@ -69,9 +69,6 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
   justify-content: space-between;
   cursor: pointer;
   border-radius: $border-radius;
-  &:hover {
-    background-color: var(--white-15);
-  }
   .subMenuList {
     left: calc(100% + 10px);
     position: absolute;
@@ -97,7 +94,7 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
   svg {
     transform: translateY(1px);
     font-size: var(--font--2);
-    color: var(--white-65);
+    fill: var(--white-65);
   }
 }
 
@@ -120,6 +117,7 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
 
 .item {
   @include line;
+  @include mixins.dropdownHoverBackground;
   padding: $padding;
   position: relative;
   display: flex;
@@ -147,13 +145,14 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
     outline: none;
     border: none;
     border-bottom: 1px solid var(--border);
+    &::placeholder {
+      color: var(--white-45);
+    }
   }
   svg {
     pointer-events: none;
   }
-  &:hover {
-    background-color: var(--dropdown-item-hover-background-color);
-  }
+
   .checkIcon {
     font-size: var(--font--2);
     stroke: var(--color-accent);
@@ -172,8 +171,5 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
     display: flex;
     align-items: center;
     gap: 10px;
-    svg {
-      color: var(--white-65);
-    }
   }
 }

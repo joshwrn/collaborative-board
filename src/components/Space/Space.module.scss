@@ -36,14 +36,7 @@
   // overflow: hidden;
   touch-action: none;
   background-size: 100px 100px;
-}
-
-.background {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-size: 100px 100px;
-  z-index: -9999;
+  background-color: var(--space-background);
 }
 
 .button {

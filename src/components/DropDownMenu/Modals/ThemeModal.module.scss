@@ -1,0 +1,58 @@
+.modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: fit-content;
+  border: 1px solid var(--window-border-active);
+  border-radius: 15px;
+  background-color: var(--window-header);
+  padding: 30px;
+  width: 300px;
+  box-shadow: var(--window-box-shadow);
+}
+
+.header {
+  width: 100%;
+  margin-bottom: 10px;
+  h1 {
+    font-size: var(--font-2);
+    font-weight: bold;
+    color: var(--white);
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  height: 100%;
+}
+
+.slider {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &,
+    span {
+      color: var(--white-65);
+      font-size: var(--font-1);
+    }
+  }
+}
+
+.resetButton {
+  @include mixins.actionButton;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  color: var(--white);
+  cursor: pointer;
+}

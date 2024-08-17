@@ -4,6 +4,7 @@ import style from '../DropDownMenu.module.scss'
 import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 import { SPACE_ATTRS } from '@/state/space'
+import { ThemeModal } from '../Modals/ThemeModal'
 
 export const SpaceMenu = () => {
   const state = useStore([
@@ -14,6 +15,7 @@ export const SpaceMenu = () => {
     'showItemList',
     'debug_showZustandDevTools',
     'debug_showFps',
+    'showThemeModal',
   ])
   return (
     <item className={style.item}>
@@ -60,8 +62,18 @@ export const SpaceMenu = () => {
             label1={'Show Item List'}
             isChecked={state.showItemList}
           />,
+          <Dropdown.Item
+            key={'Theme'}
+            onClick={() => {
+              state.setState((draft) => {
+                draft.showThemeModal = !draft.showThemeModal
+              })
+            }}
+            label1={'Theme'}
+          />,
         ]}
       />
+      {state.showThemeModal && <ThemeModal />}
     </item>
   )
 }
