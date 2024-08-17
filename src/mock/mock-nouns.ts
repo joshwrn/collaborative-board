@@ -1,0 +1,87 @@
+export const MOCK_PLACES = [
+  `paris`,
+  `london`,
+  `new york`,
+  `tokyo`,
+  `berlin`,
+  `rome`,
+  `sydney`,
+  `cairo`,
+  `rio`,
+  `san francisco`,
+  `new delhi`,
+]
+
+export const MOCK_NOUNS = [
+  // buildings
+  `skyscraper`,
+  `tower`,
+  `castle`,
+  `house`,
+  `palace`,
+  `mansion`,
+  `hotel`,
+  `apartment`,
+  `office`,
+  `store`,
+  `garage`,
+  `tree house`,
+  `palace`,
+
+  // vehicles
+  `car`,
+  `truck`,
+  `bus`,
+  `motorcycle`,
+  `bicycle`,
+  `yacht`,
+  `train`,
+  `plane`,
+
+  // food
+  `apple`,
+  `cherry`,
+  `peach`,
+  `pineapple`,
+  `strawberry`,
+  `pizza`,
+
+  // animals
+  `bear`,
+  `cat`,
+  `dog`,
+  `elephant`,
+  `fox`,
+  `gorilla`,
+  `horse`,
+  `kangaroo`,
+  `lion`,
+  `monkey`,
+  `owl`,
+  `penguin`,
+  `pig`,
+  `rabbit`,
+  `sheep`,
+  `tiger`,
+  `whale`,
+  `wolf`,
+
+  // fantasy
+  `dragon`,
+  `unicorn`,
+  `mermaid`,
+  `fairy`,
+  `elf`,
+  `dwarf`,
+  `goblin`,
+  `gnome`,
+  `ogre`,
+  `troll`,
+  `wizard`,
+  `witch`,
+  `vampire`,
+  `werewolf`,
+
+  // places
+  ...MOCK_PLACES,
+]

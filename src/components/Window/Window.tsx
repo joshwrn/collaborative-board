@@ -286,14 +286,14 @@ const WindowInternal: FC<{
           <section className={styles.right}>
             <GenerateButton item={item} />
             <section className={styles.connections}>
-              <inner>
+              <div>
                 <p>
                   Loading <strong>{canvasesLoading.length}</strong>
                 </p>
                 <p>
                   Finished <strong>{fromConnections.length}</strong>
                 </p>
-              </inner>
+              </div>
               {/* <button
                 onClick={() => state.setActiveConnection({ from: item.id })}
               >

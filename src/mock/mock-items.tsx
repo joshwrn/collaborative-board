@@ -3,12 +3,15 @@ import { nanoid } from 'nanoid'
 
 import type { Item } from '@/state/items'
 
-import { MOCK_BASE64 } from './mockBlob'
-import { MOCK_NOUNS } from './mockNouns'
+import { MOCK_BASE64 } from './mock-blob'
+import { MOCK_NOUNS, MOCK_PLACES } from './mock-nouns'
 
 const VOWELS = [`a`, `e`, `i`, `o`, `u`]
 
 const wordWithArticle = (word: string) => {
+  if (MOCK_PLACES.includes(word)) {
+    return word
+  }
   const lWord = word.toLowerCase()
   if (lWord.endsWith(`s`)) {
     return lWord
@@ -20,33 +23,9 @@ const wordWithArticle = (word: string) => {
 }
 
 export const createMockPrompt = () => {
-  const typeOfArt = faker.helpers.arrayElement([
-    `painting`,
-    `drawing`,
-    `illustration`,
-    `digital art`,
-    `photograph`,
-    `graphic design`,
-    `watercolor painting`,
-    `abstract art`,
-  ])
   const subject = faker.helpers.arrayElement(MOCK_NOUNS)
 
-  const style = faker.helpers.arrayElement([
-    `realistic`,
-    `abstract`,
-    `surrealistic`,
-    `hyperrealistic`,
-    `surreal`,
-    `fantasy`,
-    `magical realism`,
-    `photorealistic`,
-    `expressionist`,
-    `gothic`,
-    `renaissance`,
-  ])
-
-  return `${wordWithArticle(style)} messy minimalist watercolor painting of ${wordWithArticle(subject)}`
+  return `a messy minimalist watercolor painting of ${wordWithArticle(subject)}`
 }
 
 export const createMockItem = (length: number): Item[] =>

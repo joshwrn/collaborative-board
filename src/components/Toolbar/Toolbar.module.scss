@@ -40,14 +40,6 @@
   cursor: pointer;
 }
 
-.sizeButton {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 1px solid var(--border);
-}
-
 .slider {
   z-index: var(--toolbar-z-index);
   input {

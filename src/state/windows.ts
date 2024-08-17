@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid'
 
 import { createMockPrompt } from '@/mock/mock-items'
-import { spaceCenterPoint } from '@/utils/spaceCenterPoint'
+import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
 
 import type { Point2d } from '.'
 import type { AppStateCreator, Setter } from './state'
