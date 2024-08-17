@@ -1,9 +1,11 @@
 import React from 'react'
-import style from './SpaceBackground.module.scss'
+
 import { useStore } from '@/state/gen-state'
 
+import style from './SpaceBackground.module.scss'
+
 export const SpaceBackground: React.FC = () => {
-  const state = useStore(['zoom', 'openContextMenu'])
+  const state = useStore([`zoom`, `openContextMenu`])
 
   return (
     <div
@@ -11,7 +13,7 @@ export const SpaceBackground: React.FC = () => {
       id="space-background"
       onContextMenu={(e) => {
         e.preventDefault()
-        state.openContextMenu({ id: 'space', elementType: 'space' })
+        state.openContextMenu({ id: `space`, elementType: `space` })
       }}
     >
       <svg

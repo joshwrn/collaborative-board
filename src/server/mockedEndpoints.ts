@@ -1,10 +1,10 @@
-import { ApiRouteUrl } from './routes'
+import type { ApiRouteUrl } from './routes'
 
-export const mockedEndpoints: Record<ApiRouteUrl, { [key: string]: boolean }> = {
+export const mockedEndpoints: Record<ApiRouteUrl, Record<string, boolean>> = {
   imageUrlToBase64: {
     get: false,
   },
-  ['fal/proxy']: {
+  [`fal/proxy`]: {
     post: false,
     get: false,
   },

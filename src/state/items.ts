@@ -1,38 +1,40 @@
-import { AppStateCreator, produceState } from './state'
 import { nanoid } from 'nanoid'
 
-export type Iframe = {
-  src: string
+import type { AppStateCreator } from './state'
+import { produceState } from './state'
+
+export interface Iframe {
   [key: string]: string
+  src: string
 }
 
-export type CanvasData = {
+export interface CanvasData {
   base64: string
 }
 
-export const ItemBodyTypes = ['text', 'iframe', 'canvas'] as const
+export const ItemBodyTypes = [`text`, `iframe`, `canvas`] as const
 export type ItemBodyType = (typeof ItemBodyTypes)[number]
 
-export type ItemBodyText = {
+export interface ItemBodyText {
   content: string
   id: string
-  type: 'text'
+  type: `text`
 }
 
 export type ItemBody =
   | ItemBodyText
   | {
-      content: Iframe
-      id: string
-      type: 'iframe'
-    }
-  | {
       content: CanvasData
       id: string
-      type: 'canvas'
+      type: `canvas`
+    }
+  | {
+      content: Iframe
+      id: string
+      type: `iframe`
     }
 
-export type Item = {
+export interface Item {
   id: string
   subject: string
   body: ItemBody[]
@@ -40,15 +42,15 @@ export type Item = {
 }
 
 export const DEFAULT_ITEM: Item = {
-  id: 'default_id',
-  subject: 'default_subject',
+  id: `default_id`,
+  subject: `default_subject`,
   body: [],
   members: [],
 }
 
-export type ItemListStore = {
+export interface ItemListStore {
   items: Item[]
-  editItem: (id: string, content: Partial<Omit<Item, 'body'>>) => void
+  editItem: (id: string, content: Partial<Omit<Item, `body`>>) => void
   deleteItem: (id: string) => void
   createItem: (item: Partial<Item>) => void
 
@@ -63,7 +65,7 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
   items: [],
   editItem: (id, content) => {
     produceState(set, (state) => {
-      const item = state.items.find((item) => item.id === id)
+      const item = state.items.find((curItem) => curItem.id === id)
       if (item) {
         Object.assign(item, content)
       }
@@ -82,7 +84,7 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
     set((state) => ({
       items: state.items.filter((item) => item.id !== id),
       connections: state.connections.filter(
-        (connection) => connection.id.includes(id) === false,
+        (connection) => !connection.id.includes(id),
       ),
       windows: state.windows.filter((window) => window.id !== id),
     }))
@@ -91,7 +93,7 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
   hoveredItem: null,
   addContentToItem: (id, content) => {
     produceState(set, (state) => {
-      const item = state.items.find((item) => item.id === id)
+      const item = state.items.find((curItem) => curItem.id === id)
       if (item) {
         if (Array.isArray(content)) {
           item.body.push(...content)
@@ -104,9 +106,9 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
 
   editItemContent: (id, content) => {
     produceState(set, (state) => {
-      const item = state.items.find((item) => item.id === id)
+      const item = state.items.find((curItem) => curItem.id === id)
       if (item) {
-        const body = item.body.find((body) => body.id === content.id)
+        const body = item.body.find((curBody) => curBody.id === content.id)
         if (body) {
           body.content = content.content
         }

@@ -1,23 +1,25 @@
-import React from 'react'
-import style from './Toolbar.module.scss'
-import { useStore } from '@/state/gen-state'
-import { PiPaintBrushThin } from 'react-icons/pi'
 import {
-  FloatingPortal,
   autoUpdate,
+  FloatingPortal,
   offset,
   useFloating,
 } from '@floating-ui/react'
-import { useOutsideClick } from '@/utils/useOutsideClick'
+import React from 'react'
+import { PiPaintBrushThin } from 'react-icons/pi'
+
+import { useStore } from '@/state/gen-state'
 import { joinClasses } from '@/utils/joinClasses'
+import { useOutsideClick } from '@/utils/useOutsideClick'
+
+import style from './Toolbar.module.scss'
 
 export const Toolbar: React.FC = () => {
   const state = useStore([
-    'drawColor',
-    'tool',
-    'drawSize',
-    'canvasIsFocused',
-    'setState',
+    `drawColor`,
+    `tool`,
+    `drawSize`,
+    `canvasIsFocused`,
+    `setState`,
   ])
 
   const [open, setOpen] = React.useState<boolean>(false)
@@ -52,7 +54,7 @@ export const Toolbar: React.FC = () => {
           size={20}
           onClick={() =>
             state.setState((draft) => {
-              draft.tool = 'draw'
+              draft.tool = `draw`
             })
           }
         />
@@ -82,9 +84,9 @@ export const Toolbar: React.FC = () => {
                 position: strategy,
                 left: refs.reference.current?.getBoundingClientRect().left,
                 top: y,
-                width: 'fit-content',
+                width: `fit-content`,
               }}
-              className={joinClasses(style.slider, 'dropdown-list')}
+              className={joinClasses(style.slider, `dropdown-list`)}
               onClick={() => setOpen(false)}
             >
               <input

@@ -1,20 +1,22 @@
 import React from 'react'
-import style from './ThemeModal.module.scss'
+
 import { useStore } from '@/state/gen-state'
+
+import style from './ThemeModal.module.scss'
 
 export const ThemeModal: React.FC = () => {
   const state = useStore([
-    'setState',
-    'hue',
-    'saturation',
-    'lightness',
-    'updateTheme',
-    'resetTheme',
+    `setState`,
+    `hue`,
+    `saturation`,
+    `lightness`,
+    `updateTheme`,
+    `resetTheme`,
   ])
   return (
-    <div className={'modalContainer'}>
+    <div className={`modalContainer`}>
       <div
-        className={'modalBackdrop'}
+        className={`modalBackdrop`}
         style={{
           opacity: 0,
         }}
@@ -59,7 +61,7 @@ export const ThemeModal: React.FC = () => {
               value={parseInt(state.saturation)}
               onChange={(e) => {
                 state.updateTheme({
-                  saturation: e.target.value + '%',
+                  saturation: e.target.value + `%`,
                 })
               }}
             />
@@ -77,7 +79,7 @@ export const ThemeModal: React.FC = () => {
               value={parseInt(state.lightness)}
               onChange={(e) => {
                 state.updateTheme({
-                  lightness: e.target.value + '%',
+                  lightness: e.target.value + `%`,
                 })
               }}
             />

@@ -1,31 +1,32 @@
 'use client'
 import type { FC } from 'react'
 import React from 'react'
-import { Windows } from '../Window/Window'
 
-import styles from './Space.module.scss'
-import { useStore } from '@/state/gen-state'
 import { useGestures } from '@/gestures'
-import { Connections } from '../Connections/Connections'
-import { ActiveConnectionGuard } from '../Connections/ActiveConnection'
+import { useStore } from '@/state/gen-state'
 import { SPACE_ATTRS } from '@/state/space'
+
+import { ActiveConnectionGuard } from '../Connections/ActiveConnection'
+import { Connections } from '../Connections/Connections'
 import { SnapLines } from '../SnapLine/SnapLine'
 import { Toolbar } from '../Toolbar/Toolbar'
 import { FullScreenWindow } from '../Window/FullScreenWindow/FullScreenWindow'
 import { PinnedWindow } from '../Window/PinnedWindow/PinnedWindow'
+import { Windows } from '../Window/Window'
+import styles from './Space.module.scss'
 import { SpaceBackground } from './SpaceBackground'
 
 const Space_Internal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
   const spaceRef = React.useRef<HTMLDivElement>(null)
   const state = useStore([
-    'zoom',
-    'pan',
-    'setSpaceMousePosition',
-    'fullScreenWindow',
-    'openContextMenu',
-    'setState',
-    'pinnedWindow',
+    `zoom`,
+    `pan`,
+    `setSpaceMousePosition`,
+    `fullScreenWindow`,
+    `openContextMenu`,
+    `setState`,
+    `pinnedWindow`,
   ])
 
   useGestures({ wrapperRef, spaceRef })

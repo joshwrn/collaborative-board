@@ -22,7 +22,7 @@ export const mockProgress = async (options: {
           curProgress = 1
         }
         if (options.shouldReject && curProgress > 0.5) {
-          throw new Error('Fake Error')
+          throw new Error(`Fake Error`)
         }
         onProgress(curProgress * 100)
       } catch (e) {
@@ -33,7 +33,7 @@ export const mockProgress = async (options: {
 
     setTimeout(() => {
       clearInterval(interval)
-      resolve('success')
+      resolve(`success`)
     }, time)
   })
 }

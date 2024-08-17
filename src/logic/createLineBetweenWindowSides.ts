@@ -1,6 +1,8 @@
-import { SIDES, Side } from '@/state/connections'
-import { WindowType } from '@/state/windows'
 import { distance } from 'mathjs'
+
+import type { Side } from '@/state/connections'
+import { SIDES } from '@/state/connections'
+import type { WindowType } from '@/state/windows'
 
 export const circle = {
   fromRadius: 15,
@@ -9,7 +11,7 @@ export const circle = {
   toMargin: 10,
 }
 
-export type LineBetweenWindows = {
+export interface LineBetweenWindows {
   line: { from: { x: number; y: number }; to: { x: number; y: number } }
   distance: number
 }
@@ -54,18 +56,18 @@ export const createCircleMargins = (side: Side, to: boolean) => {
     (to ? circle.toMargin : circle.fromMargin)
 
   switch (side) {
-    case 'top':
+    case `top`:
       return { x: 0, y: -total }
-    case 'bottom':
+    case `bottom`:
       return { x: 0, y: total }
-    case 'left':
+    case `left`:
       return { x: -total, y: 0 }
-    case 'right':
+    case `right`:
       return { x: total, y: 0 }
   }
 }
 
-export type Circle = {
+export interface Circle {
   center: { x: number; y: number }
   radius: number
 }

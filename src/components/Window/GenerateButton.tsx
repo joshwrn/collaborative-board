@@ -1,36 +1,37 @@
-import React from 'react'
-import style from './GenerateButton.module.scss'
-import { Item } from '@/state/items'
 import { motion } from 'framer-motion'
-import { joinClasses } from '@/utils/joinClasses'
-import { useConvertSketchToImage } from '@/fal/workflows/convertSketchToImage'
-
-import { IoSparklesSharp } from 'react-icons/io5'
 import { nanoid } from 'nanoid'
+import React from 'react'
+import { IoSparklesSharp } from 'react-icons/io5'
+
+import { useConvertSketchToImage } from '@/fal/workflows/convertSketchToImage'
 import { useStore } from '@/state/gen-state'
+import type { Item } from '@/state/items'
+import { joinClasses } from '@/utils/joinClasses'
 import { useWithRateLimit } from '@/utils/useWithRateLimit'
+
+import style from './GenerateButton.module.scss'
 
 export const GenerateButton_Internal: React.FC<{
   item: Item
 }> = ({ item }) => {
   const generateImage = useConvertSketchToImage({ generatedFromItem: item })
   const toastId = React.useRef<string>(nanoid())
-  const state = useStore(['promiseNotification'])
+  const state = useStore([`promiseNotification`])
   const [disabled, limit] = useWithRateLimit()
   return (
     <section className={style.wrapper}>
       <motion.button
-        onClick={async () => {
-          limit(() => {
+        onClick={() => {
+          limit(async () => {
             toastId.current = nanoid()
-            state.promiseNotification(
+            await state.promiseNotification(
               async () => {
                 await generateImage.mutateAsync({
                   toastId: toastId.current,
                 })
               },
               {
-                type: 'info',
+                type: `info`,
                 message: `In Queue...`,
                 id: toastId.current,
                 isLoading: true,

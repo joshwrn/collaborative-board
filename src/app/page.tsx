@@ -1,33 +1,34 @@
 'use client'
-import { Space } from '@/components/Space/Space'
-import styles from './page.module.scss'
-import { useStore } from '@/state/gen-state'
-import { ContextMenu } from '@/components/ContextMenu/ContextMenu'
+import * as fal from '@fal-ai/serverless-client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import React, { Suspense } from 'react'
 // @ts-ignore
 import FPSStats from 'react-fps-stats'
+
+import { ContextMenu } from '@/components/ContextMenu/ContextMenu'
 import { DropDownMenu } from '@/components/DropDownMenu/DropDownMenu'
-
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import * as fal from '@fal-ai/serverless-client'
-
-import React, { Suspense } from 'react'
 import { List } from '@/components/ItemList/List/List'
-import { Toaster } from '@/ui/Toast'
+import { Space } from '@/components/Space/Space'
 import { useScenario } from '@/mock/scenarios'
-const DevTools = React.lazy(() => import('@/components/Debug/DevTools'))
+import { useStore } from '@/state/gen-state'
+import { Toaster } from '@/ui/Toast'
+
+import styles from './page.module.scss'
+
+const DevTools = React.lazy(async () => import(`@/components/Debug/DevTools`))
 
 const queryClient = new QueryClient()
 
 fal.config({
-  proxyUrl: '/api/fal/proxy',
+  proxyUrl: `/api/fal/proxy`,
 })
 
 export default function Home() {
   const state = useStore([
-    'setMousePosition',
-    'showItemList',
-    'debug_showZustandDevTools',
-    'debug_showFps',
+    `setMousePosition`,
+    `showItemList`,
+    `debug_showZustandDevTools`,
+    `debug_showFps`,
   ])
 
   useScenario()
@@ -48,23 +49,23 @@ export default function Home() {
           <ContextMenu />
           {state.showItemList && <List />}
         </main>
-        {state.debug_showFps && <FPSStats left={'auto'} right={0} />}
+        {state.debug_showFps && <FPSStats left={`auto`} right={0} />}
       </wrapper>
       <Toaster />
       <Suspense
         fallback={
           <div
             style={{
-              position: 'absolute',
+              position: `absolute`,
               top: 0,
               left: 0,
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontSize: '30px',
+              width: `100%`,
+              height: `100%`,
+              display: `flex`,
+              alignItems: `center`,
+              justifyContent: `center`,
+              color: `white`,
+              fontSize: `30px`,
               zIndex: 9999999,
             }}
           >
@@ -74,7 +75,7 @@ export default function Home() {
       >
         {state.debug_showZustandDevTools && <DevTools />}
       </Suspense>
-      {state.debug_showFps && <FPSStats left={'auto'} right={0} />}
+      {state.debug_showFps && <FPSStats left={`auto`} right={0} />}
     </QueryClientProvider>
   )
 }

@@ -1,13 +1,14 @@
-import { AppStateCreator, produceState } from './state'
+import type { AppStateCreator } from './state'
+import { produceState } from './state'
 
-export type GeneratedCanvas = {
+export interface GeneratedCanvas {
   canvasId: string
   itemId: string
   generatedFromItemId: string
 }
 
-export type CanvasStore = {
-  tool: 'draw'
+export interface CanvasStore {
+  tool: `draw`
   drawColor: string
   drawSize: number
   canvasIsFocused: boolean
@@ -22,9 +23,9 @@ export type CanvasStore = {
 }
 
 export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
-  tool: 'draw',
+  tool: `draw`,
   drawSize: 10,
-  drawColor: 'rgb(0, 112, 243)',
+  drawColor: `rgb(0, 112, 243)`,
   canvasIsFocused: false,
   generatedCanvas: null,
   generatingCanvas: [],

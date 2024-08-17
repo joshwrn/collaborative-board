@@ -1,9 +1,10 @@
-import type { Metadata } from 'next'
 import '../styles/globals.scss'
 
+import type { Metadata } from 'next'
+
 export const metadata: Metadata = {
-  title: 'Board',
-  description: 'Generate images with AI',
+  title: `Board`,
+  description: `Generate images with AI`,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

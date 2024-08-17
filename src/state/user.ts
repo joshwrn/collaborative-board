@@ -1,14 +1,14 @@
-import { AppStateCreator } from './state'
+import type { AppStateCreator } from './state'
 
-export type User = {
+export interface User {
   id: string
   name: string
   email: string
   image: string
 }
 
-export type UserStore = {
-  user: null | User
+export interface UserStore {
+  user: User | null
 }
 
 export const userStore: AppStateCreator<UserStore> = (set) => ({

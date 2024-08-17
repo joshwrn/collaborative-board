@@ -1,17 +1,18 @@
-import { AppStateCreator, Setter, stateSetter } from './state'
+import type { AppStateCreator, Setter } from './state'
+import { stateSetter } from './state'
 
-export const SIDES = ['top', 'right', 'bottom', 'left'] as const
+export const SIDES = [`top`, `right`, `bottom`, `left`] as const
 export type Side = (typeof SIDES)[number]
 
-export type Connection = {
+export interface Connection {
   id: string
   from: string
   to: string
 }
-export type ActiveConnection = Pick<Connection, 'from'>
-export type HoveredConnection = Pick<Connection, 'to'>
+export type ActiveConnection = Pick<Connection, `from`>
+export type HoveredConnection = Pick<Connection, `to`>
 
-export type ConnectedWindowsStore = {
+export interface ConnectedWindowsStore {
   activeConnection: ActiveConnection | null
   hoveredConnection: HoveredConnection | null
   connections: Connection[]

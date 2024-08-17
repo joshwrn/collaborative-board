@@ -9,7 +9,7 @@
 // }
 
 export const blobToBase64 = async (blob: Blob): Promise<string> => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const chunks: Uint8Array[] = []
     const reader = blob.stream().getReader()
 
@@ -18,16 +18,16 @@ export const blobToBase64 = async (blob: Blob): Promise<string> => {
         const { done, value } = await reader.read()
         if (done) {
           const buffer = Buffer.concat(chunks)
-          resolve(buffer.toString('base64'))
+          resolve(buffer.toString(`base64`))
         } else {
           chunks.push(value)
-          read()
+          await read()
         }
       } catch (error) {
         reject(error)
       }
     }
 
-    read()
+    await read()
   })
 }

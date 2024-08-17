@@ -1,11 +1,12 @@
 import React from 'react'
-import style from '../DropDownMenu.module.scss'
 
 import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 
+import style from '../DropDownMenu.module.scss'
+
 export const AIMenu = () => {
-  const state = useStore(['fal_num_inference_steps', 'setState'])
+  const state = useStore([`fal_num_inference_steps`, `setState`])
   const ref = React.useRef(null)
   return (
     <item className={style.item}>
@@ -13,11 +14,7 @@ export const AIMenu = () => {
         id="dropdown-ai-button"
         SelectedOption={() => <p>AI</p>}
         Options={[
-          <Dropdown.Item
-            key={'Create (Custom)'}
-            onClick={() => {}}
-            isChecked={false}
-          >
+          <Dropdown.Item key={`Create (Custom)`} isChecked={false}>
             <form
               ref={ref}
               className={style.customCreate}

@@ -8,14 +8,14 @@ import {
 import type { Variants } from 'framer-motion'
 import { AnimatePresence, motion } from 'framer-motion'
 import React from 'react'
-import { IoIosArrowDown } from 'react-icons/io'
-import { IoIosArrowForward } from 'react-icons/io'
+import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io'
 import { IoCheckmarkSharp as CheckIcon } from 'react-icons/io5'
 import type { IconType } from 'react-icons/lib'
 
-import style from './Dropdown.module.scss'
-import { useOutsideClick } from '@/utils/useOutsideClick'
 import { joinClasses } from '@/utils/joinClasses'
+import { useOutsideClick } from '@/utils/useOutsideClick'
+
+import style from './Dropdown.module.scss'
 
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -27,7 +27,7 @@ const listVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    pointerEvents: 'auto',
+    pointerEvents: `auto`,
     transition: {
       pointerEvents: {
         delay: 0.2,
@@ -85,13 +85,13 @@ const DropdownInternal = ({
   return (
     <>
       <div
-        id={id ?? ''}
+        id={id ?? ``}
         data-open={open}
         data-role="dropdown-menu"
         className={style.inner}
         ref={refs.setReference}
         onClick={(e) => {
-          console.log('clicked')
+          console.log(`clicked`)
           if (disabled) return
           setOpen(!open)
         }}
@@ -118,10 +118,10 @@ const DropdownInternal = ({
                   (refs.reference.current?.getBoundingClientRect().left ?? 0) -
                   10,
                 top: y,
-                width: 'fit-content',
+                width: `fit-content`,
                 // refs.reference.current?.getBoundingClientRect().width ?? 0,
               }}
-              className={joinClasses(style.list, 'dropdown-list')}
+              className={joinClasses(style.list, `dropdown-list`)}
               onClick={() => setOpen(false)}
             >
               <DropdownOptions
@@ -162,7 +162,7 @@ const DropdownOptionsInternal: React.FC<{
 const DropdownOptions = React.memo(DropdownOptionsInternal)
 
 export const Item: React.FC<{
-  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void
   Icon?: IconType
   label1?: string
   label2?: string
@@ -180,12 +180,12 @@ export const Item: React.FC<{
         damping: 30,
       }}
       onClick={(e) => {
-        onClick(e)
+        onClick?.(e)
       }}
       data-role="dropdown-item"
       data-checked={!!isChecked}
       className={style.item}
-      id={id ?? ''}
+      id={id ?? ``}
     >
       {children ? (
         children
@@ -218,12 +218,12 @@ const SubMenu = ({
   const [open, setOpen] = React.useState<boolean>(false)
   return (
     <motion.div
-      id={id ?? ''}
+      id={id ?? ``}
       data-open={open}
       data-role="dropdown-sub-menu"
       className={style.subMenu}
       style={{
-        position: 'relative',
+        position: `relative`,
       }}
       onPointerOver={() => setOpen(true)}
       onPointerOut={() => setOpen(false)}
@@ -250,7 +250,7 @@ const SubMenu = ({
             className={joinClasses(
               style.list,
               style.subMenuList,
-              'dropdown-list',
+              `dropdown-list`,
             )}
             onClick={() => setOpen(false)}
           >

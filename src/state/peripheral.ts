@@ -1,7 +1,8 @@
-import { Point2d } from '.'
-import { AppStateCreator, Setter, stateSetter } from './state'
+import type { Point2d } from '.'
+import type { AppStateCreator, Setter } from './state'
+import { stateSetter } from './state'
 
-export type PeripheralStore = {
+export interface PeripheralStore {
   mousePosition: Point2d
   setMousePosition: Setter<Point2d>
   spaceMousePosition: Point2d

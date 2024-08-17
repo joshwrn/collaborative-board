@@ -1,4 +1,4 @@
-import { Point2d } from '@/state'
+import type { Point2d } from '@/state'
 import { SPACE_ATTRS } from '@/state/space'
 
 export const spaceCenterPoint = (zoom: number, pan: Point2d) => {

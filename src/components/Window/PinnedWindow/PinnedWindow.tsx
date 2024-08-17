@@ -1,20 +1,23 @@
+import { FloatingPortal } from '@floating-ui/react'
 import React from 'react'
-import style from './PinnedWindow.module.scss'
 
 import { useStore } from '@/state/gen-state'
-import { Window } from '../Window'
-import { FloatingPortal } from '@floating-ui/react'
 import { WINDOW_ATTRS } from '@/state/windows'
+
+import { Window } from '../Window'
+import style from './PinnedWindow.module.scss'
 
 export const DEFAULT_PINNED_WINDOW_ZOOM = 0.5
 
 const PinnedWindow_Internal: React.FC = () => {
-  const state = useStore(['pinnedWindow', 'items', 'windows'])
+  const state = useStore([`pinnedWindow`, `items`, `windows`])
 
-  const window = state.windows.find((window) => window.id === state.pinnedWindow)
+  const window = state.windows.find(
+    (curWindow) => curWindow.id === state.pinnedWindow,
+  )
   if (!window) return null
 
-  const item = state.items.find((item) => item.id === window.id)
+  const item = state.items.find((curItem) => curItem.id === window.id)
   if (!item) return null
 
   return (

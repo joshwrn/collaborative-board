@@ -1,7 +1,7 @@
+import { produce } from 'immer'
 import type { Mutate, StoreApi, StoreMutatorIdentifier } from 'zustand'
 
-import { Store } from './gen-state'
-import { produce } from 'immer'
+import type { Store } from './gen-state'
 
 type Get<T, K, F> = K extends keyof T ? T[K] : F
 export type AppStateCreator<
@@ -17,7 +17,7 @@ export type AppStateCreator<
   $$storeMutators?: Mos
 }
 
-export type StateCallback<T> = ((prev: T) => T) | T
+export type StateCallback<T> = T | ((prev: T) => T)
 // uncomment this to get type errors
 // export type StateSetter<T> = (callback: StateCallback<T>) => void
 
@@ -45,7 +45,7 @@ export const stateSetter = <T extends keyof Store>(
 }
 
 export type Set = (
-  partial: Store | Partial<Store> | ((state: Store) => Store | Partial<Store>),
+  partial: Partial<Store> | Store | ((state: Store) => Partial<Store> | Store),
   replace?: boolean | undefined,
 ) => void
 

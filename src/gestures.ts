@@ -1,6 +1,6 @@
 import { useGesture } from '@use-gesture/react'
-
 import React from 'react'
+
 import { useStore } from './state/gen-state'
 import { SPACE_ATTRS } from './state/space'
 
@@ -23,14 +23,14 @@ export const useGestures = ({
   spaceRef: React.RefObject<HTMLDivElement>
 }) => {
   const state = useStore([
-    'contextMenu',
-    'zoom',
-    'pan',
-    'setZoom',
-    'setPan',
-    'selectedWindow',
-    'hoveredWindow',
-    'setState',
+    `contextMenu`,
+    `zoom`,
+    `pan`,
+    `setZoom`,
+    `setPan`,
+    `selectedWindow`,
+    `hoveredWindow`,
+    `setState`,
   ])
 
   usePreventDefaults()

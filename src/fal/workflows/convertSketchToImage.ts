@@ -1,16 +1,17 @@
+import type * as fal from '@fal-ai/serverless-client'
 import { useMutation } from '@tanstack/react-query'
-import { Item } from '@/state/items'
 import { nanoid } from 'nanoid'
+
+import { mockProgress } from '@/mock/mock-progress'
 import { fetchImageUrlToBase64 } from '@/server/imageUrlToBase64/fetchImageUrlToBase64'
 import { useFullStore, useStore } from '@/state/gen-state'
+import type { Item } from '@/state/items'
+
+import type { CreativeUpscaleOutput } from '../api/creativeUpscale'
 import {
   creativeUpscale,
-  CreativeUpscaleOutput,
   MOCK_CREATIVE_UPSCALE_RESPONSE,
 } from '../api/creativeUpscale'
-import { resizeImage } from '@/utils/image/resizeImage'
-import * as fal from '@fal-ai/serverless-client'
-import { mockProgress } from '@/mock/mock-progress'
 
 export const createFakeMockConvertSketchToImageResponse = ({
   itemId,
@@ -18,14 +19,14 @@ export const createFakeMockConvertSketchToImageResponse = ({
   itemId: string
 }) => {
   return {
-    description: 'A tiger is standing in a forest.',
+    description: `A tiger is standing in a forest.`,
     image: MOCK_CREATIVE_UPSCALE_RESPONSE.image,
     itemId,
   }
 }
 
-export type ConvertSketchToImageResponse = {
-  image: CreativeUpscaleOutput['image']
+export interface ConvertSketchToImageResponse {
+  image: CreativeUpscaleOutput[`image`]
   description: string
   itemId: string
 }
@@ -38,17 +39,17 @@ export const useConvertSketchToImage = ({
   generatedFromItem: Item
 }) => {
   const state = useStore([
-    'createItem',
-    'makeConnection',
-    'toggleOpenWindow',
-    'addContentToItem',
-    'moveWindowNextTo',
-    'deleteItem',
-    'setState',
-    'removeGeneratingCanvasItem',
-    'updateGeneratingCanvasProgress',
-    'updateNotification',
-    'fal_num_inference_steps',
+    `createItem`,
+    `makeConnection`,
+    `toggleOpenWindow`,
+    `addContentToItem`,
+    `moveWindowNextTo`,
+    `deleteItem`,
+    `setState`,
+    `removeGeneratingCanvasItem`,
+    `updateGeneratingCanvasProgress`,
+    `updateNotification`,
+    `fal_num_inference_steps`,
   ])
   const generateImage = useMutation<
     ConvertSketchToImageResponse,
@@ -59,7 +60,7 @@ export const useConvertSketchToImage = ({
   >({
     mutationFn: async ({ toastId }) => {
       const newItemId = nanoid()
-      const connections = useFullStore.getState().connections
+      const { connections } = useFullStore.getState()
       const outgoingConnections = connections.filter(
         (connection) => connection.from === generatedFromItem.id,
       )
@@ -99,10 +100,10 @@ export const useConvertSketchToImage = ({
       }
 
       try {
-        const image = generatedFromItem.body.find((b) => b.type === 'canvas')
+        const image = generatedFromItem.body.find((b) => b.type === `canvas`)
           ?.content.base64
         const style = generatedFromItem.body.find(
-          (b) => b.type === 'text',
+          (b) => b.type === `text`,
         )?.content
         if (!image) {
           throw new Error(`Missing image or prompt.`)
@@ -117,7 +118,7 @@ export const useConvertSketchToImage = ({
           shape_preservation: 0.25,
           guidance_scale: 7.5,
           onUpdate: (update: fal.QueueStatus) => {
-            if (update.status === 'IN_PROGRESS') {
+            if (update.status === `IN_PROGRESS`) {
               let progress = 0
               if (update.logs) {
                 update.logs.forEach((message) => {
@@ -135,7 +136,7 @@ export const useConvertSketchToImage = ({
         })
         return {
           image: result.image,
-          description: style ?? '',
+          description: style ?? ``,
           itemId: newItemId,
         }
       } catch (e) {
@@ -149,16 +150,16 @@ export const useConvertSketchToImage = ({
       const res = await fetchImageUrlToBase64({
         url: data.image.url,
       })
-      const base64 = res.base64
+      const { base64 } = res
       const canvasId = nanoid()
       state.addContentToItem(data.itemId, [
         {
-          type: 'text',
+          type: `text`,
           id: nanoid(),
           content: data.description,
         },
         {
-          type: 'canvas',
+          type: `canvas`,
           id: canvasId,
           content: {
             base64: base64,

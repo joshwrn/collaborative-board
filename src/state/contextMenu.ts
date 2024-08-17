@@ -1,12 +1,12 @@
-import { Point2d } from '.'
-import { AppStateCreator } from './state'
+import type { Point2d } from '.'
+import type { AppStateCreator } from './state'
 
-export type ElementTypes = 'connections' | 'item' | 'space'
+export type ElementTypes = `connections` | `item` | `space`
 
 type ContextMenu =
   | {
       position: Point2d
-      elementType: 'space'
+      elementType: `space`
       data: {
         x: number
         y: number
@@ -15,15 +15,15 @@ type ContextMenu =
   | {
       position: Point2d
       id: string
-      elementType: 'connections'
+      elementType: `connections`
     }
   | {
       position: Point2d
       id: string
-      elementType: 'item'
+      elementType: `item`
     }
 
-export type ContextMenuStore = {
+export interface ContextMenuStore {
   contextMenu: ContextMenu | null
   openContextMenu: ({
     id,
@@ -43,7 +43,7 @@ export const contextMenuStore: AppStateCreator<ContextMenuStore> = (
     const state = get()
     const position = state.mousePosition
     switch (elementType) {
-      case 'connections':
+      case `connections`:
         set(() => ({
           contextMenu: {
             id,
@@ -52,7 +52,7 @@ export const contextMenuStore: AppStateCreator<ContextMenuStore> = (
           },
         }))
         return
-      case 'item':
+      case `item`:
         set(() => ({
           contextMenu: {
             id,
@@ -61,7 +61,7 @@ export const contextMenuStore: AppStateCreator<ContextMenuStore> = (
           },
         }))
         return
-      case 'space':
+      case `space`:
         const { x, y } = state.spaceMousePosition
         set(() => ({
           contextMenu: {

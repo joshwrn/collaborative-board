@@ -1,8 +1,10 @@
-import React from 'react'
-import style from './SnapLine.module.scss'
-import { useStore } from '@/state/gen-state'
 import { distance } from 'mathjs'
-import { SnappingToPosition } from '@/state/snapping'
+import React from 'react'
+
+import { useStore } from '@/state/gen-state'
+import type { SnappingToPosition } from '@/state/snapping'
+
+import style from './SnapLine.module.scss'
 
 export const SnapLineY: React.FC<{
   yPos: SnappingToPosition | null
@@ -20,7 +22,7 @@ export const SnapLineY: React.FC<{
         left: yPos.dir === -1 ? yPos.to.x : yPos.from.x,
         top: yPos.from.y,
         height: `${1 / zoom}px`,
-        width: yDistance.toString() + 'px',
+        width: yDistance.toString() + `px`,
       }}
     />
   )
@@ -42,14 +44,14 @@ export const SnapLineX: React.FC<{
         left: xPos.from.x,
         top: xPos.dir === -1 ? xPos.to.y : xPos.from.y,
         width: `${1 / zoom}px`,
-        height: xDistance.toString() + 'px',
+        height: xDistance.toString() + `px`,
       }}
     />
   )
 }
 
 const SnapLines_Internal: React.FC = () => {
-  const state = useStore(['snapLines', 'zoom'])
+  const state = useStore([`snapLines`, `zoom`])
   if (state.snapLines.length === 0) {
     return null
   }
@@ -57,7 +59,7 @@ const SnapLines_Internal: React.FC = () => {
     <>
       {state.snapLines.map((pos, i) => {
         const key = createKey(pos)
-        if (pos.axis === 'y') {
+        if (pos.axis === `y`) {
           return <SnapLineY key={key + i} yPos={pos} zoom={state.zoom} />
         } else {
           return <SnapLineX key={key + i} xPos={pos} zoom={state.zoom} />

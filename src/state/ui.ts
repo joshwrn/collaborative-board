@@ -1,6 +1,6 @@
-import { AppStateCreator } from './state'
+import type { AppStateCreator } from './state'
 
-export type UiStore = {
+export interface UiStore {
   showThemeModal: boolean
   hue: number
   saturation: string
@@ -9,7 +9,7 @@ export type UiStore = {
   resetTheme: () => void
 }
 
-export type HSL = {
+export interface HSL {
   hue: number
   saturation: string
   lightness: string
@@ -17,11 +17,11 @@ export type HSL = {
 
 const DEFAULT_THEME: HSL = {
   hue: 230,
-  saturation: '-8%',
-  lightness: '1%',
+  saturation: `-8%`,
+  lightness: `1%`,
 }
 
-const setVariable = (name: string, value: string | number) => {
+const setVariable = (name: string, value: number | string) => {
   document.documentElement.style.setProperty(name, `${value}`)
 }
 

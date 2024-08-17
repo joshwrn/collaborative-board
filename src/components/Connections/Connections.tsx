@@ -1,16 +1,18 @@
 import type { FC } from 'react'
-import { WindowType } from '@/state/windows'
+import React from 'react'
 import { IoIosArrowForward } from 'react-icons/io'
-import styles from './Connections.module.scss'
-import { joinClasses } from '@/utils/joinClasses'
+
 import {
   calculateAngleBetweenPoints,
   createLineBetweenWindows,
 } from '@/logic/createLineBetweenWindowSides'
 import { createLineFromWindowToMouse } from '@/logic/createLineFromWindowToMouse'
-import { Connection as ConnectionType } from '@/state/connections'
-import React from 'react'
+import type { Connection as ConnectionType } from '@/state/connections'
 import { useStore } from '@/state/gen-state'
+import type { WindowType } from '@/state/windows'
+import { joinClasses } from '@/utils/joinClasses'
+
+import styles from './Connections.module.scss'
 
 const ConnectionInternal = ({
   from,
@@ -27,9 +29,9 @@ const ConnectionInternal = ({
   id: string
   zoom: number
   isActive?: boolean
-  hoveredItem: 'none' | 'from' | 'to'
+  hoveredItem: `from` | `none` | `to`
 }) => {
-  const state = useStore(['openContextMenu', 'contextMenu'])
+  const state = useStore([`openContextMenu`, `contextMenu`])
 
   const properties = React.useMemo(
     () =>
@@ -40,8 +42,8 @@ const ConnectionInternal = ({
   )
 
   const isSelected =
-    state.contextMenu?.elementType === 'connections' &&
-    state.contextMenu?.id === id
+    state.contextMenu?.elementType === `connections` &&
+    state.contextMenu.id === id
 
   if (!properties) return null
   const { line, distance } = properties
@@ -60,12 +62,12 @@ const ConnectionInternal = ({
         createBackgroundClass(!!isActive, isSelected, hoveredItem),
       )}
       style={{
-        width: distance.toString() + 'px',
+        width: distance.toString() + `px`,
         left: line.from.x,
         top: line.from.y,
         height: `${1 / zoom}px`,
         background: createBackground(isActive, zoom),
-        transformOrigin: '0 0',
+        transformOrigin: `0 0`,
         transform: `rotate(${calculateAngleBetweenPoints(
           line.from.x,
           line.from.y,
@@ -94,7 +96,7 @@ const createBackground = (isActive: boolean | undefined, zoom: number) => {
 const createBackgroundClass = (
   isActive: boolean,
   isSelected: boolean,
-  hoveredItem: 'none' | 'from' | 'to',
+  hoveredItem: `from` | `none` | `to`,
 ) => {
   if (isActive) {
     return styles.active
@@ -102,10 +104,10 @@ const createBackgroundClass = (
   if (isSelected) {
     return styles.selected
   }
-  if (hoveredItem === 'from') {
+  if (hoveredItem === `from`) {
     return styles.from
   }
-  if (hoveredItem === 'to') {
+  if (hoveredItem === `to`) {
     return styles.to
   }
   return null
@@ -113,22 +115,19 @@ const createBackgroundClass = (
 
 export const ConnectionsInternal: FC = () => {
   const state = useStore([
-    'connections',
-    'windows',
-    'hoveredItem',
-    'hoveredWindow',
-    'showConnections',
-    'zoom',
+    `connections`,
+    `windows`,
+    `hoveredItem`,
+    `hoveredWindow`,
+    `showConnections`,
+    `zoom`,
   ])
   const windowsMap = React.useMemo(
     () =>
-      state.windows.reduce(
-        (acc, window) => {
-          acc[window.id] = window
-          return acc
-        },
-        {} as Record<string, WindowType>,
-      ),
+      state.windows.reduce<Record<string, WindowType>>((acc, window) => {
+        acc[window.id] = window
+        return acc
+      }, {}),
     [state.windows],
   )
   if (!state.showConnections) {
@@ -169,12 +168,12 @@ const includesHoveredItem = (
   connection: ConnectionType,
   hoveredItem: string | null,
 ) => {
-  if (!hoveredItem) return 'none'
+  if (!hoveredItem) return `none`
   if (connection.from === hoveredItem) {
-    return 'from'
+    return `from`
   }
   if (connection.to === hoveredItem) {
-    return 'to'
+    return `to`
   }
-  return 'none'
+  return `none`
 }

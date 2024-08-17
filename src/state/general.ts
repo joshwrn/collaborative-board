@@ -1,10 +1,12 @@
 import { ensureAllFieldsDefined } from '@/utils/ensureAllFieldsDefined'
-import { Store } from './gen-state'
-import { AppStateCreator, produceState } from './state'
 
-export type SavedState = Pick<Store, 'windows' | 'items' | 'connections'>
+import type { Store } from './gen-state'
+import type { AppStateCreator } from './state'
+import { produceState } from './state'
 
-export type GeneralStore = {
+export type SavedState = Pick<Store, `connections` | `items` | `windows`>
+
+export interface GeneralStore {
   setState: (setter: (draft: Store) => void) => void
   importState: (savedState: File | null, notificationId: string) => void
   exportState: () => void
@@ -24,10 +26,10 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
       connections: state.connections,
     }
     const blob = new Blob([JSON.stringify(savedState)], {
-      type: 'application/json',
+      type: `application/json`,
     })
     const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
+    const link = document.createElement(`a`)
     link.href = url
     link.download = `ai-sketch-app-${new Date().toISOString()}.json`
     document.body.appendChild(link)
@@ -51,17 +53,17 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
           draft.items = saveObject.items
           draft.connections = saveObject.connections
         })
-      } catch (e) {
-        console.error(e)
+      } catch (error) {
+        console.error(error)
         state.updateNotification(notificationId, {
-          message: 'Failed to import file',
-          type: 'error',
+          message: `Failed to import file`,
+          type: `error`,
         })
       }
     }
 
     if (!saveFile) {
-      throw new Error('No file selected')
+      throw new Error(`No file selected`)
     }
     reader.readAsText(saveFile)
   },

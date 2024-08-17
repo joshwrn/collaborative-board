@@ -1,15 +1,18 @@
 import React from 'react'
-import style from './RotationPoints.module.scss'
-import { joinClasses } from '@/utils/joinClasses'
-import { DraggableCore, DraggableEvent } from 'react-draggable'
+import type { DraggableEvent } from 'react-draggable'
+import { DraggableCore } from 'react-draggable'
+
 import { useStore } from '@/state/gen-state'
-import { WindowType } from '@/state/windows'
+import type { WindowType } from '@/state/windows'
+import { joinClasses } from '@/utils/joinClasses'
+
+import style from './RotationPoints.module.scss'
 
 export const ROTATION_POINTS = [
-  'topLeft',
-  'topRight',
-  'bottomRight',
-  'bottomLeft',
+  `topLeft`,
+  `topRight`,
+  `bottomRight`,
+  `bottomLeft`,
 ] as const
 
 export type RotationPoint = (typeof ROTATION_POINTS)[number]
@@ -46,10 +49,10 @@ const RotationPoints_Internal: React.FC<{
   window: WindowType
 }> = ({ id, window }) => {
   const state = useStore([
-    'setOneWindow',
-    'zoom',
-    'spaceMousePosition',
-    'selectedWindow',
+    `setOneWindow`,
+    `zoom`,
+    `spaceMousePosition`,
+    `selectedWindow`,
   ])
 
   const centerPoint = React.useMemo(
@@ -99,7 +102,7 @@ const RotationPoints_Internal: React.FC<{
     data: { deltaX: number; deltaY: number },
     pos: RotationPoint,
   ) => {
-    console.log('start', pos)
+    console.log(`start`, pos)
   }
 
   const onDragStop = (
@@ -107,7 +110,7 @@ const RotationPoints_Internal: React.FC<{
     data: { deltaX: number; deltaY: number },
     pos: RotationPoint,
   ) => {
-    console.log('stop', pos)
+    console.log(`stop`, pos)
   }
 
   if (state.selectedWindow !== id) return null

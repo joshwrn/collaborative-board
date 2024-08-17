@@ -1,16 +1,17 @@
-import React from 'react'
-import style from './WindowMenu.module.scss'
-import Dropdown from '@/ui/Dropdown'
-import { useStore } from '@/state/gen-state'
 import { nanoid } from 'nanoid'
+import React from 'react'
+import { BsTrash3 as TrashIcon } from 'react-icons/bs'
 import { TiPinOutline as PinIcon } from 'react-icons/ti'
 
-import { BsTrash3 as TrashIcon } from 'react-icons/bs'
+import { useStore } from '@/state/gen-state'
+import Dropdown from '@/ui/Dropdown'
+
+import style from './WindowMenu.module.scss'
 
 export const WindowMenu_Internal: React.FC<{
   id: string
 }> = ({ id }) => {
-  const state = useStore(['setState', 'pinnedWindow', 'deleteItem'])
+  const state = useStore([`setState`, `pinnedWindow`, `deleteItem`])
   return (
     <div className={style.wrapper}>
       <Dropdown.Menu
@@ -21,7 +22,7 @@ export const WindowMenu_Internal: React.FC<{
             Icon={() => (
               <PinIcon
                 style={{
-                  fill: 'var(--white)',
+                  fill: `var(--white)`,
                 }}
                 size={21}
               />
@@ -31,23 +32,23 @@ export const WindowMenu_Internal: React.FC<{
                 draft.pinnedWindow = draft.pinnedWindow === id ? null : id
               })
             }}
-            key={'Pin'}
+            key={`Pin`}
             isChecked={state.pinnedWindow === id}
-            label1={'Pin'}
+            label1={`Pin`}
           />,
           <Dropdown.Item
             Icon={() => (
               <TrashIcon
                 style={{
-                  fill: 'var(--white)',
+                  fill: `var(--white)`,
                 }}
               />
             )}
             onClick={() => {
               state.deleteItem(id)
             }}
-            key={'Delete'}
-            label1={'Delete'}
+            key={`Delete`}
+            label1={`Delete`}
           />,
         ]}
       />

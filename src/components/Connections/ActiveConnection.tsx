@@ -1,14 +1,16 @@
 import React from 'react'
-import { Connection } from './Connections'
+
 import { useStore } from '@/state/gen-state'
+
+import { Connection } from './Connections'
 
 export const ActiveConnection = () => {
   const state = useStore([
-    'windows',
-    'activeConnection',
-    'hoveredConnection',
-    'spaceMousePosition',
-    'zoom',
+    `windows`,
+    `activeConnection`,
+    `hoveredConnection`,
+    `spaceMousePosition`,
+    `zoom`,
   ])
 
   const activeWindow = state.windows.find(
@@ -25,16 +27,16 @@ export const ActiveConnection = () => {
       from={activeWindow}
       zoom={state.zoom}
       to={hoveredWindow}
-      id={''}
+      id={``}
       mousePosition={state.spaceMousePosition}
       isActive={true}
-      hoveredItem={'none'}
+      hoveredItem={`none`}
     />
   )
 }
 
 export const ActiveConnectionGuardInternal = () => {
-  const state = useStore(['activeConnection'])
+  const state = useStore([`activeConnection`])
   if (!state.activeConnection) {
     return null
   }
