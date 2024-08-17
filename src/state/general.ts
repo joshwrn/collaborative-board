@@ -2,10 +2,7 @@ import { ensureAllFieldsDefined } from '@/utils/ensureAllFieldsDefined'
 import { Store } from './gen-state'
 import { AppStateCreator, produceState } from './state'
 
-export type SavedState = Pick<
-  Store,
-  'windows' | 'items' | 'zoom' | 'pan' | 'connections'
->
+export type SavedState = Pick<Store, 'windows' | 'items' | 'connections'>
 
 export type GeneralStore = {
   setState: (setter: (draft: Store) => void) => void
@@ -25,8 +22,6 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
       windows: state.windows,
       items: state.items,
       connections: state.connections,
-      zoom: state.zoom,
-      pan: state.pan,
     }
     const blob = new Blob([JSON.stringify(savedState)], {
       type: 'application/json',
@@ -50,15 +45,11 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
           windows: savedState.windows,
           items: savedState.items,
           connections: savedState.connections,
-          zoom: savedState.zoom,
-          pan: savedState.pan,
         })
         produceState(set, (draft) => {
           draft.windows = saveObject.windows
           draft.items = saveObject.items
           draft.connections = saveObject.connections
-          draft.zoom = saveObject.zoom
-          draft.pan = saveObject.pan
         })
       } catch (e) {
         console.error(e)
