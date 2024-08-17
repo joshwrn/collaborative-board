@@ -13,8 +13,8 @@ export const resizeImage = ({
   const img = new Image()
   img.src = base64
   img.onload = () => {
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
+    const canvas = document.createElement(`canvas`)
+    const ctx = canvas.getContext(`2d`)
     if (!ctx) throw new Error(`Canvas context not found.`)
 
     const resizedDimensions = {
@@ -35,7 +35,7 @@ export const resizeImage = ({
       resizedDimensions.width,
       resizedDimensions.height,
     )
-    const base64 = canvas.toDataURL()
-    onSuccess(base64)
+    const result = canvas.toDataURL()
+    onSuccess(result)
   }
 }

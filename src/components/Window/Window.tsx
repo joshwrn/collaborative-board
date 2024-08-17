@@ -1,21 +1,24 @@
 'use client'
 import type { FC } from 'react'
 import React from 'react'
-
-import styles from './Window.module.scss'
-import { useFullStore, useStore } from '@/state/gen-state'
-import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
-import { WindowBorder } from './WindowBorder'
-import { Item, ItemBody, ItemBodyText } from '@/state/items'
-import { WINDOW_ATTRS, WindowType } from '@/state/windows'
+import type { DraggableData, DraggableEvent } from 'react-draggable'
+import { DraggableCore } from 'react-draggable'
 import { match } from 'ts-pattern'
+
+import { useFullStore, useStore } from '@/state/gen-state'
+import type { Item, ItemBody, ItemBodyText } from '@/state/items'
+import type { WindowType } from '@/state/windows'
+import { WINDOW_ATTRS } from '@/state/windows'
 import { joinClasses } from '@/utils/joinClasses'
-import { Canvas } from '../Canvas/Canvas'
 import { useOutsideClick } from '@/utils/useOutsideClick'
+
+import { Canvas } from '../Canvas/Canvas'
 import { GenerateButton } from './GenerateButton'
 import { LoadingOverlay } from './LoadingOverlay'
 import { RandomizePromptButton } from './RandomizePromptButton'
 import { RotationPoints } from './RotationPoints'
+import styles from './Window.module.scss'
+import { WindowBorder } from './WindowBorder'
 import { WindowMenu } from './WindowMenu/WindowMenu'
 
 const Text = ({
@@ -28,7 +31,7 @@ const Text = ({
   contentId: string
 }) => {
   const ref = React.useRef<HTMLParagraphElement>(null)
-  const state = useStore(['editItemContent', 'editItem'])
+  const state = useStore([`editItemContent`, `editItem`])
 
   return (
     <p
@@ -41,7 +44,7 @@ const Text = ({
           subject: ref.current.innerText,
         })
         state.editItemContent(windowId, {
-          type: 'text',
+          type: `text`,
           content: ref.current.innerText,
           id: contentId,
         })
@@ -84,7 +87,7 @@ const matchBody = (
   isPinned: boolean,
 ): JSX.Element | JSX.Element[] | null => {
   return match(body)
-    .with({ type: 'canvas' }, (value) => (
+    .with({ type: `canvas` }, (value) => (
       <Canvas
         isPinned={isPinned}
         key={i}
@@ -93,7 +96,7 @@ const matchBody = (
         content={value.content}
       />
     ))
-    .with({ type: 'text' }, (value) => {
+    .with({ type: `text` }, (value) => {
       return <Prompt key={i} value={value} windowId={window.id} />
     })
     .otherwise(() => null)
@@ -108,21 +111,21 @@ const returnWindowStyle = (
     return {
       left: 0,
       top: 0,
-      position: 'relative',
-      width: WINDOW_ATTRS.defaultFullScreenSize.width + 'px',
-      height: WINDOW_ATTRS.defaultFullScreenSize.height + 'px',
-      rotate: '0deg',
-      zIndex: 'var(--fullscreen-window-z-index)',
+      position: `relative`,
+      width: WINDOW_ATTRS.defaultFullScreenSize.width + `px`,
+      height: WINDOW_ATTRS.defaultFullScreenSize.height + `px`,
+      rotate: `0deg`,
+      zIndex: `var(--fullscreen-window-z-index)`,
     }
   }
   if (isPinned) {
     return {
       left: 0,
       top: 0,
-      position: 'relative',
-      width: WINDOW_ATTRS.defaultSize.width + 'px',
-      height: WINDOW_ATTRS.defaultSize.height + 'px',
-      rotate: '0deg',
+      position: `relative`,
+      width: WINDOW_ATTRS.defaultSize.width + `px`,
+      height: WINDOW_ATTRS.defaultSize.height + `px`,
+      rotate: `0deg`,
     }
   }
   return {
@@ -143,19 +146,19 @@ const WindowInternal: FC<{
   isPinned: boolean
 }> = ({ item, window, isFullScreen, isPinned }) => {
   const state = useStore([
-    'toggleOpenWindow',
-    'setOneWindow',
-    'reorderWindows',
-    'connections',
-    'makeConnection',
-    'setFullScreenWindow',
-    'snapToWindows',
-    'setSnapLines',
-    'zoom',
-    'selectedWindow',
-    'setState',
-    'dev_allowWindowRotation',
-    'generatingCanvas',
+    `toggleOpenWindow`,
+    `setOneWindow`,
+    `reorderWindows`,
+    `connections`,
+    `makeConnection`,
+    `setFullScreenWindow`,
+    `snapToWindows`,
+    `setSnapLines`,
+    `zoom`,
+    `selectedWindow`,
+    `setState`,
+    `dev_allowWindowRotation`,
+    `generatingCanvas`,
   ])
 
   const realPosition = React.useRef({ x: window.x, y: window.y })
@@ -165,7 +168,7 @@ const WindowInternal: FC<{
 
   useOutsideClick({
     refs: [nodeRef],
-    selectors: ['#toolbar', '.dropdown-list'],
+    selectors: [`#toolbar`, `.dropdown-list`],
     action: () => {
       if (state.selectedWindow === item.id) {
         state.setState((draft) => {
@@ -179,7 +182,7 @@ const WindowInternal: FC<{
     if (!(e instanceof MouseEvent)) return
     const { movementX, movementY } = e
     if (!movementX && !movementY) return
-    const zoom = useFullStore.getState().zoom
+    const { zoom } = useFullStore.getState()
     const scaledPosition = {
       x: movementX / zoom,
       y: movementY / zoom,
@@ -192,8 +195,6 @@ const WindowInternal: FC<{
       y: realPosition.current.y,
     })
   }
-
-  const onDragStart = (e: DraggableEvent, data: DraggableData) => {}
 
   const onDragStop = (e: DraggableEvent, data: DraggableData) => {
     state.setSnapLines([])
@@ -214,14 +215,13 @@ const WindowInternal: FC<{
     <DraggableCore
       onDrag={onDrag}
       onStop={onDragStop}
-      onStart={onDragStart}
       handle=".handle"
       nodeRef={nodeRef}
       disabled={isFullScreen}
     >
       <div
         ref={nodeRef}
-        className={joinClasses(styles.wrapper, 'window')}
+        className={joinClasses(styles.wrapper, `window`)}
         id={`window-${item.id}`}
         style={returnWindowStyle(window, isFullScreen, isPinned)}
         onMouseEnter={() => {
@@ -306,7 +306,7 @@ const WindowInternal: FC<{
         <main
           className={styles.content}
           style={{
-            overflowY: (isFullScreen ?? isPinned) ? 'auto' : 'hidden',
+            overflowY: isFullScreen || isPinned ? `auto` : `hidden`,
           }}
         >
           {item.body.map((body, i) => matchBody(body, i, window, !!isPinned))}
@@ -330,20 +330,17 @@ export const Window = React.memo(WindowInternal)
 
 const WindowsInternal: FC = () => {
   const state = useStore([
-    'items',
-    'windows',
-    'fullScreenWindow',
-    'pinnedWindow',
+    `items`,
+    `windows`,
+    `fullScreenWindow`,
+    `pinnedWindow`,
   ])
   const itemsMap = React.useMemo(
     () =>
-      state.items.reduce(
-        (acc, item) => {
-          acc[item.id] = item
-          return acc
-        },
-        {} as Record<string, Item>,
-      ),
+      state.items.reduce<Record<string, Item>>((acc, item) => {
+        acc[item.id] = item
+        return acc
+      }, {}),
     [state.items],
   )
   return (

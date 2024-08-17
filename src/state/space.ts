@@ -1,6 +1,7 @@
-import { AppStateCreator, Setter, stateSetter } from './state'
+import type { AppStateCreator, Setter } from './state'
+import { stateSetter } from './state'
 
-export type SpaceStore = {
+export interface SpaceStore {
   zoom: number
   pan: { x: number; y: number }
   setZoom: Setter<number>

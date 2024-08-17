@@ -1,11 +1,13 @@
 import { nanoid } from 'nanoid'
-import { Point2d } from '.'
-import { SPACE_ATTRS } from './space'
-import { AppStateCreator, Setter, stateSetter } from './state'
+
 import { createMockPrompt } from '@/mock/mock-items'
 import { spaceCenterPoint } from '@/utils/spaceCenterPoint'
 
-export type WindowType = {
+import type { Point2d } from '.'
+import type { AppStateCreator, Setter } from './state'
+import { stateSetter } from './state'
+
+export interface WindowType {
   id: string
   x: number
   y: number
@@ -15,7 +17,7 @@ export type WindowType = {
   rotation: number
 }
 
-export type OpenWindowsStore = {
+export interface OpenWindowsStore {
   windows: WindowType[]
   toggleOpenWindow: (id: string) => void
   resizeWindow: (
@@ -43,7 +45,7 @@ export const WINDOW_ATTRS = {
   zIndex: 0,
 }
 export const DEFAULT_WINDOW: WindowType = {
-  id: '',
+  id: ``,
   x: 0,
   y: 0,
   width: WINDOW_ATTRS.defaultSize.width,
@@ -100,7 +102,7 @@ const createNextWindowPosition = (
   for (let i = 0; i < windows.length; i++) {
     const window = windows[i]
     if (window.x === startingPosition.x && window.y === startingPosition.y) {
-      startingPosition.x
+      // startingPosition.x
       startingPosition.y += window.height + 80
       i = 0
     }
@@ -121,8 +123,8 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     const openWindows = state.windows
     const openWindow = openWindows.find((window) => window.id === id)
     if (openWindow) {
-      set((state) => ({
-        windows: state.windows.filter((window) => window.id !== id),
+      set((prev) => ({
+        windows: prev.windows.filter((window) => window.id !== id),
       }))
       return
     }
@@ -130,12 +132,12 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       (highest, window) => Math.max(highest, window.zIndex),
       0,
     )
-    set((state) => ({
+    set((prev) => ({
       windows: [
-        ...state.windows,
+        ...prev.windows,
         {
           id,
-          ...createNewWindowPosition(state.windows, state.zoom, state.pan),
+          ...createNewWindowPosition(prev.windows, prev.zoom, prev.pan),
           width: WINDOW_ATTRS.defaultSize.width,
           height: WINDOW_ATTRS.defaultSize.height,
           zIndex: highestZIndex + 1,
@@ -155,14 +157,14 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       body: [
         {
           id: nanoid(),
-          type: 'text',
+          type: `text`,
           content: prompt,
         },
         {
           id: nanoid(),
-          type: 'canvas',
+          type: `canvas`,
           content: {
-            base64: '',
+            base64: ``,
           },
         },
       ],
@@ -235,7 +237,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
 
   resizeWindow: (id, start, movement, pos) => {
     const state = get()
-    const window = state.windows.find((window) => window.id === id)
+    const window = state.windows.find((prev) => prev.id === id)
     if (!window) {
       throw new Error(`window ${id} not found`)
     }
@@ -243,7 +245,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
 
     let newSize = { width: window.width, height: window.height }
     let newPosition = { x: position.x, y: position.y }
-    const zoom = state.zoom
+    const { zoom } = state
 
     const scaledMovement = {
       x: movement.x / zoom,
@@ -271,12 +273,12 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     }
 
     switch (pos) {
-      case 'left': {
+      case `left`: {
         newSize.width = start.width - scaledMovement.x
         newPosition.x = createNewPosition.x()
         break
       }
-      case 'topLeft': {
+      case `topLeft`: {
         newSize = {
           width: start.width - scaledMovement.x,
           height: start.height - scaledMovement.y,
@@ -285,12 +287,12 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         newPosition.y = createNewPosition.y()
         break
       }
-      case 'top': {
+      case `top`: {
         newSize.height = start.height - scaledMovement.y
         newPosition.y = createNewPosition.y()
         break
       }
-      case 'topRight': {
+      case `topRight`: {
         newSize = {
           width: start.width + scaledMovement.x,
           height: start.height - scaledMovement.y,
@@ -298,22 +300,22 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         newPosition.y = createNewPosition.y()
         break
       }
-      case 'right': {
+      case `right`: {
         newSize.width = start.width + scaledMovement.x
         break
       }
-      case 'bottomRight': {
+      case `bottomRight`: {
         newSize = {
           width: start.width + scaledMovement.x,
           height: start.height + scaledMovement.y,
         }
         break
       }
-      case 'bottom': {
+      case `bottom`: {
         newSize.height = start.height + scaledMovement.y
         break
       }
-      case 'bottomLeft': {
+      case `bottomLeft`: {
         newSize = {
           width: start.width - scaledMovement.x,
           height: start.height + scaledMovement.y,

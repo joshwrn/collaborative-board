@@ -1,4 +1,4 @@
-import { Point2d } from '@/state'
+import type { Point2d } from '@/state'
 
 export const rotatePoint = (point: Point2d, angle: number): Point2d => {
   const { x, y } = point

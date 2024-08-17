@@ -1,21 +1,22 @@
 import React from 'react'
-import style from '../DropDownMenu.module.scss'
 
 import { useStore } from '@/state/gen-state'
-import Dropdown from '@/ui/Dropdown'
 import { SPACE_ATTRS } from '@/state/space'
+import Dropdown from '@/ui/Dropdown'
+
+import style from '../DropDownMenu.module.scss'
 import { ThemeModal } from '../Modals/ThemeModal'
 
 export const SpaceMenu = () => {
   const state = useStore([
-    'zoom',
-    'setZoom',
-    'setPan',
-    'setState',
-    'showItemList',
-    'debug_showZustandDevTools',
-    'debug_showFps',
-    'showThemeModal',
+    `zoom`,
+    `setZoom`,
+    `setPan`,
+    `setState`,
+    `showItemList`,
+    `debug_showZustandDevTools`,
+    `debug_showFps`,
+    `showThemeModal`,
   ])
   return (
     <item className={style.item}>
@@ -23,7 +24,7 @@ export const SpaceMenu = () => {
         id="dropdown-space-button"
         SelectedOption={() => <p>Space</p>}
         Options={[
-          <div className={style.zoom} key={'Zoom'}>
+          <div className={style.zoom} key={`Zoom`}>
             <p>Zoom</p>
             <section onClick={(e) => e.stopPropagation()}>
               <button
@@ -53,23 +54,23 @@ export const SpaceMenu = () => {
             </button>
           </div>,
           <Dropdown.Item
-            key={'Show Item List'}
+            key={`Show Item List`}
             onClick={() => {
               state.setState((draft) => {
                 draft.showItemList = !draft.showItemList
               })
             }}
-            label1={'Show Item List'}
+            label1={`Show Item List`}
             isChecked={state.showItemList}
           />,
           <Dropdown.Item
-            key={'Theme'}
+            key={`Theme`}
             onClick={() => {
               state.setState((draft) => {
                 draft.showThemeModal = !draft.showThemeModal
               })
             }}
-            label1={'Theme'}
+            label1={`Theme`}
           />,
         ]}
       />

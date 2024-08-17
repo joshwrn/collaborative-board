@@ -1,21 +1,38 @@
 import { create } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
-import { canvasStore, CanvasStore } from './canvas'
-import { connectedWindowsStore, ConnectedWindowsStore } from './connections'
-import { contextMenuStore, ContextMenuStore } from './contextMenu'
-import { debugStore, DebugStore } from './debug'
-import { falStore, FalStore } from './fal'
-import { generalStore, GeneralStore } from './general'
-import { itemListStore, ItemListStore } from './items'
-import { memberStore, MemberStore } from './members'
-import { mockStore, MockStore } from './mock'
-import { notificationsStore, NotificationsStore } from './notifications'
-import { peripheralStore, PeripheralStore } from './peripheral'
-import { snappingStore, SnappingStore } from './snapping'
-import { spaceStore, SpaceStore } from './space'
-import { uiStore, UiStore } from './ui'
-import { userStore, UserStore } from './user'
-import { openWindowsStore, OpenWindowsStore } from './windows'
+
+import type { CanvasStore } from './canvas'
+import { canvasStore } from './canvas'
+import type { ConnectedWindowsStore } from './connections'
+import { connectedWindowsStore } from './connections'
+import type { ContextMenuStore } from './contextMenu'
+import { contextMenuStore } from './contextMenu'
+import type { DebugStore } from './debug'
+import { debugStore } from './debug'
+import type { FalStore } from './fal'
+import { falStore } from './fal'
+import type { GeneralStore } from './general'
+import { generalStore } from './general'
+import type { ItemListStore } from './items'
+import { itemListStore } from './items'
+import type { MemberStore } from './members'
+import { memberStore } from './members'
+import type { MockStore } from './mock'
+import { mockStore } from './mock'
+import type { NotificationsStore } from './notifications'
+import { notificationsStore } from './notifications'
+import type { PeripheralStore } from './peripheral'
+import { peripheralStore } from './peripheral'
+import type { SnappingStore } from './snapping'
+import { snappingStore } from './snapping'
+import type { SpaceStore } from './space'
+import { spaceStore } from './space'
+import type { UiStore } from './ui'
+import { uiStore } from './ui'
+import type { UserStore } from './user'
+import { userStore } from './user'
+import type { OpenWindowsStore } from './windows'
+import { openWindowsStore } from './windows'
 
 export type Store = CanvasStore &
   ConnectedWindowsStore &
@@ -27,12 +44,12 @@ export type Store = CanvasStore &
   MemberStore &
   MockStore &
   NotificationsStore &
+  OpenWindowsStore &
   PeripheralStore &
   SnappingStore &
   SpaceStore &
   UiStore &
-  UserStore &
-  OpenWindowsStore
+  UserStore
 
 export const useFullStore = create<Store>((set, get, store) => {
   return {

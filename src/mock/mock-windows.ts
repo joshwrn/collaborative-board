@@ -1,6 +1,7 @@
-import { WindowType, DEFAULT_WINDOW } from '@/state/windows'
+import type { Item } from '@/state/items'
 import { SPACE_ATTRS } from '@/state/space'
-import { Item } from '@/state/items'
+import type { WindowType } from '@/state/windows'
+import { DEFAULT_WINDOW } from '@/state/windows'
 
 export const AMT_OF_WINDOWS = 99
 

@@ -1,13 +1,13 @@
+import { execSync } from 'child_process'
 import fs from 'fs-extra'
 import path from 'path'
-import { execSync } from 'child_process'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const scriptDir = __dirname
-const sourceFolder = path.join(scriptDir, '../', 'state')
-const outputFile = path.join(scriptDir, '../', 'state', 'gen-state.ts')
+const sourceFolder = path.join(scriptDir, `../`, `state`)
+const outputFilePath = path.join(scriptDir, `../`, `state`, `gen-state.ts`)
 
 // generate store
 
@@ -29,47 +29,47 @@ export const generateStores = () => {
     const files = fs.readdirSync(sourceFolder)
     const generatedCode = generateCodeFromFiles(files)
 
-    fs.writeFileSync(outputFile, generatedCode)
+    fs.writeFileSync(outputFilePath, generatedCode)
 
-    execSync(`npx prettier --write ${outputFile}`)
+    execSync(`npx prettier --write ${outputFilePath}`)
 
     console.log(`💅 State generated.`)
   } catch (error) {
-    console.error('😡 Error generating state:', error)
+    console.error(`😡 Error generating state:`, error)
   }
 }
 
 const formatFirstLetter = (
   inputString: string,
-  format: 'lower' | 'upper',
+  format: `lower` | `upper`,
 ): string => {
   const firstLetter = inputString.charAt(0)
   const restOfString = inputString.slice(1)
-  if (format === 'lower') {
+  if (format === `lower`) {
     return firstLetter.toLowerCase() + restOfString
   }
   return firstLetter.toUpperCase() + restOfString
 }
 
 const lowerCaseFirstLetter = (inputString: string): string =>
-  formatFirstLetter(inputString, 'lower')
+  formatFirstLetter(inputString, `lower`)
 
 const capitalizeFirstLetter = (inputString: string): string =>
-  formatFirstLetter(inputString, 'upper')
+  formatFirstLetter(inputString, `upper`)
 
 const generateCodeFromFiles = (files: string[]): string => {
   const imports: string[] = []
   const storesArr: string[] = []
   for (const file of files) {
-    if (file.includes('state')) {
+    if (file.includes(`state`)) {
       continue
     }
     const filePath = path.join(sourceFolder, file)
-    const fileContent = fs.readFileSync(filePath, 'utf-8')
+    const fileContent = fs.readFileSync(filePath, `utf-8`)
     const stores = fileContent.match(/export const \w+Store/g)
     const storeNames = stores?.map((store: string) =>
       lowerCaseFirstLetter(
-        store.replace('export const ', '').replace('Store', ''),
+        store.replace(`export const `, ``).replace(`Store`, ``),
       ),
     )
     const uniques = [...new Set(storeNames)] as string[]
@@ -78,14 +78,14 @@ const generateCodeFromFiles = (files: string[]): string => {
       (store: string) =>
         `import { ${store}Store, ${capitalizeFirstLetter(
           store,
-        )}Store } from './${file.replace('.ts', '')}'`,
+        )}Store } from './${file.replace(`.ts`, ``)}'`,
     )
     imports.push(...importLines)
     storesArr.push(...uniques)
   }
 
   if (storesArr.length === 0) {
-    return ''
+    return ``
   }
 
   let appStoreType = `export type Store = `
@@ -115,16 +115,16 @@ const generateCodeFromFiles = (files: string[]): string => {
   return [
     baseImports,
     ...imports,
-    [''],
+    [``],
     appStoreType,
     appStore,
     shallowAppStore,
-  ].join('\n')
+  ].join(`\n`)
 }
 
 // create new store
 
-const outputFolder = path.join(scriptDir, '../', 'state')
+const outputFolder = path.join(scriptDir, `../`, `state`)
 
 const generateCode = (storeName: string) => {
   const storeNameCapitalized =
@@ -136,12 +136,12 @@ const generateCode = (storeName: string) => {
 
   const store = `export const ${storeName}Store: AppStateCreator<${storeNameCapitalized}Store> = (set, get) => ({\n})`
 
-  return [imports, storeType, store].join('\n')
+  return [imports, storeType, store].join(`\n`)
 }
 
 const createNewStore = (storeName: string) => {
   if (!storeName) {
-    console.error('Please provide a store name.')
+    console.error(`Please provide a store name.`)
     return
   }
   try {
@@ -151,13 +151,13 @@ const createNewStore = (storeName: string) => {
     execSync(`npx prettier --write ${outputFile}`)
     console.log(`💅 ${storeName} store generated.`)
   } catch (error) {
-    console.error('😡 Error creating store:', error)
+    console.error(`😡 Error creating store:`, error)
   }
 }
 
 // example: npm run create-new-store -- mockStore
 const args = process.argv.slice(2)
-const message = args[0]
+const [message] = args
 
 createNewStore(message)
 generateStores()

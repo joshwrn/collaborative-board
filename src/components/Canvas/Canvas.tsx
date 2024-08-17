@@ -1,12 +1,15 @@
 import React from 'react'
-import style from './Canvas.module.scss'
-import { WINDOW_ATTRS, WindowType } from '@/state/windows'
-import { useStore } from '@/state/gen-state'
+
 import { rotatePointAroundCenter } from '@/logic/rotatePointAroundCenter'
-import { useOutsideClick } from '@/utils/useOutsideClick'
-import { CanvasData } from '@/state/items'
+import { useStore } from '@/state/gen-state'
+import type { CanvasData } from '@/state/items'
+import type { WindowType } from '@/state/windows'
+import { WINDOW_ATTRS } from '@/state/windows'
 import { joinClasses } from '@/utils/joinClasses'
+import { useOutsideClick } from '@/utils/useOutsideClick'
+
 import { DEFAULT_PINNED_WINDOW_ZOOM } from '../Window/PinnedWindow/PinnedWindow'
+import style from './Canvas.module.scss'
 
 const returnAttributes = (
   window: WindowType,
@@ -45,14 +48,14 @@ export const Canvas_Internal: React.FC<{
   isPinned: boolean
 }> = ({ window, contentId, content, isPinned }) => {
   const state = useStore([
-    'zoom',
-    'drawColor',
-    'drawSize',
-    'canvasIsFocused',
-    'fullScreenWindow',
-    'editItemContent',
-    'generatedCanvas',
-    'setState',
+    `zoom`,
+    `drawColor`,
+    `drawSize`,
+    `canvasIsFocused`,
+    `fullScreenWindow`,
+    `editItemContent`,
+    `generatedCanvas`,
+    `setState`,
   ])
 
   const isFullScreen = state.fullScreenWindow === window.id
@@ -63,7 +66,7 @@ export const Canvas_Internal: React.FC<{
 
   useOutsideClick({
     refs: [],
-    selectors: ['#toolbar', '.dropdown-list', '.canvas'],
+    selectors: [`#toolbar`, `.dropdown-list`, `.canvas`],
     action: () =>
       state.setState((draft) => {
         draft.canvasIsFocused = false
@@ -71,7 +74,7 @@ export const Canvas_Internal: React.FC<{
   })
 
   React.useEffect(() => {
-    const ctx = canvasRef.current?.getContext('2d')
+    const ctx = canvasRef.current?.getContext(`2d`)
     if (!ctx) return
     const img = new Image()
     img.onload = () => {
@@ -84,9 +87,9 @@ export const Canvas_Internal: React.FC<{
   return (
     <div
       style={{
-        position: 'relative',
-        display: 'flex',
-        justifyContent: 'center',
+        position: `relative`,
+        display: `flex`,
+        justifyContent: `center`,
       }}
     >
       <div
@@ -94,16 +97,16 @@ export const Canvas_Internal: React.FC<{
         style={{
           width: `${attributes.width}px`,
           height: `${attributes.height}px`,
-          position: 'absolute',
+          position: `absolute`,
           transform: `rotate(${-attributes.rotation}deg)`,
-          pointerEvents: 'none',
+          pointerEvents: `none`,
         }}
         ref={counterRef}
       />
       <canvas
         width={attributes.width}
         height={attributes.height}
-        className={joinClasses(style.canvas, 'canvas')}
+        className={joinClasses(style.canvas, `canvas`)}
         onMouseDown={() => {
           state.setState((draft) => {
             draft.canvasIsFocused = true
@@ -113,7 +116,7 @@ export const Canvas_Internal: React.FC<{
         onMouseMove={(e) => {
           if (!canvasRef.current) return
           if (!counterRef.current) return
-          const ctx = canvasRef.current.getContext('2d')
+          const ctx = canvasRef.current.getContext(`2d`)
           if (!ctx) return
           const counterBox = counterRef.current.getBoundingClientRect()
           const center = {
@@ -152,7 +155,7 @@ export const Canvas_Internal: React.FC<{
               base64: canvasRef.current.toDataURL(),
             },
             id: contentId,
-            type: 'canvas',
+            type: `canvas`,
           })
         }}
       />

@@ -1,6 +1,5 @@
-import { Connection } from '@/state/connections'
-
-import { Item } from '@/state/items'
+import type { Connection } from '@/state/connections'
+import type { Item } from '@/state/items'
 
 export const createMockConnection = (mockItems: Item[]): Connection[] =>
   Array.from({ length: mockItems.length - 2 }, (_, i) => {

@@ -1,7 +1,9 @@
-import { Point2d } from '@/state'
-import { SIDES } from '@/state/connections'
-import { WindowType } from '@/state/windows'
 import { distance } from 'mathjs'
+
+import type { Point2d } from '@/state'
+import { SIDES } from '@/state/connections'
+import type { WindowType } from '@/state/windows'
+
 import {
   calculateConnectionPoints,
   circle,

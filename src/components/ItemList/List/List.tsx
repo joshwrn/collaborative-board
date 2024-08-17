@@ -1,16 +1,15 @@
 'use client'
 import type { FC } from 'react'
 import React from 'react'
+import { IoClose } from 'react-icons/io5'
+
+import { useStore } from '@/state/gen-state'
 
 import { ItemComponent } from '../Item/Item'
 import styles from './List.module.scss'
-import { useStore } from '@/state/gen-state'
-import { TfiWrite } from 'react-icons/tfi'
-import { IoClose } from 'react-icons/io5'
-import { createMockItem } from '@/mock/mock-items'
 
 const ListInternal: FC = () => {
-  const state = useStore(['items', 'setState', 'windows', 'generatingCanvas'])
+  const state = useStore([`items`, `setState`, `windows`, `generatingCanvas`])
 
   return (
     <wrapper className={styles.wrapper}>

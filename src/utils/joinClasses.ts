@@ -1,2 +1,2 @@
-export const joinClasses = (...classes: (string | null | boolean)[]) =>
-  classes.filter(Boolean).join(' ')
+export const joinClasses = (...classes: (boolean | string | null)[]) =>
+  classes.filter(Boolean).join(` `)

@@ -11,4 +11,4 @@ export type ImageUrlToBase64Request = {
 export const fetchImageUrlToBase64 = fetchFromApi<
   ImageUrlToBase64Request,
   ImageUrlToBase64Response
->('imageUrlToBase64', 'GET')
+>(`imageUrlToBase64`, `GET`)

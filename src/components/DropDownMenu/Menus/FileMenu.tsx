@@ -1,22 +1,20 @@
 import React from 'react'
-import style from '../DropDownMenu.module.scss'
+import { FiTrash } from 'react-icons/fi'
+import { TfiExport, TfiImport } from 'react-icons/tfi'
 
 import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 
-import { FiTrash } from 'react-icons/fi'
-
-import { TfiImport } from 'react-icons/tfi'
-import { TfiExport } from 'react-icons/tfi'
+import style from '../DropDownMenu.module.scss'
 import { ImportModal } from '../Modals/ImportModal'
 
 export const FileMenu: React.FC = () => {
   const state = useStore([
-    'setState',
-    'importState',
-    'exportState',
-    'promiseNotification',
-    'showImportModal',
+    `setState`,
+    `importState`,
+    `exportState`,
+    `promiseNotification`,
+    `showImportModal`,
   ])
 
   return (
@@ -26,7 +24,7 @@ export const FileMenu: React.FC = () => {
         SelectedOption={() => <p>File</p>}
         Options={[
           <Dropdown.Item
-            key={'Import'}
+            key={`Import`}
             onClick={() => {
               state.setState((draft) => {
                 draft.showImportModal = true
@@ -37,24 +35,24 @@ export const FileMenu: React.FC = () => {
             label1="Import"
           />,
           <Dropdown.Item
-            key={'Export'}
-            onClick={() => {
-              state.promiseNotification(
-                async () => {
+            key={`Export`}
+            onClick={async () => {
+              await state.promiseNotification(
+                () => {
                   state.exportState()
                 },
                 {
-                  message: 'Exporting...',
+                  message: `Exporting...`,
                 },
                 {
                   onSuccess: {
                     update: {
-                      message: 'Exported!',
+                      message: `Exported!`,
                     },
                   },
                   onError: {
                     update: {
-                      message: 'Failed to Export!',
+                      message: `Failed to Export!`,
                     },
                   },
                 },
@@ -65,7 +63,7 @@ export const FileMenu: React.FC = () => {
             label1="Export"
           />,
           <Dropdown.Item
-            key={'Clear All'}
+            key={`Clear All`}
             onClick={() =>
               state.setState((draft) => {
                 draft.windows = []

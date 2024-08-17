@@ -1,4 +1,5 @@
-import React from 'react'
+/* eslint-disable @typescript-eslint/no-namespace */
+import type React from 'react'
 
 type Props = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLElement>,

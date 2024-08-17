@@ -1,4 +1,4 @@
-export type Point2d = {
+export interface Point2d {
   x: number
   y: number
 }

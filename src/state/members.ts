@@ -1,13 +1,13 @@
-import { AppStateCreator } from './state'
+import type { AppStateCreator } from './state'
 
-export type Member = {
+export interface Member {
   id: string
   name: string
   email: string
   image: string
 }
 
-export type MemberStore = {
+export interface MemberStore {
   members: Member[]
 }
 

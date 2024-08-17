@@ -1,17 +1,16 @@
+import chokidar from 'chokidar'
 import fs from 'fs/promises'
 import path from 'path'
-import chokidar from 'chokidar'
-
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const scriptDir1 = __dirname
-const directoryPath = path.join(scriptDir1, '../', 'app', 'api')
-const outputFile = path.join(__dirname, '../', 'server', 'routes.ts')
+const directoryPath = path.join(scriptDir1, `../`, `app`, `api`)
+const outputFile = path.join(__dirname, `../`, `server`, `routes.ts`)
 
-const TYPE = 'export type ApiRouteUrl = (typeof API_ROUTES)[number]'
+const TYPE = `export type ApiRouteUrl = (typeof API_ROUTES)[number]`
 
 const recursivelyReadDirectories = async (
   dir: string,
@@ -20,16 +19,16 @@ const recursivelyReadDirectories = async (
   const files = await fs.readdir(dir, { withFileTypes: true })
   for (const file of files) {
     if (file.isDirectory()) {
-      const files = await fs.readdir(dir + '/' + file.name, {
+      const filesInDir = await fs.readdir(dir + `/` + file.name, {
         withFileTypes: true,
       })
-      if (files.some((f) => f.name === 'route.ts')) {
-        let routeWithSlash = dir.replace(directoryPath, '')
+      if (filesInDir.some((f) => f.name === `route.ts`)) {
+        let routeWithSlash = dir.replace(directoryPath, ``)
         const route = routeWithSlash.substring(1)
-        const folderName = route === '' ? file.name : `${route}/${file.name}`
+        const folderName = route === `` ? file.name : `${route}/${file.name}`
         folders.push(folderName)
       }
-      await recursivelyReadDirectories(dir + '/' + file.name, folders)
+      await recursivelyReadDirectories(dir + `/` + file.name, folders)
     }
   }
   return folders
@@ -41,7 +40,7 @@ async function readDirectories() {
     await recursivelyReadDirectories(directoryPath, folders)
     return folders
   } catch (err) {
-    console.error('Error reading routes directory:', err)
+    console.error(`Error reading routes directory:`, err)
   }
 }
 
@@ -59,22 +58,22 @@ const writeDirectories = async () => {
     await fs.writeFile(outputFile, str)
     console.log(`💅 API routes generated.`)
   } catch (error) {
-    console.error('😡 Error generating API routes:', error)
+    console.error(`😡 Error generating API routes:`, error)
   }
 }
 
 const watchFolder = () => {
   const watcher = chokidar.watch(directoryPath, { ignoreInitial: true })
-  console.log('👀 Watching API routes folder for changes...')
-  watcher.on('all', (event: any, filePath: string) => {
+  console.log(`👀 Watching API routes folder for changes...`)
+  watcher.on(`all`, async (event: any, filePath: string) => {
     console.log(`🤓 File ${filePath} changed. Regenerating API routes...`)
-    writeDirectories()
+    await writeDirectories()
   })
 }
 
-const shouldWatch = process.argv.includes('--watch')
+const shouldWatch = process.argv.includes(`--watch`)
 
-writeDirectories()
+await writeDirectories()
 
 if (shouldWatch) {
   watchFolder()

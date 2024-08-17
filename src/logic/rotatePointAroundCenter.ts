@@ -1,4 +1,5 @@
-import { Point2d } from '@/state'
+import type { Point2d } from '@/state'
+
 import { rotatePoint } from './rotatePoint'
 
 export const rotatePointAroundCenter = (

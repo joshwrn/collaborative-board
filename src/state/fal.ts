@@ -1,6 +1,6 @@
-import { AppStateCreator } from './state'
+import type { AppStateCreator } from './state'
 
-export type FalStore = {
+export interface FalStore {
   fal_num_inference_steps: number
 }
 

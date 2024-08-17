@@ -1,21 +1,22 @@
-import { NextResponse } from 'next/server'
-import { ApiRouteUrl } from './routes'
+import type { NextResponse } from 'next/server'
+
+import type { ApiRouteUrl } from './routes'
 
 export type ApiResponse<T> = Promise<
-  NextResponse<T> | NextResponse<{ error: string }>
+  NextResponse<{ error: string }> | NextResponse<T>
 >
 
 export function fetchFromApi<B, R>(
   url: ApiRouteUrl,
-  method: 'POST',
+  method: `POST`,
 ): (body: B) => Promise<R>
 export function fetchFromApi<P extends Record<string, string>, R>(
   url: ApiRouteUrl,
-  method: 'GET',
+  method: `GET`,
 ): (params?: P) => Promise<R>
-export function fetchFromApi<B, R>(url: string, method: 'POST' | 'GET') {
+export function fetchFromApi<B, R>(url: string, method: `GET` | `POST`) {
   try {
-    if (method === 'GET') {
+    if (method === `GET`) {
       const fn = async (params: B) => {
         let res = null
         if (params) {
@@ -27,31 +28,31 @@ export function fetchFromApi<B, R>(url: string, method: 'POST' | 'GET') {
           res = await fetch(url)
         }
         if (res.status === 404) {
-          throw new Error('Route not found - check the url')
+          throw new Error(`Route not found - check the url`)
         }
         const json = (await res.json()) as R
         return json
       }
       return fn
     }
-    if (method === 'POST') {
+    if (method === `POST`) {
       const fn = async (body: B) => {
-        console.log('body: ', body)
+        console.log(`body: `, body)
         const res = await fetch(`/api/${url}`, {
-          method: 'POST',
+          method: `POST`,
           body: JSON.stringify(body),
         })
         if (res.status === 404) {
-          throw new Error('Route not found - check the url')
+          throw new Error(`Route not found - check the url`)
         }
         const json = (await res.json()) as R
         return json
       }
       return fn
     }
-    throw new Error("Method must be 'GET' or 'POST'")
+    throw new Error(`Method must be 'GET' or 'POST'`)
   } catch (e: any) {
-    console.log('fetchFromApi error: ', e)
+    console.log(`fetchFromApi error: `, e)
     return null
   }
 }

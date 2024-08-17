@@ -1,13 +1,12 @@
 import * as fal from '@fal-ai/serverless-client'
 
-type DescribeImageResponse = {
+interface DescribeImageResponse {
   output: string
   partial: boolean
 }
 
-const mock_image_url = 'https://llava-vl.github.io/static/images/monalisa.jpg'
-const default_prompt =
-  'what is this an image of? Use as much detail as possible.'
+const mock_image_url = `https://llava-vl.github.io/static/images/monalisa.jpg`
+const default_prompt = `what is this an image of? Use as much detail as possible.`
 
 // unused
 export const describeImage = async ({
@@ -23,7 +22,7 @@ export const describeImage = async ({
   temperature?: number
   top_p?: number
 }) => {
-  const result = (await fal.subscribe('fal-ai/llavav15-13b', {
+  const result = await fal.subscribe(`fal-ai/llavav15-13b`, {
     input: {
       image_url,
       prompt: prompt ?? default_prompt,
@@ -34,12 +33,12 @@ export const describeImage = async ({
     logs: true,
     onQueueUpdate: (update) => {
       console.log(update)
-      if (update.status === 'IN_PROGRESS') {
+      if (update.status === `IN_PROGRESS`) {
         if (update.logs) {
           update.logs.map((log) => log.message).forEach(console.log)
         }
       }
     },
-  })) as DescribeImageResponse
+  })
   return result
 }

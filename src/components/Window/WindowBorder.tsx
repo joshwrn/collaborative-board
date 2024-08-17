@@ -1,34 +1,36 @@
 import type { FC } from 'react'
 import React from 'react'
+import type { DraggableData, DraggableEvent } from 'react-draggable'
+import { DraggableCore } from 'react-draggable'
+
+import { useStore } from '@/state/gen-state'
+import { WINDOW_ATTRS } from '@/state/windows'
+import { joinClasses } from '@/utils/joinClasses'
+import { setCursorStyle } from '@/utils/setCursor'
 
 import styles from './WindowBorder.module.scss'
-import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable'
-import { useStore } from '@/state/gen-state'
-import { setCursorStyle } from '@/utils/setCursor'
-import { joinClasses } from '@/utils/joinClasses'
-import { WINDOW_ATTRS, WindowType } from '@/state/windows'
 
 const borderPositions = [
-  'left',
-  'topLeft',
-  'top',
-  'topRight',
-  'right',
-  'bottomRight',
-  'bottom',
-  'bottomLeft',
+  `left`,
+  `topLeft`,
+  `top`,
+  `topRight`,
+  `right`,
+  `bottomRight`,
+  `bottom`,
+  `bottomLeft`,
 ] as const
 
 type BorderPosition = (typeof borderPositions)[number]
 const cursorsForBorderPositions: Record<BorderPosition, string> = {
-  left: 'ew-resize',
-  topLeft: 'nwse-resize',
-  top: 'ns-resize',
-  topRight: 'nesw-resize',
-  right: 'ew-resize',
-  bottomRight: 'nwse-resize',
-  bottom: 'ns-resize',
-  bottomLeft: 'nesw-resize',
+  left: `ew-resize`,
+  topLeft: `nwse-resize`,
+  top: `ns-resize`,
+  topRight: `nesw-resize`,
+  right: `ew-resize`,
+  bottomRight: `nwse-resize`,
+  bottom: `ns-resize`,
+  bottomLeft: `nesw-resize`,
 }
 
 const returnStyle = (
@@ -45,13 +47,13 @@ const returnStyle = (
   }
   if (isPinned) {
     return {
-      width: WINDOW_ATTRS.defaultSize.width + 2 + 'px',
-      height: WINDOW_ATTRS.defaultSize.height + 2 + 'px',
+      width: WINDOW_ATTRS.defaultSize.width + 2 + `px`,
+      height: WINDOW_ATTRS.defaultSize.height + 2 + `px`,
     }
   }
   return {
-    width: width + 2 + 'px',
-    height: height + 2 + 'px',
+    width: width + 2 + `px`,
+    height: height + 2 + `px`,
   }
 }
 
@@ -64,10 +66,10 @@ export const WindowBorderInternal: FC<{
   position: { x: number; y: number }
 }> = ({ width, height, id, position, isFullScreen, isPinned }) => {
   const state = useStore([
-    'resizeWindow',
-    'activeConnection',
-    'hoveredItem',
-    'selectedWindow',
+    `resizeWindow`,
+    `activeConnection`,
+    `hoveredItem`,
+    `selectedWindow`,
   ])
 
   const startPosition = React.useRef<{ x: number; y: number } | null>(null)
@@ -114,7 +116,7 @@ export const WindowBorderInternal: FC<{
     startSize.current = null
     startPosition.current = null
     totalMovement.current = { x: 0, y: 0 }
-    setCursorStyle('default')
+    setCursorStyle(`default`)
   }
   const isActive = state.activeConnection?.from === id
   return (

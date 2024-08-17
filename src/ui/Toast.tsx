@@ -1,28 +1,31 @@
+import type { Variants } from 'framer-motion'
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
 import React from 'react'
-import style from './Toast.module.scss'
-import { useStore } from '@/state/gen-state'
-import { AnimatePresence, LayoutGroup, motion, Variants } from 'framer-motion'
-import { Notification } from '@/state/notifications'
-import UseAnimations from 'react-useanimations'
-import loading from 'react-useanimations/lib/loading'
 import { BsExclamationCircle as ErrorIcon } from 'react-icons/bs'
 import { IoCheckmarkCircleOutline as CheckIcon } from 'react-icons/io5'
+import UseAnimations from 'react-useanimations'
+import loading from 'react-useanimations/lib/loading'
+
+import { useStore } from '@/state/gen-state'
+import type { Notification } from '@/state/notifications'
+
+import style from './Toast.module.scss'
 
 const TOAST_COLORS = {
-  error: '#ff3030db',
-  success: '#32ff73db',
-  info: '#0070f3',
+  error: `#ff3030db`,
+  success: `#32ff73db`,
+  info: `#0070f3`,
 }
 
 export const itemVariants: Variants = {
   initial: {
-    right: '-100%',
+    right: `-100%`,
   },
   animate: () => ({
     right: 0,
   }),
   exit: () => ({
-    right: '-100%',
+    right: `-100%`,
   }),
 }
 
@@ -40,7 +43,7 @@ const Toast_Internal: React.FC<{ notification: Notification }> = ({
       />
     )
   }
-  if (notification.type === 'error') {
+  if (notification.type === `error`) {
     Icon = (
       <ErrorIcon
         size={22}
@@ -50,7 +53,7 @@ const Toast_Internal: React.FC<{ notification: Notification }> = ({
       />
     )
   }
-  if (notification.type === 'success') {
+  if (notification.type === `success`) {
     Icon = (
       <CheckIcon
         size={27}
@@ -75,7 +78,7 @@ const Toast_Internal: React.FC<{ notification: Notification }> = ({
       {notification.message}
       <motion.div
         className={style.progress}
-        transition={{ type: 'spring', stiffness: 1000, damping: 50 }}
+        transition={{ type: `spring`, stiffness: 1000, damping: 50 }}
         animate={{
           width: `${notification.progress}%`,
           backgroundColor: TOAST_COLORS[notification.type],
@@ -88,7 +91,7 @@ const Toast_Internal: React.FC<{ notification: Notification }> = ({
 const Toast = React.memo(Toast_Internal)
 
 export const Toaster: React.FC = () => {
-  const state = useStore(['notifications'])
+  const state = useStore([`notifications`])
   return (
     <div className={style.wrapper}>
       <LayoutGroup>

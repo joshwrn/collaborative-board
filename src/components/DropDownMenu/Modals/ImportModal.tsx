@@ -1,14 +1,14 @@
+import { nanoid } from 'nanoid'
 import React from 'react'
-import style from './ImportModal.module.scss'
-
 import { CiImport } from 'react-icons/ci'
 import { IoCheckmarkCircleOutline as CheckIcon } from 'react-icons/io5'
 
 import { useStore } from '@/state/gen-state'
-import { nanoid } from 'nanoid'
+
+import style from './ImportModal.module.scss'
 
 export const ImportModal: React.FC = () => {
-  const state = useStore(['setState', 'promiseNotification', 'importState'])
+  const state = useStore([`setState`, `promiseNotification`, `importState`])
   const [file, setFile] = React.useState<File | null>(null)
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,18 +22,18 @@ export const ImportModal: React.FC = () => {
   ) => {
     e.preventDefault()
     const notificationId = nanoid()
-    state.promiseNotification(
+    await state.promiseNotification(
       () => {
         state.importState(file, notificationId)
       },
       {
-        message: 'Importing...',
+        message: `Importing...`,
         id: notificationId,
       },
       {
         onSuccess: {
           update: {
-            message: 'Imported!',
+            message: `Imported!`,
           },
           run: () => {
             state.setState((draft) => {
@@ -43,7 +43,7 @@ export const ImportModal: React.FC = () => {
         },
         onError: {
           update: {
-            message: 'Failed to Import!',
+            message: `Failed to Import!`,
           },
         },
       },
@@ -51,9 +51,9 @@ export const ImportModal: React.FC = () => {
   }
 
   return (
-    <section className={'modalContainer'}>
+    <section className={`modalContainer`}>
       <div
-        className={'modalBackdrop'}
+        className={`modalBackdrop`}
         onClick={() => {
           state.setState((draft) => {
             draft.showImportModal = false
@@ -64,7 +64,7 @@ export const ImportModal: React.FC = () => {
         <form onSubmit={handleImport}>
           <button
             className={style.chooseFileButton}
-            data-role={file ? 'uploaded' : 'not-uploaded'}
+            data-role={file ? `uploaded` : `not-uploaded`}
             type="button"
           >
             <div className={style.iconContainer}>

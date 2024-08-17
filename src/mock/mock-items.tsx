@@ -1,47 +1,49 @@
-import { Item } from '@/state/items'
-import { nanoid } from 'nanoid'
 import { faker } from '@faker-js/faker'
-import { MOCK_NOUNS } from './mockNouns'
-import { MOCK_BASE64 } from './mockBlob'
+import { nanoid } from 'nanoid'
 
-const VOWELS = ['a', 'e', 'i', 'o', 'u']
+import type { Item } from '@/state/items'
+
+import { MOCK_BASE64 } from './mockBlob'
+import { MOCK_NOUNS } from './mockNouns'
+
+const VOWELS = [`a`, `e`, `i`, `o`, `u`]
 
 const wordWithArticle = (word: string) => {
   const lWord = word.toLowerCase()
-  if (lWord.endsWith('s')) {
+  if (lWord.endsWith(`s`)) {
     return lWord
   }
   if (VOWELS.includes(lWord[0])) {
-    return 'an ' + lWord
+    return `an ` + lWord
   }
-  return 'a ' + lWord
+  return `a ` + lWord
 }
 
 export const createMockPrompt = () => {
   const typeOfArt = faker.helpers.arrayElement([
-    'painting',
-    'drawing',
-    'illustration',
-    'digital art',
-    'photograph',
-    'graphic design',
-    'watercolor painting',
-    'abstract art',
+    `painting`,
+    `drawing`,
+    `illustration`,
+    `digital art`,
+    `photograph`,
+    `graphic design`,
+    `watercolor painting`,
+    `abstract art`,
   ])
   const subject = faker.helpers.arrayElement(MOCK_NOUNS)
 
   const style = faker.helpers.arrayElement([
-    'realistic',
-    'abstract',
-    'surrealistic',
-    'hyperrealistic',
-    'surreal',
-    'fantasy',
-    'magical realism',
-    'photorealistic',
-    'expressionist',
-    'gothic',
-    'renaissance',
+    `realistic`,
+    `abstract`,
+    `surrealistic`,
+    `hyperrealistic`,
+    `surreal`,
+    `fantasy`,
+    `magical realism`,
+    `photorealistic`,
+    `expressionist`,
+    `gothic`,
+    `renaissance`,
   ])
 
   return `${wordWithArticle(style)} messy minimalist watercolor painting of ${wordWithArticle(subject)}`
@@ -57,12 +59,12 @@ export const createMockItem = (length: number): Item[] =>
       body: [
         {
           id: nanoid(),
-          type: 'text',
+          type: `text`,
           content: prompt,
         },
         {
           id: nanoid(),
-          type: 'canvas',
+          type: `canvas`,
           content: {
             base64: MOCK_BASE64,
           },

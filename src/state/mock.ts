@@ -1,14 +1,15 @@
-import { AppStateCreator, Setter, stateSetter } from './state'
 import {
   createManyMockConnectionsToOneWindow,
   createMockConnection,
 } from '@/mock/mock-connections'
 import { createMockItem } from '@/mock/mock-items'
 import { createMockWindow } from '@/mock/mock-windows'
-import { WINDOW_ATTRS } from './windows'
 import { spaceCenterPoint } from '@/utils/spaceCenterPoint'
 
-export type MockStore = {
+import type { AppStateCreator } from './state'
+import { WINDOW_ATTRS } from './windows'
+
+export interface MockStore {
   createAllMocks: (length: number) => void
   createOneMock: () => void
   clearMocks: () => void
@@ -24,7 +25,7 @@ export const mockStore: AppStateCreator<MockStore> = (set, get) => ({
       x: centerPoint.x - WINDOW_ATTRS.defaultSize.width / 2,
       y: centerPoint.y - WINDOW_ATTRS.defaultSize.height / 2,
     }
-    set((state) => ({
+    set(() => ({
       items: items,
       connections: connections,
       windows: createMockWindow(items, startingPosition),

@@ -1,9 +1,10 @@
-import { Point2d } from '.'
-import { AppStateCreator, Setter, stateSetter } from './state'
+import type { Point2d } from '.'
+import type { AppStateCreator, Setter } from './state'
+import { stateSetter } from './state'
 
-export type ElementTypes = 'connections' | 'item'
+export type ElementTypes = `connections` | `item`
 
-export type DebugStore = {
+export interface DebugStore {
   debug_zoomFocusPoint: Point2d | null
 
   debug_randomPoints: (Point2d & { label: string })[]

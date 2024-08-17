@@ -1,13 +1,12 @@
 import * as fal from '@fal-ai/serverless-client'
 
-const mock_image_url =
-  'https://storage.googleapis.com/falserverless/model_tests/upscale/owl.png'
+const mock_image_url = `https://storage.googleapis.com/falserverless/model_tests/upscale/owl.png`
 
-export type CreativeUpscaleInput = {
+export interface CreativeUpscaleInput {
   image_url: string
 
   // The type of model to use for the upscaling. Default is SD_1_5
-  modelType?: 'SD_1_5' | 'SDXL'
+  modelType?: `SD_1_5` | `SDXL`
 
   // The prompt to use for generating the image. Be as descriptive as possible for best results. If no prompt is provided, BLIP2 will be used to generate a prompt.
   prompt?: string
@@ -61,7 +60,7 @@ export type CreativeUpscaleInput = {
   additional_embedding_url?: string
 }
 
-export type CreativeUpscaleOutput = {
+export interface CreativeUpscaleOutput {
   image: {
     url: string
     content_type: string
@@ -75,9 +74,9 @@ export type CreativeUpscaleOutput = {
 
 export const MOCK_CREATIVE_UPSCALE_RESPONSE = {
   image: {
-    url: 'https://fal-cdn.batuhan-941.workers.dev/files/tiger/IExuP-WICqaIesLZAZPur.jpeg',
-    content_type: 'image/png',
-    file_name: 'IExuP-WICqaIesLZAZPur.jpeg',
+    url: `https://fal-cdn.batuhan-941.workers.dev/files/tiger/IExuP-WICqaIesLZAZPur.jpeg`,
+    content_type: `image/png`,
+    file_name: `IExuP-WICqaIesLZAZPur.jpeg`,
     file_size: 1000,
     width: 1000,
     height: 1000,
@@ -87,14 +86,14 @@ export const MOCK_CREATIVE_UPSCALE_RESPONSE = {
 
 export const creativeUpscale = async ({
   image_url = mock_image_url,
-  modelType = 'SD_1_5',
+  modelType = `SD_1_5`,
   prompt,
   scale = 2,
   creativity,
   detail = 1.1,
   shape_preservation = 0.25,
-  prompt_suffix = ' high quality, highly detailed, high resolution, sharp',
-  negative_prompt = 'blurry, low resolution, bad, ugly, low quality, pixelated, interpolated, compression artifacts, noisey, grainy',
+  prompt_suffix = ` high quality, highly detailed, high resolution, sharp`,
+  negative_prompt = `blurry, low resolution, bad, ugly, low quality, pixelated, interpolated, compression artifacts, noisey, grainy`,
   seed,
   guidance_scale = 7.5,
   num_inference_steps = 20,
@@ -109,7 +108,7 @@ export const creativeUpscale = async ({
 }: CreativeUpscaleInput & {
   onUpdate: (update: any) => void
 }): Promise<CreativeUpscaleOutput> => {
-  const result = await fal.subscribe('fal-ai/creative-upscaler', {
+  const result = await fal.subscribe(`fal-ai/creative-upscaler`, {
     input: {
       image_url,
       modelType,

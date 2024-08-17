@@ -7,7 +7,7 @@ const checkIfClickedOutsideRef = <EL extends HTMLElement>(
   event: MouseEvent,
 ) => {
   if (!ref.current) return false
-  if (!ref?.current?.contains(event.target as Node)) {
+  if (!ref.current.contains(event.target as Node)) {
     return true
   }
 }

@@ -1,18 +1,20 @@
-import { Point2d } from '.'
-import { AppStateCreator, Setter, stateSetter } from './state'
-import { WindowType } from './windows'
-import { RotationPoint } from '@/components/Window/RotationPoints'
+import type { RotationPoint } from '@/components/Window/RotationPoints'
 
-export type SnappingToPosition = {
+import type { Point2d } from '.'
+import type { AppStateCreator, Setter } from './state'
+import { stateSetter } from './state'
+import type { WindowType } from './windows'
+
+export interface SnappingToPosition {
   from: Point2d
   to: Point2d
   dir: number
-  axis: 'x' | 'y'
+  axis: `x` | `y`
   realSnap: number
   label: RotationPoint
 }
 
-export type SnappingStore = {
+export interface SnappingStore {
   snapToWindows: (id: string, newPos: WindowType) => void
   snapLines: SnappingToPosition[]
   setSnapLines: Setter<SnappingToPosition[]>
@@ -65,10 +67,10 @@ function getRectangleCorners(
   }
 
   return [
-    rotatePoint(corners.topLeft, angle, center, 'topLeft'),
-    rotatePoint(corners.topRight, angle, center, 'topRight'),
-    rotatePoint(corners.bottomRight, angle, center, 'bottomRight'),
-    rotatePoint(corners.bottomLeft, angle, center, 'bottomLeft'),
+    rotatePoint(corners.topLeft, angle, center, `topLeft`),
+    rotatePoint(corners.topRight, angle, center, `topRight`),
+    rotatePoint(corners.bottomRight, angle, center, `bottomRight`),
+    rotatePoint(corners.bottomLeft, angle, center, `bottomLeft`),
   ]
 }
 
@@ -135,7 +137,7 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
               label: draggedWindowPoint.label,
               realSnap: snapTo.y,
               dir,
-              axis: 'y',
+              axis: `y`,
             })
           }
           if (xInRange) {
@@ -155,7 +157,7 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
               realSnap: snapTo.x,
               label: draggedWindowPoint.label,
               dir,
-              axis: 'x',
+              axis: `x`,
             })
           }
         }
@@ -182,7 +184,7 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
       if (!thisSnapPoint) {
         throw new Error(`snap point ${snapPoint.label} not found`)
       }
-      if (snapPoint.axis === 'y') {
+      if (snapPoint.axis === `y`) {
         const yPos = snapPoint.realSnap
         const doesAlignToTop = Math.abs(yPos - snapTo.y) <= marginOfError
         const doesAlignToBottom =
@@ -194,7 +196,7 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
           })
         }
       }
-      if (snapPoint.axis === 'x') {
+      if (snapPoint.axis === `x`) {
         const xPos = snapPoint.realSnap
         const doesAlignToLeft = Math.abs(xPos - snapTo.x) <= marginOfError
         const doesAlignToRight =
@@ -207,7 +209,7 @@ export const snappingStore: AppStateCreator<SnappingStore> = (set, get) => ({
         }
       }
     }
-    set((state) => ({
+    set(() => ({
       snapLines: refined,
     }))
     state.setOneWindow(id, {

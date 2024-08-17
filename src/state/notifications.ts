@@ -1,9 +1,12 @@
 import { nanoid } from 'nanoid'
-import { AppStateCreator, produceState } from './state'
+
 import { mockProgress } from '@/mock/mock-progress'
 
-export type Notification = {
-  type: 'success' | 'error' | 'info'
+import type { AppStateCreator } from './state'
+import { produceState } from './state'
+
+export interface Notification {
+  type: `error` | `info` | `success`
   message: string
   id: string
   progress: number
@@ -12,7 +15,7 @@ export type Notification = {
 
 const NOTIFICATION_TIMEOUT = 3000
 
-export type NotificationsStore = {
+export interface NotificationsStore {
   notifications: Notification[]
   setNotificationProgress: (id: string, progress: number) => void
   createNotification: (notification: Partial<Notification>) => Notification
@@ -20,7 +23,7 @@ export type NotificationsStore = {
   updateNotification: (id: string, update: Partial<Notification>) => void
   successNotification: (message: string) => Promise<void>
   promiseNotification: (
-    promise: () => Promise<any> | void | undefined,
+    promise: () => Promise<any> | undefined | void,
     notification: Partial<Notification>,
     options?: {
       onSuccess?: {
@@ -42,7 +45,7 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
   notifications: [],
   createNotification: (notification) => {
     const newNotification = {
-      type: 'info' as const,
+      type: `info` as const,
       message: ``,
       id: nanoid(),
       progress: 0,
@@ -80,7 +83,7 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
   successNotification: async (message) => {
     const state = get()
     const newNotification = state.createNotification({
-      type: 'success',
+      type: `success`,
       message,
     })
     await mockProgress({
@@ -101,7 +104,7 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
           (n) => n.id === newNotification.id,
         )
         if (notification) {
-          notification.type = 'success'
+          notification.type = `success`
           notification.progress = 100
           if (options?.onSuccess?.update) {
             Object.assign(notification, options.onSuccess.update)
@@ -122,7 +125,7 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
           (n) => n.id === newNotification.id,
         )
         if (notification) {
-          notification.type = 'error'
+          notification.type = `error`
           notification.isLoading = false
           notification.message = `${e.message}`
           if (options?.onError?.update) {
@@ -131,7 +134,7 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
         }
       })
       options?.onError?.run?.()
-      console.error('error', e)
+      console.error(`error`, e)
       await mockProgress({
         onProgress: (progress) => {
           state.setNotificationProgress(newNotification.id, 100 - progress)
