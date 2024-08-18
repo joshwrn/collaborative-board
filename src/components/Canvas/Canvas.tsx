@@ -51,7 +51,6 @@ export const Canvas_Internal: React.FC<{
     `zoom`,
     `drawColor`,
     `drawSize`,
-    `canvasIsFocused`,
     `fullScreenWindow`,
     `editItemContent`,
     `generatedCanvas`,
@@ -63,15 +62,6 @@ export const Canvas_Internal: React.FC<{
   const counterRef = React.useRef<HTMLDivElement>(null)
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const lastPosition = React.useRef({ x: 0, y: 0 })
-
-  useOutsideClick({
-    refs: [],
-    selectors: [`#toolbar`, `.dropdown-list`, `.canvas`],
-    action: () =>
-      state.setState((draft) => {
-        draft.canvasIsFocused = false
-      }),
-  })
 
   React.useEffect(() => {
     const ctx = canvasRef.current?.getContext(`2d`)
@@ -107,11 +97,6 @@ export const Canvas_Internal: React.FC<{
         width={attributes.width}
         height={attributes.height}
         className={joinClasses(style.canvas, `canvas`)}
-        onMouseDown={() => {
-          state.setState((draft) => {
-            draft.canvasIsFocused = true
-          })
-        }}
         ref={canvasRef}
         onMouseMove={(e) => {
           if (!canvasRef.current) return
@@ -133,7 +118,7 @@ export const Canvas_Internal: React.FC<{
             -attributes.rotation,
           )
 
-          if (e.buttons !== 1 || !state.canvasIsFocused) {
+          if (e.buttons !== 1) {
             lastPosition.current = rotatedMousePosition
             return
           }

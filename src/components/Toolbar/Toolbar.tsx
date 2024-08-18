@@ -4,6 +4,7 @@ import {
   offset,
   useFloating,
 } from '@floating-ui/react'
+import { AnimatePresence, motion } from 'framer-motion'
 import React from 'react'
 import { PiPaintBrushThin } from 'react-icons/pi'
 
@@ -18,8 +19,8 @@ export const Toolbar: React.FC = () => {
     `drawColor`,
     `tool`,
     `drawSize`,
-    `canvasIsFocused`,
     `setState`,
+    `selectedWindow`,
   ])
 
   const [open, setOpen] = React.useState<boolean>(false)
@@ -43,68 +44,74 @@ export const Toolbar: React.FC = () => {
     action: () => setOpen(false),
   })
 
-  if (!state.canvasIsFocused) {
-    return null
-  }
-
   return (
-    <div className={style.wrapper} id="toolbar">
-      <button>
-        <PiPaintBrushThin
-          size={20}
-          onClick={() =>
-            state.setState((draft) => {
-              draft.tool = `draw`
-            })
-          }
-        />
-      </button>
-      <button>
-        <div
-          className={style.colorButton}
-          style={{ backgroundColor: state.drawColor }}
-        />
-        <input
-          className={style.colorInput}
-          type="color"
-          value={state.drawColor}
-          onChange={(e) =>
-            state.setState((draft) => {
-              draft.drawColor = e.target.value
-            })
-          }
-        />
-      </button>
-      <button ref={refs.setReference} onClick={() => setOpen(!open)}>
-        {open && (
-          <FloatingPortal>
-            <section
-              ref={refs.setFloating}
-              style={{
-                position: strategy,
-                left: refs.reference.current?.getBoundingClientRect().left,
-                top: y,
-                width: `fit-content`,
-              }}
-              className={joinClasses(style.slider, `dropdown-list`)}
-              onClick={() => setOpen(false)}
-            >
-              <input
-                type="range"
-                min="1"
-                max="100"
-                value={state.drawSize}
-                onChange={(e) =>
-                  state.setState((draft) => {
-                    draft.drawSize = +e.target.value
-                  })
-                }
-              />
-            </section>
-          </FloatingPortal>
-        )}
-        <p>{state.drawSize}</p>
-      </button>
-    </div>
+    <AnimatePresence>
+      {state.selectedWindow && (
+        <motion.div
+          className={style.wrapper}
+          id="toolbar"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 40 }}
+        >
+          <button>
+            <PiPaintBrushThin
+              size={20}
+              onClick={() =>
+                state.setState((draft) => {
+                  draft.tool = `draw`
+                })
+              }
+            />
+          </button>
+          <button>
+            <div
+              className={style.colorButton}
+              style={{ backgroundColor: state.drawColor }}
+            />
+            <input
+              className={style.colorInput}
+              type="color"
+              value={state.drawColor}
+              onChange={(e) =>
+                state.setState((draft) => {
+                  draft.drawColor = e.target.value
+                })
+              }
+            />
+          </button>
+          <button ref={refs.setReference} onClick={() => setOpen(!open)}>
+            {open && (
+              <FloatingPortal>
+                <section
+                  ref={refs.setFloating}
+                  style={{
+                    position: strategy,
+                    left: refs.reference.current?.getBoundingClientRect().left,
+                    top: y,
+                    width: `fit-content`,
+                  }}
+                  className={joinClasses(style.slider, `dropdown-list`)}
+                  onClick={() => setOpen(false)}
+                >
+                  <input
+                    type="range"
+                    min="1"
+                    max="100"
+                    value={state.drawSize}
+                    onChange={(e) =>
+                      state.setState((draft) => {
+                        draft.drawSize = +e.target.value
+                      })
+                    }
+                  />
+                </section>
+              </FloatingPortal>
+            )}
+            <p>{state.drawSize}</p>
+          </button>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }

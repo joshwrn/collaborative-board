@@ -266,6 +266,9 @@ const WindowInternal: FC<{
                 state.setFullScreenWindow(null)
                 return
               }
+              state.setState((draft) => {
+                draft.selectedWindow = null
+              })
               state.toggleOpenWindow(item.id)
             }}
           />

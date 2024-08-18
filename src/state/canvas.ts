@@ -11,7 +11,6 @@ export interface CanvasStore {
   tool: `draw`
   drawColor: string
   drawSize: number
-  canvasIsFocused: boolean
   generatedCanvas: GeneratedCanvas | null
   generatingCanvas: {
     newItemId: string
@@ -26,7 +25,6 @@ export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
   tool: `draw`,
   drawSize: 10,
   drawColor: `rgb(0, 112, 243)`,
-  canvasIsFocused: false,
   generatedCanvas: null,
   generatingCanvas: [],
   updateGeneratingCanvasProgress: (itemId: string, progress: number) => {
