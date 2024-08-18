@@ -6,7 +6,6 @@ import { useGestures } from '@/gestures'
 import { useStore } from '@/state/gen-state'
 import { SPACE_ATTRS } from '@/state/space'
 
-import { ActiveConnectionGuard } from '../Connections/ActiveConnection'
 import { Connections } from '../Connections/Connections'
 import { SnapLines } from '../SnapLine/SnapLine'
 import { Toolbar } from '../Toolbar/Toolbar'
@@ -68,7 +67,6 @@ const Space_Internal: FC = () => {
           }}
         >
           <SpaceBackground />
-          <ActiveConnectionGuard />
           <Connections />
           <Windows />
           <SnapLines />
