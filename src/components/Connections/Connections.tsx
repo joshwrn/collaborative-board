@@ -1,128 +1,48 @@
 import type { FC } from 'react'
 import React from 'react'
-import { IoIosArrowForward } from 'react-icons/io'
 
-import {
-  calculateAngleBetweenPoints,
-  createLineBetweenWindows,
-} from '@/logic/createLineBetweenWindowSides'
-import { createLineFromWindowToMouse } from '@/logic/createLineFromWindowToMouse'
-import type { Connection as ConnectionType } from '@/state/connections'
+import { createLineBetweenWindows } from '@/logic/createLineBetweenWindowSides'
 import { useStore } from '@/state/gen-state'
 import type { WindowType } from '@/state/windows'
-import { joinClasses } from '@/utils/joinClasses'
 
-import styles from './Connections.module.scss'
+import { Arrow } from './Arrow'
 
-const ConnectionInternal = ({
+const Connection_Internal = ({
   from,
   to,
-  id,
-  isActive,
-  mousePosition,
-  hoveredItem,
-  zoom,
 }: {
   from: WindowType
-  to: WindowType | undefined
-  mousePosition?: { x: number; y: number }
-  id: string
-  zoom: number
-  isActive?: boolean
-  hoveredItem: `from` | `none` | `to`
+  to: WindowType
 }) => {
-  const state = useStore([`openContextMenu`, `contextMenu`])
-
-  const properties = React.useMemo(
-    () =>
-      to
-        ? createLineBetweenWindows(from, to)
-        : createLineFromWindowToMouse(from, mousePosition),
-    [from, to, mousePosition],
+  const line = React.useMemo(
+    () => createLineBetweenWindows(from, to),
+    [from, to],
   )
 
-  const isSelected =
-    state.contextMenu?.elementType === `connections` &&
-    state.contextMenu.id === id
+  if (!line) {
+    return null
+  }
 
-  if (!properties) return null
-  const { line, distance } = properties
   return (
-    <div
-      // onContextMenu={(e) => {
-      //   e.preventDefault()
-      //   e.stopPropagation()
-      //   state.openContextMenu({
-      //     id,
-      //     elementType: 'connections',
-      //   })
-      // }}
-      className={joinClasses(
-        styles.line,
-        createBackgroundClass(!!isActive, isSelected, hoveredItem),
-      )}
-      style={{
-        width: distance.toString() + `px`,
-        left: line.from.x,
-        top: line.from.y,
-        height: `${1 / zoom}px`,
-        background: createBackground(isActive, zoom),
-        transformOrigin: `0 0`,
-        transform: `rotate(${calculateAngleBetweenPoints(
-          line.from.x,
-          line.from.y,
-          line.to.x,
-          line.to.y,
-        )}deg)
-        `,
+    <Arrow
+      onMouseEnter={() => {
+        console.log(`windowFrom`, to)
       }}
-    >
-      {/* svg causes visual glitches when there are many connections */}
-      <IoIosArrowForward size={35} />
-    </div>
+      startPoint={line.from}
+      endPoint={line.to}
+      config={{
+        strokeWidth: 2,
+        arrowColor: `var(--connection-color)`,
+        dotEndingBackground: `var(--connection-color)`,
+      }}
+    />
   )
 }
 
-export const Connection = React.memo(ConnectionInternal)
+export const Connection = React.memo(Connection_Internal)
 
-const createBackground = (isActive: boolean | undefined, zoom: number) => {
-  if (isActive) {
-    return `repeating-linear-gradient(to right,#7c7c7c,#7c7c7c ${
-      10 / zoom
-    }px,transparent ${10 / zoom}px,transparent ${15 / zoom}px)`
-  }
-  return undefined
-}
-
-const createBackgroundClass = (
-  isActive: boolean,
-  isSelected: boolean,
-  hoveredItem: `from` | `none` | `to`,
-) => {
-  if (isActive) {
-    return styles.active
-  }
-  if (isSelected) {
-    return styles.selected
-  }
-  if (hoveredItem === `from`) {
-    return styles.from
-  }
-  if (hoveredItem === `to`) {
-    return styles.to
-  }
-  return null
-}
-
-export const ConnectionsInternal: FC = () => {
-  const state = useStore([
-    `connections`,
-    `windows`,
-    `hoveredItem`,
-    `hoveredWindow`,
-    `showConnections`,
-    `zoom`,
-  ])
+export const Connections_Internal: FC = () => {
+  const state = useStore([`connections`, `windows`, `showConnections`])
   const windowsMap = React.useMemo(
     () =>
       state.windows.reduce<Record<string, WindowType>>((acc, window) => {
@@ -146,35 +66,11 @@ export const ConnectionsInternal: FC = () => {
         }
 
         return (
-          <Connection
-            key={connection.id + i}
-            from={windowFrom}
-            to={windowTo}
-            id={connection.id}
-            zoom={state.zoom}
-            hoveredItem={includesHoveredItem(
-              connection,
-              state.hoveredItem ?? state.hoveredWindow,
-            )}
-          />
+          <Connection key={connection.id + i} from={windowFrom} to={windowTo} />
         )
       })}
     </>
   )
 }
 
-export const Connections = React.memo(ConnectionsInternal)
-
-const includesHoveredItem = (
-  connection: ConnectionType,
-  hoveredItem: string | null,
-) => {
-  if (!hoveredItem) return `none`
-  if (connection.from === hoveredItem) {
-    return `from`
-  }
-  if (connection.to === hoveredItem) {
-    return `to`
-  }
-  return `none`
-}
+export const Connections = React.memo(Connections_Internal)

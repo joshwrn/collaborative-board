@@ -24,7 +24,7 @@ export interface CanvasStore {
 export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
   tool: `draw`,
   drawSize: 10,
-  drawColor: `rgb(0, 112, 243)`,
+  drawColor: `#0070f3`,
   generatedCanvas: null,
   generatingCanvas: [],
   updateGeneratingCanvasProgress: (itemId: string, progress: number) => {
