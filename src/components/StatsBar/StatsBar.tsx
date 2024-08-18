@@ -29,7 +29,7 @@ const StatsBar_Internal: React.FC = () => {
         </AnimatePresence>
       </motion.div>
       <motion.div className={style.stat}>
-        <RiRefreshLine size={17} stroke={`var(--white-65)`} />
+        <RiRefreshLine size={17} fill={`var(--white-65)`} />
         <AnimatePresence mode="wait" initial={false}>
           <motion.p
             layout

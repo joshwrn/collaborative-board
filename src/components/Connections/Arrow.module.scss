@@ -1,0 +1,27 @@
+.line {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -9999;
+}
+
+.curvedLine {
+  border: dashed 1px black;
+}
+
+.renderedLine {
+  transition: stroke 300ms;
+}
+
+.endings {
+  pointer-events: none;
+}
+
+.arrowHeadEnding {
+  transition: stroke 300ms;
+}
+
+.dotEnding {
+  transition: stroke 300ms;
+}
