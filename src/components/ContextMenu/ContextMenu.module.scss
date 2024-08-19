@@ -9,6 +9,7 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
   background: var(--context-menu-background);
   border: 1px solid var(--context-menu-border);
   border-radius: $border-radius-outer;
+  box-shadow: var(--dropdown-list-box-shadow);
   z-index: 99999;
   overflow: hidden;
   padding: $padding;

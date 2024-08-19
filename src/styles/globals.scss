@@ -62,13 +62,7 @@
     calc(var(--lightness) + 30%)
   );
   --window-border-hovered: rgba(242, var(--hue), 255, 0.441);
-  --window-box-shadow: 0 10px 30px 0
-    hsla(
-      var(--hue),
-      calc(var(--saturation) + 30%),
-      calc(var(--lightness) + 5%),
-      0.35
-    );
+  --window-box-shadow: var(--dropdown-list-box-shadow);
   --window-close-button-color: #f14971;
   --window-full-button-color: #3fcd6f;
   // generate button
@@ -185,6 +179,8 @@
     calc(var(--lightness) + 1%)
   );
   --dropdown-list-border-color: var(--white-15);
+  --dropdown-list-box-shadow: 0 3px 6px #00000030, 0 23px 14px #0000001a,
+    0 41px 17px #00000008;
   --dropdown-item-hover-background-color: hsla(
     var(--hue),
     calc(var(--saturation) + 24%),
@@ -213,8 +209,8 @@
   --modal-backdrop-color: hsla(
     var(--hue),
     calc(var(--saturation) + 30%),
-    calc(var(--lightness) + 4%),
-    0.5
+    calc(var(--lightness) + 7%),
+    0.45
   );
 }
 
@@ -293,6 +289,7 @@ button {
 
 .modalBackdrop {
   position: fixed;
+  backdrop-filter: blur(5px);
   top: 0;
   left: 0;
   width: 100%;

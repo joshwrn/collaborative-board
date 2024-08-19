@@ -100,10 +100,7 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
 .list {
   position: absolute;
   background-color: var(--dropdown-list-background-color);
-  box-shadow:
-    0 3px 6px #00000030,
-    0 23px 14px #0000001a,
-    0 41px 17px #00000008;
+  box-shadow: var(--dropdown-list-box-shadow);
   backdrop-filter: blur(25px);
   z-index: 999;
   border: 1px solid var(--dropdown-list-border-color);

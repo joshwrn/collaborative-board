@@ -21,7 +21,7 @@ const Space_Internal: FC = () => {
   const state = useStore([
     `zoom`,
     `pan`,
-    `setSpaceMousePosition`,
+    `updateSpaceMousePosition`,
     `fullScreenWindow`,
     `openContextMenu`,
     `setState`,
@@ -35,18 +35,9 @@ const Space_Internal: FC = () => {
         ref={wrapperRef}
         className={styles.wrapper}
         onMouseMove={(e) => {
-          const left = SPACE_ATTRS.size.default / 2 - state.pan.x
-          const top = SPACE_ATTRS.size.default / 2 - state.pan.y
-          const x = left
-          const y = top
-          const distFromCenterX = window.innerWidth / 2 - e.clientX
-          const distFromCenterY = window.innerHeight / 2 - e.clientY
-          // 5 = (padding / 2). 22 = (toolbar height / 2)
-          const x2 = x - distFromCenterX + 5
-          const y2 = y - distFromCenterY - 22
-          state.setSpaceMousePosition({
-            x: x2 / state.zoom,
-            y: y2 / state.zoom,
+          state.updateSpaceMousePosition({
+            x: e.clientX,
+            y: e.clientY,
           })
         }}
       >

@@ -31,6 +31,7 @@ export const useGestures = ({
     `selectedWindow`,
     `hoveredWindow`,
     `setState`,
+    `updateSpaceMousePosition`,
   ])
 
   usePreventDefaults()
@@ -54,7 +55,6 @@ export const useGestures = ({
           const offset = newZoom - state.zoom
           const offSetX = zoomFocusPointOnScreenX * offset
           const offSetY = zoomFocusPointOnScreenY * offset
-
           state.setZoom((prev) => newZoom)
           state.setPan((prev) => ({
             x: prev.x - offSetX,
@@ -62,12 +62,10 @@ export const useGestures = ({
           }))
         }
         if ((delta.x || delta.y) && !delta.z) {
-          // if (
-          //   state.selectedWindow &&
-          //   state.hoveredWindow === state.selectedWindow
-          // ) {
-          //   return
-          // }
+          state.updateSpaceMousePosition({
+            x: event.clientX,
+            y: event.clientY,
+          })
           state.setPan((prev) => ({
             x: prev.x + delta.x,
             y: prev.y + delta.y,
@@ -86,6 +84,10 @@ export const useGestures = ({
             x: state.pan.x + movement.x,
             y: state.pan.y + movement.y,
           }
+          state.updateSpaceMousePosition({
+            x: event.clientX,
+            y: event.clientY,
+          })
           state.setPan({
             x: newPosition.x,
             y: newPosition.y,

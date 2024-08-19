@@ -17,9 +17,10 @@
   align-items: center;
   position: relative;
   width: fit-content;
-  border: 1px solid var(--window-border-active);
+  border: 1px solid var(--dropdown-list-border-color);
+  box-shadow: var(--dropdown-list-box-shadow);
   border-radius: 15px;
-  background-color: var(--window-header);
+  background-color: var(--dropdown-list-background-color);
   padding: 10px;
   form {
     display: flex;
