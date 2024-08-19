@@ -1,25 +1,59 @@
+.blocker {
+  position: absolute;
+  pointer-events: none;
+  width: 400px;
+  height: 45px;
+  top: 0;
+  background: var(--dropdown-list-background-color);
+}
+
 .modal {
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
+  position: absolute;
+  top: 45px;
   width: fit-content;
+  &::before {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--dropdown-list-background-color);
+  }
   border: 1px solid var(--dropdown-list-border-color);
-  border-radius: 15px;
+  border-top: none;
+  border-radius: 0 0 15px 15px;
   background-color: var(--dropdown-list-background-color);
-  padding: 30px;
+  padding: 10px 30px 30px;
   width: 300px;
   box-shadow: var(--dropdown-list-box-shadow);
 }
 
 .header {
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
   h1 {
     font-size: var(--font-2);
-    font-weight: bold;
     color: var(--white);
   }
+}
+
+.resetButton {
+  @include mixins.actionButton;
+  width: fit-content;
+  height: fit-content;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: var(--font--2);
+  color: var(--white);
+  cursor: pointer;
 }
 
 .content {
@@ -45,14 +79,4 @@
       font-size: var(--font-1);
     }
   }
-}
-
-.resetButton {
-  @include mixins.actionButton;
-  width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  font-size: 16px;
-  color: var(--white);
-  cursor: pointer;
 }

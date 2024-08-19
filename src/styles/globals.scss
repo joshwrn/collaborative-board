@@ -219,7 +219,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-geist-sans), serif;
   user-select: none;
   color: #d8d8d8;
 
@@ -240,6 +240,10 @@
   ::-webkit-scrollbar-corner {
     background: rgba(0, 0, 0, 0);
   }
+}
+
+h1 {
+  font-weight: 500;
 }
 
 nextjs-portal {
