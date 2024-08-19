@@ -7,7 +7,6 @@ import FPSStats from 'react-fps-stats'
 
 import { ContextMenu } from '@/components/ContextMenu/ContextMenu'
 import { DropDownMenu } from '@/components/DropDownMenu/DropDownMenu'
-import { List } from '@/components/ItemList/List/List'
 import { Space } from '@/components/Space/Space'
 import { StatsBar } from '@/components/StatsBar/StatsBar'
 import { useScenario } from '@/mock/scenarios'
@@ -15,6 +14,7 @@ import { useStore } from '@/state/gen-state'
 import { Toaster } from '@/ui/Toast'
 
 import styles from './page.module.scss'
+import { ListGuard } from '@/components/ItemList/List/List'
 
 const DevTools = React.lazy(async () => import(`@/components/Debug/DevTools`))
 
@@ -27,7 +27,6 @@ fal.config({
 export default function Home() {
   const state = useStore([
     `setMousePosition`,
-    `showItemList`,
     `debug_showZustandDevTools`,
     `debug_showFps`,
   ])
@@ -49,7 +48,7 @@ export default function Home() {
         <main>
           <Space />
           <ContextMenu />
-          {state.showItemList && <List />}
+          <ListGuard />
         </main>
         {state.debug_showFps && <FPSStats left={`auto`} right={0} />}
       </wrapper>

@@ -117,7 +117,7 @@ const DropdownInternal = ({
                 left:
                   (refs.reference.current?.getBoundingClientRect().left ?? 0) -
                   10,
-                top: y,
+                top: y - 2,
                 width: `fit-content`,
                 // refs.reference.current?.getBoundingClientRect().width ?? 0,
               }}

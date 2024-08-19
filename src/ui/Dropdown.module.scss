@@ -136,7 +136,7 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
     max-width: 60px;
     width: fit-content !important;
     padding: 0 5px;
-    background-color: var(--charcoal);
+    background-color: var(--dropdown-list-background-color);
     color: var(--window-text);
     outline: none;
     border: none;

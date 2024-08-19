@@ -1,35 +1,55 @@
 .wrapper {
-  width: 100%;
+  width: calc(50% - 7.5px);
+  aspect-ratio: 1/1;
+  margin-bottom: 0;
   background-size: cover;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  padding: 15px;
+  justify-content: flex-end;
   gap: 5px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
   z-index: 1;
   border: 1px solid var(--item-border);
-  h1 {
-    font-size: 16px;
-    max-width: 100%;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    color: var(--window-text);
-    position: relative;
-    text-shadow: var(--item-list-text-shadow);
-  }
-  p {
-    font-size: 12px;
-    color: var(--window-text-bold);
-    position: relative;
-    text-shadow: var(--item-list-text-shadow);
-    max-width: 100%;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+  .text {
+    padding: 15px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    z-index: 999;
+    background: linear-gradient(
+      to top,
+      var(--dropdown-list-background-color) 30%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    h1 {
+      font-size: 16px;
+      max-width: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      color: var(--window-text);
+      position: relative;
+      text-shadow: var(--item-list-text-shadow);
+    }
+    p {
+      font-size: 12px;
+      color: var(--window-text-bold);
+      position: relative;
+      text-shadow: var(--item-list-text-shadow);
+      max-width: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    @starting-style {
+      opacity: 0;
+    }
   }
 }
 .img {
@@ -39,7 +59,11 @@
   width: 100%;
   height: 100%;
   background-size: cover;
-  opacity: 0.2;
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+  @starting-style {
+    opacity: 0;
+  }
 }
 .isOpenWrapper {
   border: 1px solid var(--item-border-open);

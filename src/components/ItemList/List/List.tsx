@@ -7,12 +7,23 @@ import { useStore } from '@/state/gen-state'
 
 import { ItemComponent } from '../Item/Item'
 import styles from './List.module.scss'
+import { AnimatePresence, motion } from 'framer-motion'
 
-const ListInternal: FC = () => {
+const List_Internal: FC = () => {
   const state = useStore([`items`, `setState`, `windows`, `generatingCanvas`])
 
   return (
-    <wrapper className={styles.wrapper}>
+    <motion.div
+      className={styles.wrapper}
+      initial={{ opacity: 0, x: -200 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -200 }}
+      transition={{
+        type: `spring`,
+        stiffness: 500,
+        damping: 50,
+      }}
+    >
       <header className={styles.header}>
         <button
           className={styles.close}
@@ -39,8 +50,13 @@ const ListInternal: FC = () => {
           />
         ))}
       </container>
-    </wrapper>
+    </motion.div>
   )
 }
 
-export const List = React.memo(ListInternal)
+const List = React.memo(List_Internal)
+
+export const ListGuard = () => {
+  const state = useStore([`showItemList`])
+  return <AnimatePresence>{state.showItemList && <List />}</AnimatePresence>
+}
