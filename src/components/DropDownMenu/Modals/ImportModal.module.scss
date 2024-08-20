@@ -66,12 +66,10 @@
 }
 
 .importButton {
-  @include mixins.actionButton;
   width: 100%;
   padding: 10px;
-  border-radius: 5px;
   font-size: 16px;
-  background-color: var(--color-accent);
+  position: relative;
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;

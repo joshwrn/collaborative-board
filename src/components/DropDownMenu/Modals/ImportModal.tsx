@@ -6,7 +6,7 @@ import { IoCheckmarkCircleOutline as CheckIcon } from 'react-icons/io5'
 import { useStore } from '@/state/gen-state'
 
 import style from './ImportModal.module.scss'
-import { TopBarModal } from '@/ui/TopBarModal'
+import Modal from '@/ui/TopBarModal'
 import { AnimatePresence } from 'framer-motion'
 
 const ImportModal: React.FC = () => {
@@ -53,7 +53,7 @@ const ImportModal: React.FC = () => {
   }
 
   return (
-    <TopBarModal
+    <Modal.Container
       onClose={() =>
         state.setState((draft) => {
           draft.showImportModal = false
@@ -61,25 +61,30 @@ const ImportModal: React.FC = () => {
       }
       modalClassName={style.modal}
     >
-      <form onSubmit={handleImport}>
-        <button
-          className={style.chooseFileButton}
-          data-role={file ? `uploaded` : `not-uploaded`}
-          type="button"
-        >
-          <div className={style.iconContainer}>
-            {file ? <CheckIcon size={40} /> : <CiImport size={40} />}
-          </div>
-          <div className={style.textContainer}>
-            {file ? <p>Ready to Import</p> : <p>Choose a File</p>}
-          </div>
-          <input type="file" onChange={handleFileChange} accept=".json" />
-        </button>
-        <button className={style.importButton} disabled={!file} type="submit">
-          Import
-        </button>
-      </form>
-    </TopBarModal>
+      <Modal.Content>
+        <form onSubmit={handleImport}>
+          <button
+            className={style.chooseFileButton}
+            data-role={file ? `uploaded` : `not-uploaded`}
+            type="button"
+          >
+            <div className={style.iconContainer}>
+              {file ? <CheckIcon size={40} /> : <CiImport size={40} />}
+            </div>
+            <div className={style.textContainer}>
+              {file ? <p>Ready to Import</p> : <p>Choose a File</p>}
+            </div>
+            <input type="file" onChange={handleFileChange} accept=".json" />
+          </button>
+          <Modal.Button type="submit" className={style.importButton}>
+            <p>Import</p>
+          </Modal.Button>
+          {/* <button className={style.importButton} disabled={!file} type="submit">
+            Import
+          </button> */}
+        </form>
+      </Modal.Content>
+    </Modal.Container>
   )
 }
 

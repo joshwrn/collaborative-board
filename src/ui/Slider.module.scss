@@ -1,0 +1,17 @@
+.slider {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  label {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--white-65);
+    font-size: var(--font-1);
+    span {
+      color: var(--white-45);
+      font-size: var(--font-1);
+    }
+  }
+}
