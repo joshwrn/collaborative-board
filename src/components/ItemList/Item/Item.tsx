@@ -8,7 +8,7 @@ import type { Item, ItemBody } from '@/state/items'
 import { joinClasses } from '@/utils/joinClasses'
 
 import styles from './Item.module.scss'
-import { useIsInViewport } from '@/utils/useIsInViewPort'
+import { useIsInViewport } from '@/utils/useIsInViewport'
 
 const matchBody = (body?: ItemBody): JSX.Element | JSX.Element[] | null => {
   return match(body?.content)
