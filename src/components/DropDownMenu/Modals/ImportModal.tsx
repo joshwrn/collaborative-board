@@ -1,13 +1,13 @@
+import { AnimatePresence } from 'framer-motion'
 import { nanoid } from 'nanoid'
 import React from 'react'
 import { CiImport } from 'react-icons/ci'
 import { IoCheckmarkCircleOutline as CheckIcon } from 'react-icons/io5'
 
 import { useStore } from '@/state/gen-state'
+import Modal from '@/ui/TopBarModal'
 
 import style from './ImportModal.module.scss'
-import Modal from '@/ui/TopBarModal'
-import { AnimatePresence } from 'framer-motion'
 
 const ImportModal: React.FC = () => {
   const state = useStore([`setState`, `promiseNotification`, `importState`])

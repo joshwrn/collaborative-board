@@ -1,10 +1,10 @@
 import React from 'react'
+import { PiGearLight } from 'react-icons/pi'
 
 import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 
 import style from '../DropDownMenu.module.scss'
-import { PiGearLight } from 'react-icons/pi'
 import { FalSettingsModalGuard } from '../Modals/FalSettingsModal'
 
 export const AIMenu = () => {

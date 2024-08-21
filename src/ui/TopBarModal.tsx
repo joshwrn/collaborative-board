@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
 import React from 'react'
 
-import style from './TopBarModal.module.scss'
 import { joinClasses } from '@/utils/joinClasses'
+
+import style from './TopBarModal.module.scss'
 
 const Modal: React.FC<{
   onClose: () => void
@@ -19,7 +20,7 @@ const Modal: React.FC<{
         onClick={() => onClose()}
       />
       <motion.div
-        className={joinClasses('modal', modalClassName)}
+        className={joinClasses(`modal`, modalClassName)}
         initial={{ opacity: 0, y: `-50%` }}
         animate={{
           opacity: 1,
@@ -51,11 +52,11 @@ const Content: React.FC<{
 }
 
 const Button: React.FC<
-  {
+  React.ButtonHTMLAttributes<HTMLButtonElement> & {
     onClick?: () => void
     children: React.ReactNode
     className?: string
-  } & React.ButtonHTMLAttributes<HTMLButtonElement>
+  }
 > = ({ onClick, children, className, ...props }) => {
   return (
     <button

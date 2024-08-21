@@ -1,9 +1,11 @@
-import React from 'react'
-import style from './FalSettingsModal.module.scss'
-import { useStore } from '@/state/gen-state'
 import { AnimatePresence } from 'framer-motion'
-import Modal from '@/ui/TopBarModal'
+import React from 'react'
+
+import { useStore } from '@/state/gen-state'
 import { Slider } from '@/ui/Slider'
+import Modal from '@/ui/TopBarModal'
+
+import style from './FalSettingsModal.module.scss'
 
 const FalSettingsModal: React.FC = () => {
   const state = useStore([

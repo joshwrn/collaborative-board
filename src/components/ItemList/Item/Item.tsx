@@ -6,9 +6,9 @@ import { match, P } from 'ts-pattern'
 import { useStore } from '@/state/gen-state'
 import type { Item, ItemBody } from '@/state/items'
 import { joinClasses } from '@/utils/joinClasses'
+import { useIsInViewport } from '@/utils/useIsInViewport'
 
 import styles from './Item.module.scss'
-import { useIsInViewport } from '@/utils/useIsInViewport'
 
 const matchBody = (body?: ItemBody): JSX.Element | JSX.Element[] | null => {
   return match(body?.content)

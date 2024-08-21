@@ -7,15 +7,15 @@ import FPSStats from 'react-fps-stats'
 
 import { ContextMenu } from '@/components/ContextMenu/ContextMenu'
 import { DropDownMenu } from '@/components/DropDownMenu/DropDownMenu'
+import { ListGuard } from '@/components/ItemList/List/List'
 import { Space } from '@/components/Space/Space'
 import { StatsBar } from '@/components/StatsBar/StatsBar'
+import { Toolbar } from '@/components/Toolbar/Toolbar'
 import { useScenario } from '@/mock/scenarios'
 import { useStore } from '@/state/gen-state'
 import { Toaster } from '@/ui/Toast'
 
 import styles from './page.module.scss'
-import { ListGuard } from '@/components/ItemList/List/List'
-import { Toolbar } from '@/components/Toolbar/Toolbar'
 
 const DevTools = React.lazy(async () => import(`@/components/Debug/DevTools`))
 

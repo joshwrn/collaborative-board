@@ -1,14 +1,17 @@
-import React, { InputHTMLAttributes } from 'react'
-import style from './Slider.module.scss'
+import type { InputHTMLAttributes } from 'react'
+import React from 'react'
+
 import { joinClasses } from '@/utils/joinClasses'
 
+import style from './Slider.module.scss'
+
 const Slider_Internal: React.FC<
-  {
+  Omit<InputHTMLAttributes<HTMLInputElement>, `onChange`> & {
     label: string
     value: number
     onChange: (value: number) => void
     className?: string
-  } & Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'>
+  }
 > = ({ value, onChange, label, className, ...props }) => {
   const id = label.replaceAll(` `, `_`)
   // Percentage = (Value - Minimum) / (Maximum - Minimum) * 100

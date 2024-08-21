@@ -1,19 +1,13 @@
-import {
-  autoUpdate,
-  FloatingPortal,
-  offset,
-  useFloating,
-} from '@floating-ui/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import React from 'react'
 import { PiPaintBrushThin } from 'react-icons/pi'
 
 import { useStore } from '@/state/gen-state'
+import { Slider } from '@/ui/Slider'
 import { joinClasses } from '@/utils/joinClasses'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 
 import style from './Toolbar.module.scss'
-import { Slider } from '@/ui/Slider'
 
 export const Toolbar: React.FC = () => {
   const state = useStore([
@@ -38,9 +32,9 @@ export const Toolbar: React.FC = () => {
         <motion.div
           className={style.wrapper}
           id="toolbar"
-          initial={{ opacity: 0, y: 40, x: '-50%' }}
-          animate={{ opacity: 1, y: 0, x: '-50%' }}
-          exit={{ opacity: 0, y: 40, x: '-50%' }}
+          initial={{ opacity: 0, y: 40, x: `-50%` }}
+          animate={{ opacity: 1, y: 0, x: `-50%` }}
+          exit={{ opacity: 0, y: 40, x: `-50%` }}
         >
           <button>
             <PiPaintBrushThin
@@ -75,7 +69,7 @@ export const Toolbar: React.FC = () => {
             <section
               ref={brushSizeRef}
               className={joinClasses(
-                'modal',
+                `modal`,
                 style.sliderWrapper,
                 `dropdown-list`,
               )}

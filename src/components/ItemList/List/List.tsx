@@ -1,4 +1,5 @@
 'use client'
+import { AnimatePresence, motion } from 'framer-motion'
 import type { FC } from 'react'
 import React from 'react'
 import { IoClose } from 'react-icons/io5'
@@ -7,7 +8,6 @@ import { useStore } from '@/state/gen-state'
 
 import { ItemComponent } from '../Item/Item'
 import styles from './List.module.scss'
-import { AnimatePresence, motion } from 'framer-motion'
 
 const List_Internal: FC = () => {
   const state = useStore([`items`, `setState`, `windows`, `generatingCanvas`])

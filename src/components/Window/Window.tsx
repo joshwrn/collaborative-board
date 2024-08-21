@@ -294,7 +294,7 @@ const WindowInternal: FC<{
                   Loading <strong>{canvasesLoading.length}</strong>
                 </p>
                 <p>
-                  Finished{' '}
+                  Finished{` `}
                   <strong>
                     {fromConnections.length - canvasesLoading.length}
                   </strong>

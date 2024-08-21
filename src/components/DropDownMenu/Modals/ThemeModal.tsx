@@ -1,10 +1,9 @@
+import { AnimatePresence } from 'framer-motion'
 import React from 'react'
 
 import { useStore } from '@/state/gen-state'
-
-import Modal from '@/ui/TopBarModal'
-import { AnimatePresence } from 'framer-motion'
 import { Slider } from '@/ui/Slider'
+import Modal from '@/ui/TopBarModal'
 
 const ThemeModal: React.FC = () => {
   const state = useStore([
