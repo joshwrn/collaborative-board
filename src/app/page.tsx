@@ -48,11 +48,10 @@ export default function Home() {
         </header>
         <main>
           <Space />
-          <ContextMenu />
           <ListGuard />
           <Toolbar />
         </main>
-
+        <ContextMenu />
         {state.debug_showFps && <FPSStats left={`auto`} right={0} />}
       </wrapper>
       <Toaster />
