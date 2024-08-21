@@ -76,12 +76,13 @@ const ImportModal: React.FC = () => {
             </div>
             <input type="file" onChange={handleFileChange} accept=".json" />
           </button>
-          <Modal.Button type="submit" className={style.importButton}>
+          <Modal.Button
+            type="submit"
+            className={style.importButton}
+            disabled={!file}
+          >
             <p>Import</p>
           </Modal.Button>
-          {/* <button className={style.importButton} disabled={!file} type="submit">
-            Import
-          </button> */}
         </form>
       </Modal.Content>
     </Modal.Container>
