@@ -2,8 +2,10 @@
 import type { MutableRefObject, RefObject } from 'react'
 import { useEffect, useRef } from 'react'
 
-const checkIfClickedOutsideRef = <EL extends HTMLElement>(
-  ref: RefObject<EL>,
+const checkIfClickedOutsideRef = (
+  ref: RefObject<{
+    contains: (arg0: Node) => boolean
+  }>,
   event: MouseEvent,
 ) => {
   if (!ref.current) return false
@@ -20,13 +22,15 @@ const checkIfClickedOutsideSelector = (selector: string, event: MouseEvent) => {
   }
 }
 
-export const useOutsideClick = <EL1 extends HTMLElement>({
+export const useOutsideClick = ({
   action,
   refs,
   selectors,
 }: {
   action: VoidFunction
-  refs: RefObject<EL1>[]
+  refs: RefObject<{
+    contains: (arg0: Node) => boolean
+  }>[]
   selectors?: string[]
 }) => {
   useEffect(() => {

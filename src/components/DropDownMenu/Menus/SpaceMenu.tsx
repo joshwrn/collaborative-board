@@ -5,7 +5,7 @@ import { SPACE_ATTRS } from '@/state/space'
 import Dropdown from '@/ui/Dropdown'
 
 import style from '../DropDownMenu.module.scss'
-import { ThemeModal } from '../Modals/ThemeModal'
+import { ThemeModalGuard } from '../Modals/ThemeModal'
 
 export const SpaceMenu = () => {
   const state = useStore([
@@ -75,7 +75,7 @@ export const SpaceMenu = () => {
           />,
         ]}
       />
-      {state.showThemeModal && <ThemeModal />}
+      <ThemeModalGuard />
     </item>
   )
 }

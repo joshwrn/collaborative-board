@@ -1,10 +1,11 @@
+import { AnimatePresence } from 'framer-motion'
 import React from 'react'
 
 import { useStore } from '@/state/gen-state'
+import { Slider } from '@/ui/Slider'
+import Modal from '@/ui/TopBarModal'
 
-import style from './ThemeModal.module.scss'
-
-export const ThemeModal: React.FC = () => {
+const ThemeModal: React.FC = () => {
   const state = useStore([
     `setState`,
     `hue`,
@@ -14,86 +15,52 @@ export const ThemeModal: React.FC = () => {
     `resetTheme`,
   ])
   return (
-    <div className={`modalContainer`}>
-      <div
-        className={`modalBackdrop`}
-        style={{
-          opacity: 0,
-        }}
-        onClick={() =>
-          state.setState((draft) => {
-            draft.showThemeModal = false
-          })
-        }
-      />
-      <div className={style.modal}>
-        <div className={style.header}>
-          <h1>Adjust Theme</h1>
-        </div>
-        <div className={style.content}>
-          <div className={style.slider}>
-            <label htmlFor="hue">
-              Hue <span>{state.hue}</span>
-            </label>
-            <input
-              id="hue"
-              type="range"
-              min="0"
-              max="360"
-              value={state.hue}
-              onChange={(e) => {
-                state.updateTheme({
-                  hue: parseInt(e.target.value),
-                })
-              }}
-            />
-          </div>
-          <div className={style.slider}>
-            <label htmlFor="saturation">
-              Saturation
-              <span>{state.saturation}</span>
-            </label>
-            <input
-              id="saturation"
-              type="range"
-              min="-100"
-              max="100"
-              value={parseInt(state.saturation)}
-              onChange={(e) => {
-                state.updateTheme({
-                  saturation: e.target.value + `%`,
-                })
-              }}
-            />
-          </div>
-          <div className={style.slider}>
-            <label htmlFor="lightness">
-              Lightness
-              <span>{state.lightness}</span>
-            </label>
-            <input
-              id="lightness"
-              type="range"
-              min="-20"
-              max="20"
-              value={parseInt(state.lightness)}
-              onChange={(e) => {
-                state.updateTheme({
-                  lightness: e.target.value + `%`,
-                })
-              }}
-            />
-          </div>
-          <button
-            className={style.resetButton}
-            onClick={() => {
-              state.resetTheme()
-            }}
-          >
-            Reset
-          </button>
-        </div>
-      </div>
-    </div>
+    <Modal.Container
+      onClose={() =>
+        state.setState((draft) => {
+          draft.showThemeModal = false
+        })
+      }
+    >
+      <Modal.Header title="Adjust Theme">
+        <Modal.Button
+          onClick={() => {
+            state.resetTheme()
+          }}
+        >
+          Reset
+        </Modal.Button>
+      </Modal.Header>
+      <Modal.Content>
+        <Slider
+          label="Hue"
+          value={state.hue}
+          min={0}
+          max={360}
+          onChange={(num) => state.updateTheme({ hue: num })}
+        />
+        <Slider
+          label="Saturation"
+          value={parseInt(state.saturation)}
+          min={-100}
+          max={100}
+          onChange={(num) => state.updateTheme({ saturation: num + `%` })}
+        />
+        <Slider
+          label="Lightness"
+          value={parseInt(state.lightness)}
+          min={-20}
+          max={20}
+          onChange={(num) => state.updateTheme({ lightness: num + `%` })}
+        />
+      </Modal.Content>
+    </Modal.Container>
+  )
+}
+
+export const ThemeModalGuard = () => {
+  const state = useStore([`showThemeModal`])
+  return (
+    <AnimatePresence>{state.showThemeModal && <ThemeModal />}</AnimatePresence>
   )
 }

@@ -6,7 +6,7 @@ import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 
 import style from '../DropDownMenu.module.scss'
-import { ImportModal } from '../Modals/ImportModal'
+import { ImportModalGuard } from '../Modals/ImportModal'
 
 export const FileMenu: React.FC = () => {
   const state = useStore([
@@ -77,7 +77,7 @@ export const FileMenu: React.FC = () => {
           />,
         ]}
       />
-      {state.showImportModal && <ImportModal />}
+      <ImportModalGuard />
     </item>
   )
 }

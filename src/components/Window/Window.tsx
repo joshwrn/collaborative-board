@@ -63,7 +63,7 @@ const Prompt: React.FC<{ value: ItemBodyText; windowId: string }> = ({
   return (
     <div className={styles.textContainer}>
       <header>
-        <h2>Prompt</h2>
+        <h1>Prompt</h1>
         <RandomizePromptButton
           windowId={windowId}
           contentId={value.id}
@@ -294,7 +294,10 @@ const WindowInternal: FC<{
                   Loading <strong>{canvasesLoading.length}</strong>
                 </p>
                 <p>
-                  Finished <strong>{fromConnections.length}</strong>
+                  Finished{` `}
+                  <strong>
+                    {fromConnections.length - canvasesLoading.length}
+                  </strong>
                 </p>
               </div>
               {/* <button

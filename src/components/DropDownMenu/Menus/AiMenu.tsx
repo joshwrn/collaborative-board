@@ -1,9 +1,11 @@
 import React from 'react'
+import { PiGearLight } from 'react-icons/pi'
 
 import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 
 import style from '../DropDownMenu.module.scss'
+import { FalSettingsModalGuard } from '../Modals/FalSettingsModal'
 
 export const AIMenu = () => {
   const state = useStore([`fal_num_inference_steps`, `setState`])
@@ -14,30 +16,19 @@ export const AIMenu = () => {
         id="dropdown-ai-button"
         SelectedOption={() => <p>AI</p>}
         Options={[
-          <Dropdown.Item key={`Create (Custom)`} isChecked={false}>
-            <form
-              ref={ref}
-              className={style.customCreate}
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <p>Set AI Quality (</p>
-              <input
-                onClick={(e) => e.stopPropagation()}
-                type="number"
-                value={state.fal_num_inference_steps}
-                onChange={(e) =>
-                  state.setState((draft) => {
-                    draft.fal_num_inference_steps = Number(e.target.value)
-                  })
-                }
-                max={200}
-                min={1}
-              />
-              <p>)</p>
-            </form>
-          </Dropdown.Item>,
+          <Dropdown.Item
+            Icon={() => <PiGearLight size={22} fill="var(--white)" />}
+            onClick={() => {
+              state.setState((draft) => {
+                draft.showFalSettingsModal = true
+              })
+            }}
+            key={`Create (Custom)`}
+            label1="Settings"
+          ></Dropdown.Item>,
         ]}
       />
+      <FalSettingsModalGuard />
     </item>
   )
 }

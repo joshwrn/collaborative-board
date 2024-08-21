@@ -1,14 +1,9 @@
-import {
-  autoUpdate,
-  FloatingPortal,
-  offset,
-  useFloating,
-} from '@floating-ui/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import React from 'react'
 import { PiPaintBrushThin } from 'react-icons/pi'
 
 import { useStore } from '@/state/gen-state'
+import { Slider } from '@/ui/Slider'
 import { joinClasses } from '@/utils/joinClasses'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 
@@ -24,23 +19,10 @@ export const Toolbar: React.FC = () => {
   ])
 
   const [open, setOpen] = React.useState<boolean>(false)
-  const { refs, strategy, x, y } = useFloating({
-    open,
-    whileElementsMounted: autoUpdate,
-    strategy: `absolute`,
-    placement: `bottom`,
-    middleware: [
-      offset({
-        mainAxis: -160,
-        crossAxis: 0,
-      }),
-    ],
-  })
+  const brushSizeRef = React.useRef<HTMLInputElement>(null)
+  const brushButtonRef = React.useRef<HTMLButtonElement>(null)
   useOutsideClick({
-    refs: [
-      refs.reference as React.MutableRefObject<HTMLElement | null>,
-      refs.floating,
-    ],
+    refs: [brushSizeRef, brushButtonRef],
     action: () => setOpen(false),
   })
 
@@ -50,9 +32,9 @@ export const Toolbar: React.FC = () => {
         <motion.div
           className={style.wrapper}
           id="toolbar"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 40, x: `-50%` }}
+          animate={{ opacity: 1, y: 0, x: `-50%` }}
+          exit={{ opacity: 0, y: 40, x: `-50%` }}
         >
           <button>
             <PiPaintBrushThin
@@ -80,36 +62,32 @@ export const Toolbar: React.FC = () => {
               }
             />
           </button>
-          <button ref={refs.setReference} onClick={() => setOpen(!open)}>
-            {open && (
-              <FloatingPortal>
-                <section
-                  ref={refs.setFloating}
-                  style={{
-                    position: strategy,
-                    left: refs.reference.current?.getBoundingClientRect().left,
-                    top: y,
-                    width: `fit-content`,
-                  }}
-                  className={joinClasses(style.slider, `dropdown-list`)}
-                  onClick={() => setOpen(false)}
-                >
-                  <input
-                    type="range"
-                    min="1"
-                    max="100"
-                    value={state.drawSize}
-                    onChange={(e) =>
-                      state.setState((draft) => {
-                        draft.drawSize = +e.target.value
-                      })
-                    }
-                  />
-                </section>
-              </FloatingPortal>
-            )}
+          <button onClick={() => setOpen(!open)} ref={brushButtonRef}>
             <p>{state.drawSize}</p>
           </button>
+          {open && (
+            <section
+              ref={brushSizeRef}
+              className={joinClasses(
+                `modal`,
+                style.sliderWrapper,
+                `dropdown-list`,
+              )}
+            >
+              <Slider
+                label="Brush Size"
+                // className={style.slider}
+                value={state.drawSize}
+                max={100}
+                min={1}
+                onChange={(num) =>
+                  state.setState((draft) => {
+                    draft.drawSize = num
+                  })
+                }
+              />
+            </section>
+          )}
         </motion.div>
       )}
     </AnimatePresence>

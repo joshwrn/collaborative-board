@@ -1,6 +1,6 @@
 :root {
   // container
-  --container-background-color: var(--charcoal);
+  --container-background-color: var(--dropdown-list-background-color);
 
   --test: hsl(0, 100%, 50%);
   --hue: 230;
@@ -98,7 +98,7 @@
   --connections-to-color: #f14971;
 
   // toast
-  --toast-background: var(--canvas-background);
+  --toast-background: var(--dropdown-list-background-color);
   --toast-border: hsl(var(--hue), 20%, calc(var(--lightness) + 17%));
   --toast-text: hsl(
     var(--hue),
@@ -131,11 +131,6 @@
     calc(var(--lightness) + 95%)
   );
   --color-accent: hsl(215, 100%, 55%);
-  --charcoal: hsl(
-    var(--hue),
-    calc(var(--saturation) + 21%),
-    calc(var(--lightness) + 1%)
-  );
   --color-scrollbar: hsl(
     var(--hue),
     calc(var(--saturation) + 20%),
@@ -176,7 +171,7 @@
   --dropdown-list-background-color: hsl(
     var(--hue),
     calc(var(--saturation) + 20%),
-    calc(var(--lightness) + 1%)
+    calc(var(--lightness) + 4%)
   );
   --dropdown-list-border-color: var(--white-15);
   --dropdown-list-box-shadow: 0 3px 6px #00000030, 0 23px 14px #0000001a,
@@ -215,11 +210,13 @@
 }
 
 * {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   flex-shrink: 0;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-geist-sans), serif;
   user-select: none;
   color: #d8d8d8;
 
@@ -240,6 +237,10 @@
   ::-webkit-scrollbar-corner {
     background: rgba(0, 0, 0, 0);
   }
+}
+
+h1 {
+  font-weight: 500;
 }
 
 nextjs-portal {
@@ -274,6 +275,57 @@ button {
   color: white;
 }
 
+.modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 65px;
+  padding: 6px;
+  overflow: hidden;
+  width: 300px;
+
+  border: 1px solid var(--dropdown-list-border-color);
+  // border-top: none;
+  border-radius: 20px;
+  background-color: var(--dropdown-list-background-color);
+
+  box-shadow: var(--dropdown-list-box-shadow);
+
+  @include mixins.stripeBackground(
+    hsla(
+      var(--hue),
+      calc(var(--saturation) + 20%),
+      calc(var(--lightness) + 7%),
+      1
+    )
+  );
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(
+      180deg,
+      rgba(45, 45, 45, 0) 0%,
+      var(--dropdown-list-background-color) 15%
+    );
+  }
+  // &::before {
+  //   content: '';
+  //   position: absolute;
+  //   top: -100%;
+  //   left: 0;
+  //   width: 100%;
+  //   height: 100%;
+  //   background: var(--dropdown-list-background-color);
+  // }
+}
+
 .modalContainer {
   position: fixed;
   top: 0;
@@ -296,6 +348,34 @@ button {
   height: 100%;
   background-color: var(--modal-backdrop-color);
   z-index: -2;
+}
+
+input {
+  &[type='range'] {
+    --c: var(--color-accent); /* active color */
+    --g: 0px; /* the gap */
+    --l: 5px; /* line thickness*/
+    --s: 30px; /* thumb size*/
+    border-radius: 20px;
+    width: 100%;
+    height: var(--s); /* needed for Firefox*/
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: none;
+    cursor: pointer;
+    overflow: hidden;
+    &::-webkit-slider-thumb {
+      height: 15px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      box-shadow: 0 0 0 10px inset var(--color-accent);
+      border-image: linear-gradient(90deg, var(--c) 50%, var(--white-65) 0) 0 1 /
+        calc(50% - var(--l) / 2) 100vw/0 calc(100vw + var(--g));
+      -webkit-appearance: none;
+      appearance: none;
+    }
+  }
 }
 
 .loadingShimmer {

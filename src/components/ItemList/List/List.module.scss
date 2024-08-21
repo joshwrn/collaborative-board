@@ -1,9 +1,9 @@
 .wrapper {
-  width: 350px;
+  width: 400px;
   height: calc(100% - var(--dropdown-menu-height) - 40px);
   top: calc(20px + var(--dropdown-menu-height));
   left: 30px;
-  background-color: var(--item-list-background);
+  background-color: var(--dropdown-list-background-color);
   backdrop-filter: blur(20px);
   border-radius: 10px;
   border: 1px solid var(--item-list-border);
@@ -39,11 +39,11 @@
 
 .listContainer {
   display: flex;
-  flex-direction: column;
+  align-items: flex-start;
+  flex-wrap: wrap;
   gap: 15px;
   overflow-y: auto;
   flex-shrink: 1;
-  height: 100%;
   padding: 15px 25px;
   position: relative;
 }

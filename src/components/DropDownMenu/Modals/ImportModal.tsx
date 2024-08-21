@@ -1,13 +1,15 @@
+import { AnimatePresence } from 'framer-motion'
 import { nanoid } from 'nanoid'
 import React from 'react'
 import { CiImport } from 'react-icons/ci'
 import { IoCheckmarkCircleOutline as CheckIcon } from 'react-icons/io5'
 
 import { useStore } from '@/state/gen-state'
+import Modal from '@/ui/TopBarModal'
 
 import style from './ImportModal.module.scss'
 
-export const ImportModal: React.FC = () => {
+const ImportModal: React.FC = () => {
   const state = useStore([`setState`, `promiseNotification`, `importState`])
   const [file, setFile] = React.useState<File | null>(null)
 
@@ -51,16 +53,15 @@ export const ImportModal: React.FC = () => {
   }
 
   return (
-    <section className={`modalContainer`}>
-      <div
-        className={`modalBackdrop`}
-        onClick={() => {
-          state.setState((draft) => {
-            draft.showImportModal = false
-          })
-        }}
-      />
-      <section className={style.modal}>
+    <Modal.Container
+      onClose={() =>
+        state.setState((draft) => {
+          draft.showImportModal = false
+        })
+      }
+      modalClassName={style.modal}
+    >
+      <Modal.Content>
         <form onSubmit={handleImport}>
           <button
             className={style.chooseFileButton}
@@ -75,11 +76,22 @@ export const ImportModal: React.FC = () => {
             </div>
             <input type="file" onChange={handleFileChange} accept=".json" />
           </button>
-          <button className={style.importButton} disabled={!file} type="submit">
-            Import
-          </button>
+          <Modal.Button
+            type="submit"
+            className={style.importButton}
+            disabled={!file}
+          >
+            <p>Import</p>
+          </Modal.Button>
         </form>
-      </section>
-    </section>
+      </Modal.Content>
+    </Modal.Container>
+  )
+}
+
+export const ImportModalGuard = () => {
+  const state = useStore([`showImportModal`])
+  return (
+    <AnimatePresence>{state.showImportModal && <ImportModal />}</AnimatePresence>
   )
 }

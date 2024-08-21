@@ -7,9 +7,10 @@ import FPSStats from 'react-fps-stats'
 
 import { ContextMenu } from '@/components/ContextMenu/ContextMenu'
 import { DropDownMenu } from '@/components/DropDownMenu/DropDownMenu'
-import { List } from '@/components/ItemList/List/List'
+import { ListGuard } from '@/components/ItemList/List/List'
 import { Space } from '@/components/Space/Space'
 import { StatsBar } from '@/components/StatsBar/StatsBar'
+import { Toolbar } from '@/components/Toolbar/Toolbar'
 import { useScenario } from '@/mock/scenarios'
 import { useStore } from '@/state/gen-state'
 import { Toaster } from '@/ui/Toast'
@@ -27,7 +28,6 @@ fal.config({
 export default function Home() {
   const state = useStore([
     `setMousePosition`,
-    `showItemList`,
     `debug_showZustandDevTools`,
     `debug_showFps`,
   ])
@@ -49,8 +49,10 @@ export default function Home() {
         <main>
           <Space />
           <ContextMenu />
-          {state.showItemList && <List />}
+          <ListGuard />
+          <Toolbar />
         </main>
+
         {state.debug_showFps && <FPSStats left={`auto`} right={0} />}
       </wrapper>
       <Toaster />

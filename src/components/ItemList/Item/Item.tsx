@@ -6,6 +6,7 @@ import { match, P } from 'ts-pattern'
 import { useStore } from '@/state/gen-state'
 import type { Item, ItemBody } from '@/state/items'
 import { joinClasses } from '@/utils/joinClasses'
+import { useIsInViewport } from '@/utils/useIsInViewport'
 
 import styles from './Item.module.scss'
 
@@ -31,6 +32,8 @@ const ItemInternal: FC<{
   isOpen: boolean
   isGeneratingCanvas: boolean
 }> = ({ item, isOpen, isGeneratingCanvas }) => {
+  const ref = React.useRef<HTMLDivElement>(null)
+  const isInViewport = useIsInViewport(ref)
   const state = useStore([`toggleOpenWindow`, `openContextMenu`, `setState`])
   const canvas = item.body.find((body) => body.type === `canvas`)?.content
   if (!canvas) {
@@ -38,6 +41,7 @@ const ItemInternal: FC<{
   }
   return (
     <wrapper
+      ref={ref}
       className={joinClasses(styles.wrapper, isOpen && styles.isOpenWrapper)}
       onClick={() => state.toggleOpenWindow(item.id)}
       onMouseEnter={() =>
@@ -55,15 +59,22 @@ const ItemInternal: FC<{
         state.openContextMenu({ elementType: `item`, id: item.id })
       }}
     >
-      {isGeneratingCanvas && <div className="loadingShimmer" />}
-      <div
-        className={styles.img}
-        style={{
-          backgroundImage: `url("${canvas.base64}")`,
-        }}
-      />
-      <h1>{item.subject}</h1>
-      {matchBody(item.body[0])}
+      {isInViewport && (
+        <>
+          {isGeneratingCanvas && <div className="loadingShimmer" />}
+          <div
+            className={styles.img}
+            style={{
+              backgroundImage: `url("${canvas.base64}")`,
+            }}
+          />
+
+          <div className={styles.text}>
+            <h1>{item.subject}</h1>
+            {matchBody(item.body[0])}
+          </div>
+        </>
+      )}
     </wrapper>
   )
 }
