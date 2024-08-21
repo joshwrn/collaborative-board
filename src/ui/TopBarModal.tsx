@@ -4,7 +4,7 @@ import React from 'react'
 import style from './TopBarModal.module.scss'
 import { joinClasses } from '@/utils/joinClasses'
 
-export const Modal: React.FC<{
+const Modal: React.FC<{
   onClose: () => void
   children: React.ReactNode
   modalClassName?: string
@@ -19,7 +19,7 @@ export const Modal: React.FC<{
         onClick={() => onClose()}
       />
       <motion.div
-        className={joinClasses(style.modal, modalClassName)}
+        className={joinClasses('modal', modalClassName)}
         initial={{ opacity: 0, y: `-50%` }}
         animate={{
           opacity: 1,

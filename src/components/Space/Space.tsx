@@ -8,7 +8,6 @@ import { SPACE_ATTRS } from '@/state/space'
 
 import { Connections } from '../Connections/Connections'
 import { SnapLines } from '../SnapLine/SnapLine'
-import { Toolbar } from '../Toolbar/Toolbar'
 import { FullScreenWindow } from '../Window/FullScreenWindow/FullScreenWindow'
 import { PinnedWindow } from '../Window/PinnedWindow/PinnedWindow'
 import { Windows } from '../Window/Window'
@@ -63,7 +62,6 @@ const Space_Internal: FC = () => {
           <SnapLines />
           {/* <Debug /> */}
         </container>
-        <Toolbar />
       </wrapper>
       {state.pinnedWindow && <PinnedWindow />}
       {state.fullScreenWindow && <FullScreenWindow />}

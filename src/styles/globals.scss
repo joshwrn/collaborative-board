@@ -275,6 +275,57 @@ button {
   color: white;
 }
 
+.modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 65px;
+  padding: 6px;
+  overflow: hidden;
+  width: 300px;
+
+  border: 1px solid var(--dropdown-list-border-color);
+  // border-top: none;
+  border-radius: 20px;
+  background-color: var(--dropdown-list-background-color);
+
+  box-shadow: var(--dropdown-list-box-shadow);
+
+  @include mixins.stripeBackground(
+    hsla(
+      var(--hue),
+      calc(var(--saturation) + 20%),
+      calc(var(--lightness) + 7%),
+      1
+    )
+  );
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(
+      180deg,
+      rgba(45, 45, 45, 0) 0%,
+      var(--dropdown-list-background-color) 15%
+    );
+  }
+  // &::before {
+  //   content: '';
+  //   position: absolute;
+  //   top: -100%;
+  //   left: 0;
+  //   width: 100%;
+  //   height: 100%;
+  //   background: var(--dropdown-list-background-color);
+  // }
+}
+
 .modalContainer {
   position: fixed;
   top: 0;

@@ -7,62 +7,6 @@
   background: var(--dropdown-list-background-color);
 }
 
-.modal {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: absolute;
-  top: 65px;
-  padding: 6px;
-  overflow: hidden;
-  width: 300px;
-
-  border: 1px solid var(--dropdown-list-border-color);
-  // border-top: none;
-  border-radius: 20px;
-  background-color: var(--dropdown-list-background-color);
-
-  box-shadow: var(--dropdown-list-box-shadow);
-
-  $color-1: hsla(
-    var(--hue),
-    calc(var(--saturation) + 20%),
-    calc(var(--lightness) + 7%),
-    1
-  );
-  $color-2: var(--dropdown-list-background-color);
-  background-image: linear-gradient(
-    45deg,
-    $color-1 25%,
-    $color-2 25%,
-    $color-2 50%,
-    $color-1 50%,
-    $color-1 75%,
-    $color-2 75%,
-    $color-2 100%
-  );
-  background-size: 56.57px 56.57px;
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background: linear-gradient(180deg, rgba(45, 45, 45, 0) 0%, $color-2 15%);
-  }
-  // &::before {
-  //   content: '';
-  //   position: absolute;
-  //   top: -100%;
-  //   left: 0;
-  //   width: 100%;
-  //   height: 100%;
-  //   background: var(--dropdown-list-background-color);
-  // }
-}
-
 .header {
   width: 100%;
   display: flex;
@@ -104,9 +48,9 @@
 .content {
   background-color: hsla(
     var(--hue),
-    calc(var(--saturation) + 15%),
-    calc(var(--lightness) + 9%),
-    0.3
+    calc(var(--saturation) + 20%),
+    calc(var(--lightness) + 5%),
+    1
   );
   backdrop-filter: blur(10px);
   border-top: 1px solid

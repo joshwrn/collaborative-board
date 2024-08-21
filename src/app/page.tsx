@@ -15,6 +15,7 @@ import { Toaster } from '@/ui/Toast'
 
 import styles from './page.module.scss'
 import { ListGuard } from '@/components/ItemList/List/List'
+import { Toolbar } from '@/components/Toolbar/Toolbar'
 
 const DevTools = React.lazy(async () => import(`@/components/Debug/DevTools`))
 
@@ -49,7 +50,9 @@ export default function Home() {
           <Space />
           <ContextMenu />
           <ListGuard />
+          <Toolbar />
         </main>
+
         {state.debug_showFps && <FPSStats left={`auto`} right={0} />}
       </wrapper>
       <Toaster />

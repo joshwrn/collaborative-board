@@ -14,4 +14,77 @@
       font-size: var(--font-1);
     }
   }
+  input {
+    position: absolute;
+    opacity: 0;
+  }
+}
+
+.track {
+  margin: 10px 0;
+  position: relative;
+  width: 100%;
+  // border: 1px solid red;
+  border-radius: 999px;
+  height: 15px;
+  background-color: hsla(
+    calc(var(--hue) + 18),
+    calc(var(--saturation) + 65%),
+    calc(var(--lightness) + 12%),
+    1
+  );
+  border: 1px solid
+    hsla(
+      calc(var(--hue) + 20),
+      calc(var(--saturation) + 85%),
+      calc(var(--lightness) + 70%),
+      1
+    );
+  display: flex;
+  overflow: hidden;
+}
+
+.progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: hsla(
+    calc(var(--hue) + 18),
+    calc(var(--saturation) + 65%),
+    calc(var(--lightness) + 57%),
+    1
+  );
+  border-radius: 0 999px 999px 0;
+
+  @include mixins.stripeBackground(
+    hsla(
+      calc(var(--hue) + 18),
+      calc(var(--saturation) + 65%),
+      calc(var(--lightness) + 57%),
+      1
+    ),
+    hsla(
+      calc(var(--hue) + 18),
+      calc(var(--saturation) + 65%),
+      calc(var(--lightness) + 53%),
+      1
+    )
+  );
+}
+
+.thumb {
+  transform-origin: 0 0;
+  position: absolute;
+  right: 0;
+  height: 100%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  opacity: 0.7;
+  background-color: hsla(
+    calc(var(--hue) + 18),
+    calc(var(--saturation) + 50%),
+    calc(var(--lightness) + 90%),
+    1
+  );
 }
