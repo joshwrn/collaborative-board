@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid'
+import { z } from 'zod'
 
 import type { AppStateCreator } from './state'
 import { produceState } from './state'
@@ -12,6 +13,37 @@ export interface CanvasData {
   base64: string
 }
 
+const itemBodySchema = z.union([
+  z.object({
+    content: z.string(),
+    id: z.string(),
+    type: z.literal(`text`),
+  }),
+  z.object({
+    content: z.object({
+      base64: z.string(),
+    }),
+    id: z.string(),
+    type: z.literal(`canvas`),
+  }),
+  z.object({
+    content: z.object({
+      src: z.string(),
+    }),
+    id: z.string(),
+    type: z.literal(`iframe`),
+  }),
+])
+
+export type ItemBody = z.infer<typeof itemBodySchema>
+
+export const itemSchema = z.object({
+  id: z.string(),
+  subject: z.string(),
+  body: z.array(itemBodySchema),
+  members: z.array(z.string()),
+})
+
 export const ItemBodyTypes = [`text`, `iframe`, `canvas`] as const
 export type ItemBodyType = (typeof ItemBodyTypes)[number]
 
@@ -20,19 +52,6 @@ export interface ItemBodyText {
   id: string
   type: `text`
 }
-
-export type ItemBody =
-  | ItemBodyText
-  | {
-      content: CanvasData
-      id: string
-      type: `canvas`
-    }
-  | {
-      content: Iframe
-      id: string
-      type: `iframe`
-    }
 
 export interface Item {
   id: string

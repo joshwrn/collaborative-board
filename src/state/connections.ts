@@ -1,14 +1,19 @@
+import { z } from 'zod'
+
 import type { AppStateCreator, Setter } from './state'
 import { stateSetter } from './state'
 
 export const SIDES = [`top`, `right`, `bottom`, `left`] as const
 export type Side = (typeof SIDES)[number]
 
-export interface Connection {
-  id: string
-  from: string
-  to: string
-}
+export const connectionSchema = z.object({
+  id: z.string(),
+  from: z.string(),
+  to: z.string(),
+})
+
+export type Connection = z.infer<typeof connectionSchema>
+
 export type ActiveConnection = Pick<Connection, `from`>
 export type HoveredConnection = Pick<Connection, `to`>
 

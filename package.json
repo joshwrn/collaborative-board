@@ -37,6 +37,7 @@
     "react-useanimations": "^2.10.0",
     "three": "^0.160.0",
     "ts-pattern": "^5.0.6",
+    "zod": "^3.23.8",
     "zustand": "^4.4.7",
     "zustand-state-inspector": "^0.1.4"
   },

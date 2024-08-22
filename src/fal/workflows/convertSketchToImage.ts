@@ -50,6 +50,10 @@ export const useConvertSketchToImage = ({
     `updateGeneratingCanvasProgress`,
     `updateNotification`,
     `fal_num_inference_steps`,
+    `fal_creativity`,
+    `fal_detail`,
+    `fal_guidance_scale`,
+    `fal_shape_preservation`,
   ])
   const generateImage = useMutation<
     ConvertSketchToImageResponse,
@@ -111,12 +115,12 @@ export const useConvertSketchToImage = ({
         const result = await creativeUpscale({
           image_url: image,
           prompt: style,
-          creativity: 0.75,
+          creativity: state.fal_creativity,
           scale: 1,
-          detail: 1.1,
+          detail: state.fal_detail,
           num_inference_steps: state.fal_num_inference_steps,
-          shape_preservation: 0.25,
-          guidance_scale: 7.5,
+          shape_preservation: state.fal_shape_preservation,
+          guidance_scale: state.fal_guidance_scale,
           onUpdate: (update: fal.QueueStatus) => {
             if (update.status === `IN_PROGRESS`) {
               let progress = 0
