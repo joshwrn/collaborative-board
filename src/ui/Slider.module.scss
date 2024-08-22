@@ -14,11 +14,11 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: var(--font-1);
+      font-size: var(--font--2);
     }
     .value {
       color: var(--white-45);
-      font-size: var(--font-1);
+      font-size: var(--font--2);
     }
   }
   input {

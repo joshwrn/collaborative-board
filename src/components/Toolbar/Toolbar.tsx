@@ -77,6 +77,7 @@ export const Toolbar: React.FC = () => {
               <Slider
                 label="Brush Size"
                 // className={style.slider}
+                step="1"
                 value={state.drawSize}
                 max={100}
                 min={1}

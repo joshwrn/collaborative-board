@@ -1,20 +1,19 @@
+import {
+  arrow,
+  autoUpdate,
+  flip,
+  FloatingArrow,
+  FloatingPortal,
+  offset,
+  useFloating,
+} from '@floating-ui/react'
 import type { InputHTMLAttributes } from 'react'
 import React from 'react'
-
 import { IoHelp as TooltipIcon } from 'react-icons/io5'
 
 import { joinClasses } from '@/utils/joinClasses'
 
 import style from './Slider.module.scss'
-import {
-  autoUpdate,
-  flip,
-  FloatingPortal,
-  offset,
-  useFloating,
-  FloatingArrow,
-  arrow,
-} from '@floating-ui/react'
 
 const Tooltip: React.FC<{
   description: string
