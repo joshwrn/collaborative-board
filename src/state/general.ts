@@ -1,10 +1,19 @@
-import { ensureAllFieldsDefined } from '@/utils/ensureAllFieldsDefined'
+import { z } from 'zod'
 
+import { connectionSchema } from './connections'
 import type { Store } from './gen-state'
+import { itemSchema } from './items'
 import type { AppStateCreator } from './state'
 import { produceState } from './state'
+import { windowSchema } from './windows'
 
-export type SavedState = Pick<Store, `connections` | `items` | `windows`>
+const saveStateSchema = z.object({
+  windows: z.array(windowSchema),
+  items: z.array(itemSchema),
+  connections: z.array(connectionSchema),
+})
+
+export type SavedState = z.infer<typeof saveStateSchema>
 
 export interface GeneralStore {
   setState: (setter: (draft: Store) => void) => void
@@ -43,11 +52,7 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
     reader.onload = (e) => {
       try {
         const savedState = JSON.parse(e.target?.result as string)
-        const saveObject = ensureAllFieldsDefined({
-          windows: savedState.windows,
-          items: savedState.items,
-          connections: savedState.connections,
-        })
+        const saveObject = saveStateSchema.parse(savedState)
         produceState(set, (draft) => {
           draft.windows = saveObject.windows
           draft.items = saveObject.items

@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid'
+import { z } from 'zod'
 
 import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
 import { createMockPrompt } from '@/mock/mock-items'
@@ -7,15 +8,16 @@ import type { Point2d } from '.'
 import type { AppStateCreator, Setter } from './state'
 import { stateSetter } from './state'
 
-export interface WindowType {
-  id: string
-  x: number
-  y: number
-  width: number
-  height: number
-  zIndex: number
-  rotation: number
-}
+export const windowSchema = z.object({
+  id: z.string(),
+  x: z.number(),
+  y: z.number(),
+  width: z.number(),
+  height: z.number(),
+  zIndex: z.number(),
+  rotation: z.number(),
+})
+export type WindowType = z.infer<typeof windowSchema>
 
 export interface OpenWindowsStore {
   windows: WindowType[]
