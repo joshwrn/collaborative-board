@@ -32,6 +32,7 @@
   z-index: 10;
   background-color: var(--tooltip-background-color);
   border: 1px solid var(--tooltip-border);
+  box-shadow: var(--dropdown-list-box-shadow);
   border-radius: 8px;
   padding: 10px;
   max-width: 300px;

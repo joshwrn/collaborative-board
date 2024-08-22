@@ -1,4 +1,3 @@
-$border-radius: 20px;
 $inner-border-radius: 19px;
 
 .wrapper {
@@ -10,7 +9,7 @@ $inner-border-radius: 19px;
   position: absolute;
   box-shadow: var(--window-box-shadow);
   z-index: 10;
-  border-radius: $border-radius;
+  border-radius: 20px;
   transform-origin: 0 0;
   [data-role='connectors'] {
     opacity: 0;
@@ -34,6 +33,38 @@ $inner-border-radius: 19px;
   display: flex;
   align-items: center;
   gap: 7px;
+  position: relative;
+  overflow: hidden;
+
+  @include mixins.stripeBackground(
+    hsla(
+      var(--hue),
+      calc(var(--saturation) + 20%),
+      calc(var(--lightness) + 13%),
+      1
+    ),
+    transparent,
+    10px
+  );
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(45, 45, 45, 0) 0%,
+      var(--window-header) 25px
+    );
+  }
+  > button {
+    position: relative;
+    z-index: 1;
+  }
   border-radius: $inner-border-radius $inner-border-radius 0 0;
 }
 

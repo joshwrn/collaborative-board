@@ -1,5 +1,4 @@
-@use './Window.module.scss' as *;
-
+$border-radius: 20px;
 .border {
   position: absolute;
   background-color: var(--window-outline);

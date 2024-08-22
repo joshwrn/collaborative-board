@@ -35,6 +35,7 @@ const ThemeModal: React.FC = () => {
         <Slider
           label="Hue"
           value={state.hue}
+          step={1}
           min={0}
           max={360}
           onChange={(num) => state.updateTheme({ hue: num })}
@@ -42,6 +43,7 @@ const ThemeModal: React.FC = () => {
         <Slider
           label="Saturation"
           value={parseInt(state.saturation)}
+          step={1}
           min={-100}
           max={100}
           onChange={(num) => state.updateTheme({ saturation: num + `%` })}
@@ -49,6 +51,7 @@ const ThemeModal: React.FC = () => {
         <Slider
           label="Lightness"
           value={parseInt(state.lightness)}
+          step={1}
           min={-20}
           max={20}
           onChange={(num) => state.updateTheme({ lightness: num + `%` })}
