@@ -53,6 +53,13 @@
     1
   );
   backdrop-filter: blur(10px);
+  border: 1px solid
+    hsla(
+      var(--hue),
+      calc(var(--saturation) + 20%),
+      calc(var(--lightness) + 14%),
+      1
+    );
   border-top: 1px solid
     hsla(
       var(--hue),
@@ -60,6 +67,7 @@
       calc(var(--lightness) + 20%),
       1
     );
+
   border-radius: 14px;
   width: 100%;
   padding: 20px;
