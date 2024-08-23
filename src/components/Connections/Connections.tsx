@@ -10,9 +10,11 @@ import { Arrow } from './Arrow'
 const Connection_Internal = ({
   from,
   to,
+  isGenerating,
 }: {
   from: WindowType
   to: WindowType
+  isGenerating?: boolean
 }) => {
   const line = React.useMemo(
     () => createLineBetweenWindows(from, to),
@@ -25,6 +27,7 @@ const Connection_Internal = ({
 
   return (
     <Arrow
+      isGenerating={isGenerating}
       onMouseEnter={() => {
         console.log(`windowFrom`, to)
       }}
@@ -42,7 +45,12 @@ const Connection_Internal = ({
 export const Connection = React.memo(Connection_Internal)
 
 export const Connections_Internal: FC = () => {
-  const state = useStore([`connections`, `windows`, `showConnections`])
+  const state = useStore([
+    `connections`,
+    `windows`,
+    `showConnections`,
+    `generatingCanvas`,
+  ])
   const windowsMap = React.useMemo(
     () =>
       state.windows.reduce<Record<string, WindowType>>((acc, window) => {
@@ -65,8 +73,19 @@ export const Connections_Internal: FC = () => {
           return null
         }
 
+        const isGenerating = state.generatingCanvas.some(
+          (gen) =>
+            gen.generatedFromItemId === windowFrom.id &&
+            gen.newItemId === windowTo.id,
+        )
+
         return (
-          <Connection key={connection.id + i} from={windowFrom} to={windowTo} />
+          <Connection
+            key={connection.id + i}
+            from={windowFrom}
+            to={windowTo}
+            isGenerating={isGenerating}
+          />
         )
       })}
     </>
