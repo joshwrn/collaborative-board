@@ -202,6 +202,13 @@ const Arrow_Internal: React.FC<Props> = ({
               path={curvedLinePath}
               rotate="auto"
             />
+            <animate
+              attributeName="r"
+              values={`0; ${dotEndingRadius + 1}; ${dotEndingRadius + 1}; ${dotEndingRadius + 1}; 0`}
+              dur="3s"
+              repeatCount="indefinite"
+              keyTimes="0;0.25;0.5;0.75;1"
+            />
           </circle>
         )}
       </svg>
