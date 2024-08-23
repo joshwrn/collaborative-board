@@ -45,9 +45,9 @@ test.describe(`can resize window`, () => {
   }
 
   test.beforeEach(async ({ page }) => {
-    await page.locator(`#dropdown-dev-button`).click()
-    await page.locator(`#dropdown-create-mocks-button`).hover()
-    await page.locator(`#dropdown-create-mocks-1`).click()
+    // await page.locator(`#dropdown-dev-button`).click()
+    // await page.locator(`#dropdown-create-mocks-button`).hover()
+    // await page.locator(`#dropdown-create-mocks-1`).click()
 
     selected_window = page.locator(`.window`).first()
     const window_id_full = await selected_window.getAttribute(`id`)
