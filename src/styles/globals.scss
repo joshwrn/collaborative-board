@@ -155,13 +155,8 @@
   );
 
   // toolbar
-  --toolbar-background: hsla(
-    var(--hue),
-    calc(var(--saturation) + 20%),
-    calc(var(--lightness) + 1%),
-    0.75
-  );
-  --toolbar-border: var(--white-15);
+  --toolbar-background: var(--dropdown-list-background-color);
+  --toolbar-border: var(--dropdown-list-border-color);
 
   // tooltip
   --tooltip-background-color: hsla(

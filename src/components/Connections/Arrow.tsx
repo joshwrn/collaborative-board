@@ -32,6 +32,7 @@ type Props = {
   onMouseLeave?: (e: React.MouseEvent) => void
   onClick?: (e: React.MouseEvent) => void
   config?: ArrowConfig
+  isGenerating?: boolean
 }
 
 const ControlPoints = ({
@@ -88,6 +89,7 @@ const Arrow_Internal: React.FC<Props> = ({
   endPoint,
   showDebugGuideLines = false,
   config,
+  isGenerating = false,
 }) => {
   const defaultConfig = {
     arrowColor: `#bcc4cc`,
@@ -155,13 +157,53 @@ const Arrow_Internal: React.FC<Props> = ({
           transform: `translate(${canvasXOffset}px, ${canvasYOffset}px)`,
         }}
       >
+        <defs>
+          <filter id="sofGlow" height="300%" width="300%" x="-100%" y="-105%">
+            <feMorphology
+              operator="dilate"
+              radius="1"
+              in="SourceAlpha"
+              result="thicken"
+            />
+            <feGaussianBlur in="thicken" stdDeviation="4" result="blurred" />
+            <feFlood flood-color={dotEndingBackground} result="glowColor" />
+            <feComposite
+              in="glowColor"
+              in2="blurred"
+              operator="in"
+              result="softGlow_colored"
+            />
+            <feMerge>
+              <feMergeNode in="softGlow_colored" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
         <path
           className={styles.renderedLine}
           d={curvedLinePath}
           strokeWidth={strokeWidth}
           stroke={arrowColor}
           fill="none"
+          strokeDasharray={isGenerating ? `5,15` : `0, 0`}
+          strokeLinecap="round"
         />
+        {isGenerating && (
+          <circle
+            id="followingCircle"
+            r={dotEndingRadius + 1}
+            fill={dotEndingBackground}
+            opacity={1}
+            filter="url(#sofGlow)"
+          >
+            <animateMotion
+              dur="3s"
+              repeatCount="indefinite"
+              path={curvedLinePath}
+              rotate="auto"
+            />
+          </circle>
+        )}
       </svg>
       <svg
         className={joinClasses(styles.line, styles.endings)}
@@ -194,6 +236,7 @@ const Arrow_Internal: React.FC<Props> = ({
             transform: `translate(${p4.x - arrowHeadOffset * 2}px, ${p4.y - arrowHeadOffset}px)`,
           }}
         />
+
         {showDebugGuideLines && (
           <ControlPoints
             p1={p1}
