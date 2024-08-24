@@ -247,77 +247,80 @@ const WindowInternal: FC<{
         {state.dev_allowWindowRotation && (
           <RotationPoints id={item.id} window={window} />
         )}
-        <nav
-          className={`${styles.topBar} handle`}
-          onDoubleClick={() =>
-            state.setFullScreenWindow((prev) => (prev ? null : item.id))
-          }
-        >
-          <button
-            className={styles.close}
-            onClick={() => {
-              if (isPinned) {
-                state.setState((draft) => {
-                  draft.pinnedWindow = null
-                })
-                return
-              }
-              if (isFullScreen) {
-                state.setFullScreenWindow(null)
-                return
-              }
-              state.setState((draft) => {
-                draft.selectedWindow = null
-              })
-              state.toggleOpenWindow(item.id)
-            }}
-          />
-          {!isFullScreen && !isPinned && (
-            <button
-              className={styles.full}
-              onClick={() =>
+        <div className={styles.inner}>
+          <div className={styles.topWrapper}>
+            <nav
+              className={`${styles.titleBar} handle`}
+              onDoubleClick={() =>
                 state.setFullScreenWindow((prev) => (prev ? null : item.id))
               }
-            />
-          )}
-        </nav>
+            >
+              <button
+                className={styles.close}
+                onClick={() => {
+                  if (isPinned) {
+                    state.setState((draft) => {
+                      draft.pinnedWindow = null
+                    })
+                    return
+                  }
+                  if (isFullScreen) {
+                    state.setFullScreenWindow(null)
+                    return
+                  }
+                  state.setState((draft) => {
+                    draft.selectedWindow = null
+                  })
+                  state.toggleOpenWindow(item.id)
+                }}
+              />
+              {!isFullScreen && !isPinned && (
+                <button
+                  className={styles.full}
+                  onClick={() =>
+                    state.setFullScreenWindow((prev) => (prev ? null : item.id))
+                  }
+                />
+              )}
+            </nav>
 
-        <header className={styles.titleBar}>
-          <section>
-            <WindowMenu id={item.id} />
-          </section>
-          <section className={styles.right}>
-            <GenerateButton item={item} />
-            <section className={styles.connections}>
-              <div>
-                <p>
-                  Loading <strong>{canvasesLoading.length}</strong>
-                </p>
-                <p>
-                  Finished{` `}
-                  <strong>
-                    {fromConnections.length - canvasesLoading.length}
-                  </strong>
-                </p>
-              </div>
-              {/* <button
-                onClick={() => state.setActiveConnection({ from: item.id })}
-              >
-                <IoAddOutline />
-              </button> */}
-            </section>
-          </section>
-        </header>
+            <header className={styles.menuBar}>
+              <section>
+                <WindowMenu id={item.id} />
+              </section>
+              <section className={styles.right}>
+                <GenerateButton item={item} />
+                <section className={styles.connections}>
+                  <div>
+                    <p>
+                      Loading <strong>{canvasesLoading.length}</strong>
+                    </p>
+                    <p>
+                      Finished{` `}
+                      <strong>
+                        {fromConnections.length - canvasesLoading.length}
+                      </strong>
+                    </p>
+                  </div>
+                </section>
+              </section>
+            </header>
+          </div>
 
-        <main
-          className={styles.content}
-          style={{
-            overflowY: isFullScreen || isPinned ? `auto` : `hidden`,
-          }}
-        >
-          {item.body.map((body, i) => matchBody(body, i, window, !!isPinned))}
-        </main>
-        <LoadingOverlay itemId={item.id} />
+          <div className={styles.contentWrapper}>
+            <main
+              className={styles.content}
+              style={{
+                overflowY: isFullScreen || isPinned ? `auto` : `hidden`,
+              }}
+            >
+              {item.body.map((body, i) =>
+                matchBody(body, i, window, !!isPinned),
+              )}
+            </main>
+          </div>
+          <LoadingOverlay itemId={item.id} />
+        </div>
 
         <WindowBorder
           width={width}

@@ -17,25 +17,27 @@ const returnAttributes = (
   isFullScreen: boolean,
   isPinned?: boolean,
 ) => {
+  const paddingSide = 60
+  const paddingVertical = 238
   if (isFullScreen) {
     return {
-      width: WINDOW_ATTRS.defaultFullScreenSize.width - 40,
-      height: WINDOW_ATTRS.defaultFullScreenSize.height - 200,
+      width: WINDOW_ATTRS.defaultFullScreenSize.width - paddingSide,
+      height: WINDOW_ATTRS.defaultFullScreenSize.height - paddingVertical,
       rotation: 0,
       zoom: 1,
     }
   }
   if (isPinned) {
     return {
-      width: WINDOW_ATTRS.defaultSize.width - 40,
-      height: WINDOW_ATTRS.defaultSize.height - 200,
+      width: WINDOW_ATTRS.defaultSize.width - paddingSide,
+      height: WINDOW_ATTRS.defaultSize.height - paddingVertical,
       rotation: 0,
       zoom: DEFAULT_PINNED_WINDOW_ZOOM,
     }
   }
   return {
-    width: window.width - 40,
-    height: window.height - 200,
+    width: window.width - paddingSide,
+    height: window.height - paddingVertical,
     rotation: window.rotation,
     zoom: zoom,
   }

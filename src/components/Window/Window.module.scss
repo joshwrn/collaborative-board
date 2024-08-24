@@ -1,4 +1,10 @@
 $inner-border-radius: 19px;
+$bg-color: hsla(
+  var(--hue),
+  calc(var(--saturation) + 20%),
+  calc(var(--lightness) + 5%),
+  1
+);
 
 .wrapper {
   display: flex;
@@ -21,20 +27,19 @@ $inner-border-radius: 19px;
   }
 }
 
-.topBar {
-  background-color: var(--window-header);
-
-  height: var(--window-top-bar-height);
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-  border-bottom-color: var(--window-outline);
+.inner {
   width: 100%;
-  padding: 0 15px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
+  height: 100%;
   position: relative;
   overflow: hidden;
+  border-radius: 20px;
+  background: $bg-color;
+}
+
+.topWrapper {
+  overflow: hidden;
+  width: 100%;
+  padding: 0 25px;
 
   @include mixins.stripeBackground(
     hsla(
@@ -44,7 +49,7 @@ $inner-border-radius: 19px;
       1
     ),
     transparent,
-    10px
+    8px
   );
 
   &::after {
@@ -56,17 +61,24 @@ $inner-border-radius: 19px;
     width: 100%;
     height: 100%;
     z-index: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(45, 45, 45, 0) 0%,
-      var(--window-header) 25px
-    );
+    background: linear-gradient(180deg, rgba(45, 45, 45, 0) 0%, $bg-color 50px);
   }
+}
+
+.titleBar {
+  height: var(--window-top-bar-height);
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  position: relative;
+  overflow: hidden;
+
   > button {
     position: relative;
     z-index: 1;
   }
-  border-radius: $inner-border-radius $inner-border-radius 0 0;
 }
 
 @mixin windowButton {
@@ -85,17 +97,9 @@ $inner-border-radius: 19px;
   @include windowButton;
 }
 
-.titleBar {
+.menuBar {
+  z-index: 1;
   position: relative;
-  background-color: var(--window-header);
-  background: linear-gradient(
-    0deg,
-    hsl(var(--hue), calc(var(--saturation) + 18%), calc(var(--lightness) + 12%)),
-    var(--window-header) 60%
-  );
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-  border-bottom-color: var(--window-outline);
   width: 100%;
   display: flex;
   align-items: center;
@@ -114,7 +118,7 @@ $inner-border-radius: 19px;
 }
 
 .connections {
-  padding: 15px 15px 15px 15px;
+  padding: 15px 0px 15px 15px;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -140,23 +144,47 @@ $inner-border-radius: 19px;
   }
 }
 
-.content {
+.contentWrapper {
   width: 100%;
   height: 100%;
+  position: relative;
+  padding: 15px;
+}
+
+.content {
+  width: 100%;
+  height: calc(100% - 99px);
   flex-shrink: 1;
-  border-radius: 0 0 $inner-border-radius $inner-border-radius;
-  // padding: 15px;
+  padding: 20px 20px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
-  // align-items: center;
   gap: 15px;
   overflow-x: hidden;
   scrollbar-width: none;
   line-height: 1.75;
   position: relative;
-  padding: 10px;
 
-  background-color: var(--window-content);
+  border: 1px solid
+    hsla(
+      var(--hue),
+      calc(var(--saturation) + 20%),
+      calc(var(--lightness) + 14%),
+      1
+    );
+  border-top: 1px solid
+    hsla(
+      var(--hue),
+      calc(var(--saturation) + 20%),
+      calc(var(--lightness) + 20%),
+      1
+    );
+  background-color: hsla(
+    var(--hue),
+    calc(var(--saturation) + 20%),
+    calc(var(--lightness) + 8%),
+    1
+  );
   &::-webkit-scrollbar {
     display: none;
   }
@@ -171,13 +199,13 @@ $inner-border-radius: 19px;
     gap: 10px;
   }
   h1 {
-    padding-left: 20px;
+    // padding-left: 20px;
     font-size: var(--window-text);
     color: var(--white);
   }
   p {
     cursor: text;
-    padding: 0 20px 0 20px;
+    // padding: 0 20px 0 20px;
     color: var(--window-text);
     border: 1px solid transparent;
     border-radius: 5px;
