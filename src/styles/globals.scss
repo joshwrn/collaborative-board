@@ -130,7 +130,12 @@
     calc(var(--saturation) + 100%),
     calc(var(--lightness) + 95%)
   );
-  --color-accent: hsl(215, 100%, 55%);
+  --color-accent: hsla(
+    calc(var(--hue) + 18),
+    calc(var(--saturation) + 100%),
+    calc(var(--lightness) + 75%),
+    1
+  );
   --color-scrollbar: hsl(
     var(--hue),
     calc(var(--saturation) + 20%),

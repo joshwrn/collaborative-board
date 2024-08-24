@@ -28,9 +28,6 @@ const Connection_Internal = ({
   return (
     <Arrow
       isGenerating={isGenerating}
-      onMouseEnter={() => {
-        console.log(`windowFrom`, to)
-      }}
       startPoint={line.from}
       endPoint={line.to}
       config={{

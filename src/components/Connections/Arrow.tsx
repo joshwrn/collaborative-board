@@ -1,5 +1,6 @@
 // https://medium.com/productboard-engineering/how-we-implemented-svg-arrows-in-react-the-curvature-2-3-892a330bd549
 
+import { distance } from 'mathjs'
 import React from 'react'
 
 import {
@@ -84,6 +85,12 @@ const ControlPoints = ({
   )
 }
 
+const calculatePercent = (current: number, total: number) => {
+  return current / total
+}
+
+const DOT_SPEED = 200
+
 const Arrow_Internal: React.FC<Props> = ({
   startPoint,
   endPoint,
@@ -147,6 +154,31 @@ const Arrow_Internal: React.FC<Props> = ({
     ${p4.x - STRAIGHT_LINE_BEFORE_ARROW_HEAD} ${p4.y}
     L ${p4.x} ${p4.y}`
 
+  const timing = React.useMemo(() => {
+    const lineLength = Number(
+      distance([startPoint.x, startPoint.y], [endPoint.x, endPoint.y]),
+    )
+    let duration = lineLength / DOT_SPEED
+    let start = arrowHeadEndingSize + 50
+    const middle = lineLength / 2
+    let end = lineLength - arrowHeadEndingSize - 50
+    if (middle > end) {
+      end = lineLength * 0.75
+      start = lineLength * 0.25
+      duration = 3
+    }
+    const kT = [
+      calculatePercent(start, lineLength),
+      calculatePercent(middle, lineLength),
+      calculatePercent(end, lineLength),
+    ]
+    return {
+      duration,
+      keyTimes: `0;${kT[0]};${kT[1]};${kT[2]};1`,
+    }
+  }, [arrowHeadEndingSize, startPoint, endPoint])
+
+  console.log(timing)
   return (
     <>
       <svg
@@ -188,29 +220,30 @@ const Arrow_Internal: React.FC<Props> = ({
           strokeDasharray={isGenerating ? `5,15` : `0, 0`}
           strokeLinecap="round"
         />
-        {isGenerating && (
-          <circle
-            id="followingCircle"
-            r={dotEndingRadius + 1}
-            fill={dotEndingBackground}
-            opacity={1}
-            filter="url(#sofGlow)"
-          >
-            <animateMotion
-              dur="3s"
-              repeatCount="indefinite"
-              path={curvedLinePath}
-              rotate="auto"
-            />
-            <animate
-              attributeName="r"
-              values={`0; ${dotEndingRadius + 1}; ${dotEndingRadius + 1}; ${dotEndingRadius + 1}; 0`}
-              dur="3s"
-              repeatCount="indefinite"
-              keyTimes="0;0.25;0.5;0.75;1"
-            />
-          </circle>
-        )}
+        {/* {isGenerating && ( */}
+        <circle
+          id="followingCircle"
+          r={dotEndingRadius + 1}
+          fill={dotEndingBackground}
+          opacity={1}
+          filter="url(#sofGlow)"
+        >
+          <animateMotion
+            dur={`${timing.duration}s`}
+            repeatCount="indefinite"
+            path={curvedLinePath}
+            rotate="auto"
+          />
+          <animate
+            attributeName="r"
+            values={`0; ${dotEndingRadius + 1}; ${dotEndingRadius + 1}; ${dotEndingRadius + 1}; 0`}
+            dur={`${timing.duration}s`}
+            repeatCount="indefinite"
+            // keyTimes="0;0.25;0.5;0.75;1"
+            keyTimes={timing.keyTimes}
+          />
+        </circle>
+        {/* )} */}
       </svg>
       <svg
         className={joinClasses(styles.line, styles.endings)}

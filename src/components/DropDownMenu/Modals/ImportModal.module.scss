@@ -39,16 +39,17 @@
     }
   }
   &[data-role='not-uploaded'] {
-    border: 1px dashed var(--color-accent);
+    $color: hsla(215, 100%, 55%, 1);
+    border: 1px dashed $color;
     cursor: pointer;
     svg {
-      fill: var(--color-accent);
+      fill: $color;
     }
     .iconContainer {
-      border-right: 1px dashed var(--color-accent);
+      border-right: 1px dashed $color;
     }
     p {
-      color: var(--color-accent);
+      color: $color;
     }
   }
   .textContainer {
