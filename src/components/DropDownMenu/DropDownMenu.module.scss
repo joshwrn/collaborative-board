@@ -39,6 +39,15 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  button {
+    border: 1px solid var(--dropdown-list-border-color);
+    &:hover {
+      background-color: var(--dropdown-item-hover-background-color);
+      p {
+        color: var(--white);
+      }
+    }
+  }
   > section {
     width: 100%;
     display: flex;
@@ -53,21 +62,14 @@
       justify-content: center;
       align-items: center;
       border-radius: 4px;
-      border: 1px solid var(--dropdown-list-border-color);
+
       width: 20px;
       height: 20px;
-      &:hover {
-        background-color: var(--white-15);
-      }
     }
   }
   .reset {
     border-radius: 4px;
     width: 100%;
-    border: 1px solid var(--dropdown-list-border-color);
     padding: 5px;
-    &:hover {
-      background-color: var(--white-15);
-    }
   }
 }

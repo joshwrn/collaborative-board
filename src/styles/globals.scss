@@ -190,12 +190,7 @@
   --dropdown-list-border-color: var(--white-15);
   --dropdown-list-box-shadow: 0 3px 6px #00000030, 0 23px 14px #0000001a,
     0 41px 17px #00000008;
-  --dropdown-item-hover-background-color: hsla(
-    var(--hue),
-    calc(var(--saturation) + 24%),
-    calc(var(--lightness) + 30%),
-    0.5
-  );
+  --dropdown-item-hover-background-color: var(--window-generate-button-color);
   --dropdown-item-hover-border-top-color: hsla(
     var(--hue),
     calc(var(--saturation) + 100%),

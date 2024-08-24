@@ -45,7 +45,7 @@ $bg-color: hsla(
     hsla(
       var(--hue),
       calc(var(--saturation) + 20%),
-      calc(var(--lightness) + 13%),
+      calc(var(--lightness) + 8%),
       1
     ),
     transparent,
@@ -68,9 +68,10 @@ $bg-color: hsla(
 .titleBar {
   height: var(--window-top-bar-height);
   width: 100%;
+  padding-top: 22px;
 
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 7px;
   position: relative;
   overflow: hidden;
