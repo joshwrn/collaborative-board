@@ -154,7 +154,7 @@ const Arrow_Internal: React.FC<Props> = ({
     ${p4.x - STRAIGHT_LINE_BEFORE_ARROW_HEAD} ${p4.y}
     L ${p4.x} ${p4.y}`
 
-  const timing = React.useMemo(() => {
+  const animation = React.useMemo(() => {
     const lineLength = Number(
       distance([startPoint.x, startPoint.y], [endPoint.x, endPoint.y]),
     )
@@ -172,13 +172,15 @@ const Arrow_Internal: React.FC<Props> = ({
       calculatePercent(middle, lineLength),
       calculatePercent(end, lineLength),
     ]
+    const maxSize = dotEndingRadius + 1
+    const values = `0; ${maxSize}; ${maxSize}; ${maxSize}; 0`
     return {
+      values,
       duration,
       keyTimes: `0;${kT[0]};${kT[1]};${kT[2]};1`,
     }
-  }, [arrowHeadEndingSize, startPoint, endPoint])
+  }, [arrowHeadEndingSize, startPoint, endPoint, dotEndingRadius])
 
-  console.log(timing)
   return (
     <>
       <svg
@@ -220,30 +222,29 @@ const Arrow_Internal: React.FC<Props> = ({
           strokeDasharray={isGenerating ? `5,15` : `0, 0`}
           strokeLinecap="round"
         />
-        {/* {isGenerating && ( */}
-        <circle
-          id="followingCircle"
-          r={dotEndingRadius + 1}
-          fill={dotEndingBackground}
-          opacity={1}
-          filter="url(#sofGlow)"
-        >
-          <animateMotion
-            dur={`${timing.duration}s`}
-            repeatCount="indefinite"
-            path={curvedLinePath}
-            rotate="auto"
-          />
-          <animate
-            attributeName="r"
-            values={`0; ${dotEndingRadius + 1}; ${dotEndingRadius + 1}; ${dotEndingRadius + 1}; 0`}
-            dur={`${timing.duration}s`}
-            repeatCount="indefinite"
-            // keyTimes="0;0.25;0.5;0.75;1"
-            keyTimes={timing.keyTimes}
-          />
-        </circle>
-        {/* )} */}
+        {isGenerating && (
+          <circle
+            id="followingCircle"
+            r={dotEndingRadius + 1}
+            fill={dotEndingBackground}
+            opacity={1}
+            filter="url(#sofGlow)"
+          >
+            <animateMotion
+              dur={`${animation.duration}s`}
+              repeatCount="indefinite"
+              path={curvedLinePath}
+              rotate="auto"
+            />
+            <animate
+              attributeName="r"
+              values={animation.values}
+              dur={`${animation.duration}s`}
+              repeatCount="indefinite"
+              keyTimes={animation.keyTimes}
+            />
+          </circle>
+        )}
       </svg>
       <svg
         className={joinClasses(styles.line, styles.endings)}
