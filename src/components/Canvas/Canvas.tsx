@@ -6,7 +6,6 @@ import type { CanvasData } from '@/state/items'
 import type { WindowType } from '@/state/windows'
 import { WINDOW_ATTRS } from '@/state/windows'
 import { joinClasses } from '@/utils/joinClasses'
-import { useOutsideClick } from '@/utils/useOutsideClick'
 
 import { DEFAULT_PINNED_WINDOW_ZOOM } from '../Window/PinnedWindow/PinnedWindow'
 import style from './Canvas.module.scss'
@@ -41,6 +40,17 @@ const returnAttributes = (
   }
 }
 
+const returnContext = (ref: React.RefObject<HTMLCanvasElement>) => {
+  if (!ref.current) {
+    throw new Error(`canvas ref.current is undefined`)
+  }
+  const ctx = ref.current.getContext(`2d`)
+  if (!ctx) {
+    throw new Error(`ctx is undefined`)
+  }
+  return ctx
+}
+
 export const Canvas_Internal: React.FC<{
   window: WindowType
   contentId: string
@@ -58,7 +68,6 @@ export const Canvas_Internal: React.FC<{
   ])
 
   const isFullScreen = state.fullScreenWindow === window.id
-
   const counterRef = React.useRef<HTMLDivElement>(null)
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const lastPosition = React.useRef({ x: 0, y: 0 })
@@ -71,9 +80,44 @@ export const Canvas_Internal: React.FC<{
       ctx.drawImage(img, 0, 0)
     }
     img.src = content.base64
-  }, [window, content])
+    // only rewrite the canvas if the window size changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [window.width, window.height])
 
   const attributes = returnAttributes(window, state.zoom, isFullScreen, isPinned)
+
+  const writeCanvas = () => {
+    if (!canvasRef.current) return
+    state.editItemContent(window.id, {
+      content: {
+        base64: canvasRef.current.toDataURL(),
+      },
+      id: contentId,
+      type: `canvas`,
+    })
+  }
+
+  const calculateMousePosition = (e: React.PointerEvent) => {
+    if (!counterRef.current) {
+      throw new Error(`counterRef.current is undefined`)
+    }
+    const counterBox = counterRef.current.getBoundingClientRect()
+    const center = {
+      x: counterBox.width / 2 / attributes.zoom,
+      y: counterBox.height / 2 / attributes.zoom,
+    }
+    const mousePositionPure = {
+      x: (e.clientX - counterBox.left) / attributes.zoom,
+      y: (e.clientY - counterBox.top) / attributes.zoom,
+    }
+    const rotatedMousePosition = rotatePointAroundCenter(
+      mousePositionPure,
+      center,
+      -attributes.rotation,
+    )
+    return rotatedMousePosition
+  }
+
   return (
     <div
       style={{
@@ -98,31 +142,33 @@ export const Canvas_Internal: React.FC<{
         height={attributes.height}
         className={joinClasses(style.canvas, `canvas`)}
         ref={canvasRef}
-        onMouseMove={(e) => {
-          if (!canvasRef.current) return
-          if (!counterRef.current) return
-          const ctx = canvasRef.current.getContext(`2d`)
-          if (!ctx) return
-          const counterBox = counterRef.current.getBoundingClientRect()
-          const center = {
-            x: counterBox.width / 2 / attributes.zoom,
-            y: counterBox.height / 2 / attributes.zoom,
-          }
-          const mousePositionPure = {
-            x: (e.clientX - counterBox.left) / attributes.zoom,
-            y: (e.clientY - counterBox.top) / attributes.zoom,
-          }
-          const rotatedMousePosition = rotatePointAroundCenter(
-            mousePositionPure,
-            center,
-            -attributes.rotation,
+        onPointerLeave={() => {
+          writeCanvas()
+        }}
+        onPointerUp={() => {
+          writeCanvas()
+        }}
+        onPointerDown={(e) => {
+          const ctx = returnContext(canvasRef)
+          const rotatedMousePosition = calculateMousePosition(e)
+          ctx.fillStyle = state.drawColor
+          ctx.beginPath()
+          ctx.arc(
+            rotatedMousePosition.x,
+            rotatedMousePosition.y,
+            state.drawSize / 2,
+            0,
+            2 * Math.PI,
           )
-
+          ctx.fill()
+        }}
+        onPointerMove={(e) => {
+          const ctx = returnContext(canvasRef)
+          const rotatedMousePosition = calculateMousePosition(e)
           if (e.buttons !== 1) {
             lastPosition.current = rotatedMousePosition
             return
           }
-
           const from = lastPosition.current
           ctx.beginPath()
           ctx.lineWidth = state.drawSize
@@ -132,16 +178,7 @@ export const Canvas_Internal: React.FC<{
           ctx.moveTo(from.x, from.y)
           ctx.lineTo(rotatedMousePosition.x, rotatedMousePosition.y)
           ctx.stroke()
-
           lastPosition.current = rotatedMousePosition
-
-          state.editItemContent(window.id, {
-            content: {
-              base64: canvasRef.current.toDataURL(),
-            },
-            id: contentId,
-            type: `canvas`,
-          })
         }}
       />
     </div>
