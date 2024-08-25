@@ -65,7 +65,6 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
   transition: border 0.3s;
   padding: $padding;
   position: relative;
-  display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;

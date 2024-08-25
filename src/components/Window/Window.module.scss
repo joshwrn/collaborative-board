@@ -40,7 +40,6 @@ $bg-color: hsla(
   overflow: hidden;
   width: 100%;
   padding: 0 25px;
-
   @include mixins.stripeBackground(
     hsla(
       var(--hue),
@@ -49,9 +48,8 @@ $bg-color: hsla(
       1
     ),
     transparent,
-    8px
+    12px
   );
-
   &::after {
     content: '';
     position: absolute;
@@ -69,13 +67,11 @@ $bg-color: hsla(
   height: var(--window-top-bar-height);
   width: 100%;
   padding-top: 22px;
-
   display: flex;
   align-items: flex-start;
   gap: 7px;
   position: relative;
   overflow: hidden;
-
   > button {
     position: relative;
     z-index: 1;
