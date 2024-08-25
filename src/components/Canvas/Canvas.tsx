@@ -65,6 +65,7 @@ export const Canvas_Internal: React.FC<{
     `editItemContent`,
     `generatedCanvas`,
     `setState`,
+    `selectedWindow`,
   ])
 
   const isFullScreen = state.fullScreenWindow === window.id
@@ -165,7 +166,7 @@ export const Canvas_Internal: React.FC<{
         onPointerMove={(e) => {
           const ctx = returnContext(canvasRef)
           const rotatedMousePosition = calculateMousePosition(e)
-          if (e.buttons !== 1) {
+          if (e.buttons !== 1 || state.selectedWindow !== window.id) {
             lastPosition.current = rotatedMousePosition
             return
           }
