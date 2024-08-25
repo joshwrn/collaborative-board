@@ -7,10 +7,10 @@ import style from './LoadingOverlay.module.scss'
 export const LoadingOverlay: React.FC<{
   itemId: string
 }> = ({ itemId }) => {
-  const state = useStore([`generatingCanvas`])
+  const state = useStore([`loadingCanvases`])
   if (
-    !state.generatingCanvas.length ||
-    !state.generatingCanvas.find((c) => c.newItemId === itemId)
+    !state.loadingCanvases.length ||
+    !state.loadingCanvases.find((c) => c.newItemId === itemId)
   ) {
     return null
   }

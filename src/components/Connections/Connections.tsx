@@ -46,7 +46,7 @@ export const Connections_Internal: FC = () => {
     `connections`,
     `windows`,
     `showConnections`,
-    `generatingCanvas`,
+    `loadingCanvases`,
   ])
   const windowsMap = React.useMemo(
     () =>
@@ -70,7 +70,7 @@ export const Connections_Internal: FC = () => {
           return null
         }
 
-        const isGenerating = state.generatingCanvas.some(
+        const isGenerating = state.loadingCanvases.some(
           (gen) =>
             gen.generatedFromItemId === windowFrom.id &&
             gen.newItemId === windowTo.id,

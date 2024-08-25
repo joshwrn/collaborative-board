@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid'
 import { z } from 'zod'
 
+import { doRectanglesOverlap } from '@/logic/doRectanglesOverlap'
 import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
 import { createMockPrompt } from '@/mock/mock-items'
 
@@ -100,12 +101,24 @@ const createNewWindowPosition = (
 const createNextWindowPosition = (
   windows: WindowType[],
   startingPosition: Point2d,
+  nextId: string,
 ) => {
   for (let i = 0; i < windows.length; i++) {
     const window = windows[i]
-    if (window.x === startingPosition.x && window.y === startingPosition.y) {
-      // startingPosition.x
-      startingPosition.y += window.height + 80
+    if (window.id === nextId) {
+      continue
+    }
+    const overlaps = doRectanglesOverlap(
+      {
+        x: startingPosition.x,
+        y: startingPosition.y,
+        width: window.width,
+        height: window.height,
+      },
+      window,
+    )
+    if (overlaps) {
+      startingPosition.y = window.y + window.height + 80
       i = 0
     }
   }
@@ -134,19 +147,16 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       (highest, window) => Math.max(highest, window.zIndex),
       0,
     )
-    set((prev) => ({
-      windows: [
-        ...prev.windows,
-        {
-          id,
-          ...createNewWindowPosition(prev.windows, prev.zoom, prev.pan),
-          width: WINDOW_ATTRS.defaultSize.width,
-          height: WINDOW_ATTRS.defaultSize.height,
-          zIndex: highestZIndex + 1,
-          rotation: 0,
-        },
-      ],
-    }))
+    state.setState((draft) => {
+      draft.windows.push({
+        id,
+        ...createNewWindowPosition(draft.windows, state.zoom, state.pan),
+        width: WINDOW_ATTRS.defaultSize.width,
+        height: WINDOW_ATTRS.defaultSize.height,
+        zIndex: highestZIndex + 1,
+        rotation: 0,
+      })
+    })
   },
 
   createNewWindow: () => {
@@ -176,43 +186,43 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     return id
   },
 
-  moveWindowNextTo: (id, nextId) => {
-    const openWindows = get().windows
-    const openWindow = openWindows.find((window) => window.id === id)
-    if (!openWindow) {
+  moveWindowNextTo: (id, newId) => {
+    const state = get()
+    const openWindows = state.windows
+    const generatingFromWindow = openWindows.find((window) => window.id === id)
+    if (!generatingFromWindow) {
       throw new Error(`window ${id} not found`)
     }
-    set((state) => ({
-      windows: state.windows.map((window) => {
-        if (window.id === nextId) {
-          return {
-            ...window,
-            ...createNextWindowPosition(state.windows, {
-              x: openWindow.x + openWindow.width + 130,
-              y: openWindow.y,
-            }),
-          }
+    state.setState((draft) => {
+      for (const window of draft.windows) {
+        if (window.id === newId) {
+          const newPosition = createNextWindowPosition(
+            draft.windows,
+            {
+              x: generatingFromWindow.x + generatingFromWindow.width + 130,
+              y: generatingFromWindow.y,
+            },
+            newId,
+          )
+          window.x = newPosition.x
+          window.y = newPosition.y
+          window.zIndex = draft.windows.length
+          continue
         }
-        return {
-          ...window,
-          zIndex: window.zIndex - 1,
-        }
-      }),
-    }))
+        window.zIndex = window.zIndex - 1
+      }
+    })
   },
 
   setOneWindow: (id, update) => {
-    set((state) => ({
-      windows: state.windows.map((window) => {
-        if (window.id === id) {
-          return {
-            ...window,
-            ...update,
-          }
-        }
-        return window
-      }),
-    }))
+    const state = get()
+    state.setState((draft) => {
+      const window = draft.windows.find((w) => w.id === id)
+      if (!window) {
+        throw new Error(`window ${id} not found`)
+      }
+      Object.assign(window, update)
+    })
   },
 
   reorderWindows: (id) => {

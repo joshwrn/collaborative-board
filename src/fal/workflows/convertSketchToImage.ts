@@ -77,8 +77,8 @@ export const useConvertSketchToImage = ({
         from: generatedFromItem.id,
       })
       state.setState((draft) => {
-        draft.generatingCanvas = [
-          ...draft.generatingCanvas,
+        draft.loadingCanvases = [
+          ...draft.loadingCanvases,
           {
             newItemId,
             generatedFromItemId: generatedFromItem.id,
