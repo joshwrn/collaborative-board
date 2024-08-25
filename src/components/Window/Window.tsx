@@ -168,7 +168,7 @@ const WindowInternal: FC<{
 
   useOutsideClick({
     refs: [nodeRef],
-    selectors: [`#toolbar`, `.dropdown-list`],
+    selectors: [`#toolbar`, `.dropdown-list`, `.window`],
     action: () => {
       if (state.selectedWindow === item.id) {
         state.setState((draft) => {
@@ -238,6 +238,7 @@ const WindowInternal: FC<{
           e.stopPropagation()
         }}
         onPointerDown={() => {
+          console.log(`pointer down`)
           state.setState((draft) => {
             draft.selectedWindow = item.id
           })
