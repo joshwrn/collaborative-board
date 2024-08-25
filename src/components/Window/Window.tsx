@@ -139,6 +139,8 @@ const returnWindowStyle = (
   }
 }
 
+const SHOW_ID = false
+
 const WindowInternal: FC<{
   item: Item
   window: WindowType
@@ -158,7 +160,7 @@ const WindowInternal: FC<{
     `selectedWindow`,
     `setState`,
     `dev_allowWindowRotation`,
-    `generatingCanvas`,
+    `loadingCanvases`,
   ])
 
   const realPosition = React.useRef({ x: window.x, y: window.y })
@@ -201,9 +203,8 @@ const WindowInternal: FC<{
   }
 
   const canvasesLoading = React.useMemo(
-    () =>
-      state.generatingCanvas.filter((c) => c.generatedFromItemId === item.id),
-    [state.generatingCanvas, item.id],
+    () => state.loadingCanvases.filter((c) => c.generatedFromItemId === item.id),
+    [state.loadingCanvases, item.id],
   )
 
   const fromConnections = React.useMemo(
@@ -281,6 +282,7 @@ const WindowInternal: FC<{
               }
             />
           )}
+          {SHOW_ID && <div className={styles.debugId}>{window.id}</div>}
         </nav>
 
         <header className={styles.titleBar}>
@@ -301,11 +303,6 @@ const WindowInternal: FC<{
                   </strong>
                 </p>
               </div>
-              {/* <button
-                onClick={() => state.setActiveConnection({ from: item.id })}
-              >
-                <IoAddOutline />
-              </button> */}
             </section>
           </section>
         </header>

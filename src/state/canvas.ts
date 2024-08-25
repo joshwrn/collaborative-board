@@ -12,7 +12,7 @@ export interface CanvasStore {
   drawColor: string
   drawSize: number
   generatedCanvas: GeneratedCanvas | null
-  generatingCanvas: {
+  loadingCanvases: {
     newItemId: string
     generatedFromItemId: string
     progress: number
@@ -26,10 +26,10 @@ export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
   drawSize: 50,
   drawColor: `#674dff`,
   generatedCanvas: null,
-  generatingCanvas: [],
+  loadingCanvases: [],
   updateGeneratingCanvasProgress: (itemId: string, progress: number) => {
     produceState(set, (draft) => {
-      draft.generatingCanvas = draft.generatingCanvas.map((i) => {
+      draft.loadingCanvases = draft.loadingCanvases.map((i) => {
         if (i.newItemId === itemId) {
           return {
             ...i,
@@ -42,7 +42,7 @@ export const canvasStore: AppStateCreator<CanvasStore> = (set, get) => ({
   },
   removeGeneratingCanvasItem: (itemId: string) => {
     produceState(set, (draft) => {
-      draft.generatingCanvas = draft.generatingCanvas.filter(
+      draft.loadingCanvases = draft.loadingCanvases.filter(
         (i) => i.newItemId !== itemId,
       )
     })

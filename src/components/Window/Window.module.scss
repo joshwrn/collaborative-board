@@ -198,3 +198,11 @@ $top-bar-color: hsla(
     }
   }
 }
+
+// ----- DEBUG -----
+.debugId {
+  position: absolute;
+  right: 20px;
+  color: var(--white);
+  z-index: 100;
+}
