@@ -65,11 +65,22 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
   transition: border 0.3s;
   padding: $padding;
   position: relative;
-  display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
   border-radius: $border-radius;
+  &:hover {
+    > p,
+    .selectedOptionWrapper p {
+      color: var(--white);
+    }
+    .arrow svg {
+      fill: var(--white);
+    }
+    .checkIcon {
+      stroke: var(--white);
+    }
+  }
   .subMenuList {
     left: calc(100% + 10px);
     position: absolute;
@@ -134,6 +145,14 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
     text-transform: capitalize;
     color: var(--white-65);
   }
+  &:hover {
+    p {
+      color: var(--white);
+    }
+    .checkIcon {
+      stroke: var(--white);
+    }
+  }
   input {
     max-width: 60px;
     width: fit-content !important;
@@ -153,7 +172,7 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
 
   .checkIcon {
     font-size: var(--font--2);
-    stroke: var(--color-accent);
+    stroke: hsl(215, 100%, 60%);
   }
   &[data-checked='true'] {
     .checkIcon {

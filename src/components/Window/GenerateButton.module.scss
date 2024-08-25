@@ -13,7 +13,6 @@
       transition: transform 0.2s ease-in-out;
     }
     &:hover {
-      background-color: var(--window-generate-button-color-hover);
       svg {
         transform: scale(1.2);
       }

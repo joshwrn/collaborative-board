@@ -67,21 +67,13 @@
   --window-full-button-color: #3fcd6f;
   // generate button
   --window-generate-button-color: hsl(215, 100%, 42%);
-  --window-generate-button-color-2: hsl(215, 97%, 54%);
   --window-generate-button-border-top: hsla(
     var(--hue),
     calc(var(--saturation) + 100%),
     calc(var(--lightness) + 85%),
     0.469
   );
-  --window-generate-button-border-bottom: hsla(
-    var(--hue),
-    calc(var(--saturation) + 100%),
-    calc(var(--lightness) + 9%),
-    0.469
-  );
   --window-generate-button-color-disabled: hsl(215, 34%, 52%);
-  --window-generate-button-color-hover: hsl(215, 100%, 42%);
   // dimensions
   --window-top-bar-height: 40px;
 
@@ -190,24 +182,7 @@
   --dropdown-list-border-color: var(--white-15);
   --dropdown-list-box-shadow: 0 3px 6px #00000030, 0 23px 14px #0000001a,
     0 41px 17px #00000008;
-  --dropdown-item-hover-background-color: hsla(
-    var(--hue),
-    calc(var(--saturation) + 24%),
-    calc(var(--lightness) + 30%),
-    0.5
-  );
-  --dropdown-item-hover-border-top-color: hsla(
-    var(--hue),
-    calc(var(--saturation) + 100%),
-    calc(var(--lightness) + 85%),
-    0.125
-  );
-  --dropdown-item-hover-border-bottom-color: hsla(
-    var(--hue),
-    calc(var(--saturation) + 30%),
-    calc(var(--lightness) + 14%),
-    0.726
-  );
+  --dropdown-item-hover-background-color: hsl(215, 100%, 42%);
   // dimensions
   --dropdown-menu-height: 45px;
 
