@@ -21,15 +21,22 @@ $inner-border-radius: 19px;
   }
 }
 
+$top-bar-color: hsla(
+  var(--hue),
+  calc(var(--saturation) + 20%),
+  calc(var(--lightness) + 5%),
+  1
+);
+
 .topBar {
-  background-color: var(--window-header);
+  background-color: $top-bar-color;
 
   height: var(--window-top-bar-height);
   border-bottom-width: 1px;
   border-bottom-style: solid;
   border-bottom-color: var(--window-outline);
   width: 100%;
-  padding: 0 15px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   gap: 7px;
@@ -59,7 +66,7 @@ $inner-border-radius: 19px;
     background: linear-gradient(
       180deg,
       rgba(45, 45, 45, 0) 0%,
-      var(--window-header) 25px
+      $top-bar-color 25px
     );
   }
   > button {
@@ -87,11 +94,11 @@ $inner-border-radius: 19px;
 
 .titleBar {
   position: relative;
-  background-color: var(--window-header);
+  background-color: $top-bar-color;
   background: linear-gradient(
     0deg,
-    hsl(var(--hue), calc(var(--saturation) + 18%), calc(var(--lightness) + 12%)),
-    var(--window-header) 60%
+    hsl(var(--hue), calc(var(--saturation) + 18%), calc(var(--lightness) + 9%)),
+    $top-bar-color 60%
   );
   border-bottom-width: 1px;
   border-bottom-style: solid;
@@ -154,9 +161,14 @@ $inner-border-radius: 19px;
   scrollbar-width: none;
   line-height: 1.75;
   position: relative;
-  padding: 10px;
+  padding: 20px;
 
-  background-color: var(--window-content);
+  background-color: hsla(
+    var(--hue),
+    calc(var(--saturation) + 20%),
+    calc(var(--lightness) + 9%),
+    1
+  );
   &::-webkit-scrollbar {
     display: none;
   }
@@ -171,13 +183,12 @@ $inner-border-radius: 19px;
     gap: 10px;
   }
   h1 {
-    padding-left: 20px;
     font-size: var(--window-text);
     color: var(--white);
+    line-height: 1;
   }
   p {
     cursor: text;
-    padding: 0 20px 0 20px;
     color: var(--window-text);
     border: 1px solid transparent;
     border-radius: 5px;
