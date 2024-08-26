@@ -6,15 +6,24 @@ import Dropdown from '@/ui/Dropdown'
 
 import style from '../DropDownMenu.module.scss'
 import { AboutModalGuard } from '../Modals/AboutModal'
+import { TutorialModalGuard } from '../Modals/TutorialModal'
 
 export const HelpMenu: React.FC = () => {
   const state = useStore([`setState`])
   return (
     <item className={style.item}>
       <Dropdown.Menu
-        id="dropdown-ai-button"
-        SelectedOption={() => <p>About</p>}
+        SelectedOption={() => <p>Help</p>}
         Options={[
+          <Dropdown.Item
+            onClick={() => {
+              state.setState((draft) => {
+                draft.showTutorialModal = true
+              })
+            }}
+            key={`Tutorial`}
+            label1="Tutorial"
+          />,
           <Dropdown.Item
             onClick={() => {
               state.setState((draft) => {
@@ -23,10 +32,11 @@ export const HelpMenu: React.FC = () => {
             }}
             key={`About`}
             label1="About Scribble AI"
-          ></Dropdown.Item>,
+          />,
         ]}
       />
       <AboutModalGuard />
+      <TutorialModalGuard />
     </item>
   )
 }
