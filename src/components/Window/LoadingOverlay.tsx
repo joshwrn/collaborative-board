@@ -3,6 +3,7 @@ import React from 'react'
 import { useStore } from '@/state/gen-state'
 
 import style from './LoadingOverlay.module.scss'
+import { joinClasses } from '@/utils/joinClasses'
 
 export const LoadingOverlay: React.FC<{
   itemId: string
@@ -15,7 +16,7 @@ export const LoadingOverlay: React.FC<{
     return null
   }
   return (
-    <div className={`loadingShimmer`}>
+    <div className={joinClasses('loadingShimmer', style.loadingShimmer)}>
       <div className={style.blocker}></div>
     </div>
   )

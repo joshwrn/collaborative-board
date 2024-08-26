@@ -6,4 +6,9 @@
   left: 0;
   width: 100%;
   height: calc(100% - var(--window-top-bar-height));
+  border-radius: 20px;
+}
+
+.loadingShimmer {
+  border-radius: 20px;
 }
