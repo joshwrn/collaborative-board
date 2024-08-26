@@ -19,7 +19,7 @@ const TutorialModal: React.FC = () => {
       <Modal.Header title="Tutorial"></Modal.Header>
       <Modal.Content className={styles.content}>
         <section>
-          <h2>Generate From New Sketch</h2>
+          <h2>Basics</h2>
           <section>
             <h3>Creating a Window</h3>
             <p>{`To create a new window, right click on the background and select "New Window"`}</p>
