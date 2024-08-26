@@ -131,7 +131,6 @@ const returnWindowStyle = (
   return {
     left: window.x,
     top: window.y,
-    // transformOrigin: '0 0',
     width: `${window.width}px`,
     height: `${window.height}px`,
     rotate: `${window.rotation}deg`,
