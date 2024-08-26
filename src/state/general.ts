@@ -20,12 +20,14 @@ export interface GeneralStore {
   importState: (savedState: File | null, notificationId: string) => void
   exportState: () => void
   showImportModal: boolean
+  showAboutModal: boolean
 }
 
 export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
   setState: (setter: (draft: Store) => void) => {
     produceState(set, setter)
   },
+  showAboutModal: false,
   showImportModal: false,
   exportState: () => {
     const state = get()
