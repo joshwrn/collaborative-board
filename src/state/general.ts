@@ -31,6 +31,9 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
   showAboutModal: false,
   showImportModal: false,
   showTutorialModal: (() => {
+    if (typeof localStorage === `undefined`) {
+      return false
+    }
     const hasSeenTutorialExists = localStorage.getItem(
       `scribble-ai-hasSeenTutorial`,
     )

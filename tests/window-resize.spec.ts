@@ -1,4 +1,4 @@
-import type { Locator } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
 export const WINDOW_ATTRS = {
@@ -9,13 +9,35 @@ export const WINDOW_ATTRS = {
   zIndex: 0,
 }
 
+async function setLocalStorage(page: Page, items: Record<string, any>) {
+  await page.evaluate((storageItems: Record<string, any>) => {
+    for (const [key, value] of Object.entries(storageItems)) {
+      localStorage.setItem(key, JSON.stringify(value))
+    }
+  }, items)
+}
+
+let page: Page
+
 // default zoom (0.5) + (2 * 0.05) = 0.4
 const ZOOM = 0.4
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async () => {
   await page.goto(`/`)
+
   await page.locator(`#dropdown-space-button`).click()
   await page.locator(`#dropdown-space-zoom-out-button`).click()
   await page.locator(`#dropdown-space-zoom-out-button`).click()
+})
+
+test.beforeAll(async ({ browser }) => {
+  page = await browser.newPage()
+  await page.goto('/')
+
+  const localStorageItems = {
+    'scribble-ai-hasSeenTutorial': true,
+  }
+
+  await setLocalStorage(page, localStorageItems)
 })
 
 test.describe(`can resize window`, () => {
@@ -44,18 +66,14 @@ test.describe(`can resize window`, () => {
     return box
   }
 
-  test.beforeEach(async ({ page }) => {
-    // await page.locator(`#dropdown-dev-button`).click()
-    // await page.locator(`#dropdown-create-mocks-button`).hover()
-    // await page.locator(`#dropdown-create-mocks-1`).click()
-
+  test.beforeEach(async () => {
     selected_window = page.locator(`.window`).first()
     const window_id_full = await selected_window.getAttribute(`id`)
     window_id = window_id_full?.split(`window-`)[1] ?? ``
   })
 
   // y
-  test(`resize larger from top`, async ({ page }) => {
+  test(`resize larger from top`, async () => {
     const box = await getBox()
     expect(box.height).toBe(SCALED.default.height)
     const bottom_y = box.y + box.height
@@ -76,7 +94,7 @@ test.describe(`can resize window`, () => {
     expect(after_box.width).toBe(box.width)
   })
 
-  test(`resize smaller from top`, async ({ page }) => {
+  test(`resize smaller from top`, async () => {
     await page.locator(`#window-border-draggable-top-${window_id}`).hover()
     await page.mouse.down()
     const box = await getBox()
@@ -97,7 +115,7 @@ test.describe(`can resize window`, () => {
     expect(after_box.width).toBe(box.width)
   })
 
-  test(`resize larger from bottom`, async ({ page }) => {
+  test(`resize larger from bottom`, async () => {
     await page.locator(`#window-border-draggable-bottom-${window_id}`).hover()
     await page.mouse.down()
     const box = await getBox()
@@ -114,7 +132,7 @@ test.describe(`can resize window`, () => {
     expect(after_box.width).toBe(box.width)
   })
 
-  test(`resize smaller from bottom`, async ({ page }) => {
+  test(`resize smaller from bottom`, async () => {
     await page.locator(`#window-border-draggable-bottom-${window_id}`).hover()
     await page.mouse.down()
     const box = await getBox()
@@ -132,7 +150,7 @@ test.describe(`can resize window`, () => {
   })
 
   // x
-  test(`resize larger from left`, async ({ page }) => {
+  test(`resize larger from left`, async () => {
     await page.locator(`#window-border-draggable-left-${window_id}`).hover()
     await page.mouse.down()
     const box = await getBox()
@@ -153,7 +171,7 @@ test.describe(`can resize window`, () => {
     expect(after_box.height).toBe(box.height)
   })
 
-  test(`resize smaller from left`, async ({ page }) => {
+  test(`resize smaller from left`, async () => {
     await page.locator(`#window-border-draggable-left-${window_id}`).hover()
     await page.mouse.down()
     const box = await getBox()
@@ -174,7 +192,7 @@ test.describe(`can resize window`, () => {
     expect(after_box.height).toBe(box.height)
   })
 
-  test(`resize larger from right`, async ({ page }) => {
+  test(`resize larger from right`, async () => {
     await page.locator(`#window-border-draggable-right-${window_id}`).hover()
     await page.mouse.down()
     const box = await getBox()
@@ -191,7 +209,7 @@ test.describe(`can resize window`, () => {
     expect(after_box.height).toBe(box.height)
   })
 
-  test(`resize smaller from right`, async ({ page }) => {
+  test(`resize smaller from right`, async () => {
     await page.locator(`#window-border-draggable-right-${window_id}`).hover()
     await page.mouse.down()
     const box = await getBox()
@@ -209,7 +227,7 @@ test.describe(`can resize window`, () => {
   })
 
   // xy
-  test(`resize larger from top-left`, async ({ page }) => {
+  test(`resize larger from top-left`, async () => {
     const box_before = await getBox()
     await page.mouse.move(box_before.x, box_before.y)
     await page.mouse.down()
@@ -234,7 +252,7 @@ test.describe(`can resize window`, () => {
     expect(after_box.height).toBe(SCALED.max)
   })
 
-  test(`resize smaller from top-left`, async ({ page }) => {
+  test(`resize smaller from top-left`, async () => {
     const box_before = await getBox()
     await page.mouse.move(box_before.x, box_before.y)
     await page.mouse.down()
@@ -259,7 +277,7 @@ test.describe(`can resize window`, () => {
     expect(after_box.height).toBe(SCALED.min)
   })
 
-  test(`resize larger from top-right`, async ({ page }) => {
+  test(`resize larger from top-right`, async () => {
     const box_before = await getBox()
     await page.mouse.move(box_before.x + box_before.width, box_before.y)
     await page.mouse.down()
@@ -279,7 +297,7 @@ test.describe(`can resize window`, () => {
     expect(after_box.height).toBe(SCALED.max)
   })
 
-  test(`resize smaller from top-right`, async ({ page }) => {
+  test(`resize smaller from top-right`, async () => {
     const box_before = await getBox()
     await page.mouse.move(box_before.x + box_before.width, box_before.y)
     await page.mouse.down()
@@ -299,7 +317,7 @@ test.describe(`can resize window`, () => {
     expect(after_box.height).toBe(SCALED.min)
   })
 
-  test(`resize larger from bottom-right`, async ({ page }) => {
+  test(`resize larger from bottom-right`, async () => {
     const box_before = await getBox()
     await page.mouse.move(
       box_before.x + box_before.width,
@@ -325,7 +343,7 @@ test.describe(`can resize window`, () => {
     expect(after_box.height).toBe(SCALED.max)
   })
 
-  test(`resize smaller from bottom-right`, async ({ page }) => {
+  test(`resize smaller from bottom-right`, async () => {
     const box_before = await getBox()
     await page.mouse.move(
       box_before.x + box_before.width,
@@ -351,7 +369,7 @@ test.describe(`can resize window`, () => {
     expect(after_box.height).toBe(SCALED.min)
   })
 
-  test(`resize larger from bottom-left`, async ({ page }) => {
+  test(`resize larger from bottom-left`, async () => {
     const box_before = await getBox()
     await page.mouse.move(box_before.x, box_before.y + box_before.height)
     await page.mouse.down()
@@ -371,7 +389,7 @@ test.describe(`can resize window`, () => {
     expect(after_box.height).toBe(SCALED.max)
   })
 
-  test(`resize smaller from bottom-left`, async ({ page }) => {
+  test(`resize smaller from bottom-left`, async () => {
     const box_before = await getBox()
     await page.mouse.move(box_before.x, box_before.y + box_before.height)
     await page.mouse.down()
