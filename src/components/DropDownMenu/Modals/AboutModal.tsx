@@ -3,7 +3,6 @@ import React from 'react'
 
 import { useStore } from '@/state/gen-state'
 import Modal from '@/ui/TopBarModal'
-import { joinClasses } from '@/utils/joinClasses'
 
 import styles from './AboutModal.module.scss'
 
