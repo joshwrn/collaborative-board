@@ -53,6 +53,7 @@ const Tooltip: React.FC<{
         <p className={style.tooltipContent}>{description}</p>
         <FloatingArrow
           ref={arrowRef}
+          style={{ transform: `translateY(-1px)` }}
           context={floating.context}
           fill="var(--tooltip-background-color)"
           stroke="var(--tooltip-border)"
