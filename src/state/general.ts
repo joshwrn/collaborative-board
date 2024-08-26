@@ -21,6 +21,7 @@ export interface GeneralStore {
   exportState: () => void
   showImportModal: boolean
   showAboutModal: boolean
+  showTutorialModal: boolean
 }
 
 export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
@@ -29,6 +30,17 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
   },
   showAboutModal: false,
   showImportModal: false,
+  showTutorialModal: (() => {
+    const hasSeenTutorialExists = localStorage.getItem(
+      `scribble-ai-hasSeenTutorial`,
+    )
+    if (hasSeenTutorialExists) {
+      const hasSeenTutorial = JSON.parse(hasSeenTutorialExists)
+      return hasSeenTutorial ? false : true
+    }
+    localStorage.setItem(`scribble-ai-hasSeenTutorial`, `true`)
+    return true
+  })(),
   exportState: () => {
     const state = get()
     const savedState: SavedState = {
