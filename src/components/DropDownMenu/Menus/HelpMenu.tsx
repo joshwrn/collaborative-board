@@ -5,29 +5,28 @@ import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 
 import style from '../DropDownMenu.module.scss'
-import { FalSettingsModalGuard } from '../Modals/FalSettingsModal'
+import { AboutModalGuard } from '../Modals/AboutModal'
 
-export const AIMenu = () => {
-  const state = useStore([`fal_num_inference_steps`, `setState`])
+export const HelpMenu: React.FC = () => {
+  const state = useStore([`setState`])
   return (
     <item className={style.item}>
       <Dropdown.Menu
         id="dropdown-ai-button"
-        SelectedOption={() => <p>AI</p>}
+        SelectedOption={() => <p>About</p>}
         Options={[
           <Dropdown.Item
-            Icon={() => <PiGearLight size={22} fill="var(--white)" />}
             onClick={() => {
               state.setState((draft) => {
-                draft.showFalSettingsModal = true
+                draft.showAboutModal = true
               })
             }}
-            key={`Create (Custom)`}
-            label1="Settings"
+            key={`About`}
+            label1="About Scribble AI"
           ></Dropdown.Item>,
         ]}
       />
-      <FalSettingsModalGuard />
+      <AboutModalGuard />
     </item>
   )
 }

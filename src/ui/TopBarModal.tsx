@@ -47,8 +47,9 @@ const Modal: React.FC<{
 
 const Content: React.FC<{
   children: React.ReactNode
-}> = ({ children }) => {
-  return <div className={style.content}>{children}</div>
+  className?: string
+}> = ({ children, className }) => {
+  return <div className={joinClasses(style.content, className)}>{children}</div>
 }
 
 const Button: React.FC<
