@@ -15,7 +15,7 @@ export const DevMenu = () => {
     `dev_allowWindowRotation`,
   ])
   return (
-    <item className={style.item}>
+    <div className={style.item}>
       <Dropdown.Menu
         id="dropdown-dev-button"
         SelectedOption={() => <p>Dev</p>}
@@ -55,7 +55,7 @@ export const DevMenu = () => {
           <NotificationsSubMenu key={`Notifications`} />,
         ]}
       />
-    </item>
+    </div>
   )
 }
 

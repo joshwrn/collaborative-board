@@ -36,7 +36,7 @@ const List_Internal: FC = () => {
           <IoClose />
         </button>
       </header>
-      <container className={styles.listContainer}>
+      <div className={styles.listContainer}>
         {state.items.map((item) => (
           <ItemComponent
             key={item.id}
@@ -49,7 +49,7 @@ const List_Internal: FC = () => {
             isOpen={state.windows.some((window) => window.id === item.id)}
           />
         ))}
-      </container>
+      </div>
     </motion.div>
   )
 }

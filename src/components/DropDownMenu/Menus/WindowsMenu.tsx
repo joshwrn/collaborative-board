@@ -14,7 +14,7 @@ export const WindowsMenu = () => {
     `createNewWindow`,
   ])
   return (
-    <item className={style.item} id="dropdown-windows-button">
+    <div className={style.item} id="dropdown-windows-button">
       <Dropdown.Menu
         SelectedOption={() => <p>Windows</p>}
         Options={[
@@ -46,6 +46,6 @@ export const WindowsMenu = () => {
           />,
         ]}
       />
-    </item>
+    </div>
   )
 }

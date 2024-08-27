@@ -1,4 +1,5 @@
 'use client'
+
 import * as fal from '@fal-ai/serverless-client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React, { Suspense } from 'react'
@@ -36,7 +37,7 @@ export default function Home() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <wrapper
+      <section
         className={styles.wrapper}
         onMouseMove={(e) => {
           state.setMousePosition({ x: e.clientX, y: e.clientY })
@@ -53,7 +54,7 @@ export default function Home() {
         </main>
         <ContextMenu />
         {state.debug_showFps && <FPSStats left={`auto`} right={0} />}
-      </wrapper>
+      </section>
       <Toaster />
       <Suspense
         fallback={

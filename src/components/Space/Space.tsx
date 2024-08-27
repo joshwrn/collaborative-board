@@ -30,7 +30,7 @@ const Space_Internal: FC = () => {
   useGestures({ wrapperRef, spaceRef })
   return (
     <div className={styles.outer}>
-      <wrapper
+      <section
         ref={wrapperRef}
         className={styles.wrapper}
         onMouseMove={(e) => {
@@ -40,7 +40,7 @@ const Space_Internal: FC = () => {
           })
         }}
       >
-        <container
+        <div
           className={styles.container}
           ref={spaceRef}
           onClick={() => {
@@ -61,8 +61,8 @@ const Space_Internal: FC = () => {
           <Windows />
           <SnapLines />
           {/* <Debug /> */}
-        </container>
-      </wrapper>
+        </div>
+      </section>
       {state.pinnedWindow && <PinnedWindow />}
       {state.fullScreenWindow && <FullScreenWindow />}
     </div>

@@ -23,7 +23,7 @@ export const ContextMenu: FC = () => {
   })
   if (!state.contextMenu) return null
   return (
-    <container
+    <section
       ref={ref}
       className={styles.container}
       style={{
@@ -33,7 +33,7 @@ export const ContextMenu: FC = () => {
       }}
     >
       <MenuItems />
-    </container>
+    </section>
   )
 }
 
@@ -56,7 +56,7 @@ const MenuItems = () => {
   return match(state.contextMenu)
     .with({ elementType: `connections` }, (value) => {
       return (
-        <item
+        <div
           className={styles.item}
           onClick={() => {
             state.removeConnection(value.id)
@@ -65,12 +65,12 @@ const MenuItems = () => {
         >
           <p>Delete</p>
           <TrashIcon />
-        </item>
+        </div>
       )
     })
     .with({ elementType: `item` }, (value) => {
       return (
-        <item
+        <div
           className={styles.item}
           onClick={() => {
             state.deleteItem(value.id)
@@ -79,12 +79,12 @@ const MenuItems = () => {
         >
           <p>Delete</p>
           <TrashIcon />
-        </item>
+        </div>
       )
     })
     .with({ elementType: `space` }, (value) => {
       return (
-        <item
+        <div
           className={styles.item}
           onClick={() => {
             const id = state.createNewWindow()
@@ -97,7 +97,7 @@ const MenuItems = () => {
           }}
         >
           <p>New Window</p>
-        </item>
+        </div>
       )
     })
     .otherwise(() => null)

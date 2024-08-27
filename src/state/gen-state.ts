@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { subscribeWithSelector } from 'zustand/middleware'
 import { useShallow } from 'zustand/react/shallow'
 
 import type { CanvasStore } from './canvas'
@@ -51,26 +52,28 @@ export type Store = CanvasStore &
   UiStore &
   UserStore
 
-export const useFullStore = create<Store>((set, get, store) => {
-  return {
-    ...canvasStore(set, get, store),
-    ...connectedWindowsStore(set, get, store),
-    ...contextMenuStore(set, get, store),
-    ...debugStore(set, get, store),
-    ...falStore(set, get, store),
-    ...generalStore(set, get, store),
-    ...itemListStore(set, get, store),
-    ...memberStore(set, get, store),
-    ...mockStore(set, get, store),
-    ...notificationsStore(set, get, store),
-    ...peripheralStore(set, get, store),
-    ...snappingStore(set, get, store),
-    ...spaceStore(set, get, store),
-    ...uiStore(set, get, store),
-    ...userStore(set, get, store),
-    ...openWindowsStore(set, get, store),
-  }
-})
+export const useFullStore = create<Store>()(
+  subscribeWithSelector((set, get, store) => {
+    return {
+      ...canvasStore(set, get, store),
+      ...connectedWindowsStore(set, get, store),
+      ...contextMenuStore(set, get, store),
+      ...debugStore(set, get, store),
+      ...falStore(set, get, store),
+      ...generalStore(set, get, store),
+      ...itemListStore(set, get, store),
+      ...memberStore(set, get, store),
+      ...mockStore(set, get, store),
+      ...notificationsStore(set, get, store),
+      ...peripheralStore(set, get, store),
+      ...snappingStore(set, get, store),
+      ...spaceStore(set, get, store),
+      ...uiStore(set, get, store),
+      ...userStore(set, get, store),
+      ...openWindowsStore(set, get, store),
+    }
+  }),
+)
 export const useStore = <T extends keyof Store>(selected: T[]) => {
   return useFullStore(
     useShallow((state: Store) => {

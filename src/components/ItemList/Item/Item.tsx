@@ -40,7 +40,7 @@ const ItemInternal: FC<{
     return null
   }
   return (
-    <wrapper
+    <div
       ref={ref}
       className={joinClasses(styles.wrapper, isOpen && styles.isOpenWrapper)}
       onClick={() => state.toggleOpenWindow(item.id)}
@@ -75,7 +75,7 @@ const ItemInternal: FC<{
           </div>
         </>
       )}
-    </wrapper>
+    </div>
   )
 }
 

@@ -11,7 +11,7 @@ import { TutorialModalGuard } from '../Modals/TutorialModal'
 export const HelpMenu: React.FC = () => {
   const state = useStore([`setState`])
   return (
-    <item className={style.item}>
+    <div className={style.item}>
       <Dropdown.Menu
         SelectedOption={() => <p>Help</p>}
         Options={[
@@ -37,6 +37,6 @@ export const HelpMenu: React.FC = () => {
       />
       <AboutModalGuard />
       <TutorialModalGuard />
-    </item>
+    </div>
   )
 }
