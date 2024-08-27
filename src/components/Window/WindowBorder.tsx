@@ -70,6 +70,7 @@ export const WindowBorderInternal: FC<{
     `activeConnection`,
     `hoveredItem`,
     `selectedWindow`,
+    `setState`,
   ])
 
   const nodeRef = React.useRef<HTMLDivElement>(null)
@@ -109,6 +110,9 @@ export const WindowBorderInternal: FC<{
     startSize.current = { width, height }
     startPosition.current = { x: position.x, y: position.y }
     setCursorStyle(cursorsForBorderPositions[pos])
+    state.setState((draft) => {
+      draft.isResizingWindow = true
+    })
   }
   const onDragStop = (
     e: DraggableEvent,
@@ -119,6 +123,9 @@ export const WindowBorderInternal: FC<{
     startPosition.current = null
     totalMovement.current = { x: 0, y: 0 }
     setCursorStyle(`default`)
+    state.setState((draft) => {
+      draft.isResizingWindow = false
+    })
   }
   const isActive = state.activeConnection?.from === id
   return (

@@ -91,7 +91,6 @@ const DropdownInternal = ({
         className={style.inner}
         ref={refs.setReference}
         onClick={(e) => {
-          console.log(`clicked`)
           if (disabled) return
           setOpen(!open)
         }}
