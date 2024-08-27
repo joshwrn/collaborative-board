@@ -200,7 +200,7 @@ const Arrow_Internal: React.FC<Props> = ({
               result="thicken"
             />
             <feGaussianBlur in="thicken" stdDeviation="4" result="blurred" />
-            <feFlood flood-color={dotEndingBackground} result="glowColor" />
+            <feFlood floodColor={dotEndingBackground} result="glowColor" />
             <feComposite
               in="glowColor"
               in2="blurred"

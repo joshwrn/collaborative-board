@@ -10,13 +10,13 @@ import { WindowsMenu } from './Menus/WindowsMenu'
 
 export const DropDownMenu = () => {
   return (
-    <wrapper className={style.wrapper}>
+    <nav className={style.wrapper}>
       <FileMenu />
       <SpaceMenu />
       <WindowsMenu />
       <AIMenu />
       <HelpMenu />
       <DevMenu />
-    </wrapper>
+    </nav>
   )
 }

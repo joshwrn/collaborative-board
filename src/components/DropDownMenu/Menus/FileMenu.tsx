@@ -18,7 +18,7 @@ export const FileMenu: React.FC = () => {
   ])
 
   return (
-    <item className={style.item}>
+    <div className={style.item}>
       <Dropdown.Menu
         id="dropdown-file-button"
         SelectedOption={() => <p>File</p>}
@@ -78,6 +78,6 @@ export const FileMenu: React.FC = () => {
         ]}
       />
       <ImportModalGuard />
-    </item>
+    </div>
   )
 }

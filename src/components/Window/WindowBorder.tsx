@@ -72,6 +72,8 @@ export const WindowBorderInternal: FC<{
     `selectedWindow`,
   ])
 
+  const nodeRef = React.useRef<HTMLDivElement>(null)
+
   const startPosition = React.useRef<{ x: number; y: number } | null>(null)
   const startSize = React.useRef<{ width: number; height: number } | null>(null)
   const totalMovement = React.useRef<{ x: number; y: number }>({ x: 0, y: 0 })
@@ -131,6 +133,7 @@ export const WindowBorderInternal: FC<{
     >
       {borderPositions.map((pos) => (
         <DraggableCore
+          nodeRef={nodeRef}
           key={pos}
           onDrag={(e, data) => onDrag(e, data, pos)}
           onStart={(e, data) => onDragStart(e, data, pos)}
@@ -138,6 +141,7 @@ export const WindowBorderInternal: FC<{
           disabled={isFullScreen || isPinned}
         >
           <div
+            ref={nodeRef}
             className={styles[pos]}
             id={`window-border-draggable-${pos}-${id}`}
           />

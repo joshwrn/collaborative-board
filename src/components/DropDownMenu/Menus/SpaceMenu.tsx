@@ -20,7 +20,7 @@ export const SpaceMenu = () => {
     `incrementZoom`,
   ])
   return (
-    <item className={style.item}>
+    <div className={style.item}>
       <Dropdown.Menu
         id="dropdown-space-button"
         SelectedOption={() => <p>Space</p>}
@@ -76,6 +76,6 @@ export const SpaceMenu = () => {
         ]}
       />
       <ThemeModalGuard />
-    </item>
+    </div>
   )
 }

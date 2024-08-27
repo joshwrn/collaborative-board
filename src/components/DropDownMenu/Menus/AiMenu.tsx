@@ -10,7 +10,7 @@ import { FalSettingsModalGuard } from '../Modals/FalSettingsModal'
 export const AIMenu = () => {
   const state = useStore([`fal_num_inference_steps`, `setState`])
   return (
-    <item className={style.item}>
+    <div className={style.item}>
       <Dropdown.Menu
         id="dropdown-ai-button"
         SelectedOption={() => <p>AI</p>}
@@ -28,6 +28,6 @@ export const AIMenu = () => {
         ]}
       />
       <FalSettingsModalGuard />
-    </item>
+    </div>
   )
 }

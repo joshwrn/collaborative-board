@@ -1,6 +1,6 @@
 'use client'
-import type { MutableRefObject, RefObject } from 'react'
-import { useEffect, useRef } from 'react'
+import type { RefObject } from 'react'
+import { useEffect } from 'react'
 
 const checkIfClickedOutsideRef = (
   ref: RefObject<{

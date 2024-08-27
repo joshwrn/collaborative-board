@@ -238,7 +238,6 @@ const WindowInternal: FC<{
           e.stopPropagation()
         }}
         onPointerDown={() => {
-          console.log(`pointer down`)
           state.setState((draft) => {
             draft.selectedWindow = item.id
           })
