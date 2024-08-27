@@ -23,6 +23,7 @@ export type WindowType = z.infer<typeof windowSchema>
 export interface OpenWindowsStore {
   windows: WindowType[]
   toggleOpenWindow: (id: string) => void
+  isResizingWindow: boolean
   resizeWindow: (
     id: string,
     start: { width: number; height: number; x: number; y: number },
@@ -130,7 +131,6 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   get,
 ) => ({
   windows: [],
-
   pinnedWindow: null,
 
   toggleOpenWindow: (id: string) => {
@@ -247,6 +247,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     }))
   },
 
+  isResizingWindow: false,
   resizeWindow: (id, start, movement, pos) => {
     const state = get()
     const window = state.windows.find((prev) => prev.id === id)

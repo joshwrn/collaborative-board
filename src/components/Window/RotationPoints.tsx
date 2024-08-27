@@ -97,34 +97,13 @@ const RotationPoints_Internal: React.FC<{
     state.setOneWindow(id, { rotation: degrees })
   }
 
-  const onDragStart = (
-    e: DraggableEvent,
-    data: { deltaX: number; deltaY: number },
-    pos: RotationPoint,
-  ) => {
-    console.log(`start`, pos)
-  }
-
-  const onDragStop = (
-    e: DraggableEvent,
-    data: { deltaX: number; deltaY: number },
-    pos: RotationPoint,
-  ) => {
-    console.log(`stop`, pos)
-  }
-
   if (state.selectedWindow !== id) return null
 
   return (
     <div className={style.wrapper}>
       {ROTATION_POINTS.map((pos) => {
         return (
-          <DraggableCore
-            key={pos}
-            onDrag={(e, data) => onDrag(e, data, pos)}
-            onStart={(e, data) => onDragStart(e, data, pos)}
-            onStop={(e, data) => onDragStop(e, data, pos)}
-          >
+          <DraggableCore key={pos} onDrag={(e, data) => onDrag(e, data, pos)}>
             <div className={joinClasses(style[pos], style.point)} />
           </DraggableCore>
         )

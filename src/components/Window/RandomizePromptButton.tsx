@@ -18,7 +18,6 @@ export const RandomizePromptButton: React.FC<{
       title="Randomize prompt"
       onClick={() => {
         const prompt = createMockPrompt()
-        console.log(`randomizing prompt`, prompt)
         textRef.current = prompt
         state.editItem(windowId, {
           subject: prompt,

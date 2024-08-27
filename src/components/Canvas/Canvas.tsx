@@ -66,6 +66,7 @@ export const Canvas_Internal: React.FC<{
     `generatedCanvas`,
     `setState`,
     `selectedWindow`,
+    `isResizingWindow`,
   ])
 
   const isFullScreen = state.fullScreenWindow === window.id
@@ -83,12 +84,13 @@ export const Canvas_Internal: React.FC<{
     img.src = content.base64
     // only rewrite the canvas if the window size changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [window.width, window.height])
+  }, [window.width, window.height, content.base64])
 
   const attributes = returnAttributes(window, state.zoom, isFullScreen, isPinned)
 
   const writeCanvas = () => {
     if (!canvasRef.current) return
+    if (state.isResizingWindow) return
     state.editItemContent(window.id, {
       content: {
         base64: canvasRef.current.toDataURL(),
@@ -166,7 +168,11 @@ export const Canvas_Internal: React.FC<{
         onPointerMove={(e) => {
           const ctx = returnContext(canvasRef)
           const rotatedMousePosition = calculateMousePosition(e)
-          if (e.buttons !== 1 || state.selectedWindow !== window.id) {
+          if (
+            e.buttons !== 1 ||
+            state.selectedWindow !== window.id ||
+            state.isResizingWindow
+          ) {
             lastPosition.current = rotatedMousePosition
             return
           }
