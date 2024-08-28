@@ -34,6 +34,9 @@ export interface NotificationsStore {
         update?: Partial<Notification>
         run?: () => void
       }
+      onFinish?: {
+        run?: () => void
+      }
     },
   ) => Promise<void>
 }
@@ -112,6 +115,7 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
         }
       })
       options?.onSuccess?.run?.()
+      options?.onFinish?.run?.()
       await mockProgress({
         onProgress: (progress) => {
           state.setNotificationProgress(newNotification.id, 100 - progress)
@@ -134,6 +138,7 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
         }
       })
       options?.onError?.run?.()
+      options?.onFinish?.run?.()
       console.error(`error`, e)
       await mockProgress({
         onProgress: (progress) => {

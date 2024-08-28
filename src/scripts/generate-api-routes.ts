@@ -75,8 +75,8 @@ const shouldWatch = process.argv.includes(`--watch`)
 
 await writeDirectories()
 
-if (shouldWatch) {
-  watchFolder()
-}
+// if (shouldWatch) {
+//   watchFolder()
+// }
 
 // export {}

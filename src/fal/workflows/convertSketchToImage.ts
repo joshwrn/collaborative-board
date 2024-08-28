@@ -31,7 +31,7 @@ export interface ConvertSketchToImageResponse {
   itemId: string
 }
 
-const USE_MOCK = false
+const USE_MOCK = true
 
 export const useConvertSketchToImage = ({
   generatedFromItem,

@@ -138,7 +138,7 @@ const returnWindowStyle = (
   }
 }
 
-const SHOW_ID = false
+const SHOW_ID = true
 
 const WindowInternal: FC<{
   item: Item

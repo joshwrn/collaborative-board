@@ -7,7 +7,7 @@ import type { AppStateCreator } from './state'
 import { produceState } from './state'
 import { windowSchema } from './windows'
 
-const saveStateSchema = z.object({
+export const saveStateSchema = z.object({
   windows: z.array(windowSchema),
   items: z.array(itemSchema),
   connections: z.array(connectionSchema),

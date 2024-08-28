@@ -6,6 +6,7 @@ import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
 import { createMockPrompt } from '@/mock/mock-items'
 
 import type { Point2d } from '.'
+import { useFullStore } from './gen-state'
 import type { AppStateCreator, Setter } from './state'
 import { stateSetter } from './state'
 
@@ -31,7 +32,10 @@ export interface OpenWindowsStore {
     pos: string,
   ) => void
   setOneWindow: (id: string, update: Partial<WindowType>) => void
+  organizeWindows: () => void
   reorderWindows: (id: string) => void
+  closeAllWindows: () => void
+  openAllWindows: () => void
   fullScreenWindow: string | null
   setFullScreenWindow: Setter<string | null>
   hoveredWindow: string | null
@@ -132,6 +136,82 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
 ) => ({
   windows: [],
   pinnedWindow: null,
+
+  closeAllWindows: () => {
+    const state = get()
+    if (state.windows.length === 0) {
+      throw new Error(`No windows to close`)
+    }
+    state.setState(() => ({
+      windows: [],
+    }))
+  },
+
+  openAllWindows: () => {
+    const state = get()
+    const { items, windows } = state
+    if (windows.length === items.length) {
+      throw new Error(`All windows are already open`)
+    }
+    if (windows.length > 0) {
+      state.closeAllWindows()
+    }
+    for (const item of items) {
+      state.toggleOpenWindow(item.id)
+    }
+    state.organizeWindows()
+  },
+
+  organizeWindows: () => {
+    const state = get()
+    state.setState((draft) => {
+      for (const window of draft.windows) {
+        window.y = 0
+      }
+    })
+    const { connections, zoom, pan, windows } = state
+    if (windows.length === 0) {
+      throw new Error(`No windows to organize`)
+    }
+    const centerPoint = spaceCenterPoint(zoom, pan)
+    const startPoint = {
+      x: centerPoint.x - WINDOW_ATTRS.defaultSize.width / 2,
+      y: centerPoint.y - WINDOW_ATTRS.defaultSize.height / 2,
+    }
+    const processedFromParent = new Set()
+    const processedFromChild = new Set()
+    for (const connection of connections) {
+      // need to get latest position of window every loop
+      // otherwise child windows with "from" connections will be positioned wrong
+      const from = get().windows.find((w) => w.id === connection.from)
+      if (!from) {
+        continue
+      }
+      if (
+        processedFromParent.has(connection.from) ||
+        processedFromChild.has(connection.from)
+      ) {
+        continue
+      }
+      if (from.y === 0) {
+        const spacing = from.width + 100
+        const childWindowsSpacing = processedFromChild.size * spacing
+        const originalWindowsSpacing = processedFromParent.size * 2.5 * spacing
+        state.setOneWindow(connection.from, {
+          x: startPoint.x + originalWindowsSpacing + childWindowsSpacing,
+          y: startPoint.y,
+        })
+        processedFromParent.add(connection.from)
+      }
+      if (from.y !== 0) {
+        processedFromChild.add(connection.from)
+      }
+      const connectionsTo = connections.filter((c) => c.from === connection.from)
+      for (const connectionTo of connectionsTo) {
+        state.moveWindowNextTo(connectionTo.from, connectionTo.to)
+      }
+    }
+  },
 
   toggleOpenWindow: (id: string) => {
     const state = get()

@@ -47,6 +47,10 @@ const MenuItems = () => {
     `setOneWindow`,
     `setState`,
     `createNewWindow`,
+    `organizeWindows`,
+    `openAllWindows`,
+    `closeAllWindows`,
+    `promiseNotification`,
   ])
   if (state.contextMenu === null) return null
   const close = () =>
@@ -84,20 +88,104 @@ const MenuItems = () => {
     })
     .with({ elementType: `space` }, (value) => {
       return (
-        <div
-          className={styles.item}
-          onClick={() => {
-            const id = state.createNewWindow()
-            state.setOneWindow(id, {
-              x: value.data.x,
-              y: value.data.y,
-            })
+        <>
+          <div
+            className={styles.item}
+            onClick={() => {
+              const id = state.createNewWindow()
+              state.setOneWindow(id, {
+                x: value.data.x,
+                y: value.data.y,
+              })
 
-            close()
-          }}
-        >
-          <p>New Window</p>
-        </div>
+              close()
+            }}
+          >
+            <p>New Window</p>
+          </div>
+          <div
+            className={styles.item}
+            onClick={async () => {
+              await state.promiseNotification(
+                () => {
+                  state.organizeWindows()
+                },
+                {
+                  message: `Organizing Windows...`,
+                },
+                {
+                  onFinish: {
+                    run: () => {
+                      close()
+                    },
+                  },
+                  onSuccess: {
+                    update: {
+                      message: `Organized Windows`,
+                    },
+                  },
+                },
+              )
+            }}
+          >
+            <p>Organize</p>
+          </div>
+          <div className={styles.divider} />
+          <div
+            className={styles.item}
+            onClick={async () => {
+              await state.promiseNotification(
+                () => {
+                  state.openAllWindows()
+                },
+                {
+                  message: `Opening All Windows...`,
+                },
+                {
+                  onFinish: {
+                    run: () => {
+                      close()
+                    },
+                  },
+                  onSuccess: {
+                    update: {
+                      message: `Opened All Windows`,
+                    },
+                  },
+                },
+              )
+            }}
+          >
+            <p>Open All</p>
+          </div>
+          <div
+            className={styles.item}
+            onClick={async () => {
+              await state.promiseNotification(
+                () => {
+                  state.closeAllWindows()
+                },
+                {
+                  message: `Closing All Windows...`,
+                },
+                {
+                  onFinish: {
+                    run: () => {
+                      close()
+                    },
+                  },
+                  onSuccess: {
+                    update: {
+                      message: `Closed All Windows`,
+                    },
+                  },
+                },
+              )
+            }}
+          >
+            <p>Close All</p>
+          </div>
+        </>
       )
     })
     .otherwise(() => null)
