@@ -1,13 +1,13 @@
 import { nanoid } from 'nanoid'
+import { useSearchParams } from 'next/navigation'
 import React from 'react'
 
 import { mockProgress } from '@/mock/mock-progress'
+import { loadScenario } from '@/mock/scenarios'
 import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 
 import style from '../DropDownMenu.module.scss'
-import { loadScenario } from '@/mock/scenarios'
-import { useSearchParams } from 'next/navigation'
 
 export const DevMenu = () => {
   const state = useStore([
@@ -211,8 +211,8 @@ const ScenariosSubMenu = () => {
         ...scenarios.map((scenario) => (
           <Dropdown.Item
             key={scenario}
-            onClick={() => {
-              loadScenario(scenario)
+            onClick={async () => {
+              await loadScenario(scenario)
             }}
             label1={scenario}
             isChecked={false}

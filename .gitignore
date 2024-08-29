@@ -1,6 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-./src/app/api/scenario/data
+/src/app/api/scenario/data/*.json
 
 # dependencies
 /node_modules

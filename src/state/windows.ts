@@ -6,7 +6,6 @@ import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
 import { createMockPrompt } from '@/mock/mock-items'
 
 import type { Point2d } from '.'
-import { useFullStore } from './gen-state'
 import type { AppStateCreator, Setter } from './state'
 import { stateSetter } from './state'
 
