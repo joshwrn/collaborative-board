@@ -9,6 +9,7 @@ import { useFullStore, useStore } from '@/state/gen-state'
 import type { Item, ItemBody, ItemBodyText } from '@/state/items'
 import type { WindowType } from '@/state/windows'
 import { WINDOW_ATTRS } from '@/state/windows'
+import { allowDebugItem } from '@/utils/is-dev'
 import { joinClasses } from '@/utils/joinClasses'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 
@@ -138,7 +139,7 @@ const returnWindowStyle = (
   }
 }
 
-const SHOW_ID = false && process.env.NEXT_PUBLIC_SHOW_DEBUG === `true`
+const SHOW_ID = allowDebugItem(false)
 
 const WindowInternal: FC<{
   item: Item

@@ -6,6 +6,7 @@ import { mockProgress } from '@/mock/mock-progress'
 import { loadScenario } from '@/mock/scenarios'
 import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
+import { IS_DEV } from '@/utils/is-dev'
 
 import style from '../DropDownMenu.module.scss'
 
@@ -18,7 +19,7 @@ export const DevMenu = () => {
   ])
   const searchParams = useSearchParams()
   const dev = searchParams.get(`dev`)
-  if (dev !== `true` && process.env.NEXT_PUBLIC_SHOW_DEBUG !== `true`) {
+  if (dev !== `true` && !IS_DEV) {
     return null
   }
   return (

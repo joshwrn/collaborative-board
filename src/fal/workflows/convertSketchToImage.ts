@@ -6,6 +6,7 @@ import { mockProgress } from '@/mock/mock-progress'
 import { fetchImageUrlToBase64 } from '@/server/imageUrlToBase64/fetchImageUrlToBase64'
 import { useFullStore, useStore } from '@/state/gen-state'
 import type { Item } from '@/state/items'
+import { allowDebugItem } from '@/utils/is-dev'
 
 import type { CreativeUpscaleOutput } from '../api/creativeUpscale'
 import {
@@ -31,7 +32,7 @@ export interface ConvertSketchToImageResponse {
   itemId: string
 }
 
-const USE_MOCK = true
+const USE_MOCK = allowDebugItem(false)
 
 export const useConvertSketchToImage = ({
   generatedFromItem,
