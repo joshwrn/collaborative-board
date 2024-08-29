@@ -138,7 +138,7 @@ const returnWindowStyle = (
   }
 }
 
-const SHOW_ID = true
+const SHOW_ID = false && process.env.NEXT_PUBLIC_SHOW_DEBUG === `true`
 
 const WindowInternal: FC<{
   item: Item
