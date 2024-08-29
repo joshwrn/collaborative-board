@@ -20,6 +20,7 @@ export const GET = async (
     `app`,
     `api`,
     `scenario`,
+    `data`,
     `${scenario}.json`,
   )
   const thisScenario = await fs.readFile(jsonPath, `utf8`)
