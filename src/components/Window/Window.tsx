@@ -167,11 +167,8 @@ const WindowInternal: FC<{
   const realPosition = React.useRef({ x: window.x, y: window.y })
   const nodeRef = React.useRef<HTMLDivElement>(null)
 
-  const { width, height } = window
-
   React.useEffect(() => {
-    realPosition.current.x = window.x
-    realPosition.current.y = window.y
+    realPosition.current = { x: window.x, y: window.y }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.hasOrganizedWindows])
 
@@ -196,12 +193,13 @@ const WindowInternal: FC<{
       x: movementX / zoom,
       y: movementY / zoom,
     }
-    realPosition.current.x += scaledPosition.x
-    realPosition.current.y += scaledPosition.y
+    realPosition.current = {
+      x: realPosition.current.x + scaledPosition.x,
+      y: realPosition.current.y + scaledPosition.y,
+    }
     state.snapToWindows(item.id, {
       ...window,
-      x: realPosition.current.x,
-      y: realPosition.current.y,
+      ...realPosition.current,
     })
   }
 
@@ -324,8 +322,8 @@ const WindowInternal: FC<{
         <LoadingOverlay itemId={item.id} />
 
         <WindowBorder
-          width={width}
-          height={height}
+          width={window.width}
+          height={window.height}
           id={item.id}
           position={{ x: window.x, y: window.y }}
           isFullScreen={isFullScreen}
