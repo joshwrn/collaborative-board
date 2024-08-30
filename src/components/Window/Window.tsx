@@ -161,12 +161,19 @@ const WindowInternal: FC<{
     `setState`,
     `dev_allowWindowRotation`,
     `loadingCanvases`,
+    `hasOrganizedWindows`,
   ])
 
   const realPosition = React.useRef({ x: window.x, y: window.y })
   const nodeRef = React.useRef<HTMLDivElement>(null)
 
   const { width, height } = window
+
+  React.useEffect(() => {
+    realPosition.current.x = window.x
+    realPosition.current.y = window.y
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.hasOrganizedWindows])
 
   useOutsideClick({
     refs: [nodeRef],

@@ -32,6 +32,7 @@ export interface OpenWindowsStore {
   ) => void
   setOneWindow: (id: string, update: Partial<WindowType>) => void
   organizeWindows: () => void
+  hasOrganizedWindows: number
   reorderWindows: (id: string) => void
   closeAllWindows: () => void
   openAllWindows: () => void
@@ -163,6 +164,8 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     state.organizeWindows()
   },
 
+  hasOrganizedWindows: 0,
+
   organizeWindows: () => {
     const state = get()
     state.setState((draft) => {
@@ -218,6 +221,9 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       }
     }
     recursivelyGroupWindows(windowIds)
+    state.setState((draft) => {
+      draft.hasOrganizedWindows++
+    })
   },
 
   toggleOpenWindow: (id: string) => {
