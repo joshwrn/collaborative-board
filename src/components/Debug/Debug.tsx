@@ -2,13 +2,12 @@
 import React from 'react'
 
 import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
-import { Point2d } from '@/state'
 import { useStore } from '@/state/gen-state'
-import { SPACE_ATTRS } from '@/state/space'
+import { allowDebugItem } from '@/utils/is-dev'
 
 import style from './Debug.module.scss'
 
-const showDebug = true
+const showDebug = allowDebugItem(false)
 
 export const Debug: React.FC = () => {
   const state = useStore([
@@ -28,7 +27,7 @@ export const Debug: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.pan, state.zoom, state.setState])
 
-  if (process.env.NEXT_PUBLIC_SHOW_DEBUG !== `true` || !showDebug) {
+  if (!showDebug) {
     return null
   }
   return (

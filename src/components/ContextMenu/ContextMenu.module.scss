@@ -31,3 +31,15 @@ $border-radius-outer: calc(#{$border-radius} + #{$padding});
     font-size: 16px;
   }
 }
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background: hsla(
+    var(--hue),
+    var(--saturation),
+    calc(var(--lightness) + 10%),
+    1
+  );
+  margin: $padding 0;
+}

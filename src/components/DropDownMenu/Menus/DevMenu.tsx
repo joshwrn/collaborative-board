@@ -1,9 +1,12 @@
 import { nanoid } from 'nanoid'
+import { useSearchParams } from 'next/navigation'
 import React from 'react'
 
 import { mockProgress } from '@/mock/mock-progress'
+import { loadScenario } from '@/mock/scenarios'
 import { useStore } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
+import { IS_DEV } from '@/utils/is-dev'
 
 import style from '../DropDownMenu.module.scss'
 
@@ -14,6 +17,11 @@ export const DevMenu = () => {
     `setState`,
     `dev_allowWindowRotation`,
   ])
+  const searchParams = useSearchParams()
+  const dev = searchParams.get(`dev`)
+  if (dev !== `true` && !IS_DEV) {
+    return null
+  }
   return (
     <div className={style.item}>
       <Dropdown.Menu
@@ -51,6 +59,7 @@ export const DevMenu = () => {
             label1={`Show FPS`}
             isChecked={state.debug_showFps}
           />,
+          <ScenariosSubMenu key={`Scenarios`} />,
           <MocksSubMenu key={`Mocks`} />,
           <NotificationsSubMenu key={`Notifications`} />,
         ]}
@@ -188,6 +197,28 @@ const NotificationsSubMenu = () => {
           label1={`Fake Error Notification`}
           isChecked={false}
         />,
+      ]}
+    />
+  )
+}
+
+const ScenariosSubMenu = () => {
+  const scenarios = [`data-1`, `data-2`]
+  return (
+    <Dropdown.SubMenu
+      id="dropdown-scenarios-button"
+      SelectedOption={() => <p>Scenarios</p>}
+      Options={[
+        ...scenarios.map((scenario) => (
+          <Dropdown.Item
+            key={scenario}
+            onClick={async () => {
+              await loadScenario(scenario)
+            }}
+            label1={scenario}
+            isChecked={false}
+          />
+        )),
       ]}
     />
   )

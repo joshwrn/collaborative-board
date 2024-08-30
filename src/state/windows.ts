@@ -31,13 +31,17 @@ export interface OpenWindowsStore {
     pos: string,
   ) => void
   setOneWindow: (id: string, update: Partial<WindowType>) => void
+  organizeWindows: () => void
+  hasOrganizedWindows: number
   reorderWindows: (id: string) => void
+  closeAllWindows: () => void
+  openAllWindows: () => void
   fullScreenWindow: string | null
   setFullScreenWindow: Setter<string | null>
   hoveredWindow: string | null
   pinnedWindow: string | null
   selectedWindow: string | null
-  moveWindowNextTo: (id: string, nextId: string) => void
+  moveWindowNextTo: (id: string, nextId: string) => WindowType
   createNewWindow: () => string
 }
 
@@ -126,12 +130,101 @@ const createNextWindowPosition = (
   return startingPosition
 }
 
+const PADDING_BETWEEN_WINDOWS = 130
+
 export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   set,
   get,
 ) => ({
   windows: [],
   pinnedWindow: null,
+
+  closeAllWindows: () => {
+    const state = get()
+    if (state.windows.length === 0) {
+      throw new Error(`No windows to close`)
+    }
+    state.setState(() => ({
+      windows: [],
+    }))
+  },
+
+  openAllWindows: () => {
+    const state = get()
+    const { items, windows } = state
+    if (windows.length === items.length) {
+      throw new Error(`All windows are already open`)
+    }
+    if (windows.length > 0) {
+      state.closeAllWindows()
+    }
+    for (const item of items) {
+      state.toggleOpenWindow(item.id)
+    }
+    state.organizeWindows()
+  },
+
+  hasOrganizedWindows: 0,
+
+  organizeWindows: () => {
+    const state = get()
+    state.setState((draft) => {
+      for (const window of draft.windows) {
+        window.y = 0
+      }
+    })
+    const { connections, zoom, pan, windows } = state
+    if (windows.length === 0) {
+      throw new Error(`No windows to organize`)
+    }
+    const windowIds = windows.map((w) => w.id)
+    const centerPoint = spaceCenterPoint(zoom, pan)
+    const startPoint = {
+      x: centerPoint.x - WINDOW_ATTRS.defaultSize.width / 2,
+      y: centerPoint.y - WINDOW_ATTRS.defaultSize.height / 2,
+    }
+    const processed = new Set()
+    let furthestWindowX = startPoint.x
+    const recursivelyGroupWindows = (windowIdsToProcess: string[]) => {
+      for (const windowId of windowIdsToProcess) {
+        // need to get latest position of window every loop
+        // otherwise child windows with "from" connections will be positioned wrong
+        const from = get().windows.find((w) => w.id === windowId)
+        if (!from) {
+          throw new Error(`window ${windowId} not found`)
+        }
+        if (processed.has(windowId)) {
+          continue
+        }
+        const padding = PADDING_BETWEEN_WINDOWS
+        const isNewWindowGroup = from.y === 0
+        if (isNewWindowGroup) {
+          const notFirstGroup = processed.size > 0 ? 1 : 0
+          const newGroupSpacing = (from.width + padding * 3) * notFirstGroup
+          const newXPosition = furthestWindowX + newGroupSpacing
+          state.setOneWindow(windowId, {
+            x: newXPosition,
+            y: startPoint.y,
+          })
+          furthestWindowX = newXPosition
+        }
+        processed.add(windowId)
+        const connectionsTo = connections.filter((c) => c.from === windowId)
+        for (const connectionTo of connectionsTo) {
+          const updatedWindow = state.moveWindowNextTo(windowId, connectionTo.to)
+          const newXPosition = updatedWindow.x + updatedWindow.width + padding
+          if (newXPosition > furthestWindowX) {
+            furthestWindowX = newXPosition
+          }
+        }
+        recursivelyGroupWindows(connectionsTo.map((c) => c.to))
+      }
+    }
+    recursivelyGroupWindows(windowIds)
+    state.setState((draft) => {
+      draft.hasOrganizedWindows++
+    })
+  },
 
   toggleOpenWindow: (id: string) => {
     const state = get()
@@ -199,7 +292,10 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
           const newPosition = createNextWindowPosition(
             draft.windows,
             {
-              x: generatingFromWindow.x + generatingFromWindow.width + 130,
+              x:
+                generatingFromWindow.x +
+                generatingFromWindow.width +
+                PADDING_BETWEEN_WINDOWS,
               y: generatingFromWindow.y,
             },
             newId,
@@ -212,6 +308,11 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         window.zIndex = window.zIndex - 1
       }
     })
+    const updatedWindow = get().windows.find((w) => w.id === id)
+    if (!updatedWindow) {
+      throw new Error(`window ${id} not found`)
+    }
+    return updatedWindow
   },
 
   setOneWindow: (id, update) => {

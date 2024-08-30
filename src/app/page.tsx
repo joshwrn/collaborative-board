@@ -13,8 +13,9 @@ import { Space } from '@/components/Space/Space'
 import { StatsBar } from '@/components/StatsBar/StatsBar'
 import { Toolbar } from '@/components/Toolbar/Toolbar'
 import { useScenario } from '@/mock/scenarios'
-import { useStore } from '@/state/gen-state'
+import { useFullStore, useStore } from '@/state/gen-state'
 import { Toaster } from '@/ui/Toast'
+import { useOnLoad } from '@/utils/useInitial'
 
 import styles from './page.module.scss'
 
@@ -34,6 +35,10 @@ export default function Home() {
   ])
 
   useScenario()
+  useOnLoad(() => {
+    const s = useFullStore.getState()
+    s.createNewWindow()
+  })
 
   return (
     <QueryClientProvider client={queryClient}>

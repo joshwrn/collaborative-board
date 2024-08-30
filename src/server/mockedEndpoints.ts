@@ -8,4 +8,7 @@ export const mockedEndpoints: Record<ApiRouteUrl, Record<string, boolean>> = {
     post: false,
     get: false,
   },
+  scenario: {
+    get: false,
+  },
 }
