@@ -180,8 +180,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       x: centerPoint.x - WINDOW_ATTRS.defaultSize.width / 2,
       y: centerPoint.y - WINDOW_ATTRS.defaultSize.height / 2,
     }
-    const processedGroups = new Set()
-    const processedChildren = new Set()
+    const processed = new Set()
     let furthestWindowX = startPoint.x
     const recursivelyGroupWindows = (windowIdsToProcess: string[]) => {
       for (const windowId of windowIdsToProcess) {
@@ -191,13 +190,13 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         if (!from) {
           throw new Error(`window ${windowId} not found`)
         }
-        if (processedGroups.has(windowId) || processedChildren.has(windowId)) {
+        if (processed.has(windowId)) {
           continue
         }
         const padding = PADDING_BETWEEN_WINDOWS
         const isNewWindowGroup = from.y === 0
         if (isNewWindowGroup) {
-          const notFirstGroup = processedGroups.size === 0 ? 0 : 1
+          const notFirstGroup = processed.size > 0 ? 1 : 0
           const newGroupSpacing = (from.width + padding * 3) * notFirstGroup
           const newXPosition = furthestWindowX + newGroupSpacing
           state.setOneWindow(windowId, {
@@ -205,11 +204,8 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
             y: startPoint.y,
           })
           furthestWindowX = newXPosition
-          processedGroups.add(windowId)
         }
-        if (!isNewWindowGroup) {
-          processedChildren.add(windowId)
-        }
+        processed.add(windowId)
         const connectionsTo = connections.filter((c) => c.from === windowId)
         for (const connectionTo of connectionsTo) {
           const updatedWindow = state.moveWindowNextTo(windowId, connectionTo.to)
