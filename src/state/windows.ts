@@ -190,10 +190,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         // need to get latest position of window every loop
         // otherwise child windows with "from" connections will be positioned wrong
         const from = get().windows.find((w) => w.id === windowId)
-        if (!from) {
-          throw new Error(`window ${windowId} not found`)
-        }
-        if (processed.has(windowId)) {
+        if (processed.has(windowId) || !from) {
           continue
         }
         const padding = PADDING_BETWEEN_WINDOWS
