@@ -189,15 +189,16 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       for (const windowId of windowIdsToProcess) {
         // need to get latest position of window every loop
         // otherwise child windows with "from" connections will be positioned wrong
-        const from = get().windows.find((w) => w.id === windowId)
-        if (processed.has(windowId) || !from) {
+        const thisWindow = get().windows.find((w) => w.id === windowId)
+        if (processed.has(windowId) || !thisWindow) {
           continue
         }
         const padding = PADDING_BETWEEN_WINDOWS
-        const isNewWindowGroup = from.y === 0
+        const isNewWindowGroup = thisWindow.y === 0
         if (isNewWindowGroup) {
           const notFirstGroup = processed.size > 0 ? 1 : 0
-          const newGroupSpacing = (from.width + padding * 3) * notFirstGroup
+          const newGroupSpacing =
+            (thisWindow.width + padding * 3) * notFirstGroup
           const newXPosition = furthestWindowX + newGroupSpacing
           state.setOneWindow(windowId, {
             x: newXPosition,
