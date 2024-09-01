@@ -25,7 +25,7 @@ const wordWithArticle = (word: string) => {
 export const createMockPrompt = () => {
   const subject = faker.helpers.arrayElement(MOCK_NOUNS)
 
-  return `a messy minimalist watercolor painting of ${wordWithArticle(subject)}`
+  return `a messy watercolor painting of ${wordWithArticle(subject)}`
 }
 
 export const createMockItem = (length: number): Item[] =>

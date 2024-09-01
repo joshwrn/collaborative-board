@@ -6,10 +6,10 @@ export const MOCK_PLACES = [
   `berlin`,
   `rome`,
   `sydney`,
-  `cairo`,
-  `rio`,
+  // `cairo`,
+  // `rio`,
   `san francisco`,
-  `new delhi`,
+  // `new delhi`,
 ]
 
 export const MOCK_NOUNS = [
@@ -22,7 +22,7 @@ export const MOCK_NOUNS = [
   `mansion`,
   `hotel`,
   `apartment`,
-  `office`,
+  // `office`,
   `store`,
   `garage`,
   `tree house`,
@@ -30,10 +30,10 @@ export const MOCK_NOUNS = [
 
   // vehicles
   `car`,
-  `truck`,
-  `bus`,
+  // `truck`,
+  // `bus`,
   `motorcycle`,
-  `bicycle`,
+  // `bicycle`,
   `yacht`,
   `train`,
   `plane`,
@@ -68,19 +68,19 @@ export const MOCK_NOUNS = [
 
   // fantasy
   `dragon`,
-  `unicorn`,
-  `mermaid`,
+  // `unicorn`,
+  // `mermaid`,
   `fairy`,
   `elf`,
   `dwarf`,
   `goblin`,
   `gnome`,
-  `ogre`,
-  `troll`,
+  // `ogre`,
+  // `troll`,
   `wizard`,
   `witch`,
   `vampire`,
-  `werewolf`,
+  // `werewolf`,
 
   // places
   ...MOCK_PLACES,

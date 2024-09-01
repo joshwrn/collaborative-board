@@ -31,7 +31,7 @@ const Modal: React.FC<{
             damping: 25,
           },
         }}
-        exit={{ opacity: 0, y: `calc(-100% - 45px)` }}
+        exit={{ opacity: 0, y: `-100%` }}
         transition={{
           type: `spring`,
           stiffness: 500,
@@ -40,7 +40,6 @@ const Modal: React.FC<{
       >
         {children}
       </motion.div>
-      <div className={style.blocker} />
     </motion.div>
   )
 }
