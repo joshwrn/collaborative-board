@@ -34,7 +34,7 @@ export default function Home() {
     `debug_showFps`,
   ])
 
-  useScenario()
+  // useScenario()
   useOnLoad(() => {
     const s = useFullStore.getState()
     s.createNewWindow()

@@ -2,6 +2,7 @@
 import type { FC } from 'react'
 import React from 'react'
 
+import { LiveImageProvider } from '@/fal/workflows/realTimeConvertSketchToImage'
 import { useGestures } from '@/gestures'
 import { useStore } from '@/state/gen-state'
 import { SPACE_ATTRS } from '@/state/space'
@@ -29,43 +30,45 @@ const Space_Internal: FC = () => {
 
   useGestures({ wrapperRef, spaceRef })
   return (
-    <div className={styles.outer}>
-      <section
-        ref={wrapperRef}
-        className={styles.wrapper}
-        onMouseMove={(e) => {
-          state.updateSpaceMousePosition({
-            x: e.clientX,
-            y: e.clientY,
-          })
-        }}
-      >
-        <div
-          className={styles.container}
-          ref={spaceRef}
-          onClick={() => {
-            state.setState((draft) => {
-              draft.activeConnection = null
+    <LiveImageProvider>
+      <div className={styles.outer}>
+        <section
+          ref={wrapperRef}
+          className={styles.wrapper}
+          onMouseMove={(e) => {
+            state.updateSpaceMousePosition({
+              x: e.clientX,
+              y: e.clientY,
             })
           }}
-          style={{
-            width: SPACE_ATTRS.size.default,
-            height: SPACE_ATTRS.size.default,
-            // order is important
-            transformOrigin: `0 0`,
-            transform: `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`,
-          }}
         >
-          <SpaceBackground />
-          <Connections />
-          <Windows />
-          <SnapLines />
-          {/* <Debug /> */}
-        </div>
-      </section>
-      {state.pinnedWindow && <PinnedWindow />}
-      {state.fullScreenWindow && <FullScreenWindow />}
-    </div>
+          <div
+            className={styles.container}
+            ref={spaceRef}
+            onClick={() => {
+              state.setState((draft) => {
+                draft.activeConnection = null
+              })
+            }}
+            style={{
+              width: SPACE_ATTRS.size.default,
+              height: SPACE_ATTRS.size.default,
+              // order is important
+              transformOrigin: `0 0`,
+              transform: `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`,
+            }}
+          >
+            <SpaceBackground />
+            <Connections />
+            <Windows />
+            <SnapLines />
+            {/* <Debug /> */}
+          </div>
+        </section>
+        {state.pinnedWindow && <PinnedWindow />}
+        {state.fullScreenWindow && <FullScreenWindow />}
+      </div>
+    </LiveImageProvider>
   )
 }
 

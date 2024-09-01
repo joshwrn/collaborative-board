@@ -1,5 +1,7 @@
 import * as fal from '@fal-ai/serverless-client'
 
+import type { FalImage } from './fal-general-types'
+
 const mock_image_url = `https://storage.googleapis.com/falserverless/model_tests/upscale/owl.png`
 
 export interface CreativeUpscaleInput {
@@ -61,13 +63,9 @@ export interface CreativeUpscaleInput {
 }
 
 export interface CreativeUpscaleOutput {
-  image: {
-    url: string
-    content_type: string
+  image: FalImage & {
     file_name: string
     file_size: number
-    width: number
-    height: number
   }
   seed: number
 }
