@@ -30,8 +30,8 @@ export const GenerateButton_Internal: React.FC<{
             return
           }
           await fetchImage({
-            prompt: `masterpiece, colorful, photo of a beach in hawaii, sun`,
-            image_url: `https://storage.googleapis.com/falserverless/model_tests/lcm/beach.png`,
+            prompt: prompt ?? ``,
+            image_url: base64 ?? ``,
             strength: 0.8,
             seed: 42,
             enable_safety_checks: true,

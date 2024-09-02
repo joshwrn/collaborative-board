@@ -56,6 +56,7 @@ export const LiveImageProvider: React.FC<{
           const id = result.request_id
           const request = requestsById.get(id)
           if (request) {
+            console.log(`this is the result`, result)
             request.resolve(result.images[0])
           }
         }
