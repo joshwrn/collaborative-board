@@ -5,7 +5,7 @@ import { IoSparklesSharp } from 'react-icons/io5'
 
 import { useConvertSketchToImage } from '@/fal/workflows/convertSketchToImage'
 import { LiveImageContext } from '@/fal/workflows/realTimeConvertSketchToImage'
-import { useStore } from '@/state/gen-state'
+import { useFullStore, useStore } from '@/state/gen-state'
 import type { Item } from '@/state/items'
 import { joinClasses } from '@/utils/joinClasses'
 import { useWithRateLimit } from '@/utils/useWithRateLimit'
@@ -15,6 +15,14 @@ import style from './GenerateButton.module.scss'
 export const GenerateButton_Internal: React.FC<{
   item: Item
 }> = ({ item }) => {
+  const state = useStore([
+    `moveWindowNextTo`,
+    `createItem`,
+    `makeConnection`,
+    `setState`,
+    `toggleOpenWindow`,
+    `addContentToItem`,
+  ])
   // const generateImage = useConvertSketchToImage({ generatedFromItem: item })
   const fetchImage = useContext(LiveImageContext)
   // const toastId = React.useRef<string>(nanoid())
@@ -25,18 +33,37 @@ export const GenerateButton_Internal: React.FC<{
   return (
     <section className={style.wrapper}>
       <motion.button
-        onClick={async () => {
-          if (!fetchImage) {
-            return
-          }
-          await fetchImage({
-            prompt: prompt ?? ``,
-            image_url: base64 ?? ``,
-            strength: 0.8,
-            seed: 42,
-            enable_safety_checks: true,
-            sync_mode: true,
+        onClick={() => {
+          const newItemId = nanoid()
+          const { connections } = useFullStore.getState()
+          const outgoingConnections = connections.filter(
+            (connection) => connection.from === item.id,
+          )
+          state.createItem({
+            id: newItemId,
+            subject: `${item.subject} - v${outgoingConnections.length + 2}`,
           })
+          state.makeConnection({
+            to: newItemId,
+            from: item.id,
+          })
+          state.toggleOpenWindow(newItemId)
+          state.moveWindowNextTo(item.id, newItemId)
+          const canvasId = nanoid()
+          state.addContentToItem(newItemId, [
+            {
+              type: `text`,
+              id: nanoid(),
+              content: prompt ?? ``,
+            },
+            {
+              type: `canvas`,
+              id: canvasId,
+              content: {
+                base64: ``,
+              },
+            },
+          ])
         }}
         // className={joinClasses(
         //   generateImage.isPending && style.isPending,

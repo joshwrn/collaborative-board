@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
+import { LiveImageContext } from '@/fal/workflows/realTimeConvertSketchToImage'
 import { rotatePointAroundCenter } from '@/logic/rotatePointAroundCenter'
 import { useStore } from '@/state/gen-state'
 import type { CanvasData } from '@/state/items'
@@ -67,12 +68,17 @@ export const Canvas_Internal: React.FC<{
     `setState`,
     `selectedWindow`,
     `isResizingWindow`,
+    `items`,
+    `connections`,
   ])
+
+  const thisItem = state.items.find((i) => i.id === window.id)
 
   const isFullScreen = state.fullScreenWindow === window.id
   const counterRef = React.useRef<HTMLDivElement>(null)
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const lastPosition = React.useRef({ x: 0, y: 0 })
+  const fetchImage = useContext(LiveImageContext)
 
   React.useEffect(() => {
     const ctx = canvasRef.current?.getContext(`2d`)
@@ -88,14 +94,41 @@ export const Canvas_Internal: React.FC<{
 
   const attributes = returnAttributes(window, state.zoom, isFullScreen, isPinned)
 
-  const writeCanvas = () => {
+  const writeCanvas = async () => {
     if (!canvasRef.current) return
     if (state.isResizingWindow) return
+    const base64 = canvasRef.current.toDataURL()
     state.editItemContent(window.id, {
       content: {
-        base64: canvasRef.current.toDataURL(),
+        base64,
       },
       id: contentId,
+      type: `canvas`,
+    })
+    if (!fetchImage) {
+      return
+    }
+    const img = await fetchImage({
+      prompt: thisItem?.body.find((b) => b.type === `text`)?.content ?? ``,
+      image_url: base64,
+      strength: 0.8,
+      seed: 42,
+      enable_safety_checks: false,
+      sync_mode: true,
+    })
+    console.log(`img`, img)
+    const itemToUpdateId = state.connections.find(
+      (c) => c.from === window.id,
+    )?.to
+    if (!itemToUpdateId) {
+      return
+    }
+    const itemToUpdate = state.items.find((i) => i.id === itemToUpdateId)
+    state.editItemContent(itemToUpdateId, {
+      content: {
+        base64: img.url,
+      },
+      id: itemToUpdate?.body.find((b) => b.type === `canvas`)?.id ?? ``,
       type: `canvas`,
     })
   }
@@ -145,11 +178,11 @@ export const Canvas_Internal: React.FC<{
         height={attributes.height}
         className={joinClasses(style.canvas, `canvas`)}
         ref={canvasRef}
-        onPointerLeave={() => {
-          writeCanvas()
+        onPointerLeave={async () => {
+          await writeCanvas()
         }}
-        onPointerUp={() => {
-          writeCanvas()
+        onPointerUp={async () => {
+          await writeCanvas()
         }}
         onPointerDown={(e) => {
           const ctx = returnContext(canvasRef)
