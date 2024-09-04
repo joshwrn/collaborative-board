@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid'
 import { mockProgress } from '@/mock/mock-progress'
 import { fetchImageUrlToBase64 } from '@/server/imageUrlToBase64/fetchImageUrlToBase64'
 import { useFullStore, useStore } from '@/state/gen-state'
-import type { Item } from '@/state/items'
+import type { Item, ItemWithSpecificBody } from '@/state/items'
 import { allowDebugItem } from '@/utils/is-dev'
 
 import type { CreativeUpscaleOutput } from '../api/creativeUpscale'
@@ -37,13 +37,13 @@ const USE_MOCK = allowDebugItem(false)
 export const useConvertSketchToImage = ({
   generatedFromItem,
 }: {
-  generatedFromItem: Item
+  generatedFromItem: ItemWithSpecificBody<`generator`>
 }) => {
   const state = useStore([
     `createItem`,
     `makeConnection`,
     `toggleOpenWindow`,
-    `addContentToItem`,
+    `editItemContent`,
     `moveWindowNextTo`,
     `deleteItem`,
     `setState`,
@@ -105,11 +105,8 @@ export const useConvertSketchToImage = ({
       }
 
       try {
-        const image = generatedFromItem.body.find((b) => b.type === `canvas`)
-          ?.content.base64
-        const style = generatedFromItem.body.find(
-          (b) => b.type === `text`,
-        )?.content
+        const image = generatedFromItem.body.base64
+        const style = generatedFromItem.body.prompt
         if (!image) {
           throw new Error(`Missing image or prompt.`)
         }
@@ -157,20 +154,10 @@ export const useConvertSketchToImage = ({
       })
       const { base64 } = res
       const canvasId = nanoid()
-      state.addContentToItem(data.itemId, [
-        {
-          type: `text`,
-          id: nanoid(),
-          content: data.description,
-        },
-        {
-          type: `canvas`,
-          id: canvasId,
-          content: {
-            base64: base64,
-          },
-        },
-      ])
+      state.editItemContent(data.itemId, {
+        base64,
+        prompt: data.description,
+      })
       state.setState((draft) => {
         draft.generatedCanvas = {
           canvasId,

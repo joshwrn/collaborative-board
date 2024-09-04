@@ -173,31 +173,6 @@ $top-bar-color: hsla(
   }
 }
 
-.textContainer {
-  display: flex;
-  flex-direction: column;
-  header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  h1 {
-    font-size: var(--window-text);
-    color: var(--white);
-    line-height: 1;
-  }
-  p {
-    cursor: text;
-    color: var(--window-text);
-    border: 1px solid transparent;
-    border-radius: 5px;
-    &:focus {
-      outline: none;
-      border: 1px solid var(--color-accent);
-    }
-  }
-}
-
 // ----- DEBUG -----
 .debugId {
   position: absolute;

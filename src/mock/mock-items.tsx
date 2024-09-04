@@ -35,20 +35,10 @@ export const createMockItem = (length: number): Item[] =>
     return {
       id: nanoid(),
       subject: prompt,
-      body: [
-        {
-          id: nanoid(),
-          type: `text`,
-          content: prompt,
-        },
-        {
-          id: nanoid(),
-          type: `canvas`,
-          content: {
-            base64: MOCK_BASE64,
-          },
-        },
-      ],
-      members: [],
+      body: {
+        prompt,
+        base64: MOCK_BASE64,
+        type: `generator`,
+      },
     }
   })

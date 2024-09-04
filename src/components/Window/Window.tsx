@@ -3,143 +3,22 @@ import type { FC } from 'react'
 import React from 'react'
 import type { DraggableData, DraggableEvent } from 'react-draggable'
 import { DraggableCore } from 'react-draggable'
-import { match } from 'ts-pattern'
 
 import { useFullStore, useStore } from '@/state/gen-state'
-import type { Item, ItemBody, ItemBodyText } from '@/state/items'
+import type { Item } from '@/state/items'
 import type { WindowType } from '@/state/windows'
 import { WINDOW_ATTRS } from '@/state/windows'
 import { allowDebugItem } from '@/utils/is-dev'
 import { joinClasses } from '@/utils/joinClasses'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 
-import { Canvas } from '../Canvas/Canvas'
 import { GenerateButton } from './GenerateButton'
 import { LoadingOverlay } from './LoadingOverlay'
-import { RandomizePromptButton } from './RandomizePromptButton'
 import { RotationPoints } from './RotationPoints'
 import styles from './Window.module.scss'
+import { WindowBody } from './WindowBody'
 import { WindowBorder } from './WindowBorder'
 import { WindowMenu } from './WindowMenu/WindowMenu'
-
-const Text = ({
-  textRef,
-  windowId,
-  contentId,
-}: {
-  textRef: React.MutableRefObject<string>
-  windowId: string
-  contentId: string
-}) => {
-  const ref = React.useRef<HTMLParagraphElement>(null)
-  const state = useStore([`editItemContent`, `editItem`])
-
-  return (
-    <p
-      ref={ref}
-      contentEditable
-      suppressContentEditableWarning
-      onInput={() => {
-        if (!ref.current) return
-        state.editItem(windowId, {
-          subject: ref.current.innerText,
-        })
-        state.editItemContent(windowId, {
-          type: `text`,
-          content: ref.current.innerText,
-          id: contentId,
-        })
-      }}
-    >
-      {textRef.current}
-    </p>
-  )
-}
-
-const Prompt: React.FC<{ value: ItemBodyText; windowId: string }> = ({
-  value,
-  windowId,
-}) => {
-  const textRef = React.useRef(value.content)
-  return (
-    <div className={styles.textContainer}>
-      <header>
-        <h1>Prompt</h1>
-        <RandomizePromptButton
-          windowId={windowId}
-          contentId={value.id}
-          textRef={textRef}
-        />
-      </header>
-      <Text
-        textRef={textRef}
-        key={value.id}
-        windowId={windowId}
-        contentId={value.id}
-      />
-    </div>
-  )
-}
-
-const matchBody = (
-  body: ItemBody,
-  i: number,
-  window: WindowType,
-  isPinned: boolean,
-): JSX.Element | JSX.Element[] | null => {
-  return match(body)
-    .with({ type: `canvas` }, (value) => (
-      <Canvas
-        isPinned={isPinned}
-        key={i}
-        window={window}
-        contentId={body.id}
-        content={value.content}
-      />
-    ))
-    .with({ type: `text` }, (value) => {
-      return <Prompt key={i} value={value} windowId={window.id} />
-    })
-    .otherwise(() => null)
-}
-
-const returnWindowStyle = (
-  window: WindowType,
-  isFullScreen: boolean,
-  isPinned?: boolean,
-): React.CSSProperties => {
-  if (isFullScreen) {
-    return {
-      left: 0,
-      top: 0,
-      position: `relative`,
-      width: WINDOW_ATTRS.defaultFullScreenSize.width + `px`,
-      height: WINDOW_ATTRS.defaultFullScreenSize.height + `px`,
-      rotate: `0deg`,
-      zIndex: `var(--fullscreen-window-z-index)`,
-    }
-  }
-  if (isPinned) {
-    return {
-      left: 0,
-      top: 0,
-      position: `relative`,
-      width: WINDOW_ATTRS.defaultSize.width + `px`,
-      height: WINDOW_ATTRS.defaultSize.height + `px`,
-      rotate: `0deg`,
-    }
-  }
-  return {
-    left: window.x,
-    top: window.y,
-    width: `${window.width}px`,
-    height: `${window.height}px`,
-    rotate: `${window.rotation}deg`,
-    zIndex: window.zIndex,
-  }
-}
-
-const SHOW_ID = allowDebugItem(false)
 
 const WindowInternal: FC<{
   item: Item
@@ -317,7 +196,7 @@ const WindowInternal: FC<{
             overflowY: isFullScreen || isPinned ? `auto` : `hidden`,
           }}
         >
-          {item.body.map((body, i) => matchBody(body, i, window, !!isPinned))}
+          <WindowBody item={item} window={window} isPinned={isPinned} />
         </main>
         <LoadingOverlay itemId={item.id} />
 
@@ -374,3 +253,41 @@ const WindowsInternal: FC = () => {
 }
 
 export const Windows = React.memo(WindowsInternal)
+
+const returnWindowStyle = (
+  window: WindowType,
+  isFullScreen: boolean,
+  isPinned?: boolean,
+): React.CSSProperties => {
+  if (isFullScreen) {
+    return {
+      left: 0,
+      top: 0,
+      position: `relative`,
+      width: WINDOW_ATTRS.defaultFullScreenSize.width + `px`,
+      height: WINDOW_ATTRS.defaultFullScreenSize.height + `px`,
+      rotate: `0deg`,
+      zIndex: `var(--fullscreen-window-z-index)`,
+    }
+  }
+  if (isPinned) {
+    return {
+      left: 0,
+      top: 0,
+      position: `relative`,
+      width: WINDOW_ATTRS.defaultSize.width + `px`,
+      height: WINDOW_ATTRS.defaultSize.height + `px`,
+      rotate: `0deg`,
+    }
+  }
+  return {
+    left: window.x,
+    top: window.y,
+    width: `${window.width}px`,
+    height: `${window.height}px`,
+    rotate: `${window.rotation}deg`,
+    zIndex: window.zIndex,
+  }
+}
+
+const SHOW_ID = allowDebugItem(false)

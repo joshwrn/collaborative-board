@@ -257,20 +257,11 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     state.createItem({
       id: id,
       subject: prompt,
-      body: [
-        {
-          id: nanoid(),
-          type: `text`,
-          content: prompt,
-        },
-        {
-          id: nanoid(),
-          type: `canvas`,
-          content: {
-            base64: ``,
-          },
-        },
-      ],
+      body: {
+        prompt,
+        base64: ``,
+        type: `generator`,
+      },
     })
     state.toggleOpenWindow(id)
 

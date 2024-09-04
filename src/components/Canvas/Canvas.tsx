@@ -1,9 +1,7 @@
 import React, { useContext } from 'react'
 
-import { LiveImageContext } from '@/fal/workflows/realTimeConvertSketchToImage'
 import { rotatePointAroundCenter } from '@/logic/rotatePointAroundCenter'
 import { useStore } from '@/state/gen-state'
-import type { CanvasData } from '@/state/items'
 import type { WindowType } from '@/state/windows'
 import { WINDOW_ATTRS } from '@/state/windows'
 import { joinClasses } from '@/utils/joinClasses'
@@ -54,10 +52,9 @@ const returnContext = (ref: React.RefObject<HTMLCanvasElement>) => {
 
 export const Canvas_Internal: React.FC<{
   window: WindowType
-  contentId: string
-  content: CanvasData
+  content: string
   isPinned: boolean
-}> = ({ window, contentId, content, isPinned }) => {
+}> = ({ window, content, isPinned }) => {
   const state = useStore([
     `zoom`,
     `drawColor`,
@@ -85,10 +82,10 @@ export const Canvas_Internal: React.FC<{
     img.onload = () => {
       ctx.drawImage(img, 0, 0)
     }
-    img.src = content.base64
+    img.src = content
     // only rewrite the canvas if the window size changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [window.width, window.height, content.base64])
+  }, [window.width, window.height, content])
 
   const attributes = returnAttributes(window, state.zoom, isFullScreen, isPinned)
 
@@ -97,11 +94,7 @@ export const Canvas_Internal: React.FC<{
     if (state.isResizingWindow) return
     const base64 = canvasRef.current.toDataURL()
     state.editItemContent(window.id, {
-      content: {
-        base64,
-      },
-      id: contentId,
-      type: `canvas`,
+      base64,
     })
     await state.fetchRealtimeImage(window.id)
   }

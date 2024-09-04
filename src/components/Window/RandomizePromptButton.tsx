@@ -8,9 +8,8 @@ import style from './RandomizePromptButton.module.scss'
 
 export const RandomizePromptButton: React.FC<{
   windowId: string
-  contentId: string
   textRef: React.MutableRefObject<string>
-}> = ({ windowId, contentId, textRef }) => {
+}> = ({ windowId, textRef }) => {
   const state = useStore([`editItemContent`, `editItem`])
   return (
     <button
@@ -23,9 +22,7 @@ export const RandomizePromptButton: React.FC<{
           subject: prompt,
         })
         state.editItemContent(windowId, {
-          type: `text`,
-          content: prompt,
-          id: contentId,
+          prompt,
         })
       }}
     >

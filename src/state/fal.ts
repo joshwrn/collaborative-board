@@ -1,7 +1,6 @@
 import { nanoid } from 'nanoid'
 import { z } from 'zod'
 
-import { findItemContent } from './items'
 import type { AppStateCreator } from './state'
 
 type LiveImageResult = { url: string }
@@ -113,7 +112,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     const state = get()
     const newItemId = nanoid()
     const item = state.items.find((i) => i.id === itemId)
-    if (!item) {
+    if (item?.body.type !== `generator`) {
       return
     }
     const outgoingConnections = state.connections.filter(
@@ -129,22 +128,11 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     })
     state.toggleOpenWindow(newItemId)
     state.moveWindowNextTo(item.id, newItemId)
-    const canvasId = nanoid()
-    const prompt = findItemContent(item, `text`).content
-    state.addContentToItem(newItemId, [
-      {
-        type: `text`,
-        id: nanoid(),
-        content: prompt,
-      },
-      {
-        type: `canvas`,
-        id: canvasId,
-        content: {
-          base64: ``,
-        },
-      },
-    ])
+    const { prompt } = item.body
+    state.editItemContent(newItemId, {
+      prompt,
+      base64: ``,
+    })
     await state.fetchRealtimeImage(itemId)
   },
 
@@ -154,11 +142,11 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
       return
     }
     const item = state.items.find((i) => i.id === itemId)
-    if (!item) {
+    if (item?.body.type !== `generator`) {
       return
     }
-    const prompt = findItemContent(item, `text`).content
-    const { base64 } = findItemContent(item, `canvas`).content
+    const { prompt } = item.body
+    const { base64 } = item.body
     const img = await state.fetchRealtimeImageFn({
       prompt: prompt,
       image_url: base64,
@@ -172,14 +160,8 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     if (!itemToUpdateId) {
       throw new Error(`itemToUpdateId not found`)
     }
-    const itemToUpdate = state.items.find((i) => i.id === itemToUpdateId)
-    const body = findItemContent(itemToUpdate, `canvas`)
     state.editItemContent(itemToUpdateId, {
-      content: {
-        base64: img.url,
-      },
-      id: body.id,
-      type: `canvas`,
+      base64: img.url,
     })
   },
 })

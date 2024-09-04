@@ -10,17 +10,6 @@ import { useIsInViewport } from '@/utils/useIsInViewport'
 
 import styles from './Item.module.scss'
 
-const matchBody = (body?: ItemBody): JSX.Element | JSX.Element[] | null => {
-  return match(body?.content)
-    .with(P.string, (value) => (
-      <p>
-        {value.substring(0, 90)}
-        {value.length > 90 && `...`}
-      </p>
-    ))
-    .otherwise(() => <p>...</p>)
-}
-
 const ItemInternal: FC<{
   item: Item
   isOpen: boolean
@@ -29,10 +18,8 @@ const ItemInternal: FC<{
   const ref = React.useRef<HTMLDivElement>(null)
   const isInViewport = useIsInViewport(ref)
   const state = useStore([`toggleOpenWindow`, `openContextMenu`, `setState`])
-  const canvas = item.body.find((body) => body.type === `canvas`)?.content
-  if (!canvas) {
-    return null
-  }
+  const text =
+    item.body.type === `generated` ? item.body.modifier : item.body.prompt
   return (
     <div
       ref={ref}
@@ -59,13 +46,18 @@ const ItemInternal: FC<{
           <div
             className={styles.img}
             style={{
-              backgroundImage: `url("${canvas.base64}")`,
+              backgroundImage: `url("${item.body.base64}")`,
             }}
           />
 
           <div className={styles.text}>
             <h1>{item.subject}</h1>
-            {matchBody(item.body[0])}
+            {
+              <p>
+                {text.substring(0, 90)}
+                {text.length > 90 && `...`}
+              </p>
+            }
           </div>
         </>
       )}

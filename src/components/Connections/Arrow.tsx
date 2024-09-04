@@ -9,7 +9,6 @@ import {
   calculateDeltas,
 } from '@/logic/arrows'
 import type { Point2d } from '@/state'
-import { joinClasses } from '@/utils/joinClasses'
 
 import styles from './Arrow.module.scss'
 
@@ -245,15 +244,6 @@ const Arrow_Internal: React.FC<Props> = ({
             />
           </circle>
         )}
-      </svg>
-      <svg
-        className={joinClasses(styles.line, styles.endings)}
-        width={canvasWidth}
-        height={canvasHeight}
-        style={{
-          transform: `translate(${canvasXOffset}px, ${canvasYOffset}px)`,
-        }}
-      >
         <circle
           className={styles.dotEnding}
           cx={p1.x}
