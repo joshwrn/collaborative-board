@@ -47,10 +47,7 @@ export interface ItemListStore {
   editItem: (id: string, content: Partial<Omit<Item, `body`>>) => void
   deleteItem: (id: string) => void
   createItem: (item: Partial<Item>) => void
-
   hoveredItem: string | null
-
-  // addContentToItem: (id: string, content: ItemBody | ItemBody[]) => void
   editItemContent: <T extends ItemBodyType>(
     id: string,
     content: Partial<Extract<ItemBody, { type: T }>>,
