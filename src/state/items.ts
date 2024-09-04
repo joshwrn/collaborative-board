@@ -26,14 +26,18 @@ const itemBodySchema = z.union([
     id: z.string(),
     type: z.literal(`canvas`),
   }),
-  z.object({
-    content: z.object({
-      src: z.string(),
-    }),
-    id: z.string(),
-    type: z.literal(`iframe`),
-  }),
 ])
+
+export function findItemContent<T extends ItemBodyType>(
+  item: Item | null | undefined,
+  type: T,
+): Extract<ItemBody, { type: T }> {
+  const body = item?.body.find((b) => b.type === type)
+  if (!body) {
+    throw new Error(`Item body of type '${type}' not found`)
+  }
+  return body as Extract<ItemBody, { type: T }>
+}
 
 export type ItemBody = z.infer<typeof itemBodySchema>
 
@@ -41,10 +45,11 @@ export const itemSchema = z.object({
   id: z.string(),
   subject: z.string(),
   body: z.array(itemBodySchema),
-  members: z.array(z.string()),
 })
 
-export const ItemBodyTypes = [`text`, `iframe`, `canvas`] as const
+export type Item = z.infer<typeof itemSchema>
+
+export const ItemBodyTypes = [`text`, `canvas`] as const
 export type ItemBodyType = (typeof ItemBodyTypes)[number]
 
 export interface ItemBodyText {
@@ -53,18 +58,10 @@ export interface ItemBodyText {
   type: `text`
 }
 
-export interface Item {
-  id: string
-  subject: string
-  body: ItemBody[]
-  members: string[]
-}
-
 export const DEFAULT_ITEM: Item = {
   id: `default_id`,
   subject: `default_subject`,
   body: [],
-  members: [],
 }
 
 export interface ItemListStore {

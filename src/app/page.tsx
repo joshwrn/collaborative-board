@@ -12,6 +12,7 @@ import { ListGuard } from '@/components/ItemList/List/List'
 import { Space } from '@/components/Space/Space'
 import { StatsBar } from '@/components/StatsBar/StatsBar'
 import { Toolbar } from '@/components/Toolbar/Toolbar'
+import { useRealtimeConnect } from '@/fal/workflows/useRealtimeConnect'
 import { useScenario } from '@/mock/scenarios'
 import { useFullStore, useStore } from '@/state/gen-state'
 import { Toaster } from '@/ui/Toast'
@@ -39,6 +40,8 @@ export default function Home() {
     const s = useFullStore.getState()
     s.createNewWindow()
   })
+
+  useRealtimeConnect()
 
   return (
     <QueryClientProvider client={queryClient}>

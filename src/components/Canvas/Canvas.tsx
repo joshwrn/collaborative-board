@@ -70,15 +70,13 @@ export const Canvas_Internal: React.FC<{
     `isResizingWindow`,
     `items`,
     `connections`,
+    `fetchRealtimeImage`,
   ])
-
-  const thisItem = state.items.find((i) => i.id === window.id)
 
   const isFullScreen = state.fullScreenWindow === window.id
   const counterRef = React.useRef<HTMLDivElement>(null)
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const lastPosition = React.useRef({ x: 0, y: 0 })
-  const fetchImage = useContext(LiveImageContext)
 
   React.useEffect(() => {
     const ctx = canvasRef.current?.getContext(`2d`)
@@ -105,32 +103,7 @@ export const Canvas_Internal: React.FC<{
       id: contentId,
       type: `canvas`,
     })
-    if (!fetchImage) {
-      return
-    }
-    const img = await fetchImage({
-      prompt: thisItem?.body.find((b) => b.type === `text`)?.content ?? ``,
-      image_url: base64,
-      strength: 0.8,
-      seed: 42,
-      enable_safety_checks: false,
-      sync_mode: true,
-    })
-    console.log(`img`, img)
-    const itemToUpdateId = state.connections.find(
-      (c) => c.from === window.id,
-    )?.to
-    if (!itemToUpdateId) {
-      return
-    }
-    const itemToUpdate = state.items.find((i) => i.id === itemToUpdateId)
-    state.editItemContent(itemToUpdateId, {
-      content: {
-        base64: img.url,
-      },
-      id: itemToUpdate?.body.find((b) => b.type === `canvas`)?.id ?? ``,
-      type: `canvas`,
-    })
+    await state.fetchRealtimeImage(window.id)
   }
 
   const calculateMousePosition = (e: React.PointerEvent) => {

@@ -18,12 +18,6 @@ const matchBody = (body?: ItemBody): JSX.Element | JSX.Element[] | null => {
         {value.length > 90 && `...`}
       </p>
     ))
-    .with(
-      {
-        src: P.string,
-      },
-      () => <p>One Attachment</p>,
-    )
     .otherwise(() => <p>...</p>)
 }
 

@@ -1,7 +1,18 @@
+import { nanoid } from 'nanoid'
 import { z } from 'zod'
 
+import { findItemContent } from './items'
 import type { AppStateCreator } from './state'
 
+type LiveImageResult = { url: string }
+type LiveImageRequest = {
+  prompt: string
+  image_url: string
+  sync_mode: boolean
+  strength: number
+  seed: number
+  enable_safety_checks: boolean
+}
 export interface FalStore {
   showFalSettingsModal: boolean
   fal_num_inference_steps: number
@@ -11,6 +22,12 @@ export interface FalStore {
   fal_creativity: number
   resetFalSettings: () => void
   updateFalSettings: (settings: FalSettingsInput) => void
+
+  generateInitialWindow: (itemId: string) => Promise<void>
+  fetchRealtimeImage: (itemId: string) => Promise<void>
+  fetchRealtimeImageFn:
+    | ((req: LiveImageRequest) => Promise<LiveImageResult>)
+    | null
 }
 
 export const falSettingsSchema = z.object({
@@ -61,6 +78,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
   fal_shape_preservation: 0.25,
   fal_creativity: 0.75,
   showFalSettingsModal: false,
+
   updateFalSettings: (settings) => {
     try {
       const parsedSettings = falSettingsInputSchema.parse(settings)
@@ -86,6 +104,82 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
         // @ts-expect-error - is the key
         draft[`fal_${key}`] = value
       }
+    })
+  },
+
+  fetchRealtimeImageFn: null,
+
+  generateInitialWindow: async (itemId) => {
+    const state = get()
+    const newItemId = nanoid()
+    const item = state.items.find((i) => i.id === itemId)
+    if (!item) {
+      return
+    }
+    const outgoingConnections = state.connections.filter(
+      (connection) => connection.from === item.id,
+    )
+    state.createItem({
+      id: newItemId,
+      subject: `${item.subject} - v${outgoingConnections.length + 2}`,
+    })
+    state.makeConnection({
+      to: newItemId,
+      from: item.id,
+    })
+    state.toggleOpenWindow(newItemId)
+    state.moveWindowNextTo(item.id, newItemId)
+    const canvasId = nanoid()
+    const prompt = findItemContent(item, `text`).content
+    state.addContentToItem(newItemId, [
+      {
+        type: `text`,
+        id: nanoid(),
+        content: prompt,
+      },
+      {
+        type: `canvas`,
+        id: canvasId,
+        content: {
+          base64: ``,
+        },
+      },
+    ])
+    await state.fetchRealtimeImage(itemId)
+  },
+
+  fetchRealtimeImage: async (itemId) => {
+    const state = get()
+    if (!state.fetchRealtimeImageFn) {
+      return
+    }
+    const item = state.items.find((i) => i.id === itemId)
+    if (!item) {
+      return
+    }
+    const prompt = findItemContent(item, `text`).content
+    const { base64 } = findItemContent(item, `canvas`).content
+    const img = await state.fetchRealtimeImageFn({
+      prompt: prompt,
+      image_url: base64,
+      strength: 0.8,
+      seed: 42,
+      enable_safety_checks: false,
+      sync_mode: true,
+    })
+    console.log(`img`, img)
+    const itemToUpdateId = state.connections.find((c) => c.from === item.id)?.to
+    if (!itemToUpdateId) {
+      throw new Error(`itemToUpdateId not found`)
+    }
+    const itemToUpdate = state.items.find((i) => i.id === itemToUpdateId)
+    const body = findItemContent(itemToUpdate, `canvas`)
+    state.editItemContent(itemToUpdateId, {
+      content: {
+        base64: img.url,
+      },
+      id: body.id,
+      type: `canvas`,
     })
   },
 })
