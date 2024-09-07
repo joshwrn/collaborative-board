@@ -4,14 +4,13 @@ import React, { useState } from 'react'
 
 import { useStore } from '@/state/gen-state'
 
-type LiveImageResult = { url: string }
+export type LiveImageResult = { url: string }
 
 export const useRealtimeConnect = () => {
   const [count, setCount] = useState(0)
   const state = useStore([`setState`])
 
   React.useEffect(() => {
-    // let timeoutTotal = 0
     const requestsById = new Map<
       string,
       {
@@ -48,10 +47,6 @@ export const useRealtimeConnect = () => {
           const id = nanoid()
           const timer = setTimeout(() => {
             requestsById.delete(id)
-            // timeoutTotal++
-            // if (timeoutTotal > 3) {
-            //   setCount((prev) => prev + 1)
-            // }
             reject(new Error(`Timeout`))
           }, 5000)
           requestsById.set(id, {
@@ -76,9 +71,7 @@ export const useRealtimeConnect = () => {
       }
       try {
         connection.close()
-      } catch (e) {
-        // noop
-      }
+      } catch (e) {}
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [count])

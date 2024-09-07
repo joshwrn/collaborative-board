@@ -1,41 +1,33 @@
 import { nanoid } from 'nanoid'
 import { z } from 'zod'
 
+import type { LiveImageResult } from '@/fal/workflows/useRealtimeConnect'
+
 import type { AppStateCreator } from './state'
 
-type LiveImageResult = { url: string }
-type LiveImageRequest = {
-  prompt: string
-  image_url: string
-  sync_mode: boolean
-  strength: number
-  seed: number
-  enable_safety_checks: boolean
-}
 export interface FalStore {
   showFalSettingsModal: boolean
-  fal_num_inference_steps: number
-  fal_guidance_scale: number
-  fal_detail: number
-  fal_shape_preservation: number
-  fal_creativity: number
+  falSettings: FalSettingsInput
   resetFalSettings: () => void
-  updateFalSettings: (settings: FalSettingsInput) => void
-
+  updateFalSettings: (settings: Partial<FalSettingsInput>) => void
   generateInitialWindow: (itemId: string) => Promise<void>
   fetchRealtimeImage: (itemId: string) => Promise<void>
-  fetchRealtimeImageFn:
-    | ((req: LiveImageRequest) => Promise<LiveImageResult>)
-    | null
+  fetchRealtimeImageFn: ((req: FalSettings) => Promise<LiveImageResult>) | null
 }
 
 export const falSettingsSchema = z.object({
+  image_url: z.string().describe(`The image to use as a base.`),
   num_inference_steps: z
     .number()
     .min(1)
-    .max(200)
+    .max(12)
     .describe(
       `The number of inference steps to use for generating the image. The more steps the better the image will be but it will also take longer to generate.`,
+    ),
+  sync_mode: z
+    .boolean()
+    .describe(
+      `If set to true, the function will wait for the image to be generated and uploaded before returning the response. This will increase the latency of the function but it allows you to get the image directly in the response without going through the CDN.`,
     ),
   guidance_scale: z
     .number()
@@ -44,48 +36,71 @@ export const falSettingsSchema = z.object({
     .describe(
       `The CFG (Classifier Free Guidance) scale is a measure of how close you want the model to stick to your prompt when looking for a related image to show you.`,
     ),
-  detail: z.number().min(0).max(5).describe(`How much detail to add.`),
-  shape_preservation: z
+  strength: z.number().min(0).max(1).describe(`The strength of the image.`),
+  negative_prompt: z
+    .string()
+    .describe(
+      `The negative prompt to use.Use it to address details that you don't want in the image. This could be colors, objects, scenery and even the small details (e.g. moustache, blurry, low resolution).`,
+    )
+    .optional(),
+  prompt: z
+    .string()
+    .describe(
+      `The prompt to use for generating the image. Be as descriptive as possible for best results.`,
+    ),
+  seed: z
     .number()
-    .min(0)
-    .max(3)
-    .describe(`How much to preserve the shape of the original image.`),
-  creativity: z
+    .describe(
+      `The same seed and the same prompt given to the same version of Stable Diffusion will output the same image every time.`,
+    ),
+  num_images: z
     .number()
-    .min(0)
-    .max(1)
-    .describe(`How much the output can deviate from the original.`),
+    .min(1)
+    .max(8)
+    .describe(
+      `The number of images to generate. The function will return a list of images with the same prompt and negative prompt but different seeds.`,
+    )
+    .optional(),
+  request_id: z
+    .string()
+    .describe(
+      `The id bound to a request, can be used with response to identify the request itself.`,
+    )
+    .optional(),
+  enable_safety_checks: z
+    .boolean()
+    .describe(
+      `If set to true, the resulting image will be checked whether it includes any potentially unsafe content. If it does, it will be replaced with a black image.`,
+    ),
 })
 
-const falSettingsInputSchema = falSettingsSchema.partial()
+const falSettingsInputSchema = falSettingsSchema.pick({
+  num_inference_steps: true,
+  guidance_scale: true,
+  strength: true,
+})
 type FalSettingsInput = z.infer<typeof falSettingsInputSchema>
 
 export type FalSettings = z.infer<typeof falSettingsSchema>
 
-const DEFAULT_FAL_SETTINGS: FalSettings = {
-  num_inference_steps: 20,
-  guidance_scale: 7.5,
-  detail: 1.1,
-  shape_preservation: 0.25,
-  creativity: 0.75,
+const DEFAULT_FAL_SETTINGS: FalSettingsInput = {
+  num_inference_steps: 4,
+  guidance_scale: 1,
+  strength: 0.8,
 }
 
 export const falStore: AppStateCreator<FalStore> = (set, get) => ({
-  fal_num_inference_steps: 20,
-  fal_guidance_scale: 7.5,
-  fal_detail: 1.1,
-  fal_shape_preservation: 0.25,
-  fal_creativity: 0.75,
+  falSettings: DEFAULT_FAL_SETTINGS,
   showFalSettingsModal: false,
 
   updateFalSettings: (settings) => {
     try {
-      const parsedSettings = falSettingsInputSchema.parse(settings)
+      const parsedSettings = falSettingsInputSchema.partial().parse(settings)
       const state = get()
       state.setState((draft: FalStore) => {
-        for (const [key, value] of Object.entries(parsedSettings)) {
-          // @ts-expect-error - is the key
-          draft[`fal_${key}`] = value
+        draft.falSettings = {
+          ...draft.falSettings,
+          ...parsedSettings,
         }
       })
     } catch (error) {
@@ -99,10 +114,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
   resetFalSettings: () => {
     const state = get()
     state.setState((draft) => {
-      for (const [key, value] of Object.entries(DEFAULT_FAL_SETTINGS)) {
-        // @ts-expect-error - is the key
-        draft[`fal_${key}`] = value
-      }
+      draft.falSettings = DEFAULT_FAL_SETTINGS
     })
   },
 
@@ -169,7 +181,9 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     const img = await state.fetchRealtimeImageFn({
       prompt: `a ${itemToUpdate.body.modifier} of ${prompt}`,
       image_url: base64,
-      strength: 0.8,
+      strength: state.falSettings.strength,
+      num_inference_steps: state.falSettings.num_inference_steps,
+      guidance_scale: state.falSettings.guidance_scale,
       seed: 42,
       enable_safety_checks: false,
       sync_mode: true,
