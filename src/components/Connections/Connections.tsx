@@ -46,8 +46,8 @@ export const Connections_Internal: FC = () => {
     `connections`,
     `windows`,
     `showConnections`,
-    'items',
-    'findGeneratedItems',
+    `items`,
+    `findGeneratedItems`,
   ])
   const windowsMap = React.useMemo(
     () =>
