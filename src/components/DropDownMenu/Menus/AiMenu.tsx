@@ -8,7 +8,7 @@ import style from '../DropDownMenu.module.scss'
 import { FalSettingsModalGuard } from '../Modals/FalSettingsModal'
 
 export const AIMenu = () => {
-  const state = useStore([`fal_num_inference_steps`, `setState`])
+  const state = useStore([`setState`])
   return (
     <div className={style.item}>
       <Dropdown.Menu
