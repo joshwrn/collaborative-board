@@ -58,7 +58,7 @@ const Prompt: React.FC<{ value: string; windowId: string }> = ({
         textRef={textRef}
         onInput={(e, p) => {
           state.editItem(windowId, {
-            subject: p,
+            title: p,
           })
           state.editItemContent(windowId, {
             prompt: p,
@@ -106,7 +106,7 @@ const Modifier: React.FC<{
         textRef={textRef}
         onInput={(e, p) => {
           state.editItem(windowId, {
-            subject: p,
+            title: p,
           })
           state.editItemContent(windowId, {
             modifier: p,

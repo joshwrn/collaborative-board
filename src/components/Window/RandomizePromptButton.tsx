@@ -19,7 +19,7 @@ export const RandomizePromptButton: React.FC<{
         const prompt = createMockPrompt()
         textRef.current = prompt
         state.editItem(windowId, {
-          subject: prompt,
+          title: prompt,
         })
         state.editItemContent(windowId, {
           prompt,

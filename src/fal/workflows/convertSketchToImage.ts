@@ -71,7 +71,7 @@ export const useConvertSketchToImage = ({
       )
       state.createItem({
         id: newItemId,
-        subject: `${generatedFromItem.subject} - v${outgoingConnections.length + 2}`,
+        title: `${generatedFromItem.title} - v${outgoingConnections.length + 2}`,
       })
       state.makeConnection({
         to: newItemId,

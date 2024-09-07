@@ -120,7 +120,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     )
     state.createItem({
       id: newItemId,
-      subject: `${item.subject} - v${outgoingConnections.length + 2}`,
+      title: `${item.title} - v${outgoingConnections.length + 2}`,
       body: {
         type: `generated`,
         modifier: `messy watercolor painting`,

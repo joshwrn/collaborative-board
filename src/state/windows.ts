@@ -256,7 +256,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     const prompt = createMockPrompt()
     state.createItem({
       id: id,
-      subject: prompt,
+      title: prompt,
       body: {
         prompt,
         base64: ``,

@@ -51,7 +51,7 @@ const ItemInternal: FC<{
           />
 
           <div className={styles.text}>
-            <h1>{item.subject}</h1>
+            <h1>{item.title}</h1>
             {
               <p>
                 {text.substring(0, 90)}

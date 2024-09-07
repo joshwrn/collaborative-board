@@ -23,7 +23,7 @@ export type ItemBodyType = ItemBody[`type`]
 
 export const itemSchema = z.object({
   id: z.string(),
-  subject: z.string(),
+  title: z.string(),
   body: itemBodySchema,
 })
 
@@ -35,7 +35,7 @@ export type ItemWithSpecificBody<T extends ItemBody[`type`]> = Item & {
 
 export const DEFAULT_ITEM: Item = {
   id: `default_id`,
-  subject: `default_subject`,
+  title: `default_title`,
   body: {
     prompt: `default_prompt`,
     base64: `default_base64`,

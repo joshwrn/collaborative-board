@@ -18,7 +18,7 @@ export const createMockItem = (length: number): Item[] =>
 
     return {
       id: nanoid(),
-      subject: prompt,
+      title: prompt,
       body: {
         prompt,
         base64: MOCK_BASE64,
