@@ -22,3 +22,12 @@
     }
   }
 }
+
+.imageContainer {
+  background-color: var(--canvas-background);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.image {
+  object-fit: cover;
+}

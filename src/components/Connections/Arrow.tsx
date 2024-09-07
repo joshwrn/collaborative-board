@@ -32,7 +32,7 @@ type Props = {
   onMouseLeave?: (e: React.MouseEvent) => void
   onClick?: (e: React.MouseEvent) => void
   config?: ArrowConfig
-  isGenerating?: boolean
+  isActive?: boolean
 }
 
 const ControlPoints = ({
@@ -95,7 +95,7 @@ const Arrow_Internal: React.FC<Props> = ({
   endPoint,
   showDebugGuideLines = false,
   config,
-  isGenerating = false,
+  isActive = false,
 }) => {
   const defaultConfig = {
     arrowColor: `#bcc4cc`,
@@ -218,10 +218,10 @@ const Arrow_Internal: React.FC<Props> = ({
           strokeWidth={strokeWidth}
           stroke={arrowColor}
           fill="none"
-          strokeDasharray={isGenerating ? `5,15` : `0, 0`}
+          strokeDasharray={`0, 0`}
           strokeLinecap="round"
         />
-        {isGenerating && (
+        {isActive && (
           <circle
             id="followingCircle"
             r={dotEndingRadius + 1}

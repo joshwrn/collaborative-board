@@ -11,6 +11,7 @@ export const useRealtimeConnect = () => {
   const state = useStore([`setState`])
 
   React.useEffect(() => {
+    // let timeoutTotal = 0
     const requestsById = new Map<
       string,
       {
@@ -22,14 +23,15 @@ export const useRealtimeConnect = () => {
 
     const connection = fal.realtime.connect(`110602490-lcm-sd15-i2i`, {
       connectionKey: `fal-realtime-example`,
-      clientOnly: false,
-      throttleInterval: 0,
+      clientOnly: true,
+      throttleInterval: 1000,
       onError: (error) => {
         console.error(error)
         // force re-connect
         setCount((c) => c + 1)
       },
       onResult: (result) => {
+        console.log(`result`, result)
         if (result.images?.[0]) {
           const id = result.request_id
           const request = requestsById.get(id)
@@ -46,6 +48,10 @@ export const useRealtimeConnect = () => {
           const id = nanoid()
           const timer = setTimeout(() => {
             requestsById.delete(id)
+            // timeoutTotal++
+            // if (timeoutTotal > 3) {
+            //   setCount((prev) => prev + 1)
+            // }
             reject(new Error(`Timeout`))
           }, 5000)
           requestsById.set(id, {

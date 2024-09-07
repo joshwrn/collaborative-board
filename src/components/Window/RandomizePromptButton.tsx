@@ -10,12 +10,12 @@ export const RandomizePromptButton: React.FC<{
   windowId: string
   textRef: React.MutableRefObject<string>
 }> = ({ windowId, textRef }) => {
-  const state = useStore([`editItemContent`, `editItem`])
+  const state = useStore([`editItemContent`, `editItem`, `fetchRealtimeImage`])
   return (
     <button
       className={style.wrapper}
       title="Randomize prompt"
-      onClick={() => {
+      onClick={async () => {
         const prompt = createMockPrompt()
         textRef.current = prompt
         state.editItem(windowId, {
@@ -24,6 +24,7 @@ export const RandomizePromptButton: React.FC<{
         state.editItemContent(windowId, {
           prompt,
         })
+        await state.fetchRealtimeImage(windowId)
       }}
     >
       <LuRefreshCcw className={style.icon} />

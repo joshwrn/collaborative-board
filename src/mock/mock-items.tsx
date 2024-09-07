@@ -9,7 +9,7 @@ import { MOCK_NOUNS } from './mock-nouns'
 export const createMockPrompt = () => {
   const subject = faker.helpers.arrayElement(MOCK_NOUNS)
 
-  return `a messy watercolor painting of ${subject}`
+  return subject
 }
 
 export const createMockItem = (length: number): Item[] =>

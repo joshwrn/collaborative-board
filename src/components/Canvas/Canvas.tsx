@@ -9,7 +9,7 @@ import { joinClasses } from '@/utils/joinClasses'
 import { DEFAULT_PINNED_WINDOW_ZOOM } from '../Window/PinnedWindow/PinnedWindow'
 import style from './Canvas.module.scss'
 
-const returnAttributes = (
+export const returnCanvasAttributes = (
   window: WindowType,
   zoom: number,
   isFullScreen: boolean,
@@ -87,7 +87,12 @@ export const Canvas_Internal: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.width, window.height, content])
 
-  const attributes = returnAttributes(window, state.zoom, isFullScreen, isPinned)
+  const attributes = returnCanvasAttributes(
+    window,
+    state.zoom,
+    isFullScreen,
+    isPinned,
+  )
 
   const writeCanvas = async () => {
     if (!canvasRef.current) return

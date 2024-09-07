@@ -14,10 +14,8 @@ import type { FalStore } from './fal'
 import { falStore } from './fal'
 import type { GeneralStore } from './general'
 import { generalStore } from './general'
-import type { ItemListStore } from './items'
+import type { ItemListStore, ItemWithSpecificBody } from './items'
 import { itemListStore } from './items'
-import type { MemberStore } from './members'
-import { memberStore } from './members'
 import type { MockStore } from './mock'
 import { mockStore } from './mock'
 import type { NotificationsStore } from './notifications'
@@ -42,7 +40,6 @@ export type Store = CanvasStore &
   FalStore &
   GeneralStore &
   ItemListStore &
-  MemberStore &
   MockStore &
   NotificationsStore &
   OpenWindowsStore &
@@ -62,7 +59,6 @@ export const useFullStore = create<Store>()(
       ...falStore(set, get, store),
       ...generalStore(set, get, store),
       ...itemListStore(set, get, store),
-      ...memberStore(set, get, store),
       ...mockStore(set, get, store),
       ...notificationsStore(set, get, store),
       ...peripheralStore(set, get, store),

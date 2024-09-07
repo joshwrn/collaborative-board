@@ -8,25 +8,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: background-color 0.4s ease-in-out;
-    svg {
-      transition: transform 0.2s ease-in-out;
-    }
-    &:hover {
-      svg {
-        transform: scale(1.2);
-      }
-    }
   }
-}
-
-.isPending {
-  animation: glow 1s ease-in-out infinite;
-}
-
-.isDisabled {
-  cursor: progress;
-  background-color: var(--window-generate-button-color-disabled) !important;
 }
 
 @keyframes glow {

@@ -121,6 +121,21 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     state.createItem({
       id: newItemId,
       subject: `${item.subject} - v${outgoingConnections.length + 2}`,
+      body: {
+        type: `generated`,
+        modifier: `messy watercolor painting`,
+        base64: ``,
+        activatedAt: new Date().toISOString(),
+      },
+    })
+    const connections = state.connections.filter((c) => c.from === item.id)
+    const connectedItems = state
+      .findGeneratedItems()
+      .filter((i) => connections.map((c) => c.to).includes(i.id))
+    connectedItems.forEach((i) => {
+      state.editItemContent(i.id, {
+        activatedAt: null,
+      })
     })
     state.makeConnection({
       to: newItemId,
@@ -128,11 +143,6 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     })
     state.toggleOpenWindow(newItemId)
     state.moveWindowNextTo(item.id, newItemId)
-    const { prompt } = item.body
-    state.editItemContent(newItemId, {
-      prompt,
-      base64: ``,
-    })
     await state.fetchRealtimeImage(itemId)
   },
 
@@ -141,14 +151,23 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     if (!state.fetchRealtimeImageFn) {
       return
     }
-    const item = state.items.find((i) => i.id === itemId)
-    if (item?.body.type !== `generator`) {
-      return
+    const item = state.findGeneratorItems().find((i) => i.id === itemId)
+    if (!item) {
+      throw new Error(`item id: ${itemId} not found`)
     }
     const { prompt } = item.body
     const { base64 } = item.body
+    const connectedIds = state.connections
+      .filter((c) => c.from === item.id)
+      .map((c) => c.to)
+    const itemToUpdate = state
+      .findGeneratedItems()
+      .find((i) => connectedIds.includes(i.id) && i.body.activatedAt)
+    if (!itemToUpdate) {
+      throw new Error(`itemToUpdate not found`)
+    }
     const img = await state.fetchRealtimeImageFn({
-      prompt: prompt,
+      prompt: `a ${itemToUpdate.body.modifier} of ${prompt}`,
       image_url: base64,
       strength: 0.8,
       seed: 42,
@@ -156,11 +175,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
       sync_mode: true,
     })
     console.log(`img`, img)
-    const itemToUpdateId = state.connections.find((c) => c.from === item.id)?.to
-    if (!itemToUpdateId) {
-      throw new Error(`itemToUpdateId not found`)
-    }
-    state.editItemContent(itemToUpdateId, {
+    state.editItemContent(itemToUpdate.id, {
       base64: img.url,
     })
   },

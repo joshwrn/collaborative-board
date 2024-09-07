@@ -5,14 +5,15 @@ import type { DraggableData, DraggableEvent } from 'react-draggable'
 import { DraggableCore } from 'react-draggable'
 
 import { useFullStore, useStore } from '@/state/gen-state'
-import type { Item } from '@/state/items'
+import type { Item, ItemWithSpecificBody } from '@/state/items'
 import type { WindowType } from '@/state/windows'
 import { WINDOW_ATTRS } from '@/state/windows'
 import { allowDebugItem } from '@/utils/is-dev'
 import { joinClasses } from '@/utils/joinClasses'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 
-import { GenerateButton } from './GenerateButton'
+import { ActivateButton } from './ActivateButton'
+import { BranchButton } from './BranchButton'
 import { LoadingOverlay } from './LoadingOverlay'
 import { RotationPoints } from './RotationPoints'
 import styles from './Window.module.scss'
@@ -173,20 +174,27 @@ const WindowInternal: FC<{
             <WindowMenu id={item.id} />
           </section>
           <section className={styles.right}>
-            <GenerateButton item={item} />
-            <section className={styles.connections}>
-              <div>
-                <p>
-                  Loading <strong>{canvasesLoading.length}</strong>
-                </p>
-                <p>
-                  Finished{` `}
-                  <strong>
-                    {fromConnections.length - canvasesLoading.length}
-                  </strong>
-                </p>
-              </div>
-            </section>
+            {item.body.type === `generator` && (
+              <>
+                <BranchButton item={item} />
+                <section className={styles.connections}>
+                  <div>
+                    <p>
+                      Loading <strong>{canvasesLoading.length}</strong>
+                    </p>
+                    <p>
+                      Finished{` `}
+                      <strong>
+                        {fromConnections.length - canvasesLoading.length}
+                      </strong>
+                    </p>
+                  </div>
+                </section>
+              </>
+            )}
+            {item.body.type === `generated` && (
+              <ActivateButton item={item as ItemWithSpecificBody<`generated`>} />
+            )}
           </section>
         </header>
 

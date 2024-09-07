@@ -10,11 +10,11 @@ import { Arrow } from './Arrow'
 const Connection_Internal = ({
   from,
   to,
-  isGenerating,
+  isActive,
 }: {
   from: WindowType
   to: WindowType
-  isGenerating?: boolean
+  isActive?: boolean
 }) => {
   const line = React.useMemo(
     () => createLineBetweenWindows(from, to),
@@ -27,7 +27,7 @@ const Connection_Internal = ({
 
   return (
     <Arrow
-      isGenerating={isGenerating}
+      isActive={isActive}
       startPoint={line.from}
       endPoint={line.to}
       config={{
@@ -46,7 +46,8 @@ export const Connections_Internal: FC = () => {
     `connections`,
     `windows`,
     `showConnections`,
-    `loadingCanvases`,
+    'items',
+    'findGeneratedItems',
   ])
   const windowsMap = React.useMemo(
     () =>
@@ -70,18 +71,16 @@ export const Connections_Internal: FC = () => {
           return null
         }
 
-        const isGenerating = state.loadingCanvases.some(
-          (gen) =>
-            gen.generatedFromItemId === windowFrom.id &&
-            gen.newItemId === windowTo.id,
-        )
+        const isActive = state
+          .findGeneratedItems()
+          .some((item) => item.id === windowTo.id && item.body.activatedAt)
 
         return (
           <Connection
             key={connection.id + i}
             from={windowFrom}
             to={windowTo}
-            isGenerating={isGenerating}
+            isActive={!!isActive}
           />
         )
       })}

@@ -13,6 +13,7 @@ const itemBodySchema = z.union([
   z.object({
     modifier: z.string(),
     base64: z.string(),
+    activatedAt: z.string().nullable(),
     type: z.literal(`generated`),
   }),
 ])
@@ -47,11 +48,15 @@ export interface ItemListStore {
   editItem: (id: string, content: Partial<Omit<Item, `body`>>) => void
   deleteItem: (id: string) => void
   createItem: (item: Partial<Item>) => void
+  findGeneratedItems: () => ItemWithSpecificBody<`generated`>[]
+  findGeneratorItems: () => ItemWithSpecificBody<`generator`>[]
+  findParentItem: (id: string) => Item
   hoveredItem: string | null
   editItemContent: <T extends ItemBodyType>(
     id: string,
     content: Partial<Extract<ItemBody, { type: T }>>,
   ) => void
+  toggleItemActive: (id: string) => void
   showItemList: boolean
 }
 
@@ -64,6 +69,57 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
         Object.assign(item, content)
       }
     })
+  },
+  findGeneratedItems: () => {
+    const state = get()
+    return state.items.filter(
+      (i) => i.body.type === `generated`,
+    ) as ItemWithSpecificBody<`generated`>[]
+  },
+  findGeneratorItems: () => {
+    const state = get()
+    return state.items.filter(
+      (i) => i.body.type === `generator`,
+    ) as ItemWithSpecificBody<`generator`>[]
+  },
+  findParentItem: (id) => {
+    const state = get()
+    const item = state.items.find((i) => i.id === id)
+    if (!item) {
+      throw new Error(`item not found - id: ${id}`)
+    }
+    const connection = state.connections.find((c) => c.to === id)
+    const parentId = connection?.from
+    const parent = state.items.find((i) => i.id === parentId)
+    if (!parent) {
+      throw new Error(`parent not found - id: ${parentId}`)
+    }
+    return parent
+  },
+  toggleItemActive: (id) => {
+    const state = get()
+    const item = state.findGeneratedItems().find((i) => i.id === id)
+    if (!item) {
+      throw new Error(`item not found - id: ${id}`)
+    }
+    const connection = state.connections.find((c) => c.to === id)
+    const relatedConnections = state.connections
+      .filter((c) => c.from === connection?.from)
+      .map((c) => c.to)
+    // activate
+    if (!item.body.activatedAt) {
+      const prevActivatedItem = state
+        .findGeneratedItems()
+        .find((i) => relatedConnections.includes(i.id) && i.body.activatedAt)
+      if (prevActivatedItem) {
+        state.editItemContent(prevActivatedItem.id, {
+          activatedAt: null,
+        })
+      }
+      state.editItemContent(id, {
+        activatedAt: new Date().toISOString(),
+      })
+    }
   },
   createItem: (item: Partial<Item>) => {
     produceState(set, (state) => {
