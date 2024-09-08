@@ -40,7 +40,6 @@ export const useRealtimeConnect = () => {
         setCount((c) => c + 1)
       },
       onResult: (result) => {
-        console.log(`result`, result)
         if (result.images?.[0]) {
           const id = result.request_id
           const request = requestsById.get(id)
@@ -63,6 +62,7 @@ export const useRealtimeConnect = () => {
                 id: `fal-timeout-error`,
                 type: `warning`,
                 message: `Connection timed out.`,
+                subText: `You may need to wait a few minutes for the connection to be established.`,
               },
               timeout: Time.seconds(3),
             })

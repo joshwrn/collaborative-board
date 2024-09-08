@@ -86,7 +86,12 @@ const Toast_Internal: React.FC<{ notification: Notification }> = ({
       exit={`exit`}
     >
       <div className={style.iconContainer}>{Icon}</div>
-      {notification.message}
+      <div className={style.textWrapper}>
+        <p className={style.message}>{notification.message}</p>
+        {notification.subText && (
+          <p className={style.subText}>{notification.subText}</p>
+        )}
+      </div>
       <motion.div
         className={style.progress}
         transition={{ type: `spring`, stiffness: 1000, damping: 50 }}

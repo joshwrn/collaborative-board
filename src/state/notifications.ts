@@ -10,6 +10,7 @@ import { produceState } from './state'
 export interface Notification {
   type: `error` | `info` | `success` | `warning`
   message: string
+  subText?: string
   id: string
   progress: number
   isLoading?: boolean

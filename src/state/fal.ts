@@ -189,7 +189,6 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
       enable_safety_checks: false,
       sync_mode: true,
     })
-    console.log(`img`, img)
     state.editItemContent(itemToUpdate.id, {
       base64: img.url,
     })
