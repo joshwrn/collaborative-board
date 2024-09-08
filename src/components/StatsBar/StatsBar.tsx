@@ -8,14 +8,17 @@ import { useStore } from '@/state/gen-state'
 import style from './StatsBar.module.scss'
 
 const StatsBar_Internal: React.FC = () => {
-  const state = useStore([`windows`, `loadingCanvases`])
+  const state = useStore([`windows`, `items`, `findGeneratedItems`])
+  const activeItems = state
+    .findGeneratedItems()
+    .filter((i) => i.body.activatedAt)
   return (
     <div className={style.wrapper}>
       <motion.div className={style.stat}>
         <WindowIcon size={18} stroke={`var(--white-65)`} />
         <AnimatePresence mode="wait" initial={false}>
           <motion.p
-            key={`${state.windows.length - state.loadingCanvases.length}`}
+            key={`${state.windows.length - activeItems.length}`}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
@@ -24,7 +27,7 @@ const StatsBar_Internal: React.FC = () => {
               duration: 0.5,
             }}
           >
-            {state.windows.length - state.loadingCanvases.length}
+            {state.windows.length - activeItems.length}
           </motion.p>
         </AnimatePresence>
       </motion.div>
@@ -33,7 +36,7 @@ const StatsBar_Internal: React.FC = () => {
         <AnimatePresence mode="wait" initial={false}>
           <motion.p
             layout
-            key={`${state.loadingCanvases.length}`}
+            key={`${activeItems.length}`}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
@@ -42,7 +45,7 @@ const StatsBar_Internal: React.FC = () => {
               duration: 0.5,
             }}
           >
-            {state.loadingCanvases.length ?? 0}
+            {activeItems.length ?? 0}
           </motion.p>
         </AnimatePresence>
       </motion.div>

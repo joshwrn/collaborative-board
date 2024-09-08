@@ -14,7 +14,6 @@ import { useOutsideClick } from '@/utils/useOutsideClick'
 
 import { ActivateButton } from './ActivateButton'
 import { BranchButton } from './BranchButton'
-import { LoadingOverlay } from './LoadingOverlay'
 import { RotationPoints } from './RotationPoints'
 import styles from './Window.module.scss'
 import { WindowBody } from './WindowBody'
@@ -40,7 +39,6 @@ const WindowInternal: FC<{
     `selectedWindow`,
     `setState`,
     `dev_allowWindowRotation`,
-    `loadingCanvases`,
     `hasOrganizedWindows`,
   ])
 
@@ -86,11 +84,6 @@ const WindowInternal: FC<{
   const onDragStop = (e: DraggableEvent, data: DraggableData) => {
     state.setSnapLines([])
   }
-
-  const canvasesLoading = React.useMemo(
-    () => state.loadingCanvases.filter((c) => c.generatedFromItemId === item.id),
-    [state.loadingCanvases, item.id],
-  )
 
   const fromConnections = React.useMemo(
     () => state.connections.filter((c) => c.from === item.id),
@@ -180,13 +173,11 @@ const WindowInternal: FC<{
                 <section className={styles.connections}>
                   <div>
                     <p>
-                      Loading <strong>{canvasesLoading.length}</strong>
+                      Active <strong>{1}</strong>
                     </p>
                     <p>
-                      Finished{` `}
-                      <strong>
-                        {fromConnections.length - canvasesLoading.length}
-                      </strong>
+                      Open{` `}
+                      <strong>{fromConnections.length}</strong>
                     </p>
                   </div>
                 </section>
@@ -206,7 +197,6 @@ const WindowInternal: FC<{
         >
           <WindowBody item={item} window={window} isPinned={isPinned} />
         </main>
-        <LoadingOverlay itemId={item.id} />
 
         <WindowBorder
           width={window.width}
