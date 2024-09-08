@@ -30,7 +30,7 @@ const TutorialModal: React.FC = () => {
           </section>
           <section>
             <h3>Generating</h3>
-            <p>{`Click the "Generate" button to generate an image from the current window`}</p>
+            <p>{`Click the "Branch" button to start generating a new image from the current window`}</p>
           </section>
         </section>
         <section>
