@@ -73,6 +73,7 @@ export const Canvas_Internal: React.FC<{
   const isFullScreen = state.fullScreenWindow === window.id
   const counterRef = React.useRef<HTMLDivElement>(null)
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
+  const isDrawing = React.useRef(false)
   const lastPosition = React.useRef({ x: 0, y: 0 })
 
   React.useEffect(() => {
@@ -97,6 +98,7 @@ export const Canvas_Internal: React.FC<{
   const writeCanvas = async () => {
     if (!canvasRef.current) return
     if (state.isResizingWindow) return
+    if (!isDrawing.current) return
     const base64 = canvasRef.current.toDataURL()
     state.editItemContent(window.id, {
       base64,
@@ -151,9 +153,16 @@ export const Canvas_Internal: React.FC<{
         ref={canvasRef}
         onPointerLeave={async () => {
           await writeCanvas()
+          isDrawing.current = false
         }}
         onPointerUp={async () => {
           await writeCanvas()
+          isDrawing.current = false
+        }}
+        onPointerEnter={(e) => {
+          if (e.buttons === 1) {
+            isDrawing.current = true
+          }
         }}
         onPointerDown={(e) => {
           const ctx = returnContext(canvasRef)
@@ -168,6 +177,7 @@ export const Canvas_Internal: React.FC<{
             2 * Math.PI,
           )
           ctx.fill()
+          isDrawing.current = true
         }}
         onPointerMove={(e) => {
           const ctx = returnContext(canvasRef)
