@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 
 import { rotatePointAroundCenter } from '@/logic/rotatePointAroundCenter'
 import { useStore } from '@/state/gen-state'
@@ -6,7 +6,7 @@ import type { WindowType } from '@/state/windows'
 import { WINDOW_ATTRS } from '@/state/windows'
 import { joinClasses } from '@/utils/joinClasses'
 
-import { DEFAULT_PINNED_WINDOW_ZOOM } from '../Window/PinnedWindow/PinnedWindow'
+import { DEFAULT_PINNED_WINDOW_ZOOM } from '../PinnedWindow/PinnedWindow'
 import style from './Canvas.module.scss'
 
 export const returnCanvasAttributes = (

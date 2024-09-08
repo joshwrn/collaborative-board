@@ -6,7 +6,7 @@ import { useStore } from '@/state/gen-state'
 import type { Item, ItemWithSpecificBody } from '@/state/items'
 import type { WindowType } from '@/state/windows'
 
-import { Canvas, returnCanvasAttributes } from '../Canvas/Canvas'
+import { Canvas, returnCanvasAttributes } from './Canvas/Canvas'
 import { RandomizePromptButton } from './RandomizePromptButton'
 import styles from './WindowBody.module.scss'
 

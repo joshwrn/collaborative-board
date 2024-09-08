@@ -168,7 +168,7 @@ const NotificationsSubMenu = () => {
       {
         type: type === `warning` ? `warning` : `info`,
         message: `${state.notifications.length} Testing ${type}...`,
-        subText: `This may take a few minutes.`,
+        subText: `You may need to wait a few minutes for the connection to be established.`,
         id: id,
         isLoading: true,
       },
