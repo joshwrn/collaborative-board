@@ -15,11 +15,16 @@
   position: relative;
 }
 .textWrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  width: calc(100% - 45px);
   .message,
   .subText {
     color: var(--toast-text);
+    white-space: wrap;
+    text-overflow: ellipsis;
   }
   .subText {
     font-size: var(--font--2);
