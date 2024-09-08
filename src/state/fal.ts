@@ -176,7 +176,8 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
       .findGeneratedItems()
       .find((i) => connectedIds.includes(i.id) && i.body.activatedAt)
     if (!itemToUpdate) {
-      throw new Error(`itemToUpdate not found`)
+      console.warn(`itemToUpdate not found`)
+      return
     }
     const img = await state.fetchRealtimeImageFn({
       prompt: `a ${itemToUpdate.body.modifier} of ${prompt}`,

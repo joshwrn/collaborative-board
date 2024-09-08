@@ -2,7 +2,8 @@ import * as fal from '@fal-ai/serverless-client'
 import { nanoid } from 'nanoid'
 import React, { useState } from 'react'
 
-import { useStore } from '@/state/gen-state'
+import { useFullStore, useStore } from '@/state/gen-state'
+import { Time } from '@/utils/time'
 
 export type LiveImageResult = { url: string }
 
@@ -26,6 +27,15 @@ export const useRealtimeConnect = () => {
       throttleInterval: 1000,
       onError: (error) => {
         console.error(error)
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        useFullStore.getState().timedNotification({
+          notification: {
+            id: `fal-realtime-error`,
+            type: `error`,
+            message: error.message,
+          },
+          timeout: Time.seconds(10),
+        })
         // force re-connect
         setCount((c) => c + 1)
       },
@@ -47,6 +57,15 @@ export const useRealtimeConnect = () => {
           const id = nanoid()
           const timer = setTimeout(() => {
             requestsById.delete(id)
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            useFullStore.getState().timedNotification({
+              notification: {
+                id: `fal-timeout-error`,
+                type: `warning`,
+                message: `Connection timed out.`,
+              },
+              timeout: Time.seconds(3),
+            })
             reject(new Error(`Timeout`))
           }, 5000)
           requestsById.set(id, {
@@ -55,6 +74,15 @@ export const useRealtimeConnect = () => {
               clearTimeout(timer)
             },
             reject: (err) => {
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
+              useFullStore.getState().timedNotification({
+                notification: {
+                  id: `fal-realtime-error`,
+                  type: `error`,
+                  message: `Can't connect to the server`,
+                },
+                timeout: Time.seconds(10),
+              })
               reject(err)
               clearTimeout(timer)
             },

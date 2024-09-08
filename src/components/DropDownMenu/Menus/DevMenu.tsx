@@ -152,7 +152,7 @@ const NotificationsSubMenu = () => {
   ])
   const createFakeNotification = async (
     e: React.MouseEvent,
-    type: `error` | `success`,
+    type: `error` | `success` | `warning`,
   ) => {
     e.stopPropagation()
     const id = nanoid()
@@ -166,7 +166,7 @@ const NotificationsSubMenu = () => {
         })
       },
       {
-        type: `info`,
+        type: type === `warning` ? `warning` : `info`,
         message: `${state.notifications.length} Testing ${type}...`,
         id: id,
         isLoading: true,
@@ -195,6 +195,12 @@ const NotificationsSubMenu = () => {
           key={`Fake Error Notification`}
           onClick={async (e) => createFakeNotification(e, `error`)}
           label1={`Fake Error Notification`}
+          isChecked={false}
+        />,
+        <Dropdown.Item
+          key={`Fake Warning Notification`}
+          onClick={async (e) => createFakeNotification(e, `warning`)}
+          label1={`Fake Warning Notification`}
           isChecked={false}
         />,
       ]}

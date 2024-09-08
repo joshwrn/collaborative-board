@@ -15,6 +15,7 @@ const TOAST_COLORS = {
   error: `#ff3030db`,
   success: `#32ff73db`,
   info: `#0070f3`,
+  warning: `#ff9f00db`,
 }
 
 export const itemVariants: Variants = {
@@ -49,6 +50,16 @@ const Toast_Internal: React.FC<{ notification: Notification }> = ({
         size={22}
         style={{
           fill: TOAST_COLORS.error,
+        }}
+      />
+    )
+  }
+  if (notification.type === `warning`) {
+    Icon = (
+      <ErrorIcon
+        size={22}
+        style={{
+          fill: TOAST_COLORS.warning,
         }}
       />
     )

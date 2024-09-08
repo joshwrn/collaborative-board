@@ -1,19 +1,21 @@
 import { nanoid } from 'nanoid'
 
 import { mockProgress } from '@/mock/mock-progress'
+import type { TimeValue } from '@/utils/time'
+import { Time } from '@/utils/time'
 
 import type { AppStateCreator } from './state'
 import { produceState } from './state'
 
 export interface Notification {
-  type: `error` | `info` | `success`
+  type: `error` | `info` | `success` | `warning`
   message: string
   id: string
   progress: number
   isLoading?: boolean
 }
 
-const NOTIFICATION_TIMEOUT = 3000
+const NOTIFICATION_TIMEOUT = Time.seconds(3)
 
 export interface NotificationsStore {
   notifications: Notification[]
@@ -21,7 +23,10 @@ export interface NotificationsStore {
   createNotification: (notification: Partial<Notification>) => Notification
   removeNotification: (id: string) => void
   updateNotification: (id: string, update: Partial<Notification>) => void
-  successNotification: (message: string) => Promise<void>
+  timedNotification: (input: {
+    notification: Partial<Notification>
+    timeout?: TimeValue
+  }) => Promise<void>
   promiseNotification: (
     promise: () => Promise<any> | undefined | void,
     notification: Partial<Notification>,
@@ -47,12 +52,16 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
 ) => ({
   notifications: [],
   createNotification: (notification) => {
+    const state = get()
     const newNotification = {
       type: `info` as const,
       message: ``,
       id: nanoid(),
       progress: 0,
       ...notification,
+    }
+    if (state.notifications.find((n) => n.id === newNotification.id)) {
+      throw new Error(`Notification already exists`)
     }
     produceState(set, (draft) => {
       draft.notifications.push(newNotification)
@@ -83,19 +92,24 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
       }
     })
   },
-  successNotification: async (message) => {
+  timedNotification: async ({
+    notification,
+    timeout = NOTIFICATION_TIMEOUT,
+  }) => {
     const state = get()
-    const newNotification = state.createNotification({
-      type: `success`,
-      message,
-    })
-    await mockProgress({
-      onProgress: (progress) => {
-        state.setNotificationProgress(newNotification.id, 100 - progress)
-      },
-      time: NOTIFICATION_TIMEOUT,
-    })
-    state.removeNotification(newNotification.id)
+    try {
+      const newNotification = state.createNotification(notification)
+      await mockProgress({
+        onProgress: (progress) => {
+          state.setNotificationProgress(newNotification.id, 100 - progress)
+        },
+        time: timeout,
+      })
+      state.removeNotification(newNotification.id)
+    } catch (e) {
+      console.warn(e)
+      return
+    }
   },
   promiseNotification: async (promise, notificationPartial, options) => {
     const state = get()
