@@ -26,7 +26,7 @@ export const DraggableWindowWrapper: React.FC<{
   React.useEffect(() => {
     realPosition.current = { x: window.x, y: window.y }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.hasOrganizedWindows])
+  }, [state.hasOrganizedWindows, window.width, window.height])
 
   const onDrag = (e: DraggableEvent, data: DraggableData) => {
     if (!(e instanceof MouseEvent)) return
