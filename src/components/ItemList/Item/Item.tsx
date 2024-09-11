@@ -13,8 +13,7 @@ import styles from './Item.module.scss'
 const ItemInternal: FC<{
   item: Item
   isOpen: boolean
-  isGeneratingCanvas: boolean
-}> = ({ item, isOpen, isGeneratingCanvas }) => {
+}> = ({ item, isOpen }) => {
   const ref = React.useRef<HTMLDivElement>(null)
   const isInViewport = useIsInViewport(ref)
   const state = useStore([`toggleOpenWindow`, `openContextMenu`, `setState`])
@@ -42,7 +41,6 @@ const ItemInternal: FC<{
     >
       {isInViewport && (
         <>
-          {isGeneratingCanvas && <div className="loadingShimmer" />}
           <div
             className={styles.img}
             style={{

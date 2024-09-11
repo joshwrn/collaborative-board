@@ -10,7 +10,7 @@ import { ItemComponent } from '../Item/Item'
 import styles from './List.module.scss'
 
 const List_Internal: FC = () => {
-  const state = useStore([`items`, `setState`, `windows`, `loadingCanvases`])
+  const state = useStore([`items`, `setState`, `windows`])
 
   return (
     <motion.div
@@ -41,11 +41,6 @@ const List_Internal: FC = () => {
           <ItemComponent
             key={item.id}
             item={item}
-            isGeneratingCanvas={
-              !!state.loadingCanvases.find(
-                (canvas) => canvas.newItemId === item.id,
-              )
-            }
             isOpen={state.windows.some((window) => window.id === item.id)}
           />
         ))}

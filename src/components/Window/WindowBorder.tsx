@@ -67,7 +67,6 @@ export const WindowBorderInternal: FC<{
 }> = ({ width, height, id, position, isFullScreen, isPinned }) => {
   const state = useStore([
     `resizeWindow`,
-    `activeConnection`,
     `hoveredItem`,
     `selectedWindow`,
     `setState`,
@@ -127,12 +126,10 @@ export const WindowBorderInternal: FC<{
       draft.isResizingWindow = false
     })
   }
-  const isActive = state.activeConnection?.from === id
   return (
     <div
       className={joinClasses(
         styles.border,
-        isActive && styles.activeBorder,
         state.selectedWindow === id && !isFullScreen && styles.activeBorder,
         state.hoveredItem === id && !isFullScreen && styles.hoveredBorder,
       )}

@@ -4,14 +4,15 @@ import { RiRefreshLine } from 'react-icons/ri'
 import { TbAppWindow as WindowIcon } from 'react-icons/tb'
 
 import { useStore } from '@/state/gen-state'
+import { findGeneratedItems } from '@/state/items'
 
 import style from './StatsBar.module.scss'
 
 const StatsBar_Internal: React.FC = () => {
-  const state = useStore([`windows`, `items`, `findGeneratedItems`])
-  const activeItems = state
-    .findGeneratedItems()
-    .filter((i) => i.body.activatedAt)
+  const state = useStore([`windows`, `items`])
+  const activeItems = findGeneratedItems(state.items).filter(
+    (i) => i.body.activatedAt,
+  )
   return (
     <div className={style.wrapper}>
       <motion.div className={style.stat}>

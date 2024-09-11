@@ -42,7 +42,7 @@ export interface OpenWindowsStore {
   pinnedWindow: string | null
   selectedWindow: string | null
   moveWindowNextTo: (id: string, nextId: string) => WindowType
-  createNewWindow: () => string
+  createNewWindow: (input?: Partial<WindowType>) => string
 }
 
 export const WINDOW_ATTRS = {
@@ -136,7 +136,17 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   set,
   get,
 ) => ({
-  windows: [],
+  windows: [
+    {
+      ...DEFAULT_WINDOW,
+      width: 300,
+      height: 275,
+      zIndex: 1000,
+      x: 999100,
+      y: 999725,
+      id: `test-fal-settings-node`,
+    },
+  ],
   pinnedWindow: null,
 
   closeAllWindows: () => {
@@ -250,9 +260,9 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     })
   },
 
-  createNewWindow: () => {
+  createNewWindow: (input) => {
     const state = get()
-    const id = nanoid()
+    const id = input?.id ?? nanoid()
     const prompt = createMockPrompt()
     state.createItem({
       id: id,
@@ -262,6 +272,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         base64: ``,
         type: `generator`,
       },
+      ...input,
     })
     state.toggleOpenWindow(id)
 

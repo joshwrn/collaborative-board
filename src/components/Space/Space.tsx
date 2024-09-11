@@ -7,6 +7,8 @@ import { useStore } from '@/state/gen-state'
 import { SPACE_ATTRS } from '@/state/space'
 
 import { Connections } from '../Connections/Connections'
+import { SettingsNodeConnections } from '../SettingsNode/NodeConnections'
+import { SettingsNodes } from '../SettingsNode/SettingsNode'
 import { SnapLines } from '../SnapLine/SnapLine'
 import { FullScreenWindow } from '../Window/FullScreenWindow/FullScreenWindow'
 import { PinnedWindow } from '../Window/PinnedWindow/PinnedWindow'
@@ -23,7 +25,6 @@ const Space_Internal: FC = () => {
     `updateSpaceMousePosition`,
     `fullScreenWindow`,
     `openContextMenu`,
-    `setState`,
     `pinnedWindow`,
   ])
 
@@ -43,11 +44,6 @@ const Space_Internal: FC = () => {
         <div
           className={styles.container}
           ref={spaceRef}
-          onClick={() => {
-            state.setState((draft) => {
-              draft.activeConnection = null
-            })
-          }}
           style={{
             width: SPACE_ATTRS.size.default,
             height: SPACE_ATTRS.size.default,
@@ -58,7 +54,9 @@ const Space_Internal: FC = () => {
         >
           <SpaceBackground />
           <Connections />
+          <SettingsNodeConnections />
           <Windows />
+          <SettingsNodes />
           <SnapLines />
           {/* <Debug /> */}
         </div>

@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 import type { LiveImageResult } from '@/fal/workflows/useRealtimeConnect'
 
+import type { Connection } from './connections'
 import type { AppStateCreator } from './state'
 
 export interface FalStore {
@@ -13,7 +14,14 @@ export interface FalStore {
   generateInitialWindow: (itemId: string) => Promise<void>
   fetchRealtimeImage: (itemId: string) => Promise<void>
   fetchRealtimeImageFn: ((req: FalSettings) => Promise<LiveImageResult>) | null
+  falSettingsNodes: FalSettingsNode[]
+  updateFalSettingsNode: (
+    id: string,
+    settings: Partial<FalSettingsInput>,
+  ) => void
 }
+
+export type FalSettingsNode = FalSettingsInput & { id: string }
 
 export const falSettingsSchema = z.object({
   image_url: z.string().describe(`The image to use as a base.`),
@@ -93,6 +101,22 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
   falSettings: DEFAULT_FAL_SETTINGS,
   showFalSettingsModal: false,
 
+  falSettingsNodes: [
+    {
+      id: `test-fal-settings-node`,
+      ...DEFAULT_FAL_SETTINGS,
+    },
+  ],
+  updateFalSettingsNode: (id, settings) => {
+    const state = get()
+    state.setState((draft: FalStore) => {
+      const node = draft.falSettingsNodes.find((n) => n.id === id)
+      if (!node) {
+        throw new Error(`node not found - id: ${id}`)
+      }
+      Object.assign(node, settings)
+    })
+  },
   updateFalSettings: (settings) => {
     try {
       const parsedSettings = falSettingsInputSchema.partial().parse(settings)
@@ -149,10 +173,13 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
         activatedAt: null,
       })
     })
-    state.makeConnection({
-      to: newItemId,
-      from: item.id,
-    })
+    state.makeConnection(
+      {
+        to: newItemId,
+        from: item.id,
+      },
+      `connections`,
+    )
     state.toggleOpenWindow(newItemId)
     state.moveWindowNextTo(item.id, newItemId)
     await state.fetchRealtimeImage(itemId)

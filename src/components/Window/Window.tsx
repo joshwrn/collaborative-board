@@ -1,19 +1,19 @@
 'use client'
 import type { FC } from 'react'
 import React from 'react'
-import type { DraggableData, DraggableEvent } from 'react-draggable'
-import { DraggableCore } from 'react-draggable'
 
-import { useFullStore, useStore } from '@/state/gen-state'
+import { useStore } from '@/state/gen-state'
 import type { Item, ItemWithSpecificBody } from '@/state/items'
 import type { WindowType } from '@/state/windows'
 import { WINDOW_ATTRS } from '@/state/windows'
+import { DraggableWindowWrapper } from '@/ui/DraggableWindowWrapper'
 import { allowDebugItem } from '@/utils/is-dev'
 import { joinClasses } from '@/utils/joinClasses'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 
 import { ActivateButton } from './ActivateButton'
 import { BranchButton } from './BranchButton'
+import { NodeConnections } from './NodeConnections'
 import { RotationPoints } from './RotationPoints'
 import styles from './Window.module.scss'
 import { WindowBody } from './WindowBody'
@@ -31,24 +31,14 @@ const WindowInternal: FC<{
     `setOneWindow`,
     `reorderWindows`,
     `connections`,
-    `makeConnection`,
     `setFullScreenWindow`,
-    `snapToWindows`,
-    `setSnapLines`,
     `zoom`,
     `selectedWindow`,
     `setState`,
     `dev_allowWindowRotation`,
-    `hasOrganizedWindows`,
   ])
 
-  const realPosition = React.useRef({ x: window.x, y: window.y })
   const nodeRef = React.useRef<HTMLDivElement>(null)
-
-  React.useEffect(() => {
-    realPosition.current = { x: window.x, y: window.y }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.hasOrganizedWindows])
 
   useOutsideClick({
     refs: [nodeRef],
@@ -62,41 +52,18 @@ const WindowInternal: FC<{
     },
   })
 
-  const onDrag = (e: DraggableEvent, data: DraggableData) => {
-    if (!(e instanceof MouseEvent)) return
-    const { movementX, movementY } = e
-    if (!movementX && !movementY) return
-    const { zoom } = useFullStore.getState()
-    const scaledPosition = {
-      x: movementX / zoom,
-      y: movementY / zoom,
-    }
-    realPosition.current = {
-      x: realPosition.current.x + scaledPosition.x,
-      y: realPosition.current.y + scaledPosition.y,
-    }
-    state.snapToWindows(item.id, {
-      ...window,
-      ...realPosition.current,
-    })
-  }
-
-  const onDragStop = (e: DraggableEvent, data: DraggableData) => {
-    state.setSnapLines([])
-  }
-
   const fromConnections = React.useMemo(
     () => state.connections.filter((c) => c.from === item.id),
     [state.connections, item.id],
   )
 
   return (
-    <DraggableCore
-      onDrag={onDrag}
-      onStop={onDragStop}
-      handle=".handle"
+    <DraggableWindowWrapper
+      window={window}
       nodeRef={nodeRef}
-      disabled={isFullScreen}
+      dragProps={{
+        disabled: isFullScreen,
+      }}
     >
       <div
         ref={nodeRef}
@@ -197,7 +164,7 @@ const WindowInternal: FC<{
         >
           <WindowBody item={item} window={window} isPinned={isPinned} />
         </main>
-
+        {isFullScreen || isPinned ? null : <NodeConnections item={item} />}
         <WindowBorder
           width={window.width}
           height={window.height}
@@ -207,7 +174,7 @@ const WindowInternal: FC<{
           isPinned={isPinned}
         />
       </div>
-    </DraggableCore>
+    </DraggableWindowWrapper>
   )
 }
 

@@ -16,10 +16,7 @@ const Connection_Internal = ({
   to: WindowType
   isActive?: boolean
 }) => {
-  const line = React.useMemo(
-    () => createLineBetweenWindows(from, to),
-    [from, to],
-  )
+  const line = createLineBetweenWindows(from, to)
 
   if (!line) {
     return null
@@ -28,8 +25,14 @@ const Connection_Internal = ({
   return (
     <Arrow
       isActive={isActive}
-      startPoint={line.from}
-      endPoint={line.to}
+      startPoint={{
+        x: line.from.x,
+        y: line.from.y + 65,
+      }}
+      endPoint={{
+        x: line.to.x,
+        y: line.to.y + 65 + 40,
+      }}
       config={{
         strokeWidth: 2,
         arrowColor: `var(--connection-color)`,

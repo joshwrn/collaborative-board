@@ -43,6 +43,16 @@ export const DEFAULT_ITEM: Item = {
   },
 }
 
+export const findGeneratorItems = (items: Item[]) =>
+  items.filter(
+    (i) => i.body.type === `generator`,
+  ) as ItemWithSpecificBody<`generator`>[]
+
+export const findGeneratedItems = (items: Item[]) =>
+  items.filter(
+    (i) => i.body.type === `generated`,
+  ) as ItemWithSpecificBody<`generated`>[]
+
 export interface ItemListStore {
   items: Item[]
   editItem: (id: string, content: Partial<Omit<Item, `body`>>) => void
@@ -72,15 +82,11 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
   },
   findGeneratedItems: () => {
     const state = get()
-    return state.items.filter(
-      (i) => i.body.type === `generated`,
-    ) as ItemWithSpecificBody<`generated`>[]
+    return findGeneratedItems(state.items)
   },
   findGeneratorItems: () => {
     const state = get()
-    return state.items.filter(
-      (i) => i.body.type === `generator`,
-    ) as ItemWithSpecificBody<`generator`>[]
+    return findGeneratorItems(state.items)
   },
   findParentItem: (id) => {
     const state = get()
