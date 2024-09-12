@@ -8,6 +8,7 @@ import { Line } from '@/ui/Connections/Line'
 import { CONNECTION_COLORS, NodeConnector } from '@/ui/Connections/NodeConnector'
 
 export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
+  const state = useStore([`activeFalConnection`, `setState`, `makeConnection`])
   return (
     <>
       <NodeConnector.Wrapper direction="incoming">
@@ -15,6 +16,20 @@ export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
           label={`settings`}
           backgroundColor={CONNECTION_COLORS.falSettingsConnections}
           direction="incoming"
+          onClick={() => {
+            if (state.activeFalConnection) {
+              state.makeConnection(
+                {
+                  to: item.id,
+                  from: state.activeFalConnection,
+                },
+                `falSettingsConnections`,
+              )
+              state.setState((draft) => {
+                draft.activeFalConnection = null
+              })
+            }
+          }}
         />
         {item.body.type === `generated` && (
           <NodeConnector.Connector

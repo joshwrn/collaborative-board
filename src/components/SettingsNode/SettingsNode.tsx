@@ -100,7 +100,7 @@ const SettingsNode_Internal: React.FC<{
             />
           </Modal.Content>
         </div>
-        <NodeConnections />
+        <NodeConnections fromId={node.id} />
       </div>
     </DraggableWindowWrapper>
   )

@@ -26,6 +26,8 @@ const Space_Internal: FC = () => {
     `fullScreenWindow`,
     `openContextMenu`,
     `pinnedWindow`,
+    `setState`,
+    `activeFalConnection`,
   ])
 
   useGestures({ wrapperRef, spaceRef })
@@ -34,6 +36,13 @@ const Space_Internal: FC = () => {
       <section
         ref={wrapperRef}
         className={styles.wrapper}
+        onClick={() => {
+          if (state.activeFalConnection) {
+            state.setState((draft) => {
+              draft.activeFalConnection = null
+            })
+          }
+        }}
         onMouseMove={(e) => {
           state.updateSpaceMousePosition({
             x: e.clientX,

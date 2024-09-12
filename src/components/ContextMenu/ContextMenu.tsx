@@ -63,11 +63,11 @@ const MenuItems = () => {
         <div
           className={styles.item}
           onClick={() => {
-            state.removeConnection(value.id, `itemConnections`)
+            state.removeConnection(value.id, `falSettingsConnections`)
             close()
           }}
         >
-          <p>Delete</p>
+          <p>Remove</p>
           <TrashIcon />
         </div>
       )

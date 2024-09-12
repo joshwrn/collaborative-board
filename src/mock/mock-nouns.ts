@@ -20,7 +20,7 @@ export const MOCK_NOUNS = [
   `a bear`,
   `a cat`,
   `a dog`,
-  `a elephant`,
+  `an elephant`,
   `a fox`,
   `a gorilla`,
   `a horse`,
@@ -40,6 +40,7 @@ export const MOCK_NOUNS = [
   `a dragon`,
   `a vampire`,
   `an unicorn`,
+  `a knight`,
 
   // places
   `paris`,

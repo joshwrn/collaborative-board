@@ -15,26 +15,6 @@ import styles from './Line.module.scss'
 const CONTROL_POINTS_RADIUS = 5
 const STRAIGHT_LINE_BEFORE_ARROW_HEAD = 5
 
-type Config = {
-  arrowColor?: string
-  controlPointsColor?: string
-  dotEndingBackground?: string
-  dotEndingRadius?: number
-  arrowHeadEndingSize?: number
-  strokeWidth?: number
-}
-
-type Props = {
-  startPoint: Point2d
-  endPoint: Point2d
-  showDebugGuideLines?: boolean
-  onMouseEnter?: (e: React.MouseEvent) => void
-  onMouseLeave?: (e: React.MouseEvent) => void
-  onClick?: (e: React.MouseEvent) => void
-  config?: Config
-  isActive?: boolean
-}
-
 const ControlPoints = ({
   p1,
   p2,
@@ -90,12 +70,32 @@ const calculatePercent = (current: number, total: number) => {
 
 const DOT_SPEED = 200
 
-const Line_Internal: React.FC<Props> = ({
+const Line_Internal: React.FC<{
+  startPoint: Point2d
+  endPoint: Point2d
+  showDebugGuideLines?: boolean
+  onMouseEnter?: (e: React.MouseEvent) => void
+  onMouseLeave?: (e: React.MouseEvent) => void
+  onClick?: (e: React.MouseEvent) => void
+  config?: {
+    arrowColor?: string
+    controlPointsColor?: string
+    dotEndingBackground?: string
+    dotEndingRadius?: number
+    arrowHeadEndingSize?: number
+    strokeWidth?: number
+    dashArray?: [number, number]
+  }
+  isActive?: boolean
+  onContextMenu?: (e: React.MouseEvent) => void
+}> = ({
   startPoint,
   endPoint,
   showDebugGuideLines = false,
+  onContextMenu,
   config,
   isActive = false,
+  onClick,
 }) => {
   const defaultConfig = {
     arrowColor: `#bcc4cc`,
@@ -104,6 +104,7 @@ const Line_Internal: React.FC<Props> = ({
     dotEndingRadius: 3,
     arrowHeadEndingSize: 9,
     strokeWidth: 1,
+    dashArray: [0, 0],
   }
   const currentConfig = {
     ...defaultConfig,
@@ -117,6 +118,7 @@ const Line_Internal: React.FC<Props> = ({
     strokeWidth,
     dotEndingBackground,
     dotEndingRadius,
+    dashArray,
   } = currentConfig
 
   // const arrowHeadOffset = arrowHeadEndingSize / 2
@@ -212,15 +214,33 @@ const Line_Internal: React.FC<Props> = ({
             </feMerge>
           </filter>
         </defs>
+
         <path
           className={styles.renderedLine}
           d={curvedLinePath}
           strokeWidth={strokeWidth}
           stroke={arrowColor}
           fill="none"
-          strokeDasharray={`0, 0`}
+          strokeDasharray={`${dashArray[0]}, ${dashArray[1]}`}
           strokeLinecap="round"
         />
+        <path
+          onClick={(e) => {
+            e.preventDefault()
+            onClick?.(e)
+          }}
+          onContextMenu={(e) => {
+            e.preventDefault()
+            onContextMenu?.(e)
+          }}
+          className={styles.renderedLine}
+          d={curvedLinePath}
+          strokeWidth={strokeWidth + 20}
+          stroke={`transparent`}
+          fill="none"
+          strokeLinecap="round"
+        />
+
         {isActive && (
           <circle
             id="followingCircle"

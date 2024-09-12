@@ -24,6 +24,7 @@ export interface ConnectedWindowsStore {
   ) => void
   showConnections: boolean
   setShowConnections: Setter<boolean>
+  activeFalConnection: string | null
 }
 
 export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
@@ -32,17 +33,22 @@ export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
 ) => ({
   showConnections: true,
   setShowConnections: (setter) => stateSetter(set, setter, `showConnections`),
-
+  activeFalConnection: null,
   falSettingsConnections: [
-    {
-      id: `test-fal-settings-node/initial-window`,
-      from: `test-fal-settings-node`,
-      to: `initial-window`,
-    },
+    // {
+    //   id: `test-fal-settings-node/initial-window`,
+    //   from: `test-fal-settings-node`,
+    //   to: `initial-window`,
+    // },
   ],
 
   makeConnection: (connector, type) => {
     const state = get()
+    if (
+      state[type].some((c) => c.from === connector.from && c.to === connector.to)
+    ) {
+      return
+    }
     state.setState((draft) => {
       draft[type] = [
         ...draft[type],
