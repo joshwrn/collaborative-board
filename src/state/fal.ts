@@ -151,7 +151,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     if (item?.body.type !== `generator`) {
       return
     }
-    const outgoingConnections = state.connections.filter(
+    const outgoingConnections = state.itemConnections.filter(
       (connection) => connection.from === item.id,
     )
     state.createItem({
@@ -164,7 +164,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
         activatedAt: new Date().toISOString(),
       },
     })
-    const connections = state.connections.filter((c) => c.from === item.id)
+    const connections = state.itemConnections.filter((c) => c.from === item.id)
     const connectedItems = state
       .findGeneratedItems()
       .filter((i) => connections.map((c) => c.to).includes(i.id))
@@ -178,7 +178,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
         to: newItemId,
         from: item.id,
       },
-      `connections`,
+      `itemConnections`,
     )
     state.toggleOpenWindow(newItemId)
     state.moveWindowNextTo(item.id, newItemId)
@@ -196,7 +196,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     }
     const { prompt } = item.body
     const { base64 } = item.body
-    const connectedIds = state.connections
+    const connectedIds = state.itemConnections
       .filter((c) => c.from === item.id)
       .map((c) => c.to)
     const itemToUpdate = state

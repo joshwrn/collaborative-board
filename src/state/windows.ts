@@ -183,7 +183,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         window.y = 0
       }
     })
-    const { connections, zoom, pan, windows } = state
+    const { itemConnections: connections, zoom, pan, windows } = state
     if (windows.length === 0) {
       throw new Error(`No windows to organize`)
     }

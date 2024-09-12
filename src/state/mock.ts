@@ -27,7 +27,7 @@ export const mockStore: AppStateCreator<MockStore> = (set, get) => ({
     }
     set(() => ({
       items: items,
-      connections: connections,
+      itemConnections: connections,
       windows: createMockWindow(items, startingPosition),
     }))
   },
@@ -40,14 +40,14 @@ export const mockStore: AppStateCreator<MockStore> = (set, get) => ({
     const connectionsSet = new Set(connections)
     set((state) => ({
       items: items,
-      connections: [...connectionsSet],
+      itemConnections: [...connectionsSet],
       windows: createMockWindow(items),
     }))
   },
   clearMocks: () => {
     set(() => ({
       items: [],
-      connections: [],
+      itemConnections: [],
       windows: [],
     }))
   },

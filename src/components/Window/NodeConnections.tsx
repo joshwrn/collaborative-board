@@ -1,24 +1,23 @@
 import React from 'react'
 
 import { createLineBetweenWindows } from '@/logic/createLineBetweenWindowSides'
-import { CONNECTION_COLORS } from '@/state/connections'
 import { useStore } from '@/state/gen-state'
 import type { Item } from '@/state/items'
 import type { WindowType } from '@/state/windows'
 import { Line } from '@/ui/Connections/Line'
-import { NodeConnector } from '@/ui/Connections/NodeConnector'
+import { CONNECTION_COLORS, NodeConnector } from '@/ui/Connections/NodeConnector'
 
 export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
   return (
     <>
       <NodeConnector.Wrapper direction="incoming">
-        <NodeConnector.Connection
+        <NodeConnector.Connector
           label={`settings`}
           backgroundColor={CONNECTION_COLORS.falSettingsConnections}
           direction="incoming"
         />
         {item.body.type === `generated` && (
-          <NodeConnector.Connection
+          <NodeConnector.Connector
             label={`generator`}
             backgroundColor={CONNECTION_COLORS.connections}
             direction="incoming"
@@ -27,7 +26,7 @@ export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
       </NodeConnector.Wrapper>
       <NodeConnector.Wrapper direction="outgoing">
         {item.body.type === `generator` && (
-          <NodeConnector.Connection
+          <NodeConnector.Connector
             label={`generations`}
             backgroundColor={CONNECTION_COLORS.connections}
             direction="outgoing"
@@ -40,7 +39,7 @@ export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
 
 const ItemConnections_Internal: React.FC = () => {
   const state = useStore([
-    `connections`,
+    `itemConnections`,
     `windows`,
     `showConnections`,
     `items`,
@@ -60,7 +59,7 @@ const ItemConnections_Internal: React.FC = () => {
 
   return (
     <>
-      {state.connections.map((connection, i) => {
+      {state.itemConnections.map((connection, i) => {
         const windowFrom = windowsMap[connection.from]
         const windowTo = windowsMap[connection.to]
 

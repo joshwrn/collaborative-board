@@ -49,7 +49,7 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
     const savedState: SavedState = {
       windows: state.windows,
       items: state.items,
-      connections: state.connections,
+      connections: state.itemConnections,
     }
     const blob = new Blob([JSON.stringify(savedState)], {
       type: `application/json`,
@@ -73,7 +73,7 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
         produceState(set, (draft) => {
           draft.windows = saveObject.windows
           draft.items = saveObject.items
-          draft.connections = saveObject.connections
+          draft.itemConnections = saveObject.connections
         })
       } catch (error) {
         console.error(error)

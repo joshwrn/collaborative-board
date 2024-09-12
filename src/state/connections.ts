@@ -11,37 +11,16 @@ export const connectionSchema = z.object({
 
 export type Connection = z.infer<typeof connectionSchema>
 
-export const CONNECTION_TYPES = [
-  `falSettingsConnections`,
-  `connections`,
-] as const
-export type ConnectionType = (typeof CONNECTION_TYPES)[number]
-
-export const CONNECTION_COLORS: Record<ConnectionType, string> = {
-  falSettingsConnections: `hsl(248, 100%, 75%)`,
-  connections: `var(--connection-color)`,
-}
-
-export const CONNECTION_MARGINS = {
-  from: 20,
-  to: 20,
-}
-
-export const CONNECTION_NODE_MARGINS = {
-  top: `50px`,
-  side: `-2px`,
-}
-
 export interface ConnectedWindowsStore {
-  connections: Connection[]
+  itemConnections: Connection[]
   falSettingsConnections: Connection[]
   makeConnection: (
     connection: Omit<Connection, `id`>,
-    type: `connections` | `falSettingsConnections`,
+    type: `falSettingsConnections` | `itemConnections`,
   ) => void
   removeConnection: (
     connectionId: string,
-    type: `connections` | `falSettingsConnections`,
+    type: `falSettingsConnections` | `itemConnections`,
   ) => void
   showConnections: boolean
   setShowConnections: Setter<boolean>
@@ -76,7 +55,7 @@ export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
     })
   },
 
-  connections: [],
+  itemConnections: [],
 
   removeConnection: (connectionId, type) => {
     const state = get()

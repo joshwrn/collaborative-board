@@ -1,11 +1,10 @@
 import React from 'react'
 
 import { createLineBetweenWindows } from '@/logic/createLineBetweenWindowSides'
-import { CONNECTION_COLORS } from '@/state/connections'
 import { useStore } from '@/state/gen-state'
 import type { WindowType } from '@/state/windows'
 import { Line } from '@/ui/Connections/Line'
-import { NodeConnector } from '@/ui/Connections/NodeConnector'
+import { CONNECTION_COLORS, NodeConnector } from '@/ui/Connections/NodeConnector'
 
 export const CONNECTION_LABELS = {
   outgoing: {
@@ -16,7 +15,7 @@ export const CONNECTION_LABELS = {
 export const NodeConnections: React.FC = ({}) => {
   return (
     <NodeConnector.Wrapper direction="outgoing">
-      <NodeConnector.Connection
+      <NodeConnector.Connector
         label={`canvases`}
         backgroundColor={CONNECTION_COLORS.falSettingsConnections}
         direction="outgoing"

@@ -15,7 +15,7 @@ export const loadScenario = async (scenario: string) => {
     state.setState((draft) => {
       draft.windows = saveObject.windows
       draft.items = saveObject.items
-      draft.connections = saveObject.connections
+      draft.itemConnections = saveObject.connections
     })
   } catch (error) {
     if (error instanceof z.ZodError) {

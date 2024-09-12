@@ -94,7 +94,7 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
     if (!item) {
       throw new Error(`item not found - id: ${id}`)
     }
-    const connection = state.connections.find((c) => c.to === id)
+    const connection = state.itemConnections.find((c) => c.to === id)
     const parentId = connection?.from
     const parent = state.items.find((i) => i.id === parentId)
     if (!parent) {
@@ -108,8 +108,8 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
     if (!item) {
       throw new Error(`item not found - id: ${id}`)
     }
-    const connection = state.connections.find((c) => c.to === id)
-    const relatedConnections = state.connections
+    const connection = state.itemConnections.find((c) => c.to === id)
+    const relatedConnections = state.itemConnections
       .filter((c) => c.from === connection?.from)
       .map((c) => c.to)
     // activate
@@ -139,7 +139,7 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
   deleteItem: (id) => {
     set((state) => ({
       items: state.items.filter((item) => item.id !== id),
-      connections: state.connections.filter(
+      itemConnections: state.itemConnections.filter(
         (connection) => !connection.id.includes(id),
       ),
       windows: state.windows.filter((window) => window.id !== id),

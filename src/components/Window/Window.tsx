@@ -30,7 +30,7 @@ const WindowInternal: FC<{
     `toggleOpenWindow`,
     `setOneWindow`,
     `reorderWindows`,
-    `connections`,
+    `itemConnections`,
     `setFullScreenWindow`,
     `zoom`,
     `selectedWindow`,
@@ -53,8 +53,8 @@ const WindowInternal: FC<{
   })
 
   const fromConnections = React.useMemo(
-    () => state.connections.filter((c) => c.from === item.id),
-    [state.connections, item.id],
+    () => state.itemConnections.filter((c) => c.from === item.id),
+    [state.itemConnections, item.id],
   )
 
   return (

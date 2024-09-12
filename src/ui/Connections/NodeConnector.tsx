@@ -1,8 +1,20 @@
 import React from 'react'
 
-import { CONNECTION_NODE_MARGINS } from '@/state/connections'
-
 import style from './NodeConnector.module.scss'
+
+export const CONNECTION_NODE_MARGINS = {
+  top: `50px`,
+  side: `-2px`,
+}
+export const CONNECTION_TYPES = [
+  `falSettingsConnections`,
+  `connections`,
+] as const
+export type ConnectionType = (typeof CONNECTION_TYPES)[number]
+export const CONNECTION_COLORS: Record<ConnectionType, string> = {
+  falSettingsConnections: `hsl(248, 100%, 75%)`,
+  connections: `var(--connection-color)`,
+}
 
 const NodeConnectorWrapper: React.FC<{
   children: React.ReactNode
@@ -36,17 +48,20 @@ const NodeConnectorWrapper: React.FC<{
   )
 }
 
-const NodeConnection: React.FC<{
+const Connector: React.FC<{
   label: string
   backgroundColor: string
   direction: `incoming` | `outgoing`
-}> = ({ label, backgroundColor, direction }) => {
+  onClick?: (e: React.MouseEvent) => void
+}> = ({ label, backgroundColor, direction, onClick }) => {
   return (
     <div
       className={style.nodeWrapper}
       style={{
         flexDirection: direction === `outgoing` ? `row-reverse` : `row`,
+        cursor: onClick ? `pointer` : `default`,
       }}
+      onClick={onClick}
     >
       <p className={style.label}>{label}</p>
       <div
@@ -61,5 +76,5 @@ const NodeConnection: React.FC<{
 
 export const NodeConnector = {
   Wrapper: NodeConnectorWrapper,
-  Connection: NodeConnection,
+  Connector: Connector,
 }
