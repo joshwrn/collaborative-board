@@ -6,11 +6,11 @@ import { useGestures } from '@/gestures'
 import { useStore } from '@/state/gen-state'
 import { SPACE_ATTRS } from '@/state/space'
 
-import { Connections } from '../Connections/Connections'
 import { SettingsNodeConnections } from '../SettingsNode/NodeConnections'
 import { SettingsNodes } from '../SettingsNode/SettingsNode'
 import { SnapLines } from '../SnapLine/SnapLine'
 import { FullScreenWindow } from '../Window/FullScreenWindow/FullScreenWindow'
+import { ItemConnections } from '../Window/NodeConnections'
 import { PinnedWindow } from '../Window/PinnedWindow/PinnedWindow'
 import { Windows } from '../Window/Window'
 import styles from './Space.module.scss'
@@ -53,7 +53,7 @@ const Space_Internal: FC = () => {
           }}
         >
           <SpaceBackground />
-          <Connections />
+          <ItemConnections />
           <SettingsNodeConnections />
           <Windows />
           <SettingsNodes />

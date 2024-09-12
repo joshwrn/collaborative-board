@@ -23,8 +23,8 @@ export const CONNECTION_COLORS: Record<ConnectionType, string> = {
 }
 
 export const CONNECTION_MARGINS = {
-  from: 5,
-  to: 5,
+  from: 20,
+  to: 20,
 }
 
 export const CONNECTION_NODE_MARGINS = {

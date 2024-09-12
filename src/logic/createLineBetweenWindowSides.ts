@@ -1,10 +1,6 @@
 import type { Point2d } from '@/state'
+import { CONNECTION_MARGINS } from '@/state/connections'
 import type { WindowType } from '@/state/windows'
-
-export const CONNECTION_MARGINS = {
-  from: 5,
-  to: 5,
-}
 
 export interface LineBetweenWindows {
   from: Point2d

@@ -10,12 +10,12 @@ import {
 } from '@/logic/arrows'
 import type { Point2d } from '@/state'
 
-import styles from './Arrow.module.scss'
+import styles from './Line.module.scss'
 
 const CONTROL_POINTS_RADIUS = 5
 const STRAIGHT_LINE_BEFORE_ARROW_HEAD = 5
 
-type ArrowConfig = {
+type Config = {
   arrowColor?: string
   controlPointsColor?: string
   dotEndingBackground?: string
@@ -31,7 +31,7 @@ type Props = {
   onMouseEnter?: (e: React.MouseEvent) => void
   onMouseLeave?: (e: React.MouseEvent) => void
   onClick?: (e: React.MouseEvent) => void
-  config?: ArrowConfig
+  config?: Config
   isActive?: boolean
 }
 
@@ -90,7 +90,7 @@ const calculatePercent = (current: number, total: number) => {
 
 const DOT_SPEED = 200
 
-const Arrow_Internal: React.FC<Props> = ({
+const Line_Internal: React.FC<Props> = ({
   startPoint,
   endPoint,
   showDebugGuideLines = false,
@@ -119,7 +119,7 @@ const Arrow_Internal: React.FC<Props> = ({
     dotEndingRadius,
   } = currentConfig
 
-  const arrowHeadOffset = arrowHeadEndingSize / 2
+  // const arrowHeadOffset = arrowHeadEndingSize / 2
   const boundingBoxElementsBuffer =
     strokeWidth +
     arrowHeadEndingSize / 2 +
@@ -244,7 +244,7 @@ const Arrow_Internal: React.FC<Props> = ({
             />
           </circle>
         )}
-        <circle
+        {/* <circle
           className={styles.dotEnding}
           cx={p1.x}
           cy={p1.y}
@@ -266,7 +266,7 @@ const Arrow_Internal: React.FC<Props> = ({
           style={{
             transform: `translate(${p4.x - arrowHeadOffset * 2}px, ${p4.y - arrowHeadOffset}px)`,
           }}
-        />
+        /> */}
 
         {showDebugGuideLines && (
           <ControlPoints
@@ -282,4 +282,4 @@ const Arrow_Internal: React.FC<Props> = ({
   )
 }
 
-export const Arrow = React.memo(Arrow_Internal)
+export const Line = React.memo(Line_Internal)

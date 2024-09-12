@@ -130,7 +130,7 @@ const createNextWindowPosition = (
   return startingPosition
 }
 
-const PADDING_BETWEEN_WINDOWS = 130
+const PADDING_BETWEEN_WINDOWS = 300
 
 export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   set,
