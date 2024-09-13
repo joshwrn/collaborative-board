@@ -16,6 +16,9 @@ export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
           label={`settings`}
           backgroundColor={CONNECTION_COLORS.falSettingsConnections}
           direction="incoming"
+          wrapperStyle={{
+            cursor: state.activeFalConnection ? `pointer` : `default`,
+          }}
           onClick={() => {
             if (state.activeFalConnection) {
               state.makeConnection(

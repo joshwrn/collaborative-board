@@ -53,13 +53,15 @@ const Connector: React.FC<{
   backgroundColor: string
   direction: `incoming` | `outgoing`
   onClick?: (e: React.MouseEvent) => void
-}> = ({ label, backgroundColor, direction, onClick }) => {
+  wrapperStyle?: React.CSSProperties
+}> = ({ label, backgroundColor, direction, onClick, wrapperStyle }) => {
   return (
     <div
       className={style.nodeWrapper}
       style={{
         flexDirection: direction === `outgoing` ? `row-reverse` : `row`,
         cursor: onClick ? `pointer` : `default`,
+        ...wrapperStyle,
       }}
       onClick={onClick}
     >

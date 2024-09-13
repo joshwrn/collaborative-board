@@ -3,7 +3,6 @@ import { z } from 'zod'
 
 import type { LiveImageResult } from '@/fal/workflows/useRealtimeConnect'
 
-import type { Connection } from './connections'
 import type { AppStateCreator } from './state'
 
 export interface FalStore {
@@ -15,6 +14,7 @@ export interface FalStore {
   fetchRealtimeImage: (itemId: string) => Promise<void>
   fetchRealtimeImageFn: ((req: FalSettings) => Promise<LiveImageResult>) | null
   falSettingsNodes: FalSettingsNode[]
+  discoverFalSettings: (windowId: string) => FalSettingsInput
   updateFalSettingsNode: (
     id: string,
     settings: Partial<FalSettingsInput>,
@@ -185,6 +185,37 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     await state.fetchRealtimeImage(itemId)
   },
 
+  discoverFalSettings: (windowId) => {
+    const state = get()
+    const directConnection = state.falSettingsConnections.find(
+      (c) => c.to === windowId,
+    )
+    if (directConnection) {
+      const falSettingsNode = state.falSettingsNodes.find(
+        (n) => n.id === directConnection.from,
+      )
+      if (!falSettingsNode) {
+        return state.falSettings
+      }
+      return falSettingsNode
+    }
+    const parentItemConnection = state.itemConnections.find(
+      (c) => c.to === windowId,
+    )
+    if (parentItemConnection) {
+      const parentSettingsConnection = state.falSettingsConnections.find(
+        (c) => c.to === parentItemConnection.from,
+      )
+      const falSettingsNode = state.falSettingsNodes.find(
+        (n) => n.id === parentSettingsConnection?.from,
+      )
+      if (falSettingsNode) {
+        return falSettingsNode
+      }
+    }
+    return state.falSettings
+  },
+
   fetchRealtimeImage: async (itemId) => {
     const state = get()
     if (!state.fetchRealtimeImageFn) {
@@ -206,15 +237,14 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
       console.warn(`itemToUpdate not found`)
       return
     }
+    const falSettings = state.discoverFalSettings(itemToUpdate.id)
     const img = await state.fetchRealtimeImageFn({
       prompt: `a ${itemToUpdate.body.modifier} of ${prompt}`,
       image_url: base64,
-      strength: state.falSettings.strength,
-      num_inference_steps: state.falSettings.num_inference_steps,
-      guidance_scale: state.falSettings.guidance_scale,
       seed: 42,
       enable_safety_checks: false,
       sync_mode: true,
+      ...falSettings,
     })
     state.editItemContent(itemToUpdate.id, {
       base64: img.url,
