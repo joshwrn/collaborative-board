@@ -13,7 +13,7 @@ const FalSettingsModal: React.FC = () => {
     `setState`,
     `updateFalSettings`,
     `resetFalSettings`,
-    `falSettings`,
+    `globalFalSettings`,
   ])
   return (
     <Modal.Container
@@ -24,7 +24,7 @@ const FalSettingsModal: React.FC = () => {
         })
       }}
     >
-      <Modal.Header title="AI Settings">
+      <Modal.Header title="Global AI Settings">
         <Modal.Button onClick={() => state.resetFalSettings()}>
           Reset
         </Modal.Button>
@@ -34,7 +34,7 @@ const FalSettingsModal: React.FC = () => {
           description={falSettingsSchema.shape.num_inference_steps.description}
           label="Inference Steps"
           step="1"
-          value={state.falSettings.num_inference_steps}
+          value={state.globalFalSettings.num_inference_steps}
           min={falSettingsSchema.shape.num_inference_steps.minValue}
           max={falSettingsSchema.shape.num_inference_steps.maxValue}
           onChange={(value) => {
@@ -47,7 +47,7 @@ const FalSettingsModal: React.FC = () => {
           description={falSettingsSchema.shape.guidance_scale.description}
           label="Guidance Scale"
           step={0.5}
-          value={state.falSettings.guidance_scale}
+          value={state.globalFalSettings.guidance_scale}
           min={falSettingsSchema.shape.guidance_scale.minValue}
           max={falSettingsSchema.shape.guidance_scale.maxValue}
           onChange={(value) => {
@@ -59,7 +59,7 @@ const FalSettingsModal: React.FC = () => {
         <Slider
           description={falSettingsSchema.shape.strength.description}
           label="Strength"
-          value={state.falSettings.strength}
+          value={state.globalFalSettings.strength}
           min={falSettingsSchema.shape.strength.minValue}
           max={falSettingsSchema.shape.strength.maxValue}
           onChange={(value) => {

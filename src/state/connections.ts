@@ -22,6 +22,11 @@ export interface ConnectedWindowsStore {
     connectionId: string,
     type: `falSettingsConnections` | `itemConnections`,
   ) => void
+  removeManyConnections: (
+    entityId: string,
+    type: `falSettingsConnections` | `itemConnections`,
+    direction: `from` | `to`,
+  ) => void
   showConnections: boolean
   setShowConnections: Setter<boolean>
   activeFalConnection: string | null
@@ -34,13 +39,7 @@ export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
   showConnections: true,
   setShowConnections: (setter) => stateSetter(set, setter, `showConnections`),
   activeFalConnection: null,
-  falSettingsConnections: [
-    // {
-    //   id: `test-fal-settings-node/initial-window`,
-    //   from: `test-fal-settings-node`,
-    //   to: `initial-window`,
-    // },
-  ],
+  falSettingsConnections: [],
 
   makeConnection: (connector, type) => {
     const state = get()
@@ -62,7 +61,14 @@ export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
   },
 
   itemConnections: [],
-
+  removeManyConnections: (entityId, type, direction) => {
+    const state = get()
+    state.setState((draft) => {
+      draft[type] = draft[type].filter(
+        (connection) => connection[direction] !== entityId,
+      )
+    })
+  },
   removeConnection: (connectionId, type) => {
     const state = get()
     state.setState((draft) => {

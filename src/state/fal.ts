@@ -7,7 +7,7 @@ import type { AppStateCreator } from './state'
 
 export interface FalStore {
   showFalSettingsModal: boolean
-  falSettings: FalSettingsInput
+  globalFalSettings: FalSettingsInput
   resetFalSettings: () => void
   updateFalSettings: (settings: Partial<FalSettingsInput>) => void
   generateInitialWindow: (itemId: string) => Promise<void>
@@ -19,6 +19,7 @@ export interface FalStore {
     id: string,
     settings: Partial<FalSettingsInput>,
   ) => void
+  deleteFalSettingsNode: (id: string) => void
 }
 
 export type FalSettingsNode = FalSettingsInput & { id: string }
@@ -98,9 +99,15 @@ const DEFAULT_FAL_SETTINGS: FalSettingsInput = {
 }
 
 export const falStore: AppStateCreator<FalStore> = (set, get) => ({
-  falSettings: DEFAULT_FAL_SETTINGS,
+  globalFalSettings: DEFAULT_FAL_SETTINGS,
   showFalSettingsModal: false,
-
+  deleteFalSettingsNode: (id) => {
+    const state = get()
+    state.setState((draft: FalStore) => {
+      draft.falSettingsNodes = draft.falSettingsNodes.filter((n) => n.id !== id)
+    })
+    state.removeManyConnections(id, `falSettingsConnections`, `from`)
+  },
   falSettingsNodes: [
     {
       id: `test-fal-settings-node`,
@@ -122,8 +129,8 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
       const parsedSettings = falSettingsInputSchema.partial().parse(settings)
       const state = get()
       state.setState((draft: FalStore) => {
-        draft.falSettings = {
-          ...draft.falSettings,
+        draft.globalFalSettings = {
+          ...draft.globalFalSettings,
           ...parsedSettings,
         }
       })
@@ -138,7 +145,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
   resetFalSettings: () => {
     const state = get()
     state.setState((draft) => {
-      draft.falSettings = DEFAULT_FAL_SETTINGS
+      draft.globalFalSettings = DEFAULT_FAL_SETTINGS
     })
   },
 
@@ -195,7 +202,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
         (n) => n.id === directConnection.from,
       )
       if (!falSettingsNode) {
-        return state.falSettings
+        return state.globalFalSettings
       }
       return falSettingsNode
     }
@@ -213,7 +220,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
         return falSettingsNode
       }
     }
-    return state.falSettings
+    return state.globalFalSettings
   },
 
   fetchRealtimeImage: async (itemId) => {

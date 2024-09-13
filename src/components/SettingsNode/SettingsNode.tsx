@@ -15,7 +15,12 @@ const SettingsNode_Internal: React.FC<{
   node: FalSettingsNode
   window: WindowType
 }> = ({ node, window }) => {
-  const state = useStore([`setState`, `updateFalSettingsNode`, `reorderWindows`])
+  const state = useStore([
+    `setState`,
+    `updateFalSettingsNode`,
+    `reorderWindows`,
+    `deleteFalSettingsNode`,
+  ])
 
   const nodeRef = React.useRef<HTMLDivElement>(null)
 
@@ -55,7 +60,13 @@ const SettingsNode_Internal: React.FC<{
           }}
         >
           <Modal.Header title="AI Settings" className="handle">
-            <Modal.Button onClick={() => {}}>Delete</Modal.Button>
+            <Modal.Button
+              onClick={() => {
+                state.deleteFalSettingsNode(node.id)
+              }}
+            >
+              Delete
+            </Modal.Button>
           </Modal.Header>
           <Modal.Content className={styles.content}>
             <Slider
