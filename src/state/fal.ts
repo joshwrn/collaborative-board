@@ -106,7 +106,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     state.setState((draft: FalStore) => {
       draft.falSettingsNodes = draft.falSettingsNodes.filter((n) => n.id !== id)
     })
-    state.removeManyConnections(id, `falSettingsConnections`, `from`)
+    state.removeManyConnections(id, `falSettingsConnections`)
   },
   falSettingsNodes: [
     {

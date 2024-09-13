@@ -25,7 +25,6 @@ export interface ConnectedWindowsStore {
   removeManyConnections: (
     entityId: string,
     type: `falSettingsConnections` | `itemConnections`,
-    direction: `from` | `to`,
   ) => void
   showConnections: boolean
   setShowConnections: Setter<boolean>
@@ -61,11 +60,11 @@ export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
   },
 
   itemConnections: [],
-  removeManyConnections: (entityId, type, direction) => {
+  removeManyConnections: (entityId, type) => {
     const state = get()
     state.setState((draft) => {
       draft[type] = draft[type].filter(
-        (connection) => connection[direction] !== entityId,
+        (connection) => !connection.id.includes(entityId),
       )
     })
   },

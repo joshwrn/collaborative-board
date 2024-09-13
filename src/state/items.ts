@@ -137,13 +137,14 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
     })
   },
   deleteItem: (id) => {
-    set((state) => ({
+    const state = get()
+    set((s) => ({
       items: state.items.filter((item) => item.id !== id),
-      itemConnections: state.itemConnections.filter(
-        (connection) => !connection.id.includes(id),
-      ),
       windows: state.windows.filter((window) => window.id !== id),
     }))
+
+    state.removeManyConnections(id, `itemConnections`)
+    state.removeManyConnections(id, `falSettingsConnections`)
   },
 
   hoveredItem: null,
