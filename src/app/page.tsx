@@ -1,5 +1,4 @@
 'use client'
-
 import * as fal from '@fal-ai/serverless-client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React, { Suspense } from 'react'
@@ -12,11 +11,10 @@ import { ListGuard } from '@/components/ItemList/List/List'
 import { Space } from '@/components/Space/Space'
 import { StatsBar } from '@/components/StatsBar/StatsBar'
 import { Toolbar } from '@/components/Toolbar/Toolbar'
-import { useRealtimeConnect } from '@/fal/workflows/useRealtimeConnect'
-import { useFullStore, useStore } from '@/state/gen-state'
-import { DEFAULT_WINDOW } from '@/state/windows'
+import { useFalRealtimeConnect } from '@/fal/workflows/useRealtimeConnect'
+import { useInitialScene } from '@/mock/useInitialScene'
+import { useStore } from '@/state/gen-state'
 import { Toaster } from '@/ui/Toast'
-import { useOnLoad } from '@/utils/useInitial'
 
 import styles from './page.module.scss'
 
@@ -35,24 +33,8 @@ export default function Home() {
     `debug_showFps`,
   ])
 
-  useOnLoad(async () => {
-    const s = useFullStore.getState()
-    const windowId = s.createNewWindow()
-    const [newWindow] = useFullStore.getState().windows
-    s.setOneWindow(windowId, {
-      x: newWindow.x - DEFAULT_WINDOW.width / 2.5,
-    })
-    const nodeId = s.createFalSettingsNode({
-      falSettingsWindow: {
-        x: newWindow.x - DEFAULT_WINDOW.width / 2.5 - 600,
-        y: newWindow.y + 80,
-      },
-    })
-    s.makeFalSettingsConnection(nodeId, windowId)
-    await s.generateInitialWindow(windowId)
-  })
-
-  useRealtimeConnect()
+  useInitialScene()
+  useFalRealtimeConnect()
 
   return (
     <QueryClientProvider client={queryClient}>

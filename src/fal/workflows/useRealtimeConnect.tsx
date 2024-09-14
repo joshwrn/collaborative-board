@@ -7,7 +7,7 @@ import { Time } from '@/utils/time'
 
 export type LiveImageResult = { url: string }
 
-export const useRealtimeConnect = () => {
+export const useFalRealtimeConnect = () => {
   const [count, setCount] = useState(0)
   const state = useStore([`setState`])
 
