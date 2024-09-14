@@ -216,7 +216,6 @@ const Line_Internal: React.FC<{
         </defs>
 
         <path
-          className={styles.renderedLine}
           d={curvedLinePath}
           strokeWidth={strokeWidth}
           stroke={arrowColor}
@@ -233,7 +232,10 @@ const Line_Internal: React.FC<{
             e.preventDefault()
             onContextMenu?.(e)
           }}
-          className={styles.renderedLine}
+          style={{
+            zIndex: 10,
+            pointerEvents: `visibleStroke`,
+          }}
           d={curvedLinePath}
           strokeWidth={strokeWidth + 20}
           stroke={`transparent`}
@@ -264,29 +266,6 @@ const Line_Internal: React.FC<{
             />
           </circle>
         )}
-        {/* <circle
-          className={styles.dotEnding}
-          cx={p1.x}
-          cy={p1.y}
-          r={dotEndingRadius}
-          stroke={arrowColor}
-          strokeWidth={strokeWidth}
-          fill={dotEndingBackground}
-        />
-        <path
-          className={styles.arrowHeadEnding}
-          d={`
-          M ${(arrowHeadEndingSize / 5) * 2} 0
-          L ${arrowHeadEndingSize} ${arrowHeadEndingSize / 2}
-          L ${(arrowHeadEndingSize / 5) * 2} ${arrowHeadEndingSize}`}
-          fill="none"
-          stroke={arrowColor}
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
-          style={{
-            transform: `translate(${p4.x - arrowHeadOffset * 2}px, ${p4.y - arrowHeadOffset}px)`,
-          }}
-        /> */}
 
         {showDebugGuideLines && (
           <ControlPoints
