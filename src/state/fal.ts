@@ -2,8 +2,10 @@ import { nanoid } from 'nanoid'
 import { z } from 'zod'
 
 import type { LiveImageResult } from '@/fal/workflows/useRealtimeConnect'
+import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
 
 import type { AppStateCreator } from './state'
+import { createNextWindowPosition } from './windows'
 
 export interface FalStore {
   showFalSettingsModal: boolean
@@ -20,6 +22,8 @@ export interface FalStore {
     settings: Partial<FalSettingsInput>,
   ) => void
   deleteFalSettingsNode: (id: string) => void
+  createFalSettingsNode: () => string
+  makeFalSettingsConnection: (from: string, to: string) => void
 }
 
 export type FalSettingsNode = FalSettingsInput & { id: string }
@@ -98,9 +102,50 @@ const DEFAULT_FAL_SETTINGS: FalSettingsInput = {
   strength: 0.8,
 }
 
+const DEFAULT_FAL_SETTINGS_WINDOW = {
+  width: 300,
+  height: 275,
+}
+
 export const falStore: AppStateCreator<FalStore> = (set, get) => ({
   globalFalSettings: DEFAULT_FAL_SETTINGS,
   showFalSettingsModal: false,
+  createFalSettingsNode: () => {
+    const state = get()
+    const id = nanoid()
+    state.setState((draft: FalStore) => {
+      draft.falSettingsNodes.push({
+        id,
+        ...DEFAULT_FAL_SETTINGS,
+      })
+    })
+    state.toggleOpenWindow(id)
+    const center = spaceCenterPoint(state.zoom, state.pan)
+    state.setOneWindow(id, {
+      ...DEFAULT_FAL_SETTINGS_WINDOW,
+      ...createNextWindowPosition(state.windows, center, id),
+    })
+    return id
+  },
+  makeFalSettingsConnection: (from, to) => {
+    const state = get()
+    const existingConnection = state.falSettingsConnections.find(
+      (c) => c.to === to,
+    )
+    if (existingConnection) {
+      state.removeConnection(existingConnection.id, `falSettingsConnections`)
+    }
+    state.makeConnection(
+      {
+        from: from,
+        to: to,
+      },
+      `falSettingsConnections`,
+    )
+    state.setState((draft) => {
+      draft.activeFalConnection = null
+    })
+  },
   deleteFalSettingsNode: (id) => {
     const state = get()
     state.setState((draft: FalStore) => {
@@ -201,10 +246,9 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
       const falSettingsNode = state.falSettingsNodes.find(
         (n) => n.id === directConnection.from,
       )
-      if (!falSettingsNode) {
-        return state.globalFalSettings
+      if (falSettingsNode) {
+        return falSettingsNode
       }
-      return falSettingsNode
     }
     const parentItemConnection = state.itemConnections.find(
       (c) => c.to === windowId,

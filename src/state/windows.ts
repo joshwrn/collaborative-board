@@ -82,28 +82,7 @@ export const newWindowSizeInBounds = (newSize: {
   return size
 }
 
-const createNewWindowPosition = (
-  windows: WindowType[],
-  zoom: number,
-  pan: Point2d,
-) => {
-  const centerPoint = spaceCenterPoint(zoom, pan)
-  const startingPosition = {
-    x: centerPoint.x - WINDOW_ATTRS.defaultSize.width / 2,
-    y: centerPoint.y - WINDOW_ATTRS.defaultSize.height / 2,
-  }
-  for (let i = 0; i < windows.length; i++) {
-    const window = windows[i]
-    if (window.x === startingPosition.x && window.y === startingPosition.y) {
-      startingPosition.x += 20
-      startingPosition.y += 20
-      i = 0
-    }
-  }
-  return startingPosition
-}
-
-const createNextWindowPosition = (
+export const createNextWindowPosition = (
   windows: WindowType[],
   startingPosition: Point2d,
   nextId: string,
@@ -248,10 +227,18 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       (highest, window) => Math.max(highest, window.zIndex),
       0,
     )
+    const centerPoint = spaceCenterPoint(state.zoom, state.pan)
     state.setState((draft) => {
       draft.windows.push({
         id,
-        ...createNewWindowPosition(draft.windows, state.zoom, state.pan),
+        ...createNextWindowPosition(
+          draft.windows,
+          {
+            x: centerPoint.x - WINDOW_ATTRS.defaultSize.width / 2,
+            y: centerPoint.y - WINDOW_ATTRS.defaultSize.height / 2,
+          },
+          id,
+        ),
         width: WINDOW_ATTRS.defaultSize.width,
         height: WINDOW_ATTRS.defaultSize.height,
         zIndex: highestZIndex + 1,

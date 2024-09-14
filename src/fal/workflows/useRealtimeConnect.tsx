@@ -11,6 +11,9 @@ export const useRealtimeConnect = () => {
   const [count, setCount] = useState(0)
   const state = useStore([`setState`])
 
+  const lastTimeout = React.useRef<number>(Date.now())
+  const totalTimeouts = React.useRef<number>(0)
+
   React.useEffect(() => {
     const requestsById = new Map<
       string,
@@ -28,14 +31,14 @@ export const useRealtimeConnect = () => {
       onError: (error) => {
         console.error(error)
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        useFullStore.getState().timedNotification({
-          notification: {
-            id: `fal-realtime-error`,
-            type: `error`,
-            message: error.message,
-          },
-          timeout: Time.seconds(10),
-        })
+        // useFullStore.getState().timedNotification({
+        //   notification: {
+        //     id: `fal-realtime-error`,
+        //     type: `error`,
+        //     message: error.message,
+        //   },
+        //   timeout: Time.seconds(10),
+        // })
         // force re-connect
         setCount((c) => c + 1)
       },
@@ -56,16 +59,24 @@ export const useRealtimeConnect = () => {
           const id = nanoid()
           const timer = setTimeout(() => {
             requestsById.delete(id)
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            useFullStore.getState().timedNotification({
-              notification: {
-                id: `fal-timeout-error`,
-                type: `warning`,
-                message: `Connection timed out.`,
-                subText: `You may need to wait a few minutes for the connection to be established.`,
-              },
-              timeout: Time.seconds(3),
-            })
+            if (lastTimeout.current - Date.now() < 2000) {
+              totalTimeouts.current += 1
+            } else {
+              totalTimeouts.current = 0
+            }
+            lastTimeout.current = Date.now()
+            if (totalTimeouts.current > 2) {
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
+              useFullStore.getState().timedNotification({
+                notification: {
+                  id: `fal-timeout-error`,
+                  type: `warning`,
+                  message: `Connection timed out.`,
+                  subText: `You may need to wait a few minutes for the connection to be established.`,
+                },
+                timeout: Time.seconds(10),
+              })
+            }
             reject(new Error(`Timeout`))
           }, 5000)
           requestsById.set(id, {
