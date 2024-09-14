@@ -13,7 +13,7 @@ export interface FalStore {
   globalFalSettings: FalSettingsInput
   resetFalSettings: () => void
   updateFalSettings: (settings: Partial<FalSettingsInput>) => void
-  generateInitialWindow: (itemId: string) => Promise<void>
+  generateInitialWindow: (itemId: string, skipFetch?: boolean) => Promise<void>
   fetchRealtimeImage: (itemId: string) => Promise<void>
   fetchRealtimeImageFn: ((req: FalSettings) => Promise<LiveImageResult>) | null
   falSettingsNodes: FalSettingsNode[]
@@ -202,7 +202,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
 
   fetchRealtimeImageFn: null,
 
-  generateInitialWindow: async (itemId) => {
+  generateInitialWindow: async (itemId, skipFetch = false) => {
     const state = get()
     const newItemId = nanoid()
     const item = state.items.find((i) => i.id === itemId)
@@ -240,7 +240,9 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     )
     state.toggleOpenWindow(newItemId)
     state.moveWindowNextTo(item.id, newItemId)
-    await state.fetchRealtimeImage(itemId)
+    if (!skipFetch) {
+      await state.fetchRealtimeImage(itemId)
+    }
   },
 
   discoverFalSettings: (windowId) => {

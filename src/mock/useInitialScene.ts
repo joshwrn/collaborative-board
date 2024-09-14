@@ -17,6 +17,6 @@ export const useInitialScene = () => {
       },
     })
     s.makeFalSettingsConnection(nodeId, windowId)
-    await s.generateInitialWindow(windowId)
+    await s.generateInitialWindow(windowId, true)
   })
 }
