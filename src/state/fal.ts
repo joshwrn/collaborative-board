@@ -5,6 +5,7 @@ import type { LiveImageResult } from '@/fal/workflows/useRealtimeConnect'
 import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
 
 import type { AppStateCreator } from './state'
+import type { WindowType } from './windows'
 import { createNextWindowPosition } from './windows'
 
 export interface FalStore {
@@ -22,7 +23,10 @@ export interface FalStore {
     settings: Partial<FalSettingsInput>,
   ) => void
   deleteFalSettingsNode: (id: string) => void
-  createFalSettingsNode: () => string
+  createFalSettingsNode: (props?: {
+    falSettings?: FalSettingsInput
+    falSettingsWindow?: Partial<WindowType>
+  }) => string
   makeFalSettingsConnection: (from: string, to: string) => void
 }
 
@@ -110,13 +114,14 @@ const DEFAULT_FAL_SETTINGS_WINDOW = {
 export const falStore: AppStateCreator<FalStore> = (set, get) => ({
   globalFalSettings: DEFAULT_FAL_SETTINGS,
   showFalSettingsModal: false,
-  createFalSettingsNode: () => {
+  createFalSettingsNode: ({ falSettings, falSettingsWindow } = {}) => {
     const state = get()
     const id = nanoid()
     state.setState((draft: FalStore) => {
       draft.falSettingsNodes.push({
         id,
         ...DEFAULT_FAL_SETTINGS,
+        ...falSettings,
       })
     })
     state.toggleOpenWindow(id)
@@ -124,6 +129,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     state.setOneWindow(id, {
       ...DEFAULT_FAL_SETTINGS_WINDOW,
       ...createNextWindowPosition(state.windows, center, id),
+      ...falSettingsWindow,
     })
     return id
   },

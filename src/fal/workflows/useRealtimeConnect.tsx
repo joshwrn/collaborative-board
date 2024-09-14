@@ -65,7 +65,7 @@ export const useRealtimeConnect = () => {
               totalTimeouts.current = 0
             }
             lastTimeout.current = Date.now()
-            if (totalTimeouts.current > 2) {
+            if (totalTimeouts.current > 3) {
               // eslint-disable-next-line @typescript-eslint/no-floating-promises
               useFullStore.getState().timedNotification({
                 notification: {

@@ -14,6 +14,7 @@ import { StatsBar } from '@/components/StatsBar/StatsBar'
 import { Toolbar } from '@/components/Toolbar/Toolbar'
 import { useRealtimeConnect } from '@/fal/workflows/useRealtimeConnect'
 import { useFullStore, useStore } from '@/state/gen-state'
+import { DEFAULT_WINDOW } from '@/state/windows'
 import { Toaster } from '@/ui/Toast'
 import { useOnLoad } from '@/utils/useInitial'
 
@@ -34,11 +35,21 @@ export default function Home() {
     `debug_showFps`,
   ])
 
-  useOnLoad(() => {
+  useOnLoad(async () => {
     const s = useFullStore.getState()
-    s.createNewWindow({
-      id: `initial-window`,
+    const windowId = s.createNewWindow()
+    const [newWindow] = useFullStore.getState().windows
+    s.setOneWindow(windowId, {
+      x: newWindow.x - DEFAULT_WINDOW.width / 2.5,
     })
+    const nodeId = s.createFalSettingsNode({
+      falSettingsWindow: {
+        x: newWindow.x - DEFAULT_WINDOW.width / 2.5 - 600,
+        y: newWindow.y + 80,
+      },
+    })
+    s.makeFalSettingsConnection(nodeId, windowId)
+    await s.generateInitialWindow(windowId)
   })
 
   useRealtimeConnect()
