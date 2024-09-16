@@ -50,7 +50,6 @@ const RotationPoints_Internal: React.FC<{
 }> = ({ id, window }) => {
   const state = useStore([
     `setOneWindow`,
-    `zoom`,
     `spaceMousePosition`,
     `selectedWindow`,
   ])

@@ -32,7 +32,6 @@ const WindowInternal: FC<{
     `reorderWindows`,
     `itemConnections`,
     `setFullScreenWindow`,
-    `zoom`,
     `selectedWindow`,
     `setState`,
     `dev_allowWindowRotation`,
