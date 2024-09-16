@@ -6,21 +6,25 @@ import type {
 } from 'react-draggable'
 import { DraggableCore } from 'react-draggable'
 
-import { useFullStore, useStore } from '@/state/gen-state'
-import type { WindowType } from '@/state/windows'
+import { useFullStore, useZ } from '@/state/gen-state'
+import { DEFAULT_WINDOW } from '@/state/windows'
 
 export const DraggableWindowWrapper: React.FC<{
-  window: WindowType
+  windowId: string
   children: React.ReactNode
   nodeRef: React.RefObject<HTMLDivElement>
   dragProps?: Partial<DraggableProps>
-}> = ({ window, children, nodeRef, dragProps }) => {
-  const state = useStore([
-    `snapToWindows`,
-    `setSnapLines`,
-    `setState`,
-    `hasOrganizedWindows`,
-  ])
+}> = ({ windowId, children, nodeRef, dragProps }) => {
+  const state = useZ(
+    [`snapToWindows`, `setSnapLines`, `setState`, `hasOrganizedWindows`],
+    (state) => {
+      const window = state.windows.find((w) => w.id === windowId)
+      return {
+        window,
+      }
+    },
+  )
+  const window = state.window ?? DEFAULT_WINDOW
   const realPosition = React.useRef({ x: window.x, y: window.y })
 
   React.useEffect(() => {

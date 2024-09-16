@@ -3,7 +3,7 @@ import React from 'react'
 import type { DraggableData, DraggableEvent } from 'react-draggable'
 import { DraggableCore } from 'react-draggable'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import { WINDOW_ATTRS } from '@/state/windows'
 import { joinClasses } from '@/utils/joinClasses'
 import { setCursorStyle } from '@/utils/setCursor'
@@ -65,12 +65,9 @@ export const WindowBorderInternal: FC<{
   isPinned: boolean
   position: { x: number; y: number }
 }> = ({ width, height, id, position, isFullScreen, isPinned }) => {
-  const state = useStore([
-    `resizeWindow`,
-    `hoveredItem`,
-    `selectedWindow`,
-    `setState`,
-  ])
+  const state = useZ([`resizeWindow`, `setState`], (state) => ({
+    isSelected: state.selectedWindow === id,
+  }))
 
   const nodeRef = React.useRef<HTMLDivElement>(null)
 
@@ -130,8 +127,7 @@ export const WindowBorderInternal: FC<{
     <div
       className={joinClasses(
         styles.border,
-        state.selectedWindow === id && !isFullScreen && styles.activeBorder,
-        state.hoveredItem === id && !isFullScreen && styles.hoveredBorder,
+        state.isSelected && !isFullScreen && styles.activeBorder,
       )}
       style={returnStyle(width, height, isFullScreen, isPinned)}
     >

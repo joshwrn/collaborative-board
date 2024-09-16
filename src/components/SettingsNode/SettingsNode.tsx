@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { type FalSettingsNode, falSettingsSchema } from '@/state/fal'
-import { useStore } from '@/state/gen-state'
-import type { WindowType } from '@/state/windows'
+import { falSettingsSchema, findFalSettings } from '@/state/fal'
+import { useZ } from '@/state/gen-state'
+import { findWindow } from '@/state/windows'
 import { DraggableWindowWrapper } from '@/ui/DraggableWindowWrapper'
 import { Slider } from '@/ui/Slider'
 import Modal from '@/ui/TopBarModal'
@@ -12,57 +12,52 @@ import { NodeConnections } from './NodeConnections'
 import styles from './SettingsNode.module.scss'
 
 const SettingsNode_Internal: React.FC<{
-  node: FalSettingsNode
-  window: WindowType
-}> = ({ node, window }) => {
-  const state = useStore([
-    `setState`,
-    `updateFalSettingsNode`,
-    `reorderWindows`,
-    `deleteFalSettingsNode`,
-  ])
+  id: string
+}> = ({ id }) => {
+  const state = useZ(
+    (state) => ({
+      window: findWindow(state.windows, id),
+      node: findFalSettings(state.falSettingsNodes, id),
+    }),
+    [
+      'setState',
+      'updateFalSettingsNode',
+      'reorderWindows',
+      'deleteFalSettingsNode',
+    ],
+  )
 
   const nodeRef = React.useRef<HTMLDivElement>(null)
 
   return (
-    <DraggableWindowWrapper window={window} nodeRef={nodeRef}>
+    <DraggableWindowWrapper windowId={state.window.id} nodeRef={nodeRef}>
       <div
         className={styles.wrapper}
         style={{
-          top: window.y,
-          left: window.x,
-          height: window.height,
-          width: window.width,
+          top: state.window.y,
+          left: state.window.x,
+          height: state.window.height,
+          width: state.window.width,
         }}
         ref={nodeRef}
       >
         <div
           className={joinClasses(`modal`, styles.inner)}
-          id={`settings-node-${node.id}`}
-          onMouseEnter={() => {
-            state.setState((draft) => {
-              draft.hoveredWindow = node.id
-            })
-          }}
-          onMouseLeave={() => {
-            state.setState((draft) => {
-              draft.hoveredWindow = null
-            })
-          }}
+          id={`settings-node-${state.node.id}`}
           onClick={(e) => {
             e.stopPropagation()
           }}
           onPointerDown={() => {
             state.setState((draft) => {
-              draft.selectedWindow = node.id
+              draft.selectedWindow = state.node.id
             })
-            state.reorderWindows(node.id)
+            state.reorderWindows(state.node.id)
           }}
         >
           <Modal.Header title="AI Settings" className="handle">
             <Modal.Button
               onClick={() => {
-                state.deleteFalSettingsNode(node.id)
+                state.deleteFalSettingsNode(state.node.id)
               }}
             >
               Delete
@@ -75,11 +70,11 @@ const SettingsNode_Internal: React.FC<{
               }
               label="Inference Steps"
               step="1"
-              value={node.num_inference_steps}
+              value={state.node.num_inference_steps}
               min={falSettingsSchema.shape.num_inference_steps.minValue}
               max={falSettingsSchema.shape.num_inference_steps.maxValue}
               onChange={(value) => {
-                state.updateFalSettingsNode(node.id, {
+                state.updateFalSettingsNode(state.node.id, {
                   num_inference_steps: value,
                 })
               }}
@@ -88,11 +83,11 @@ const SettingsNode_Internal: React.FC<{
               description={falSettingsSchema.shape.guidance_scale.description}
               label="Guidance Scale"
               step={0.5}
-              value={node.guidance_scale}
+              value={state.node.guidance_scale}
               min={falSettingsSchema.shape.guidance_scale.minValue}
               max={falSettingsSchema.shape.guidance_scale.maxValue}
               onChange={(value) => {
-                state.updateFalSettingsNode(node.id, {
+                state.updateFalSettingsNode(state.node.id, {
                   guidance_scale: value,
                 })
               }}
@@ -100,18 +95,18 @@ const SettingsNode_Internal: React.FC<{
             <Slider
               description={falSettingsSchema.shape.strength.description}
               label="Strength"
-              value={node.strength}
+              value={state.node.strength}
               min={falSettingsSchema.shape.strength.minValue}
               max={falSettingsSchema.shape.strength.maxValue}
               onChange={(value) => {
-                state.updateFalSettingsNode(node.id, {
+                state.updateFalSettingsNode(state.node.id, {
                   strength: value,
                 })
               }}
             />
           </Modal.Content>
         </div>
-        <NodeConnections fromId={node.id} />
+        <NodeConnections fromId={state.node.id} />
       </div>
     </DraggableWindowWrapper>
   )
@@ -120,13 +115,15 @@ const SettingsNode_Internal: React.FC<{
 const SettingsNode = React.memo(SettingsNode_Internal)
 
 export const SettingsNodes: React.FC = () => {
-  const state = useStore([`falSettingsNodes`, `windows`])
+  const state = useZ([`falSettingsNodes`], (state) => {
+    return {
+      falSettingsNodes: state.falSettingsNodes,
+    }
+  })
   return (
     <>
-      {state.falSettingsNodes.map((node) => {
-        const window = state.windows.find((w) => w.id === node.id)
-        if (!window) return null
-        return <SettingsNode key={node.id} node={node} window={window} />
+      {state.falSettingsNodes.map((nodeId) => {
+        return <SettingsNode key={nodeId.id} id={nodeId.id} />
       })}
     </>
   )

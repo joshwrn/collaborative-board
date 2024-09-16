@@ -52,6 +52,13 @@ export const findGeneratedItems = (items: Item[]) =>
   items.filter(
     (i) => i.body.type === `generated`,
   ) as ItemWithSpecificBody<`generated`>[]
+export const findItem = (items: Item[], id: string) => {
+  const item = items.find((i) => i.id === id)
+  if (!item) {
+    throw new Error(`item not found - id: ${id}`)
+  }
+  return item
+}
 
 export interface ItemListStore {
   items: Item[]

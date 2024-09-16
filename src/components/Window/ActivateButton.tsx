@@ -1,7 +1,7 @@
 import React from 'react'
 import { IoRadioButtonOff, IoRadioButtonOn } from 'react-icons/io5'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import type { ItemWithSpecificBody } from '@/state/items'
 import { joinClasses } from '@/utils/joinClasses'
 
@@ -10,7 +10,7 @@ import style from './ActivateButton.module.scss'
 export const ActivateButton: React.FC<{
   item: ItemWithSpecificBody<`generated`>
 }> = ({ item }) => {
-  const state = useStore([
+  const state = useZ([
     `toggleItemActive`,
     `fetchRealtimeImage`,
     `findParentItem`,

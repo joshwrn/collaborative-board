@@ -111,6 +111,20 @@ const DEFAULT_FAL_SETTINGS_WINDOW = {
   height: 275,
 }
 
+export const findFalSettings = (
+  falSettingsNodes: FalSettingsNode[],
+  id: string,
+) => {
+  const falSettings = falSettingsNodes.find((n) => n.id === id)
+  if (!falSettings) {
+    return {
+      ...DEFAULT_FAL_SETTINGS,
+      id,
+    }
+  }
+  return falSettings
+}
+
 export const falStore: AppStateCreator<FalStore> = (set, get) => ({
   globalFalSettings: DEFAULT_FAL_SETTINGS,
   showFalSettingsModal: false,

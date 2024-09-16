@@ -49,27 +49,25 @@ export type Store = CanvasStore &
   UiStore &
   UserStore
 
-export const useFullStore = create<Store>()(
-  subscribeWithSelector((set, get, store) => {
-    return {
-      ...canvasStore(set, get, store),
-      ...connectedWindowsStore(set, get, store),
-      ...contextMenuStore(set, get, store),
-      ...debugStore(set, get, store),
-      ...falStore(set, get, store),
-      ...generalStore(set, get, store),
-      ...itemListStore(set, get, store),
-      ...mockStore(set, get, store),
-      ...notificationsStore(set, get, store),
-      ...peripheralStore(set, get, store),
-      ...snappingStore(set, get, store),
-      ...spaceStore(set, get, store),
-      ...uiStore(set, get, store),
-      ...userStore(set, get, store),
-      ...openWindowsStore(set, get, store),
-    }
-  }),
-)
+export const useFullStore = create<Store>((set, get, store) => {
+  return {
+    ...canvasStore(set, get, store),
+    ...connectedWindowsStore(set, get, store),
+    ...contextMenuStore(set, get, store),
+    ...debugStore(set, get, store),
+    ...falStore(set, get, store),
+    ...generalStore(set, get, store),
+    ...itemListStore(set, get, store),
+    ...mockStore(set, get, store),
+    ...notificationsStore(set, get, store),
+    ...peripheralStore(set, get, store),
+    ...snappingStore(set, get, store),
+    ...spaceStore(set, get, store),
+    ...uiStore(set, get, store),
+    ...userStore(set, get, store),
+    ...openWindowsStore(set, get, store),
+  }
+})
 export const useStore = <T extends keyof Store>(selected: T[]) => {
   return useFullStore(
     useShallow((state: Store) => {
@@ -80,6 +78,89 @@ export const useStore = <T extends keyof Store>(selected: T[]) => {
         },
         {} as Pick<Store, T>,
       )
+    }),
+  )
+}
+
+export const useZ = <
+  TSelectors extends Record<string, unknown> = {},
+  TState extends readonly (keyof Store)[] | undefined = undefined,
+>(
+  input1: TState | ((state: Store) => TSelectors),
+  input2?: TState | ((state: Store) => TSelectors),
+): (TState extends undefined
+  ? TSelectors
+  : Pick<Store, NonNullable<TState>[number]>) &
+  TSelectors => {
+  return useFullStore(
+    useShallow((state: Store) => {
+      let s1: Partial<Pick<Store, NonNullable<TState>[number]>> | TSelectors = {}
+      let s2: Partial<Pick<Store, NonNullable<TState>[number]>> | TSelectors = {}
+
+      // Handling input1
+      if (typeof input1 === 'function') {
+        s1 = (input1 as (state: Store) => TSelectors)(state)
+      } else if (Array.isArray(input1)) {
+        s1 = input1.reduce(
+          (acc, key) => {
+            // @ts-expect-error
+            acc[key] = state[key]
+            return acc
+          },
+          {} as Partial<Pick<Store, NonNullable<TState>[number]>>,
+        )
+      }
+
+      // Handling input2
+      if (typeof input2 === 'function') {
+        s2 = (input2 as (state: Store) => TSelectors)(state)
+      } else if (Array.isArray(input2)) {
+        s2 = input2.reduce(
+          (acc, key) => {
+            // @ts-expect-error
+            acc[key] = state[key]
+            return acc
+          },
+          {} as Partial<Pick<Store, NonNullable<TState>[number]>>,
+        )
+      }
+
+      return {
+        ...s1,
+        ...s2,
+      } as (TState extends undefined
+        ? TSelectors
+        : Pick<Store, NonNullable<TState>[number]>) &
+        TSelectors
+    }),
+  )
+}
+
+export const useStoreWithSelectorsOld = <
+  TSelectors extends Record<string, unknown> = {},
+  TState extends readonly (keyof Store)[] = [],
+>(input: {
+  selectors?: (state: Store) => TSelectors
+  state?: TState
+}) => {
+  type SelectedState = TSelectors
+  type PickedState = Pick<Store, TState[number]>
+
+  type Result = PickedState & SelectedState
+
+  return useFullStore(
+    useShallow((state: Store) => {
+      const selectedState = input.selectors
+        ? input.selectors(state)
+        : ({} as SelectedState)
+      const keyedState = input.state
+        ? Object.fromEntries(input.state.map((key) => [key, state[key]]))
+        : ({} as PickedState)
+
+      return {
+        ...keyedState,
+        ...selectedState,
+      } as Result
     }),
   )
 }
