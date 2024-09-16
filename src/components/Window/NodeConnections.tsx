@@ -3,13 +3,18 @@ import React from 'react'
 import { createLineBetweenWindows } from '@/logic/createLineBetweenWindowSides'
 import { findConnection } from '@/state/connections'
 import { useZ } from '@/state/gen-state'
-import type { Item } from '@/state/items'
+import { findItem, type Item } from '@/state/items'
 import { findWindow } from '@/state/windows'
 import { Line } from '@/ui/Connections/Line'
 import { CONNECTION_COLORS, NodeConnector } from '@/ui/Connections/NodeConnector'
 
-export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
-  const state = useZ([`activeFalConnection`, `makeFalSettingsConnection`])
+export const NodeConnections: React.FC<{ id: string }> = ({ id }) => {
+  const state = useZ(
+    [`activeFalConnection`, `makeFalSettingsConnection`],
+    (state) => ({
+      itemBodyType: findItem(state.items, id)?.body.type,
+    }),
+  )
   return (
     <>
       <NodeConnector.Wrapper direction="incoming">
@@ -22,11 +27,11 @@ export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
           }}
           onClick={() => {
             if (state.activeFalConnection) {
-              state.makeFalSettingsConnection(state.activeFalConnection, item.id)
+              state.makeFalSettingsConnection(state.activeFalConnection, id)
             }
           }}
         />
-        {item.body.type === `generated` && (
+        {state.itemBodyType === `generated` && (
           <NodeConnector.Connector
             label={`generator`}
             backgroundColor={CONNECTION_COLORS.connections}
@@ -35,7 +40,7 @@ export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
         )}
       </NodeConnector.Wrapper>
       <NodeConnector.Wrapper direction="outgoing">
-        {item.body.type === `generator` && (
+        {state.itemBodyType === `generator` && (
           <NodeConnector.Connector
             label={`generations`}
             backgroundColor={CONNECTION_COLORS.connections}

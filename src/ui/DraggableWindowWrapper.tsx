@@ -6,7 +6,7 @@ import type {
 } from 'react-draggable'
 import { DraggableCore } from 'react-draggable'
 
-import { useFullStore, useZ } from '@/state/gen-state'
+import { store, useZ } from '@/state/gen-state'
 import { DEFAULT_WINDOW } from '@/state/windows'
 
 export const DraggableWindowWrapper: React.FC<{
@@ -36,7 +36,7 @@ export const DraggableWindowWrapper: React.FC<{
     if (!(e instanceof MouseEvent)) return
     const { movementX, movementY } = e
     if (!movementX && !movementY) return
-    const { zoom } = useFullStore.getState()
+    const { zoom } = store.getState()
     const scaledPosition = {
       x: movementX / zoom,
       y: movementY / zoom,

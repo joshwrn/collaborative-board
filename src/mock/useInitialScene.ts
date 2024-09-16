@@ -1,12 +1,12 @@
-import { useFullStore } from '@/state/gen-state'
+import { store } from '@/state/gen-state'
 import { DEFAULT_WINDOW } from '@/state/windows'
 import { useOnLoad } from '@/utils/useInitial'
 
 export const useInitialScene = () => {
   useOnLoad(async () => {
-    const s = useFullStore.getState()
+    const s = store.getState()
     const windowId = s.createNewWindow()
-    const [newWindow] = useFullStore.getState().windows
+    const [newWindow] = store.getState().windows
     s.setOneWindow(windowId, {
       x: newWindow.x - DEFAULT_WINDOW.width / 2.5,
     })

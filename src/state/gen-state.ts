@@ -48,7 +48,7 @@ export type Store = CanvasStore &
   UiStore &
   UserStore
 
-export const useFullStore = create<Store>((set, get, store) => {
+export const store = create<Store>((set, get, store) => {
   return {
     ...canvasStore(set, get, store),
     ...connectedWindowsStore(set, get, store),
@@ -68,6 +68,8 @@ export const useFullStore = create<Store>((set, get, store) => {
   }
 })
 
+export const useStore = store
+
 export const useZ = <
   TSelectors extends Record<string, unknown> = {},
   TState extends readonly (keyof Store)[] | undefined = undefined,
@@ -78,7 +80,7 @@ export const useZ = <
   (TState extends undefined
     ? TSelectors
     : Pick<Store, NonNullable<TState>[number]>) => {
-  return useFullStore(
+  return store(
     useShallow((state: Store) => {
       let s1: Partial<Pick<Store, NonNullable<TState>[number]>> | TSelectors = {}
       let s2: Partial<Pick<Store, NonNullable<TState>[number]>> | TSelectors = {}

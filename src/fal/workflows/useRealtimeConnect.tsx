@@ -2,7 +2,7 @@ import * as fal from '@fal-ai/serverless-client'
 import { nanoid } from 'nanoid'
 import React, { useState } from 'react'
 
-import { useFullStore, useZ } from '@/state/gen-state'
+import { store, useZ } from '@/state/gen-state'
 import { Time } from '@/utils/time'
 
 export type LiveImageResult = { url: string }
@@ -67,7 +67,7 @@ export const useFalRealtimeConnect = () => {
             lastTimeout.current = Date.now()
             if (totalTimeouts.current > 3) {
               // eslint-disable-next-line @typescript-eslint/no-floating-promises
-              useFullStore.getState().timedNotification({
+              store.getState().timedNotification({
                 notification: {
                   id: `fal-timeout-error`,
                   type: `warning`,
@@ -86,7 +86,7 @@ export const useFalRealtimeConnect = () => {
             },
             reject: (err) => {
               // eslint-disable-next-line @typescript-eslint/no-floating-promises
-              useFullStore.getState().timedNotification({
+              store.getState().timedNotification({
                 notification: {
                   id: `fal-realtime-error`,
                   type: `error`,

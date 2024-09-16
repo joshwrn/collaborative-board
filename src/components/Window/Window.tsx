@@ -36,7 +36,7 @@ const WindowInternal: FC<{
       `dev_allowWindowRotation`,
     ],
     (state) => ({
-      item: findItem(state.items, id),
+      itemBodyType: findItem(state.items, id)?.body.type,
       window: findWindow(state.windows, id),
       isSelected: state.selectedWindow === id,
       fromConnectionsLength: state.itemConnections.filter((c) => c.from === id)
@@ -73,25 +73,25 @@ const WindowInternal: FC<{
       <div
         ref={nodeRef}
         className={joinClasses(styles.wrapper, `window`)}
-        id={`window-${state.item.id}`}
+        id={`window-${id}`}
         style={returnWindowStyle(state.window, isFullScreen, isPinned)}
         onClick={(e) => {
           e.stopPropagation()
         }}
         onPointerDown={() => {
           state.setState((draft) => {
-            draft.selectedWindow = state.item.id
+            draft.selectedWindow = id
           })
-          state.reorderWindows(state.item.id)
+          state.reorderWindows(id)
         }}
       >
         {state.dev_allowWindowRotation && (
-          <RotationPoints id={state.item.id} window={state.window} />
+          <RotationPoints id={id} window={state.window} />
         )}
         <nav
           className={`${styles.topBar} handle`}
           onDoubleClick={() =>
-            state.setFullScreenWindow((prev) => (prev ? null : state.item.id))
+            state.setFullScreenWindow((prev) => (prev ? null : id))
           }
         >
           <button
@@ -110,16 +110,14 @@ const WindowInternal: FC<{
               state.setState((draft) => {
                 draft.selectedWindow = null
               })
-              state.toggleOpenWindow(state.item.id)
+              state.toggleOpenWindow(id)
             }}
           />
           {!isFullScreen && !isPinned && (
             <button
               className={styles.full}
               onClick={() =>
-                state.setFullScreenWindow((prev) =>
-                  prev ? null : state.item.id,
-                )
+                state.setFullScreenWindow((prev) => (prev ? null : id))
               }
             />
           )}
@@ -128,12 +126,12 @@ const WindowInternal: FC<{
 
         <header className={styles.titleBar}>
           <section>
-            <WindowMenu id={state.item.id} />
+            <WindowMenu id={id} />
           </section>
           <section className={styles.right}>
-            {state.item.body.type === `generator` && (
+            {state.itemBodyType === `generator` && (
               <>
-                <BranchButton itemId={state.item.id} />
+                <BranchButton itemId={id} />
                 <section className={styles.connections}>
                   <div>
                     <p>
@@ -147,10 +145,8 @@ const WindowInternal: FC<{
                 </section>
               </>
             )}
-            {state.item.body.type === `generated` && (
-              <ActivateButton
-                item={state.item as ItemWithSpecificBody<`generated`>}
-              />
+            {state.itemBodyType === `generated` && (
+              <ActivateButton itemId={id} />
             )}
           </section>
         </header>
@@ -161,21 +157,10 @@ const WindowInternal: FC<{
             overflowY: isFullScreen || isPinned ? `auto` : `hidden`,
           }}
         >
-          <WindowBody
-            item={state.item}
-            window={state.window}
-            isPinned={isPinned}
-          />
+          <WindowBody id={id} isPinned={isPinned} />
         </main>
-        {isFullScreen || isPinned ? null : <NodeConnections item={state.item} />}
-        <WindowBorder
-          width={state.window.width}
-          height={state.window.height}
-          id={state.item.id}
-          position={{ x: state.window.x, y: state.window.y }}
-          isFullScreen={isFullScreen}
-          isPinned={isPinned}
-        />
+        {isFullScreen || isPinned ? null : <NodeConnections id={id} />}
+        <WindowBorder id={id} isFullScreen={isFullScreen} isPinned={isPinned} />
       </div>
     </DraggableWindowWrapper>
   )
@@ -189,7 +174,6 @@ const WindowsInternal: FC = () => {
     <>
       {state.items.map(({ id: itemId }) => {
         if (state.fullScreenWindow === itemId) return null
-        // if (state.pinnedWindow === window.id) return null
         return (
           <Window
             key={itemId}
