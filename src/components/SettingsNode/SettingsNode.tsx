@@ -13,16 +13,26 @@ import styles from './SettingsNode.module.scss'
 
 const SettingsNode_Internal: React.FC<{
   node: FalSettingsNode
-  window: WindowType
-}> = ({ node, window }) => {
-  const state = useStore([
-    `setState`,
-    `updateFalSettingsNode`,
-    `reorderWindows`,
-    `deleteFalSettingsNode`,
-  ])
+}> = ({ node }) => {
+  const state = useStore(
+    [
+      `setState`,
+      `updateFalSettingsNode`,
+      `reorderWindows`,
+      `deleteFalSettingsNode`,
+    ],
+    (state) => ({
+      window: state.windows.find((w) => w.id === node.id),
+    }),
+  )
 
   const nodeRef = React.useRef<HTMLDivElement>(null)
+
+  if (!state.window) {
+    return null
+  }
+
+  const { window } = state
 
   return (
     <DraggableWindowWrapper window={window} nodeRef={nodeRef}>
@@ -39,16 +49,6 @@ const SettingsNode_Internal: React.FC<{
         <div
           className={joinClasses(`modal`, styles.inner)}
           id={`settings-node-${node.id}`}
-          onMouseEnter={() => {
-            state.setState((draft) => {
-              draft.hoveredWindow = node.id
-            })
-          }}
-          onMouseLeave={() => {
-            state.setState((draft) => {
-              draft.hoveredWindow = null
-            })
-          }}
           onClick={(e) => {
             e.stopPropagation()
           }}
@@ -119,15 +119,15 @@ const SettingsNode_Internal: React.FC<{
 
 const SettingsNode = React.memo(SettingsNode_Internal)
 
-export const SettingsNodes: React.FC = () => {
+const SettingsNodes_Internal: React.FC = () => {
   const state = useStore([`falSettingsNodes`, `windows`])
   return (
     <>
       {state.falSettingsNodes.map((node) => {
-        const window = state.windows.find((w) => w.id === node.id)
-        if (!window) return null
-        return <SettingsNode key={node.id} node={node} window={window} />
+        return <SettingsNode key={node.id} node={node} />
       })}
     </>
   )
 }
+
+export const SettingsNodes = React.memo(SettingsNodes_Internal)

@@ -67,7 +67,7 @@ const ActiveConnection: React.FC<{
   )
 }
 
-export const SettingsNodeConnections: React.FC = () => {
+const SettingsNodeConnections_Internal: React.FC = () => {
   const state = useStore([
     `falSettingsConnections`,
     `windows`,
@@ -128,3 +128,7 @@ export const SettingsNodeConnections: React.FC = () => {
     </>
   )
 }
+
+export const SettingsNodeConnections = React.memo(
+  SettingsNodeConnections_Internal,
+)

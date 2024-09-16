@@ -51,7 +51,6 @@ const ItemConnections_Internal: React.FC = () => {
     `itemConnections`,
     `windows`,
     `showConnections`,
-    `items`,
     `findGeneratedItems`,
   ])
   const windowsMap = React.useMemo(

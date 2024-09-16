@@ -49,37 +49,75 @@ export type Store = CanvasStore &
   UiStore &
   UserStore
 
-export const useFullStore = create<Store>()(
-  subscribeWithSelector((set, get, store) => {
-    return {
-      ...canvasStore(set, get, store),
-      ...connectedWindowsStore(set, get, store),
-      ...contextMenuStore(set, get, store),
-      ...debugStore(set, get, store),
-      ...falStore(set, get, store),
-      ...generalStore(set, get, store),
-      ...itemListStore(set, get, store),
-      ...mockStore(set, get, store),
-      ...notificationsStore(set, get, store),
-      ...peripheralStore(set, get, store),
-      ...snappingStore(set, get, store),
-      ...spaceStore(set, get, store),
-      ...uiStore(set, get, store),
-      ...userStore(set, get, store),
-      ...openWindowsStore(set, get, store),
-    }
-  }),
-)
-export const useStore = <T extends keyof Store>(selected: T[]) => {
+export const useFullStore = create<Store>((set, get, store) => {
+  return {
+    ...canvasStore(set, get, store),
+    ...connectedWindowsStore(set, get, store),
+    ...contextMenuStore(set, get, store),
+    ...debugStore(set, get, store),
+    ...falStore(set, get, store),
+    ...generalStore(set, get, store),
+    ...itemListStore(set, get, store),
+    ...mockStore(set, get, store),
+    ...notificationsStore(set, get, store),
+    ...peripheralStore(set, get, store),
+    ...snappingStore(set, get, store),
+    ...spaceStore(set, get, store),
+    ...uiStore(set, get, store),
+    ...userStore(set, get, store),
+    ...openWindowsStore(set, get, store),
+  }
+})
+export const useStore = <
+  TSelectors extends Record<string, unknown> = {},
+  TState extends readonly (keyof Store)[] | undefined = undefined,
+>(
+  input1: TState | ((state: Store) => TSelectors),
+  input2?: TState | ((state: Store) => TSelectors),
+): TSelectors &
+  (TState extends undefined
+    ? TSelectors
+    : Pick<Store, NonNullable<TState>[number]>) => {
   return useFullStore(
     useShallow((state: Store) => {
-      return selected.reduce(
-        (acc, key) => {
-          acc[key] = state[key]
-          return acc
-        },
-        {} as Pick<Store, T>,
-      )
+      let s1: Partial<Pick<Store, NonNullable<TState>[number]>> | TSelectors = {}
+      let s2: Partial<Pick<Store, NonNullable<TState>[number]>> | TSelectors = {}
+
+      // Handling input1
+      if (typeof input1 === `function`) {
+        s1 = (input1 as (state: Store) => TSelectors)(state)
+      } else if (Array.isArray(input1)) {
+        s1 = input1.reduce(
+          (acc, key) => {
+            // @ts-expect-error
+            acc[key] = state[key]
+            return acc
+          },
+          {} as Partial<Pick<Store, NonNullable<TState>[number]>>,
+        )
+      }
+
+      // Handling input2
+      if (typeof input2 === `function`) {
+        s2 = (input2 as (state: Store) => TSelectors)(state)
+      } else if (Array.isArray(input2)) {
+        s2 = input2.reduce(
+          (acc, key) => {
+            // @ts-expect-error
+            acc[key] = state[key]
+            return acc
+          },
+          {} as Partial<Pick<Store, NonNullable<TState>[number]>>,
+        )
+      }
+
+      return {
+        ...s1,
+        ...s2,
+      } as TSelectors &
+        (TState extends undefined
+          ? TSelectors
+          : Pick<Store, NonNullable<TState>[number]>)
     }),
   )
 }

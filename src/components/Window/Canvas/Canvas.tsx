@@ -64,8 +64,6 @@ export const Canvas_Internal: React.FC<{
     `setState`,
     `selectedWindow`,
     `isResizingWindow`,
-    `items`,
-    `itemConnections`,
     `fetchRealtimeImage`,
   ])
 

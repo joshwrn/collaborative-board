@@ -3,7 +3,7 @@ import type { FC } from 'react'
 import React from 'react'
 
 import { useStore } from '@/state/gen-state'
-import type { Item, ItemWithSpecificBody } from '@/state/items'
+import { DEFAULT_ITEM, type ItemWithSpecificBody } from '@/state/items'
 import type { WindowType } from '@/state/windows'
 import { WINDOW_ATTRS } from '@/state/windows'
 import { DraggableWindowWrapper } from '@/ui/DraggableWindowWrapper'
@@ -21,21 +21,27 @@ import { WindowBorder } from './WindowBorder'
 import { WindowMenu } from './WindowMenu/WindowMenu'
 
 const WindowInternal: FC<{
-  item: Item
   window: WindowType
   isFullScreen: boolean
   isPinned: boolean
-}> = ({ item, window, isFullScreen, isPinned }) => {
-  const state = useStore([
-    `toggleOpenWindow`,
-    `setOneWindow`,
-    `reorderWindows`,
-    `itemConnections`,
-    `setFullScreenWindow`,
-    `selectedWindow`,
-    `setState`,
-    `dev_allowWindowRotation`,
-  ])
+}> = ({ window, isFullScreen, isPinned }) => {
+  const state = useStore(
+    [
+      `toggleOpenWindow`,
+      `setOneWindow`,
+      `reorderWindows`,
+      `itemConnections`,
+      `setFullScreenWindow`,
+      `selectedWindow`,
+      `setState`,
+      `dev_allowWindowRotation`,
+    ],
+    (state) => ({
+      item: state.items.find((item) => item.id === window.id) ?? DEFAULT_ITEM,
+    }),
+  )
+
+  const { item } = state
 
   const nodeRef = React.useRef<HTMLDivElement>(null)
 
@@ -69,16 +75,6 @@ const WindowInternal: FC<{
         className={joinClasses(styles.wrapper, `window`)}
         id={`window-${item.id}`}
         style={returnWindowStyle(window, isFullScreen, isPinned)}
-        onMouseEnter={() => {
-          state.setState((draft) => {
-            draft.hoveredWindow = item.id
-          })
-        }}
-        onMouseLeave={() => {
-          state.setState((draft) => {
-            draft.hoveredWindow = null
-          })
-        }}
         onClick={(e) => {
           e.stopPropagation()
         }}
@@ -168,7 +164,8 @@ const WindowInternal: FC<{
           width={window.width}
           height={window.height}
           id={item.id}
-          position={{ x: window.x, y: window.y }}
+          x={window.x}
+          y={window.y}
           isFullScreen={isFullScreen}
           isPinned={isPinned}
         />
@@ -180,32 +177,17 @@ const WindowInternal: FC<{
 export const Window = React.memo(WindowInternal)
 
 const WindowsInternal: FC = () => {
-  const state = useStore([
-    `items`,
-    `windows`,
-    `fullScreenWindow`,
-    `pinnedWindow`,
-  ])
-  const itemsMap = React.useMemo(
-    () =>
-      state.items.reduce<Record<string, Item>>((acc, item) => {
-        acc[item.id] = item
-        return acc
-      }, {}),
-    [state.items],
-  )
+  const state = useStore([`windows`, `fullScreenWindow`])
   return (
     <>
       {state.windows.map((window) => {
-        const item = itemsMap[window.id]
         if (state.fullScreenWindow === window.id) return null
         // if (state.pinnedWindow === window.id) return null
         if (!window) return null
-        if (!item) return null
+
         return (
           <Window
-            key={item.id}
-            item={item}
+            key={window.id}
             window={window}
             isFullScreen={false}
             isPinned={false}

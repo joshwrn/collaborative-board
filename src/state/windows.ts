@@ -38,7 +38,6 @@ export interface OpenWindowsStore {
   openAllWindows: () => void
   fullScreenWindow: string | null
   setFullScreenWindow: Setter<string | null>
-  hoveredWindow: string | null
   pinnedWindow: string | null
   selectedWindow: string | null
   moveWindowNextTo: (id: string, nextId: string) => WindowType
@@ -424,8 +423,6 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   fullScreenWindow: null,
 
   setFullScreenWindow: (setter) => stateSetter(set, setter, `fullScreenWindow`),
-
-  hoveredWindow: null,
 
   selectedWindow: null,
 })
