@@ -1,7 +1,7 @@
 import { useGesture } from '@use-gesture/react'
 import React from 'react'
 
-import { useStore } from './state/gen-state'
+import { useZ } from './state/gen-state'
 import { SPACE_ATTRS } from './state/space'
 
 export const clampInto =
@@ -22,7 +22,7 @@ export const useGestures = ({
   wrapperRef: React.RefObject<HTMLDivElement>
   spaceRef: React.RefObject<HTMLDivElement>
 }) => {
-  const state = useStore([
+  const state = useZ([
     `contextMenu`,
     `zoom`,
     `pan`,

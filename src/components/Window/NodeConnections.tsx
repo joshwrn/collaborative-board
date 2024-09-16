@@ -2,14 +2,14 @@ import React from 'react'
 
 import { createLineBetweenWindows } from '@/logic/createLineBetweenWindowSides'
 import { findConnection } from '@/state/connections'
-import { useStore, useZ } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import type { Item } from '@/state/items'
 import { findWindow } from '@/state/windows'
 import { Line } from '@/ui/Connections/Line'
 import { CONNECTION_COLORS, NodeConnector } from '@/ui/Connections/NodeConnector'
 
 export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
-  const state = useStore([`activeFalConnection`, `makeFalSettingsConnection`])
+  const state = useZ([`activeFalConnection`, `makeFalSettingsConnection`])
   return (
     <>
       <NodeConnector.Wrapper direction="incoming">
@@ -98,7 +98,7 @@ const StandardConnection: React.FC<{
 }
 
 const ItemConnections_Internal: React.FC = () => {
-  const state = useStore([`itemConnections`, `showConnections`])
+  const state = useZ([`itemConnections`, `showConnections`])
   if (!state.showConnections) {
     return null
   }

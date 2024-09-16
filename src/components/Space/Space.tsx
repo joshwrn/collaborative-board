@@ -3,7 +3,7 @@ import type { FC } from 'react'
 import React from 'react'
 
 import { useGestures } from '@/gestures'
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import { SPACE_ATTRS } from '@/state/space'
 
 import { SettingsNodeConnections } from '../SettingsNode/NodeConnections'
@@ -19,7 +19,7 @@ import { SpaceBackground } from './SpaceBackground'
 const Space_Internal: FC = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
   const spaceRef = React.useRef<HTMLDivElement>(null)
-  const state = useStore([
+  const state = useZ([
     `zoom`,
     `pan`,
     `updateSpaceMousePosition`,

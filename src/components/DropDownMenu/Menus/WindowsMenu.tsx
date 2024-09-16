@@ -1,12 +1,12 @@
 import React from 'react'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 
 import style from '../DropDownMenu.module.scss'
 
 export const WindowsMenu = () => {
-  const state = useStore([
+  const state = useZ([
     `isSnappingOn`,
     `showConnections`,
     `setShowConnections`,

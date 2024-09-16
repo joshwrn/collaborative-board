@@ -2,7 +2,7 @@ import React from 'react'
 import { BsTrash3 as TrashIcon } from 'react-icons/bs'
 import { TiPinOutline as PinIcon } from 'react-icons/ti'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 
 import style from './WindowMenu.module.scss'
@@ -10,7 +10,7 @@ import style from './WindowMenu.module.scss'
 export const WindowMenu_Internal: React.FC<{
   id: string
 }> = ({ id }) => {
-  const state = useStore([`setState`, `pinnedWindow`, `deleteItem`])
+  const state = useZ([`setState`, `pinnedWindow`, `deleteItem`])
   return (
     <div className={style.wrapper}>
       <Dropdown.Menu

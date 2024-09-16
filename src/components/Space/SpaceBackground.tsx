@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 
 import style from './SpaceBackground.module.scss'
 
 export const SpaceBackground: React.FC = () => {
-  const state = useStore([`zoom`, `openContextMenu`])
+  const state = useZ([`zoom`, `openContextMenu`])
 
   return (
     <div

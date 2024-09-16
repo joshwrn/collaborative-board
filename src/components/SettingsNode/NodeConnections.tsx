@@ -3,7 +3,7 @@ import React from 'react'
 
 import { createLineBetweenWindows } from '@/logic/createLineBetweenWindowSides'
 import { findConnection } from '@/state/connections'
-import { useStore, useZ } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import { findWindow } from '@/state/windows'
 import { Line } from '@/ui/Connections/Line'
 import { CONNECTION_COLORS, NodeConnector } from '@/ui/Connections/NodeConnector'
@@ -15,7 +15,7 @@ export const CONNECTION_LABELS = {
 }
 
 export const NodeConnections: React.FC<{ fromId: string }> = ({ fromId }) => {
-  const state = useStore([`setState`])
+  const state = useZ([`setState`])
   return (
     <NodeConnector.Wrapper direction="outgoing">
       <NodeConnector.Connector
@@ -36,7 +36,7 @@ export const NodeConnections: React.FC<{ fromId: string }> = ({ fromId }) => {
 const ActiveConnection: React.FC<{
   from: string
 }> = ({ from }) => {
-  const state = useStore([
+  const state = useZ([
     `falSettingsConnections`,
     `windows`,
     `spaceMousePosition`,
@@ -116,7 +116,7 @@ const StandardConnection: React.FC<{
 }
 
 export const SettingsNodeConnections: React.FC = () => {
-  const state = useStore([
+  const state = useZ([
     `falSettingsConnections`,
     `activeFalConnection`,
     `openContextMenu`,

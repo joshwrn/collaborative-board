@@ -111,7 +111,10 @@ export const createNextWindowPosition = (
 
 const PADDING_BETWEEN_WINDOWS = 300
 
-export const findWindow = (windows: WindowType[], id: string | undefined) => {
+export const findWindow = (
+  windows: WindowType[],
+  id: string | undefined | null,
+) => {
   const window = windows.find((w) => w.id === id)
   if (!window) {
     return DEFAULT_WINDOW

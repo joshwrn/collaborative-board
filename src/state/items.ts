@@ -34,7 +34,7 @@ export type ItemWithSpecificBody<T extends ItemBody[`type`]> = Item & {
 }
 
 export const DEFAULT_ITEM: Item = {
-  id: `default_id`,
+  id: `default-id`,
   title: `default_title`,
   body: {
     prompt: `default_prompt`,
@@ -55,7 +55,7 @@ export const findGeneratedItems = (items: Item[]) =>
 export const findItem = (items: Item[], id: string) => {
   const item = items.find((i) => i.id === id)
   if (!item) {
-    throw new Error(`item not found - id: ${id}`)
+    return DEFAULT_ITEM
   }
   return item
 }

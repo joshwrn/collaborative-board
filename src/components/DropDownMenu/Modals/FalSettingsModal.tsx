@@ -2,14 +2,14 @@ import { AnimatePresence } from 'framer-motion'
 import React from 'react'
 
 import { falSettingsSchema } from '@/state/fal'
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import { Slider } from '@/ui/Slider'
 import Modal from '@/ui/TopBarModal'
 
 import style from './FalSettingsModal.module.scss'
 
 const FalSettingsModal: React.FC = () => {
-  const state = useStore([
+  const state = useZ([
     `setState`,
     `updateFalSettings`,
     `resetFalSettings`,
@@ -74,7 +74,7 @@ const FalSettingsModal: React.FC = () => {
 }
 
 export const FalSettingsModalGuard: React.FC = () => {
-  const state = useStore([`showFalSettingsModal`])
+  const state = useZ([`showFalSettingsModal`])
   return (
     <AnimatePresence>
       {state.showFalSettingsModal && <FalSettingsModal />}

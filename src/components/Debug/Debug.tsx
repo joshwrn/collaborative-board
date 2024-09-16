@@ -2,7 +2,7 @@
 import React from 'react'
 
 import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import { allowDebugItem } from '@/utils/is-dev'
 
 import style from './Debug.module.scss'
@@ -10,7 +10,7 @@ import style from './Debug.module.scss'
 const showDebug = allowDebugItem(false)
 
 export const Debug: React.FC = () => {
-  const state = useStore([
+  const state = useZ([
     `debug_zoomFocusPoint`,
     `debug_randomPoints`,
     `debug_centerPoint`,

@@ -1,7 +1,7 @@
 import { distance } from 'mathjs'
 import React from 'react'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import type { SnappingToPosition } from '@/state/snapping'
 
 import style from './SnapLine.module.scss'
@@ -51,7 +51,7 @@ export const SnapLineX: React.FC<{
 }
 
 const SnapLines_Internal: React.FC = () => {
-  const state = useStore([`snapLines`, `zoom`])
+  const state = useZ([`snapLines`, `zoom`])
   if (state.snapLines.length === 0) {
     return null
   }

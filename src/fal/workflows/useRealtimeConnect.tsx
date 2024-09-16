@@ -2,14 +2,14 @@ import * as fal from '@fal-ai/serverless-client'
 import { nanoid } from 'nanoid'
 import React, { useState } from 'react'
 
-import { useFullStore, useStore } from '@/state/gen-state'
+import { useFullStore, useZ } from '@/state/gen-state'
 import { Time } from '@/utils/time'
 
 export type LiveImageResult = { url: string }
 
 export const useFalRealtimeConnect = () => {
   const [count, setCount] = useState(0)
-  const state = useStore([`setState`])
+  const state = useZ([`setState`])
 
   const lastTimeout = React.useRef<number>(Date.now())
   const totalTimeouts = React.useRef<number>(0)

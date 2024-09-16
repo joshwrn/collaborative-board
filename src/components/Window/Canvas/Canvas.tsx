@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { rotatePointAroundCenter } from '@/logic/rotatePointAroundCenter'
-import { useStore, useZ } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import type { WindowType } from '@/state/windows'
 import { WINDOW_ATTRS } from '@/state/windows'
 import { joinClasses } from '@/utils/joinClasses'
@@ -55,19 +55,22 @@ export const Canvas_Internal: React.FC<{
   content: string
   isPinned: boolean
 }> = ({ window, content, isPinned }) => {
-  const state = useZ([
-    `zoom`,
-    `drawColor`,
-    `drawSize`,
-    `fullScreenWindow`,
-    `editItemContent`,
-    `setState`,
-    `selectedWindow`,
-    `isResizingWindow`,
-    `fetchRealtimeImage`,
-  ])
+  const state = useZ(
+    [
+      `zoom`,
+      `drawColor`,
+      `drawSize`,
+      `editItemContent`,
+      `setState`,
+      `isResizingWindow`,
+      `fetchRealtimeImage`,
+    ],
+    (state) => ({
+      isFullScreen: state.fullScreenWindow === window.id,
+      isSelectedWindow: state.selectedWindow === window.id,
+    }),
+  )
 
-  const isFullScreen = state.fullScreenWindow === window.id
   const counterRef = React.useRef<HTMLDivElement>(null)
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const isDrawing = React.useRef(false)
@@ -88,7 +91,7 @@ export const Canvas_Internal: React.FC<{
   const attributes = returnCanvasAttributes(
     window,
     state.zoom,
-    isFullScreen,
+    state.isFullScreen,
     isPinned,
   )
 
@@ -181,7 +184,7 @@ export const Canvas_Internal: React.FC<{
           const rotatedMousePosition = calculateMousePosition(e)
           if (
             e.buttons !== 1 ||
-            state.selectedWindow !== window.id ||
+            !state.isSelectedWindow ||
             state.isResizingWindow
           ) {
             lastPosition.current = rotatedMousePosition

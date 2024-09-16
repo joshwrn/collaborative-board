@@ -2,7 +2,7 @@ import Image from 'next/image'
 import React from 'react'
 import { match } from 'ts-pattern'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import type { Item, ItemWithSpecificBody } from '@/state/items'
 import type { WindowType } from '@/state/windows'
 
@@ -44,7 +44,7 @@ const Prompt: React.FC<{ value: string; windowId: string }> = ({
   windowId,
 }) => {
   const textRef = React.useRef(value)
-  const state = useStore([`editItemContent`, `editItem`, `fetchRealtimeImage`])
+  const state = useZ([`editItemContent`, `editItem`, `fetchRealtimeImage`])
   return (
     <div className={styles.textContainer}>
       <header>
@@ -87,7 +87,7 @@ const Modifier: React.FC<{
   windowId: string
 }> = ({ value, windowId }) => {
   const textRef = React.useRef(value)
-  const state = useStore([
+  const state = useZ([
     `editItemContent`,
     `editItem`,
     `findParentItem`,
@@ -122,7 +122,7 @@ const GeneratedBody: React.FC<{
   window: WindowType
   isPinned: boolean
 }> = ({ item, window, isPinned }) => {
-  const state = useStore([`zoom`, `fullScreenWindow`])
+  const state = useZ([`zoom`, `fullScreenWindow`])
   const attributes = returnCanvasAttributes(
     window,
     state.zoom,

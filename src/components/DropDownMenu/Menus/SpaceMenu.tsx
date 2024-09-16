@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import { SPACE_ATTRS } from '@/state/space'
 import Dropdown from '@/ui/Dropdown'
 
@@ -8,7 +8,7 @@ import style from '../DropDownMenu.module.scss'
 import { ThemeModalGuard } from '../Modals/ThemeModal'
 
 export const SpaceMenu = () => {
-  const state = useStore([
+  const state = useZ([
     `zoom`,
     `setZoom`,
     `setPan`,

@@ -3,7 +3,7 @@ import type { FC } from 'react'
 import React from 'react'
 import { match, P } from 'ts-pattern'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import type { Item, ItemBody } from '@/state/items'
 import { joinClasses } from '@/utils/joinClasses'
 import { useIsInViewport } from '@/utils/useIsInViewport'
@@ -16,7 +16,7 @@ const ItemInternal: FC<{
 }> = ({ item, isOpen }) => {
   const ref = React.useRef<HTMLDivElement>(null)
   const isInViewport = useIsInViewport(ref)
-  const state = useStore([`toggleOpenWindow`, `openContextMenu`, `setState`])
+  const state = useZ([`toggleOpenWindow`, `openContextMenu`, `setState`])
   const text =
     item.body.type === `generated` ? item.body.modifier : item.body.prompt
   return (

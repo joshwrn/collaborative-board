@@ -2,14 +2,14 @@ import React from 'react'
 import { FiTrash } from 'react-icons/fi'
 import { TfiExport, TfiImport } from 'react-icons/tfi'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 
 import style from '../DropDownMenu.module.scss'
 import { ImportModalGuard } from '../Modals/ImportModal'
 
 export const FileMenu: React.FC = () => {
-  const state = useStore([
+  const state = useZ([
     `setState`,
     `importState`,
     `exportState`,

@@ -1,13 +1,13 @@
 import { AnimatePresence } from 'framer-motion'
 import React from 'react'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import Modal from '@/ui/TopBarModal'
 
 import styles from './TutorialModal.module.scss'
 
 const TutorialModal: React.FC = () => {
-  const state = useStore([`setState`])
+  const state = useZ([`setState`])
   return (
     <Modal.Container
       onClose={() =>
@@ -77,7 +77,7 @@ const TutorialModal: React.FC = () => {
 }
 
 export const TutorialModalGuard = () => {
-  const state = useStore([`showTutorialModal`])
+  const state = useZ([`showTutorialModal`])
   return (
     <AnimatePresence>
       {state.showTutorialModal && <TutorialModal />}

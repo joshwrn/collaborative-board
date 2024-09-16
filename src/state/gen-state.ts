@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { subscribeWithSelector } from 'zustand/middleware'
 import { useShallow } from 'zustand/react/shallow'
 
 import type { CanvasStore } from './canvas'
@@ -14,7 +13,7 @@ import type { FalStore } from './fal'
 import { falStore } from './fal'
 import type { GeneralStore } from './general'
 import { generalStore } from './general'
-import type { ItemListStore, ItemWithSpecificBody } from './items'
+import type { ItemListStore } from './items'
 import { itemListStore } from './items'
 import type { MockStore } from './mock'
 import { mockStore } from './mock'
@@ -68,19 +67,6 @@ export const useFullStore = create<Store>((set, get, store) => {
     ...openWindowsStore(set, get, store),
   }
 })
-export const useStore = <T extends keyof Store>(selected: T[]) => {
-  return useFullStore(
-    useShallow((state: Store) => {
-      return selected.reduce(
-        (acc, key) => {
-          acc[key] = state[key]
-          return acc
-        },
-        {} as Pick<Store, T>,
-      )
-    }),
-  )
-}
 
 export const useZ = <
   TSelectors extends Record<string, unknown> = {},
@@ -132,35 +118,6 @@ export const useZ = <
         ? TSelectors
         : Pick<Store, NonNullable<TState>[number]>) &
         TSelectors
-    }),
-  )
-}
-
-export const useStoreWithSelectorsOld = <
-  TSelectors extends Record<string, unknown> = {},
-  TState extends readonly (keyof Store)[] = [],
->(input: {
-  selectors?: (state: Store) => TSelectors
-  state?: TState
-}) => {
-  type SelectedState = TSelectors
-  type PickedState = Pick<Store, TState[number]>
-
-  type Result = PickedState & SelectedState
-
-  return useFullStore(
-    useShallow((state: Store) => {
-      const selectedState = input.selectors
-        ? input.selectors(state)
-        : ({} as SelectedState)
-      const keyedState = input.state
-        ? Object.fromEntries(input.state.map((key) => [key, state[key]]))
-        : ({} as PickedState)
-
-      return {
-        ...keyedState,
-        ...selectedState,
-      } as Result
     }),
   )
 }
