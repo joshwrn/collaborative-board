@@ -4,13 +4,13 @@ import type { FC } from 'react'
 import React from 'react'
 import { IoClose } from 'react-icons/io5'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 
 import { ItemComponent } from '../Item/Item'
 import styles from './List.module.scss'
 
 const List_Internal: FC = () => {
-  const state = useStore([`items`, `setState`, `windows`])
+  const state = useZ([`items`, `setState`, `windows`])
 
   return (
     <motion.div
@@ -52,6 +52,6 @@ const List_Internal: FC = () => {
 const List = React.memo(List_Internal)
 
 export const ListGuard = () => {
-  const state = useStore([`showItemList`])
+  const state = useZ([`showItemList`])
   return <AnimatePresence>{state.showItemList && <List />}</AnimatePresence>
 }

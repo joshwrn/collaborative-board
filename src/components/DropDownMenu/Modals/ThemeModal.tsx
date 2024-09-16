@@ -1,12 +1,12 @@
 import { AnimatePresence } from 'framer-motion'
 import React from 'react'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import { Slider } from '@/ui/Slider'
 import Modal from '@/ui/TopBarModal'
 
 const ThemeModal: React.FC = () => {
-  const state = useStore([
+  const state = useZ([
     `setState`,
     `hue`,
     `saturation`,
@@ -62,7 +62,7 @@ const ThemeModal: React.FC = () => {
 }
 
 export const ThemeModalGuard = () => {
-  const state = useStore([`showThemeModal`])
+  const state = useZ([`showThemeModal`])
   return (
     <AnimatePresence>{state.showThemeModal && <ThemeModal />}</AnimatePresence>
   )

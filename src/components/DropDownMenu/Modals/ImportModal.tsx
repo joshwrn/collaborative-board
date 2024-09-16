@@ -4,13 +4,13 @@ import React from 'react'
 import { CiImport } from 'react-icons/ci'
 import { IoCheckmarkCircleOutline as CheckIcon } from 'react-icons/io5'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import Modal from '@/ui/TopBarModal'
 
 import style from './ImportModal.module.scss'
 
 const ImportModal: React.FC = () => {
-  const state = useStore([`setState`, `promiseNotification`, `importState`])
+  const state = useZ([`setState`, `promiseNotification`, `importState`])
   const [file, setFile] = React.useState<File | null>(null)
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +90,7 @@ const ImportModal: React.FC = () => {
 }
 
 export const ImportModalGuard = () => {
-  const state = useStore([`showImportModal`])
+  const state = useZ([`showImportModal`])
   return (
     <AnimatePresence>{state.showImportModal && <ImportModal />}</AnimatePresence>
   )

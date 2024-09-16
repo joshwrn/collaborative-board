@@ -2,15 +2,15 @@
 import React from 'react'
 import { ZustandDevTools } from 'zustand-state-inspector'
 
-import { useFullStore } from '@/state/gen-state'
+import { store } from '@/state/gen-state'
 
 export const DevTools: React.FC = () => {
-  const store = useFullStore()
+  const state = store()
   return (
     <ZustandDevTools
-      state={store}
-      showDevTools={store.debug_showZustandDevTools}
-      setShowDevTools={store.debug_setShowZustandDevTools}
+      state={state}
+      showDevTools={state.debug_showZustandDevTools}
+      setShowDevTools={state.debug_setShowZustandDevTools}
     />
   )
 }

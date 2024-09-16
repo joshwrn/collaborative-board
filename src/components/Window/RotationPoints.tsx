@@ -2,7 +2,7 @@ import React from 'react'
 import type { DraggableEvent } from 'react-draggable'
 import { DraggableCore } from 'react-draggable'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import type { WindowType } from '@/state/windows'
 import { joinClasses } from '@/utils/joinClasses'
 
@@ -48,12 +48,7 @@ const RotationPoints_Internal: React.FC<{
   id: string
   window: WindowType
 }> = ({ id, window }) => {
-  const state = useStore([
-    `setOneWindow`,
-    `zoom`,
-    `spaceMousePosition`,
-    `selectedWindow`,
-  ])
+  const state = useZ([`setOneWindow`, `spaceMousePosition`, `selectedWindow`])
 
   const centerPoint = React.useMemo(
     () => ({

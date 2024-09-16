@@ -1,14 +1,20 @@
 import React from 'react'
 
 import { createLineBetweenWindows } from '@/logic/createLineBetweenWindowSides'
-import { useStore } from '@/state/gen-state'
-import type { Item } from '@/state/items'
-import type { WindowType } from '@/state/windows'
+import { findConnection } from '@/state/connections'
+import { useZ } from '@/state/gen-state'
+import { findItem, type Item } from '@/state/items'
+import { findWindow } from '@/state/windows'
 import { Line } from '@/ui/Connections/Line'
 import { CONNECTION_COLORS, NodeConnector } from '@/ui/Connections/NodeConnector'
 
-export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
-  const state = useStore([`activeFalConnection`, `makeFalSettingsConnection`])
+export const NodeConnections: React.FC<{ id: string }> = ({ id }) => {
+  const state = useZ(
+    [`activeFalConnection`, `makeFalSettingsConnection`],
+    (state) => ({
+      itemBodyType: findItem(state.items, id)?.body.type,
+    }),
+  )
   return (
     <>
       <NodeConnector.Wrapper direction="incoming">
@@ -21,11 +27,11 @@ export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
           }}
           onClick={() => {
             if (state.activeFalConnection) {
-              state.makeFalSettingsConnection(state.activeFalConnection, item.id)
+              state.makeFalSettingsConnection(state.activeFalConnection, id)
             }
           }}
         />
-        {item.body.type === `generated` && (
+        {state.itemBodyType === `generated` && (
           <NodeConnector.Connector
             label={`generator`}
             backgroundColor={CONNECTION_COLORS.connections}
@@ -34,7 +40,7 @@ export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
         )}
       </NodeConnector.Wrapper>
       <NodeConnector.Wrapper direction="outgoing">
-        {item.body.type === `generator` && (
+        {state.itemBodyType === `generator` && (
           <NodeConnector.Connector
             label={`generations`}
             backgroundColor={CONNECTION_COLORS.connections}
@@ -46,22 +52,58 @@ export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
   )
 }
 
-const ItemConnections_Internal: React.FC = () => {
-  const state = useStore([
-    `itemConnections`,
-    `windows`,
-    `showConnections`,
-    `items`,
-    `findGeneratedItems`,
-  ])
-  const windowsMap = React.useMemo(
-    () =>
-      state.windows.reduce<Record<string, WindowType>>((acc, window) => {
-        acc[window.id] = window
-        return acc
-      }, {}),
-    [state.windows],
+const StandardConnection: React.FC<{
+  id: string
+}> = ({ id }) => {
+  const state = useZ([`findGeneratedItems`], (state) => {
+    const connection = findConnection(state.itemConnections, id)
+    return {
+      connection,
+      windowFrom: findWindow(state.windows, connection?.from),
+      windowTo: findWindow(state.windows, connection?.to),
+    }
+  })
+
+  if (
+    state.windowFrom.id === `default-id` ||
+    state.windowTo.id === `default-id`
+  ) {
+    return null
+  }
+
+  const isActive = state
+    .findGeneratedItems()
+    .some((item) => item.id === state.windowTo.id && item.body.activatedAt)
+
+  const line = createLineBetweenWindows(state.windowFrom, state.windowTo)
+
+  if (!line) {
+    return null
+  }
+
+  return (
+    <Line
+      key={state.connection.id}
+      isActive={isActive}
+      startPoint={{
+        x: line.from.x,
+        y: line.from.y + 65,
+      }}
+      endPoint={{
+        x: line.to.x,
+        y: line.to.y + 65 + 40,
+      }}
+      config={{
+        strokeWidth: 2,
+        arrowColor: `var(--connection-color)`,
+        dotEndingBackground: `var(--connection-color)`,
+      }}
+    />
   )
+}
+
+const ItemConnections_Internal: React.FC = () => {
+  const state = useZ([`itemConnections`, `showConnections`])
   if (!state.showConnections) {
     return null
   }
@@ -69,42 +111,7 @@ const ItemConnections_Internal: React.FC = () => {
   return (
     <>
       {state.itemConnections.map((connection, i) => {
-        const windowFrom = windowsMap[connection.from]
-        const windowTo = windowsMap[connection.to]
-
-        if (!windowFrom || !windowTo) {
-          return null
-        }
-
-        const isActive = state
-          .findGeneratedItems()
-          .some((item) => item.id === windowTo.id && item.body.activatedAt)
-
-        const line = createLineBetweenWindows(windowFrom, windowTo)
-
-        if (!line) {
-          return null
-        }
-
-        return (
-          <Line
-            key={connection.id}
-            isActive={isActive}
-            startPoint={{
-              x: line.from.x,
-              y: line.from.y + 65,
-            }}
-            endPoint={{
-              x: line.to.x,
-              y: line.to.y + 65 + 40,
-            }}
-            config={{
-              strokeWidth: 2,
-              arrowColor: `var(--connection-color)`,
-              dotEndingBackground: `var(--connection-color)`,
-            }}
-          />
-        )
+        return <StandardConnection key={connection.id} id={connection.id} />
       })}
     </>
   )

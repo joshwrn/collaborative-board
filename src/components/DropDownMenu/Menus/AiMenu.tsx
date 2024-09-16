@@ -1,14 +1,13 @@
 import React from 'react'
-import { PiGearLight } from 'react-icons/pi'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 
 import style from '../DropDownMenu.module.scss'
 import { FalSettingsModalGuard } from '../Modals/FalSettingsModal'
 
 export const AIMenu = () => {
-  const state = useStore([`setState`, `createFalSettingsNode`])
+  const state = useZ([`setState`, `createFalSettingsNode`])
   return (
     <div className={style.item}>
       <Dropdown.Menu

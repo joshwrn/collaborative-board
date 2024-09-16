@@ -4,14 +4,14 @@ import React from 'react'
 import { BsTrash3 as TrashIcon } from 'react-icons/bs'
 import { match } from 'ts-pattern'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import { useOutsideClick } from '@/utils/useOutsideClick'
 import { usePreventScroll } from '@/utils/usePreventScroll'
 
 import styles from './ContextMenu.module.scss'
 
 export const ContextMenu: FC = () => {
-  const state = useStore([`contextMenu`, `setState`, `zoom`, `pan`])
+  const state = useZ([`contextMenu`, `setState`, `zoom`, `pan`])
   const ref = React.useRef<HTMLDivElement>(null)
   usePreventScroll({ enabled: state.contextMenu !== null })
   useOutsideClick({
@@ -38,7 +38,7 @@ export const ContextMenu: FC = () => {
 }
 
 const MenuItems = () => {
-  const state = useStore([
+  const state = useZ([
     `contextMenu`,
     `removeConnection`,
     `deleteItem`,

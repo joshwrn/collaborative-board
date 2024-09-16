@@ -53,7 +53,7 @@ export const WINDOW_ATTRS = {
   zIndex: 0,
 }
 export const DEFAULT_WINDOW: WindowType = {
-  id: ``,
+  id: `default-id`,
   x: 0,
   y: 0,
   width: WINDOW_ATTRS.defaultSize.width,
@@ -110,6 +110,17 @@ export const createNextWindowPosition = (
 }
 
 const PADDING_BETWEEN_WINDOWS = 300
+
+export const findWindow = (
+  windows: WindowType[],
+  id: string | null | undefined,
+) => {
+  const window = windows.find((w) => w.id === id)
+  if (!window) {
+    return DEFAULT_WINDOW
+  }
+  return window
+}
 
 export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   set,

@@ -4,14 +4,14 @@ import React from 'react'
 
 import { mockProgress } from '@/mock/mock-progress'
 import { loadScenario } from '@/mock/scenarios'
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 import { IS_DEV } from '@/utils/is-dev'
 
 import style from '../DropDownMenu.module.scss'
 
 export const DevMenu = () => {
-  const state = useStore([
+  const state = useZ([
     `debug_showZustandDevTools`,
     `debug_showFps`,
     `setState`,
@@ -69,7 +69,7 @@ export const DevMenu = () => {
 }
 
 const MocksSubMenu = () => {
-  const state = useStore([
+  const state = useZ([
     `createAllMocks`,
     `createOneMock`,
     `clearMocks`,
@@ -144,7 +144,7 @@ const MocksSubMenu = () => {
 }
 
 const NotificationsSubMenu = () => {
-  const state = useStore([
+  const state = useZ([
     `notifications`,
     `setState`,
     `setNotificationProgress`,

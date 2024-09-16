@@ -13,7 +13,7 @@ import { StatsBar } from '@/components/StatsBar/StatsBar'
 import { Toolbar } from '@/components/Toolbar/Toolbar'
 import { useFalRealtimeConnect } from '@/fal/workflows/useRealtimeConnect'
 import { useInitialScene } from '@/mock/useInitialScene'
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import { Toaster } from '@/ui/Toast'
 
 import styles from './page.module.scss'
@@ -27,7 +27,7 @@ fal.config({
 })
 
 export default function Home() {
-  const state = useStore([
+  const state = useZ([
     `setMousePosition`,
     `debug_showZustandDevTools`,
     `debug_showFps`,

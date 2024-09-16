@@ -1,26 +1,25 @@
 import { FloatingPortal } from '@floating-ui/react'
 import React from 'react'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
+import { findItem } from '@/state/items'
+import { findWindow } from '@/state/windows'
 
 import { Window } from '../Window'
 import style from './FullScreenWindow.module.scss'
 
 export const FullScreenWindow: React.FC = () => {
-  const state = useStore([
-    `fullScreenWindow`,
-    `setFullScreenWindow`,
-    `items`,
-    `windows`,
-  ])
+  const state = useZ([`setFullScreenWindow`], (state) => {
+    const window = findWindow(state.windows, state.fullScreenWindow)
+    return {
+      window,
+      item: findItem(state.items, window?.id),
+    }
+  })
 
-  const window = state.windows.find(
-    (curWindow) => curWindow.id === state.fullScreenWindow,
-  )
-  if (!window) return null
-
-  const item = state.items.find((curItem) => curItem.id === window.id)
-  if (!item) return null
+  if (state.window.id === `default-id` || state.item.id === `default-id`) {
+    return null
+  }
 
   return (
     <FloatingPortal>
@@ -29,12 +28,7 @@ export const FullScreenWindow: React.FC = () => {
           className={style.backdrop}
           onClick={() => state.setFullScreenWindow(null)}
         />
-        <Window
-          window={window}
-          item={item}
-          isFullScreen={true}
-          isPinned={false}
-        />
+        <Window id={state.item.id} isFullScreen={true} isPinned={false} />
       </div>
     </FloatingPortal>
   )

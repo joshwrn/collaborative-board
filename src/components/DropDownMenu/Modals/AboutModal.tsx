@@ -1,13 +1,13 @@
 import { AnimatePresence } from 'framer-motion'
 import React from 'react'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import Modal from '@/ui/TopBarModal'
 
 import styles from './AboutModal.module.scss'
 
 const AboutModal: React.FC = () => {
-  const state = useStore([`setState`])
+  const state = useZ([`setState`])
   return (
     <Modal.Container
       onClose={() =>
@@ -39,7 +39,7 @@ const AboutModal: React.FC = () => {
 }
 
 export const AboutModalGuard = () => {
-  const state = useStore([`showAboutModal`])
+  const state = useZ([`showAboutModal`])
   return (
     <AnimatePresence>{state.showAboutModal && <AboutModal />}</AnimatePresence>
   )

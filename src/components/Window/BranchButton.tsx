@@ -1,21 +1,19 @@
-import { motion } from 'framer-motion'
 import React from 'react'
 import { IoGitBranchOutline } from 'react-icons/io5'
 
-import { useStore } from '@/state/gen-state'
-import type { Item } from '@/state/items'
+import { useZ } from '@/state/gen-state'
 
 import style from './BranchButton.module.scss'
 
 export const BranchButton_Internal: React.FC<{
-  item: Item
-}> = ({ item }) => {
-  const state = useStore([`generateInitialWindow`])
+  itemId: string
+}> = ({ itemId }) => {
+  const state = useZ([`generateInitialWindow`])
   return (
     <section className={style.wrapper}>
       <button
         onClick={async () => {
-          await state.generateInitialWindow(item.id)
+          await state.generateInitialWindow(itemId)
         }}
       >
         <p>Branch</p>

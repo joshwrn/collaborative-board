@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import React from 'react'
 import { PiPaintBrushThin } from 'react-icons/pi'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import { Slider } from '@/ui/Slider'
 import { joinClasses } from '@/utils/joinClasses'
 import { useOutsideClick } from '@/utils/useOutsideClick'
@@ -10,7 +10,7 @@ import { useOutsideClick } from '@/utils/useOutsideClick'
 import style from './Toolbar.module.scss'
 
 export const Toolbar: React.FC = () => {
-  const state = useStore([
+  const state = useZ([
     `drawColor`,
     `tool`,
     `drawSize`,

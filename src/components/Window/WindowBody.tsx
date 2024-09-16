@@ -1,16 +1,15 @@
-import Image from 'next/image'
 import React from 'react'
 import { match } from 'ts-pattern'
 
-import { useStore } from '@/state/gen-state'
-import type { Item, ItemWithSpecificBody } from '@/state/items'
-import type { WindowType } from '@/state/windows'
+import { useZ } from '@/state/gen-state'
+import { findItem, type ItemWithSpecificBody } from '@/state/items'
+import { findWindow } from '@/state/windows'
 
 import { Canvas, returnCanvasAttributes } from './Canvas/Canvas'
 import { RandomizePromptButton } from './RandomizePromptButton'
 import styles from './WindowBody.module.scss'
 
-const Text = ({
+const Text_Internal = ({
   textRef,
   onInput,
   onBlur,
@@ -38,13 +37,14 @@ const Text = ({
     </p>
   )
 }
+const Text = React.memo(Text_Internal)
 
-const Prompt: React.FC<{ value: string; windowId: string }> = ({
+const Prompt_Internal: React.FC<{ value: string; windowId: string }> = ({
   value,
   windowId,
 }) => {
   const textRef = React.useRef(value)
-  const state = useStore([`editItemContent`, `editItem`, `fetchRealtimeImage`])
+  const state = useZ([`editItemContent`, `editItem`, `fetchRealtimeImage`])
   return (
     <div className={styles.textContainer}>
       <header>
@@ -68,26 +68,30 @@ const Prompt: React.FC<{ value: string; windowId: string }> = ({
     </div>
   )
 }
+const Prompt = React.memo(Prompt_Internal)
 
-const GeneratorBody: React.FC<{
-  item: ItemWithSpecificBody<`generator`>
-  window: WindowType
+const GeneratorBody_Internal: React.FC<{
+  id: string
   isPinned: boolean
-}> = ({ item, window, isPinned }) => {
+}> = ({ id, isPinned }) => {
+  const state = useZ((state) => ({
+    item: findItem(state.items, id) as ItemWithSpecificBody<`generator`>,
+  }))
   return (
     <>
-      <Prompt value={item.body.prompt} windowId={window.id} />
-      <Canvas isPinned={isPinned} window={window} content={item.body.base64} />
+      <Prompt value={state.item.body.prompt} windowId={id} />
+      <Canvas isPinned={isPinned} id={id} content={state.item.body.base64} />
     </>
   )
 }
+const GeneratorBody = React.memo(GeneratorBody_Internal)
 
-const Modifier: React.FC<{
+const Modifier_Internal: React.FC<{
   value: string
   windowId: string
 }> = ({ value, windowId }) => {
   const textRef = React.useRef(value)
-  const state = useStore([
+  const state = useZ([
     `editItemContent`,
     `editItem`,
     `findParentItem`,
@@ -116,22 +120,25 @@ const Modifier: React.FC<{
     </div>
   )
 }
+const Modifier = React.memo(Modifier_Internal)
 
-const GeneratedBody: React.FC<{
-  item: ItemWithSpecificBody<`generated`>
-  window: WindowType
+const GeneratedBody_Internal: React.FC<{
+  id: string
   isPinned: boolean
-}> = ({ item, window, isPinned }) => {
-  const state = useStore([`zoom`, `fullScreenWindow`])
+}> = ({ isPinned, id }) => {
+  const state = useZ([`fullScreenWindow`], (state) => ({
+    window: findWindow(state.windows, id),
+    item: findItem(state.items, id) as ItemWithSpecificBody<`generated`>,
+  }))
   const attributes = returnCanvasAttributes(
-    window,
-    state.zoom,
-    state.fullScreenWindow === window.id,
+    state.window,
+    null,
+    state.fullScreenWindow === id,
     isPinned,
   )
   return (
     <>
-      <Modifier value={item.body.modifier} windowId={window.id} />
+      <Modifier value={state.item.body.modifier} windowId={id} />
       <div
         className={styles.imageContainer}
         style={{
@@ -139,12 +146,12 @@ const GeneratedBody: React.FC<{
           height: attributes.height,
         }}
       >
-        {item.body.base64 !== `` && (
+        {state.item.body.base64 !== `` && (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className={styles.image}
-              src={item.body.base64}
+              src={state.item.body.base64}
               alt="generated image"
               width={attributes.width}
               height={attributes.height}
@@ -155,22 +162,27 @@ const GeneratedBody: React.FC<{
     </>
   )
 }
+const GeneratedBody = React.memo(GeneratedBody_Internal)
 
-export const WindowBody: React.FC<{
-  item: Item
-  window: WindowType
+const WindowBody_Internal: React.FC<{
+  id: string
   isPinned: boolean
-}> = ({ item, window, isPinned }) => {
+}> = ({ id, isPinned }) => {
+  const state = useZ((state) => ({
+    itemBodyType: findItem(state.items, id)?.body.type,
+  }))
   return (
     <>
-      {match(item)
-        .with({ body: { type: `generator` } }, (body) => (
-          <GeneratorBody item={body} window={window} isPinned={isPinned} />
+      {match(state.itemBodyType)
+        .with(`generator`, (body) => (
+          <GeneratorBody id={id} isPinned={isPinned} />
         ))
-        .with({ body: { type: `generated` } }, (body) => (
-          <GeneratedBody item={body} window={window} isPinned={isPinned} />
+        .with(`generated`, (body) => (
+          <GeneratedBody id={id} isPinned={isPinned} />
         ))
         .otherwise(() => null)}
     </>
   )
 }
+
+export const WindowBody = React.memo(WindowBody_Internal)

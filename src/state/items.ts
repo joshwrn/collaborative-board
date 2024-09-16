@@ -34,7 +34,7 @@ export type ItemWithSpecificBody<T extends ItemBody[`type`]> = Item & {
 }
 
 export const DEFAULT_ITEM: Item = {
-  id: `default_id`,
+  id: `default-id`,
   title: `default_title`,
   body: {
     prompt: `default_prompt`,
@@ -52,6 +52,13 @@ export const findGeneratedItems = (items: Item[]) =>
   items.filter(
     (i) => i.body.type === `generated`,
   ) as ItemWithSpecificBody<`generated`>[]
+export const findItem = (items: Item[], id: string) => {
+  const item = items.find((i) => i.id === id)
+  if (!item) {
+    return DEFAULT_ITEM
+  }
+  return item
+}
 
 export interface ItemListStore {
   items: Item[]

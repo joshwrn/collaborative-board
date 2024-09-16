@@ -9,6 +9,23 @@ export const connectionSchema = z.object({
   to: z.string(),
 })
 
+export const DEFAULT_CONNECTION: Connection = {
+  id: `default-id`,
+  from: ``,
+  to: ``,
+}
+
+export const findConnection = (
+  connections: Connection[],
+  id: string,
+): Connection => {
+  const connection = connections.find((c) => c.id === id)
+  if (!connection) {
+    return DEFAULT_CONNECTION
+  }
+  return connection
+}
+
 export type Connection = z.infer<typeof connectionSchema>
 
 export interface ConnectedWindowsStore {

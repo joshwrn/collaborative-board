@@ -6,7 +6,7 @@ import { IoCheckmarkCircleOutline as CheckIcon } from 'react-icons/io5'
 import UseAnimations from 'react-useanimations'
 import loading from 'react-useanimations/lib/loading'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import type { Notification } from '@/state/notifications'
 
 import style from './Toast.module.scss'
@@ -108,7 +108,7 @@ const Toast_Internal: React.FC<{ notification: Notification }> = ({
 const Toast = React.memo(Toast_Internal)
 
 export const Toaster: React.FC = () => {
-  const state = useStore([`notifications`])
+  const state = useZ([`notifications`])
   return (
     <div className={style.wrapper}>
       <LayoutGroup>

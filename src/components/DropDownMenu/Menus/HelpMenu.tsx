@@ -1,7 +1,7 @@
 import React from 'react'
 import { PiGearLight } from 'react-icons/pi'
 
-import { useStore } from '@/state/gen-state'
+import { useZ } from '@/state/gen-state'
 import Dropdown from '@/ui/Dropdown'
 
 import style from '../DropDownMenu.module.scss'
@@ -9,7 +9,7 @@ import { AboutModalGuard } from '../Modals/AboutModal'
 import { TutorialModalGuard } from '../Modals/TutorialModal'
 
 export const HelpMenu: React.FC = () => {
-  const state = useStore([`setState`])
+  const state = useZ([`setState`])
   return (
     <div className={style.item}>
       <Dropdown.Menu

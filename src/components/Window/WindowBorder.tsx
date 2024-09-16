@@ -3,8 +3,8 @@ import React from 'react'
 import type { DraggableData, DraggableEvent } from 'react-draggable'
 import { DraggableCore } from 'react-draggable'
 
-import { useStore } from '@/state/gen-state'
-import { WINDOW_ATTRS } from '@/state/windows'
+import { useZ } from '@/state/gen-state'
+import { findWindow, WINDOW_ATTRS } from '@/state/windows'
 import { joinClasses } from '@/utils/joinClasses'
 import { setCursorStyle } from '@/utils/setCursor'
 
@@ -59,18 +59,13 @@ const returnStyle = (
 
 export const WindowBorderInternal: FC<{
   id: string
-  width: number
-  height: number
   isFullScreen: boolean
   isPinned: boolean
-  position: { x: number; y: number }
-}> = ({ width, height, id, position, isFullScreen, isPinned }) => {
-  const state = useStore([
-    `resizeWindow`,
-    `hoveredItem`,
-    `selectedWindow`,
-    `setState`,
-  ])
+}> = ({ id, isFullScreen, isPinned }) => {
+  const state = useZ([`resizeWindow`, `setState`], (state) => ({
+    isSelected: state.selectedWindow === id,
+    window: findWindow(state.windows, id),
+  }))
 
   const nodeRef = React.useRef<HTMLDivElement>(null)
 
@@ -106,8 +101,11 @@ export const WindowBorderInternal: FC<{
     data: DraggableData,
     pos: BorderPosition,
   ) => {
-    startSize.current = { width, height }
-    startPosition.current = { x: position.x, y: position.y }
+    startSize.current = {
+      width: state.window.width,
+      height: state.window.height,
+    }
+    startPosition.current = { x: state.window.x, y: state.window.y }
     setCursorStyle(cursorsForBorderPositions[pos])
     state.setState((draft) => {
       draft.isResizingWindow = true
@@ -130,10 +128,14 @@ export const WindowBorderInternal: FC<{
     <div
       className={joinClasses(
         styles.border,
-        state.selectedWindow === id && !isFullScreen && styles.activeBorder,
-        state.hoveredItem === id && !isFullScreen && styles.hoveredBorder,
+        state.isSelected && !isFullScreen && styles.activeBorder,
       )}
-      style={returnStyle(width, height, isFullScreen, isPinned)}
+      style={returnStyle(
+        state.window.width,
+        state.window.height,
+        isFullScreen,
+        isPinned,
+      )}
     >
       {borderPositions.map((pos) => (
         <DraggableCore

@@ -1,12 +1,12 @@
 import { z } from 'zod'
 
 import { fetchScenario } from '@/server/scenario/fetchScenario'
-import { useFullStore } from '@/state/gen-state'
+import { store } from '@/state/gen-state'
 import { saveStateSchema } from '@/state/general'
 import { useOnLoad } from '@/utils/useInitial'
 
 export const loadScenario = async (scenario: string) => {
-  const state = useFullStore.getState()
+  const state = store.getState()
   const data = await fetchScenario({
     scenario: scenario,
   })

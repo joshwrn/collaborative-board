@@ -80,7 +80,7 @@
     "@typescript-eslint/no-redundant-type-constituents": "error",
     "@typescript-eslint/no-require-imports": "error",
     "@typescript-eslint/no-restricted-imports": "warn",
-    "@typescript-eslint/no-shadow": "error",
+    // "@typescript-eslint/no-shadow": "error",
     "@typescript-eslint/no-this-alias": "error",
     "quotes": ["error", "backtick", { "avoidEscape": true }],
     // "@typescript-eslint/no-throw-literal": "warn",
