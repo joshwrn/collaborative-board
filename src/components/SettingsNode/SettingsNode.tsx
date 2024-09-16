@@ -30,7 +30,7 @@ const SettingsNode_Internal: React.FC<{
   const nodeRef = React.useRef<HTMLDivElement>(null)
 
   return (
-    <DraggableWindowWrapper windowId={state.window.id} nodeRef={nodeRef}>
+    <DraggableWindowWrapper window={state.window} nodeRef={nodeRef}>
       <div
         className={styles.wrapper}
         style={{

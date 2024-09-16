@@ -4,6 +4,7 @@ import type { DraggableData, DraggableEvent } from 'react-draggable'
 import { DraggableCore } from 'react-draggable'
 
 import { useZ } from '@/state/gen-state'
+import type { WindowType } from '@/state/windows'
 import { findWindow, WINDOW_ATTRS } from '@/state/windows'
 import { joinClasses } from '@/utils/joinClasses'
 import { setCursorStyle } from '@/utils/setCursor'
@@ -58,13 +59,12 @@ const returnStyle = (
 }
 
 export const WindowBorderInternal: FC<{
-  id: string
+  window: WindowType
   isFullScreen: boolean
   isPinned: boolean
-}> = ({ id, isFullScreen, isPinned }) => {
+}> = ({ window, isFullScreen, isPinned }) => {
   const state = useZ([`resizeWindow`, `setState`], (state) => ({
-    isSelected: state.selectedWindow === id,
-    window: findWindow(state.windows, id),
+    isSelected: state.selectedWindow === window.id,
   }))
 
   const nodeRef = React.useRef<HTMLDivElement>(null)
@@ -94,7 +94,7 @@ export const WindowBorderInternal: FC<{
       height: startSize.current.height,
     }
 
-    state.resizeWindow(id, start, totalMovement.current, pos)
+    state.resizeWindow(window.id, start, totalMovement.current, pos)
   }
   const onDragStart = (
     e: DraggableEvent,
@@ -102,10 +102,10 @@ export const WindowBorderInternal: FC<{
     pos: BorderPosition,
   ) => {
     startSize.current = {
-      width: state.window.width,
-      height: state.window.height,
+      width: window.width,
+      height: window.height,
     }
-    startPosition.current = { x: state.window.x, y: state.window.y }
+    startPosition.current = { x: window.x, y: window.y }
     setCursorStyle(cursorsForBorderPositions[pos])
     state.setState((draft) => {
       draft.isResizingWindow = true
@@ -130,12 +130,7 @@ export const WindowBorderInternal: FC<{
         styles.border,
         state.isSelected && !isFullScreen && styles.activeBorder,
       )}
-      style={returnStyle(
-        state.window.width,
-        state.window.height,
-        isFullScreen,
-        isPinned,
-      )}
+      style={returnStyle(window.width, window.height, isFullScreen, isPinned)}
     >
       {borderPositions.map((pos) => (
         <DraggableCore
@@ -149,7 +144,7 @@ export const WindowBorderInternal: FC<{
           <div
             ref={nodeRef}
             className={styles[pos]}
-            id={`window-border-draggable-${pos}-${id}`}
+            id={`window-border-draggable-${pos}-${window.id}`}
           />
         </DraggableCore>
       ))}

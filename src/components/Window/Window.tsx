@@ -24,8 +24,9 @@ import { WindowMenu } from './WindowMenu/WindowMenu'
 const WindowInternal: FC<{
   isFullScreen: boolean
   isPinned: boolean
-  id: string
-}> = ({ isFullScreen, isPinned, id }) => {
+  window: WindowType
+}> = ({ isFullScreen, isPinned, window }) => {
+  const { id } = window
   const state = useZ(
     [
       `toggleOpenWindow`,
@@ -37,7 +38,6 @@ const WindowInternal: FC<{
     ],
     (state) => ({
       itemBodyType: findItem(state.items, id)?.body.type,
-      window: findWindow(state.windows, id),
       isSelected: state.selectedWindow === id,
       fromConnectionsLength: state.itemConnections.filter((c) => c.from === id)
         .length,
@@ -58,13 +58,13 @@ const WindowInternal: FC<{
     },
   })
 
-  if (state.window.id === `default-id`) {
+  if (window.id === `default-id`) {
     return null
   }
 
   return (
     <DraggableWindowWrapper
-      windowId={state.window.id}
+      window={window}
       nodeRef={nodeRef}
       dragProps={{
         disabled: isFullScreen,
@@ -74,7 +74,7 @@ const WindowInternal: FC<{
         ref={nodeRef}
         className={joinClasses(styles.wrapper, `window`)}
         id={`window-${id}`}
-        style={returnWindowStyle(state.window, isFullScreen, isPinned)}
+        style={returnWindowStyle(window, isFullScreen, isPinned)}
         onClick={(e) => {
           e.stopPropagation()
         }}
@@ -86,7 +86,7 @@ const WindowInternal: FC<{
         }}
       >
         {state.dev_allowWindowRotation && (
-          <RotationPoints id={id} window={state.window} />
+          <RotationPoints id={id} window={window} />
         )}
         <nav
           className={`${styles.topBar} handle`}
@@ -121,7 +121,7 @@ const WindowInternal: FC<{
               }
             />
           )}
-          {SHOW_ID && <div className={styles.debugId}>{state.window.id}</div>}
+          {SHOW_ID && <div className={styles.debugId}>{window.id}</div>}
         </nav>
 
         <header className={styles.titleBar}>
@@ -160,7 +160,11 @@ const WindowInternal: FC<{
           <WindowBody id={id} isPinned={isPinned} />
         </main>
         {isFullScreen || isPinned ? null : <NodeConnections id={id} />}
-        <WindowBorder id={id} isFullScreen={isFullScreen} isPinned={isPinned} />
+        <WindowBorder
+          window={window}
+          isFullScreen={isFullScreen}
+          isPinned={isPinned}
+        />
       </div>
     </DraggableWindowWrapper>
   )
@@ -169,15 +173,15 @@ const WindowInternal: FC<{
 export const Window = React.memo(WindowInternal)
 
 const WindowsInternal: FC = () => {
-  const state = useZ([`fullScreenWindow`, `items`])
+  const state = useZ([`fullScreenWindow`, `windows`])
   return (
     <>
-      {state.items.map(({ id: itemId }) => {
-        if (state.fullScreenWindow === itemId) return null
+      {state.windows.map((window) => {
+        if (state.fullScreenWindow === window.id) return null
         return (
           <Window
-            key={itemId}
-            id={itemId}
+            key={window.id}
+            window={window}
             isFullScreen={false}
             isPinned={false}
           />
