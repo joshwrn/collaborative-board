@@ -2,14 +2,14 @@ import { FloatingPortal } from '@floating-ui/react'
 import React from 'react'
 
 import { useZ } from '@/state/gen-state'
+import { findItem } from '@/state/items'
+import { findWindow } from '@/state/windows'
 
 import { Window } from '../Window'
 import style from './FullScreenWindow.module.scss'
-import { findWindow } from '@/state/windows'
-import { findItem } from '@/state/items'
 
 export const FullScreenWindow: React.FC = () => {
-  const state = useZ(['setFullScreenWindow'], (state) => {
+  const state = useZ([`setFullScreenWindow`], (state) => {
     const window = findWindow(state.windows, state.fullScreenWindow)
     return {
       window,

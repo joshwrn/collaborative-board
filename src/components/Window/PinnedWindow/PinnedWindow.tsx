@@ -2,11 +2,11 @@ import { FloatingPortal } from '@floating-ui/react'
 import React from 'react'
 
 import { useZ } from '@/state/gen-state'
+import { findItem } from '@/state/items'
 import { findWindow, WINDOW_ATTRS } from '@/state/windows'
 
 import { Window } from '../Window'
 import style from './PinnedWindow.module.scss'
-import { findItem } from '@/state/items'
 
 export const DEFAULT_PINNED_WINDOW_ZOOM = 0.5
 

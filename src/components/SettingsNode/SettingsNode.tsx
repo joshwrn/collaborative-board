@@ -20,10 +20,10 @@ const SettingsNode_Internal: React.FC<{
       node: findFalSettings(state.falSettingsNodes, id),
     }),
     [
-      'setState',
-      'updateFalSettingsNode',
-      'reorderWindows',
-      'deleteFalSettingsNode',
+      `setState`,
+      `updateFalSettingsNode`,
+      `reorderWindows`,
+      `deleteFalSettingsNode`,
     ],
   )
 

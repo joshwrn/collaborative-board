@@ -113,7 +113,7 @@ const PADDING_BETWEEN_WINDOWS = 300
 
 export const findWindow = (
   windows: WindowType[],
-  id: string | undefined | null,
+  id: string | null | undefined,
 ) => {
   const window = windows.find((w) => w.id === id)
   if (!window) {

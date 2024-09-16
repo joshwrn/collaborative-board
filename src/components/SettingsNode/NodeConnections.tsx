@@ -80,8 +80,8 @@ const StandardConnection: React.FC<{
   })
 
   if (
-    state.windowFrom.id === 'default-id' ||
-    state.windowTo.id === 'default-id'
+    state.windowFrom.id === `default-id` ||
+    state.windowTo.id === `default-id`
   ) {
     return null
   }
