@@ -7,9 +7,10 @@ import { joinClasses } from '@/utils/joinClasses'
 
 import style from './ActivateButton.module.scss'
 
-export const ActivateButton: React.FC<{
-  item: ItemWithSpecificBody<`generated`>
-}> = ({ item }) => {
+const ActivateButton_Internal: React.FC<{
+  id: string
+  isActive: boolean
+}> = ({ id, isActive }) => {
   const state = useStore([
     `toggleItemActive`,
     `fetchRealtimeImage`,
@@ -17,18 +18,16 @@ export const ActivateButton: React.FC<{
   ])
   return (
     <button
-      className={joinClasses(
-        style.wrapper,
-        item.body.activatedAt && style.isActive,
-      )}
+      className={joinClasses(style.wrapper, isActive && style.isActive)}
       onClick={async () => {
-        state.toggleItemActive(item.id)
-        const parent = state.findParentItem(item.id)
+        state.toggleItemActive(id)
+        const parent = state.findParentItem(id)
         await state.fetchRealtimeImage(parent.id)
       }}
     >
-      <p>{item.body.activatedAt ? `Activated` : `Activate`}</p>
-      {item.body.activatedAt ? <IoRadioButtonOn /> : <IoRadioButtonOff />}
+      <p>{isActive ? `Activated` : `Activate`}</p>
+      {isActive ? <IoRadioButtonOn /> : <IoRadioButtonOff />}
     </button>
   )
 }
+export const ActivateButton = React.memo(ActivateButton_Internal)

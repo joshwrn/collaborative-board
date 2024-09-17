@@ -2,12 +2,15 @@ import React from 'react'
 
 import { createLineBetweenWindows } from '@/logic/createLineBetweenWindowSides'
 import { useStore } from '@/state/gen-state'
-import type { Item } from '@/state/items'
+import type { ItemBodyType } from '@/state/items'
 import type { WindowType } from '@/state/windows'
 import { Line } from '@/ui/Connections/Line'
 import { CONNECTION_COLORS, NodeConnector } from '@/ui/Connections/NodeConnector'
 
-export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
+const NodeConnections_Internal: React.FC<{
+  id: string
+  itemBodyType: ItemBodyType
+}> = ({ id, itemBodyType }) => {
   const state = useStore([`activeFalConnection`, `makeFalSettingsConnection`])
   return (
     <>
@@ -21,11 +24,11 @@ export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
           }}
           onClick={() => {
             if (state.activeFalConnection) {
-              state.makeFalSettingsConnection(state.activeFalConnection, item.id)
+              state.makeFalSettingsConnection(state.activeFalConnection, id)
             }
           }}
         />
-        {item.body.type === `generated` && (
+        {itemBodyType === `generated` && (
           <NodeConnector.Connector
             label={`generator`}
             backgroundColor={CONNECTION_COLORS.connections}
@@ -34,7 +37,7 @@ export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
         )}
       </NodeConnector.Wrapper>
       <NodeConnector.Wrapper direction="outgoing">
-        {item.body.type === `generator` && (
+        {itemBodyType === `generator` && (
           <NodeConnector.Connector
             label={`generations`}
             backgroundColor={CONNECTION_COLORS.connections}
@@ -45,6 +48,7 @@ export const NodeConnections: React.FC<{ item: Item }> = ({ item }) => {
     </>
   )
 }
+export const NodeConnections = React.memo(NodeConnections_Internal)
 
 const ItemConnections_Internal: React.FC = () => {
   const state = useStore([
@@ -108,5 +112,4 @@ const ItemConnections_Internal: React.FC = () => {
     </>
   )
 }
-
 export const ItemConnections = React.memo(ItemConnections_Internal)

@@ -8,14 +8,14 @@ import type { Item } from '@/state/items'
 import style from './BranchButton.module.scss'
 
 export const BranchButton_Internal: React.FC<{
-  item: Item
-}> = ({ item }) => {
+  id: string
+}> = ({ id }) => {
   const state = useStore([`generateInitialWindow`])
   return (
     <section className={style.wrapper}>
       <button
         onClick={async () => {
-          await state.generateInitialWindow(item.id)
+          await state.generateInitialWindow(id)
         }}
       >
         <p>Branch</p>

@@ -307,6 +307,13 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     if (!openWindow) {
       throw new Error(`window ${id} not found`)
     }
+    const highestZIndex = openWindows.reduce(
+      (highest, window) => Math.max(highest, window.zIndex),
+      0,
+    )
+    if (highestZIndex === openWindow.zIndex) {
+      return
+    }
     set((state) => ({
       windows: state.windows.map((window) => {
         if (window.id === id) {

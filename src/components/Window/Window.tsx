@@ -41,7 +41,7 @@ const WindowInternal: FC<{
     }),
   )
 
-  const { item } = state
+  const item = React.useMemo(() => state.item, [state.item])
 
   const nodeRef = React.useRef<HTMLDivElement>(null)
 
@@ -80,18 +80,18 @@ const WindowInternal: FC<{
         }}
         onPointerDown={() => {
           state.setState((draft) => {
-            draft.selectedWindow = item.id
+            draft.selectedWindow = window.id
           })
-          state.reorderWindows(item.id)
+          state.reorderWindows(window.id)
         }}
       >
         {state.dev_allowWindowRotation && (
-          <RotationPoints id={item.id} window={window} />
+          <RotationPoints id={window.id} window={window} />
         )}
         <nav
           className={`${styles.topBar} handle`}
           onDoubleClick={() =>
-            state.setFullScreenWindow((prev) => (prev ? null : item.id))
+            state.setFullScreenWindow((prev) => (prev ? null : window.id))
           }
         >
           <button
@@ -110,14 +110,14 @@ const WindowInternal: FC<{
               state.setState((draft) => {
                 draft.selectedWindow = null
               })
-              state.toggleOpenWindow(item.id)
+              state.toggleOpenWindow(window.id)
             }}
           />
           {!isFullScreen && !isPinned && (
             <button
               className={styles.full}
               onClick={() =>
-                state.setFullScreenWindow((prev) => (prev ? null : item.id))
+                state.setFullScreenWindow((prev) => (prev ? null : window.id))
               }
             />
           )}
@@ -126,12 +126,12 @@ const WindowInternal: FC<{
 
         <header className={styles.titleBar}>
           <section>
-            <WindowMenu id={item.id} />
+            <WindowMenu id={window.id} />
           </section>
           <section className={styles.right}>
             {item.body.type === `generator` && (
               <>
-                <BranchButton item={item} />
+                <BranchButton id={window.id} />
                 <section className={styles.connections}>
                   <div>
                     <p>
@@ -146,7 +146,10 @@ const WindowInternal: FC<{
               </>
             )}
             {item.body.type === `generated` && (
-              <ActivateButton item={item as ItemWithSpecificBody<`generated`>} />
+              <ActivateButton
+                id={window.id}
+                isActive={!!item.body.activatedAt}
+              />
             )}
           </section>
         </header>
@@ -159,7 +162,9 @@ const WindowInternal: FC<{
         >
           <WindowBody item={item} window={window} isPinned={isPinned} />
         </main>
-        {isFullScreen || isPinned ? null : <NodeConnections item={item} />}
+        {isFullScreen || isPinned ? null : (
+          <NodeConnections itemBodyType={item.body.type} id={item.id} />
+        )}
         <WindowBorder
           width={window.width}
           height={window.height}
