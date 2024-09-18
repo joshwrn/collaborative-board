@@ -12,6 +12,7 @@ export const WindowsMenu = () => {
     `setShowConnections`,
     `setState`,
     `createNewWindow`,
+    `centerSpaceAroundWindow`,
   ])
   return (
     <div className={style.item} id="dropdown-windows-button">
@@ -21,7 +22,8 @@ export const WindowsMenu = () => {
           <Dropdown.Item
             key={`New Window`}
             onClick={() => {
-              state.createNewWindow()
+              const id = state.createNewWindow()
+              state.centerSpaceAroundWindow(id)
             }}
             label1={`New Window`}
             isChecked={false}

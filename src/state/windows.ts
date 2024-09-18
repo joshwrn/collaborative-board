@@ -2,10 +2,10 @@ import { nanoid } from 'nanoid'
 import { z } from 'zod'
 
 import { doRectanglesOverlap } from '@/logic/doRectanglesOverlap'
-import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
 import { createMockPrompt } from '@/mock/mock-items'
 
 import type { Point2d } from '.'
+import { SPACE_ATTRS } from './space'
 import type { AppStateCreator, Setter } from './state'
 import { stateSetter } from './state'
 
@@ -38,11 +38,11 @@ export interface OpenWindowsStore {
   openAllWindows: () => void
   fullScreenWindow: string | null
   setFullScreenWindow: Setter<string | null>
-  hoveredWindow: string | null
   pinnedWindow: string | null
   selectedWindow: string | null
   moveWindowNextTo: (id: string, nextId: string) => WindowType
   createNewWindow: () => string
+  centerSpaceAroundWindow: (id: string) => void
 }
 
 export const WINDOW_ATTRS = {
@@ -82,28 +82,7 @@ export const newWindowSizeInBounds = (newSize: {
   return size
 }
 
-const createNewWindowPosition = (
-  windows: WindowType[],
-  zoom: number,
-  pan: Point2d,
-) => {
-  const centerPoint = spaceCenterPoint(zoom, pan)
-  const startingPosition = {
-    x: centerPoint.x - WINDOW_ATTRS.defaultSize.width / 2,
-    y: centerPoint.y - WINDOW_ATTRS.defaultSize.height / 2,
-  }
-  for (let i = 0; i < windows.length; i++) {
-    const window = windows[i]
-    if (window.x === startingPosition.x && window.y === startingPosition.y) {
-      startingPosition.x += 20
-      startingPosition.y += 20
-      i = 0
-    }
-  }
-  return startingPosition
-}
-
-const createNextWindowPosition = (
+export const createNextWindowPosition = (
   windows: WindowType[],
   startingPosition: Point2d,
   nextId: string,
@@ -130,7 +109,7 @@ const createNextWindowPosition = (
   return startingPosition
 }
 
-const PADDING_BETWEEN_WINDOWS = 130
+const PADDING_BETWEEN_WINDOWS = 300
 
 export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
   set,
@@ -173,12 +152,12 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
         window.y = 0
       }
     })
-    const { connections, zoom, pan, windows } = state
+    const { itemConnections: connections, zoom, pan, windows } = state
     if (windows.length === 0) {
       throw new Error(`No windows to organize`)
     }
     const windowIds = windows.map((w) => w.id)
-    const centerPoint = spaceCenterPoint(zoom, pan)
+    const centerPoint = state.findSpaceCenterPoint()
     const startPoint = {
       x: centerPoint.x - WINDOW_ATTRS.defaultSize.width / 2,
       y: centerPoint.y - WINDOW_ATTRS.defaultSize.height / 2,
@@ -238,10 +217,18 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       (highest, window) => Math.max(highest, window.zIndex),
       0,
     )
+    const centerPoint = state.findSpaceCenterPoint()
     state.setState((draft) => {
       draft.windows.push({
         id,
-        ...createNewWindowPosition(draft.windows, state.zoom, state.pan),
+        ...createNextWindowPosition(
+          draft.windows,
+          {
+            x: centerPoint.x - WINDOW_ATTRS.defaultSize.width / 2,
+            y: centerPoint.y - WINDOW_ATTRS.defaultSize.height / 2,
+          },
+          id,
+        ),
         width: WINDOW_ATTRS.defaultSize.width,
         height: WINDOW_ATTRS.defaultSize.height,
         zIndex: highestZIndex + 1,
@@ -256,21 +243,12 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     const prompt = createMockPrompt()
     state.createItem({
       id: id,
-      subject: prompt,
-      body: [
-        {
-          id: nanoid(),
-          type: `text`,
-          content: prompt,
-        },
-        {
-          id: nanoid(),
-          type: `canvas`,
-          content: {
-            base64: ``,
-          },
-        },
-      ],
+      title: prompt,
+      body: {
+        prompt,
+        base64: ``,
+        type: `generator`,
+      },
     })
     state.toggleOpenWindow(id)
 
@@ -329,6 +307,13 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     const openWindow = openWindows.find((window) => window.id === id)
     if (!openWindow) {
       throw new Error(`window ${id} not found`)
+    }
+    const highestZIndex = openWindows.reduce(
+      (highest, window) => Math.max(highest, window.zIndex),
+      0,
+    )
+    if (highestZIndex === openWindow.zIndex) {
+      return
     }
     set((state) => ({
       windows: state.windows.map((window) => {
@@ -443,11 +428,26 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     })
   },
 
+  centerSpaceAroundWindow: (id) => {
+    const state = get()
+    const window = state.windows.find((w) => w.id === id)
+    if (!window) {
+      throw new Error(`window ${id} not found`)
+    }
+
+    const newPosition = {
+      x: SPACE_ATTRS.size.default / 2 - window.x * state.zoom,
+      y: SPACE_ATTRS.size.default / 2 - window.y * state.zoom,
+    }
+    state.setState((draft) => {
+      draft.pan.x = newPosition.x
+      draft.pan.y = newPosition.y
+    })
+  },
+
   fullScreenWindow: null,
 
   setFullScreenWindow: (setter) => stateSetter(set, setter, `fullScreenWindow`),
-
-  hoveredWindow: null,
 
   selectedWindow: null,
 })

@@ -43,7 +43,6 @@
     calc(var(--lightness) + 5%),
     1
   );
-  backdrop-filter: blur(10px);
   border: 1px solid
     hsla(
       var(--hue),

@@ -1,4 +1,3 @@
-import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
 import {
   createManyMockConnectionsToOneWindow,
   createMockConnection,
@@ -20,14 +19,14 @@ export const mockStore: AppStateCreator<MockStore> = (set, get) => ({
     const state = get()
     const items = createMockItem(1)
     const connections = createMockConnection(items)
-    const centerPoint = spaceCenterPoint(state.zoom, state.pan)
+    const centerPoint = state.findSpaceCenterPoint()
     const startingPosition = {
       x: centerPoint.x - WINDOW_ATTRS.defaultSize.width / 2,
       y: centerPoint.y - WINDOW_ATTRS.defaultSize.height / 2,
     }
     set(() => ({
       items: items,
-      connections: connections,
+      itemConnections: connections,
       windows: createMockWindow(items, startingPosition),
     }))
   },
@@ -40,14 +39,14 @@ export const mockStore: AppStateCreator<MockStore> = (set, get) => ({
     const connectionsSet = new Set(connections)
     set((state) => ({
       items: items,
-      connections: [...connectionsSet],
+      itemConnections: [...connectionsSet],
       windows: createMockWindow(items),
     }))
   },
   clearMocks: () => {
     set(() => ({
       items: [],
-      connections: [],
+      itemConnections: [],
       windows: [],
     }))
   },

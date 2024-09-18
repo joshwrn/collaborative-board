@@ -72,9 +72,10 @@ const Button: React.FC<
 const Header: React.FC<{
   title: string
   children?: React.ReactNode
-}> = ({ title, children }) => {
+  className?: string
+}> = ({ title, children, className }) => {
   return (
-    <div className={style.header}>
+    <div className={joinClasses(style.header, className)}>
       <h1>{title}</h1>
       {children}
     </div>

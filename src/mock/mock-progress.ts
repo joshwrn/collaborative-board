@@ -1,14 +1,15 @@
 import { randomNumberBetween } from '@/utils/randomNumberBetween'
+import { Time, type TimeValue } from '@/utils/time'
 
 // subtract progress from 100 to get reverse progress
 export const mockProgress = async (options: {
   onProgress: (progress: number) => void
-  time?: number
+  time?: TimeValue
   shouldReject?: boolean
 }) => {
   let { onProgress, time } = options
   if (!time) {
-    time = randomNumberBetween(1000, 5000)
+    time = Time.seconds(randomNumberBetween(1, 5))
   }
   let curProgress = 0
   const totalUpdates = time / 100

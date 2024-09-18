@@ -3,9 +3,6 @@ import { z } from 'zod'
 import type { AppStateCreator, Setter } from './state'
 import { stateSetter } from './state'
 
-export const SIDES = [`top`, `right`, `bottom`, `left`] as const
-export type Side = (typeof SIDES)[number]
-
 export const connectionSchema = z.object({
   id: z.string(),
   from: z.string(),
@@ -14,65 +11,71 @@ export const connectionSchema = z.object({
 
 export type Connection = z.infer<typeof connectionSchema>
 
-export type ActiveConnection = Pick<Connection, `from`>
-export type HoveredConnection = Pick<Connection, `to`>
-
 export interface ConnectedWindowsStore {
-  activeConnection: ActiveConnection | null
-  hoveredConnection: HoveredConnection | null
-  connections: Connection[]
-  setConnections: Setter<Connection[]>
-  makeConnection: (connection: { to: string; from?: string }) => void
-  removeConnection: (connectionId: string) => void
+  itemConnections: Connection[]
+  falSettingsConnections: Connection[]
+  makeConnection: (
+    connection: Omit<Connection, `id`>,
+    type: `falSettingsConnections` | `itemConnections`,
+  ) => void
+  removeConnection: (
+    connectionId: string,
+    type: `falSettingsConnections` | `itemConnections`,
+  ) => void
+  removeManyConnections: (
+    entityId: string,
+    type: `falSettingsConnections` | `itemConnections`,
+  ) => void
   showConnections: boolean
   setShowConnections: Setter<boolean>
+  activeFalConnection: string | null
 }
 
 export const connectedWindowsStore: AppStateCreator<ConnectedWindowsStore> = (
   set,
   get,
 ) => ({
-  activeConnection: null,
-
-  hoveredConnection: null,
-
   showConnections: true,
   setShowConnections: (setter) => stateSetter(set, setter, `showConnections`),
+  activeFalConnection: null,
+  falSettingsConnections: [],
 
-  makeConnection: (connector) => {
-    const activeConnection = connector.from
-      ? {
-          from: connector.from,
-        }
-      : get().activeConnection
-    if (!activeConnection) {
-      throw new Error(`no active connection`)
+  makeConnection: (connector, type) => {
+    const state = get()
+    if (
+      state[type].some((c) => c.from === connector.from && c.to === connector.to)
+    ) {
+      return
     }
-    set((state) => ({
-      activeConnection: null,
-      hoveredConnection: null,
-      connections: [
-        ...state.connections,
+    state.setState((draft) => {
+      draft[type] = [
+        ...draft[type],
         {
-          from: activeConnection.from,
+          from: connector.from,
           to: connector.to,
-          id: `${activeConnection.from}/${connector.to}`,
+          id: `${connector.from}/${connector.to}`,
         },
-      ],
-    }))
+      ]
+    })
   },
 
-  connections: [],
-
-  removeConnection: (connectionId) => {
-    set((state) => ({
-      connections: state.connections.filter(
+  itemConnections: [],
+  removeManyConnections: (entityId, type) => {
+    const state = get()
+    state.setState((draft) => {
+      draft[type] = draft[type].filter(
+        (connection) => !connection.id.includes(entityId),
+      )
+    })
+  },
+  removeConnection: (connectionId, type) => {
+    const state = get()
+    state.setState((draft) => {
+      draft[type] = draft[type].filter(
         (connection) => connection.id !== connectionId,
-      ),
-    }))
+      )
+    })
   },
-
-  setConnections: (setter) => stateSetter(set, setter, `connections`),
 })
 
 export const checkIfConnectionExists = ({

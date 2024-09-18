@@ -29,7 +29,6 @@ export const useGestures = ({
     `setZoom`,
     `setPan`,
     `selectedWindow`,
-    `hoveredWindow`,
     `setState`,
     `updateSpaceMousePosition`,
   ])

@@ -1,7 +1,6 @@
 'use client'
 import React from 'react'
 
-import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
 import { useStore } from '@/state/gen-state'
 import { allowDebugItem } from '@/utils/is-dev'
 
@@ -17,10 +16,11 @@ export const Debug: React.FC = () => {
     `setState`,
     `zoom`,
     `pan`,
+    `findSpaceCenterPoint`,
   ])
 
   React.useEffect(() => {
-    const newPos = spaceCenterPoint(state.zoom, state.pan)
+    const newPos = state.findSpaceCenterPoint()
     state.setState((draft) => {
       draft.debug_centerPoint = newPos
     })

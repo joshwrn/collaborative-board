@@ -13,8 +13,8 @@
     "all": "concurrently \"npm run dev\" \"npm run gen-api-routes\""
   },
   "dependencies": {
-    "@fal-ai/serverless-client": "^0.13.0",
-    "@fal-ai/serverless-proxy": "^0.7.4",
+    "@fal-ai/serverless-client": "0.9.0",
+    "@fal-ai/serverless-proxy": "0.9.0",
     "@floating-ui/react": "^0.26.17",
     "@react-three/fiber": "^8.15.14",
     "@tanstack/react-query": "^5.51.11",

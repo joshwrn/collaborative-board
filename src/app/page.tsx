@@ -1,5 +1,4 @@
 'use client'
-
 import * as fal from '@fal-ai/serverless-client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React, { Suspense } from 'react'
@@ -12,10 +11,10 @@ import { ListGuard } from '@/components/ItemList/List/List'
 import { Space } from '@/components/Space/Space'
 import { StatsBar } from '@/components/StatsBar/StatsBar'
 import { Toolbar } from '@/components/Toolbar/Toolbar'
-import { useScenario } from '@/mock/scenarios'
-import { useFullStore, useStore } from '@/state/gen-state'
+import { useFalRealtimeConnect } from '@/fal/workflows/useRealtimeConnect'
+import { useInitialScene } from '@/mock/useInitialScene'
+import { useStore } from '@/state/gen-state'
 import { Toaster } from '@/ui/Toast'
-import { useOnLoad } from '@/utils/useInitial'
 
 import styles from './page.module.scss'
 
@@ -34,11 +33,8 @@ export default function Home() {
     `debug_showFps`,
   ])
 
-  useScenario()
-  useOnLoad(() => {
-    const s = useFullStore.getState()
-    s.createNewWindow()
-  })
+  useInitialScene()
+  useFalRealtimeConnect()
 
   return (
     <QueryClientProvider client={queryClient}>

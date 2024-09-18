@@ -8,7 +8,7 @@ import { HelpMenu } from './Menus/HelpMenu'
 import { SpaceMenu } from './Menus/SpaceMenu'
 import { WindowsMenu } from './Menus/WindowsMenu'
 
-export const DropDownMenu = () => {
+const DropDownMenu_Internal: React.FC = () => {
   return (
     <nav className={style.wrapper}>
       <FileMenu />
@@ -20,3 +20,4 @@ export const DropDownMenu = () => {
     </nav>
   )
 }
+export const DropDownMenu = React.memo(DropDownMenu_Internal)

@@ -5,6 +5,7 @@ export const createMockConnection = (mockItems: Item[]): Connection[] =>
   Array.from({ length: mockItems.length - 2 }, (_, i) => {
     const item = mockItems[i]
     return {
+      type: `item`,
       from: item.id,
       to: mockItems[i + 1].id,
       id: `${item.id}/${mockItems[i + 1].id}`,
@@ -14,7 +15,7 @@ export const createMockConnection = (mockItems: Item[]): Connection[] =>
 export const createManyMockConnectionsToOneWindow = (
   mockItems: Item[],
 ): Connection[] => {
-  const connections = []
+  const connections: Connection[] = []
   const length = mockItems.length - 1
   for (let i = 0; i < length; i++) {
     const item = mockItems[i]

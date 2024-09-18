@@ -1,4 +1,48 @@
-export const MOCK_PLACES = [
+export const MOCK_NOUNS = [
+  // buildings
+  `a skyscraper`,
+  `a tower`,
+  `a castle`,
+  `a house`,
+  `a palace`,
+  `a mansion`,
+  `a hotel`,
+  `a store`,
+  `a tree house`,
+
+  // vehicles
+  `a exotic car`,
+  `a yacht`,
+  `a train`,
+  `a jet`,
+
+  // animals
+  `a bear`,
+  `a cat`,
+  `a dog`,
+  `an elephant`,
+  `a fox`,
+  `a gorilla`,
+  `a horse`,
+  `a kangaroo`,
+  `a lion`,
+  `a monkey`,
+  `an owl`,
+  `a penguin`,
+  `a pig`,
+  `a rabbit`,
+  `a sheep`,
+  `a tiger`,
+  `a whale`,
+  `a wolf`,
+
+  // fantasy
+  `a dragon`,
+  `a vampire`,
+  `an unicorn`,
+  `a knight`,
+
+  // places
   `paris`,
   `london`,
   `new york`,
@@ -10,78 +54,33 @@ export const MOCK_PLACES = [
   // `rio`,
   `san francisco`,
   // `new delhi`,
-]
 
-export const MOCK_NOUNS = [
-  // buildings
-  `skyscraper`,
-  `tower`,
-  `castle`,
-  `house`,
-  `palace`,
-  `mansion`,
-  `hotel`,
-  `apartment`,
-  // `office`,
-  `store`,
-  `garage`,
-  `tree house`,
-  `palace`,
+  // space
+  `a galaxy`,
+  `the universe`,
+  `the cosmos`,
+  `the solar system`,
+  `a star`,
+  `the earth`,
+  `the moon`,
+  `mars`,
 
-  // vehicles
-  `car`,
-  // `truck`,
-  // `bus`,
-  `motorcycle`,
-  // `bicycle`,
-  `yacht`,
-  `train`,
-  `plane`,
+  // tourist sites
+  `the eiffel tower`,
+  `the louvre`,
+  `the grand canyon`,
+  `the taj mahal`,
+  `the colosseum`,
+  `the great wall of china`,
+  `the pyramids`,
+  `machu picchu`,
+  `the petronas towers`,
+  `the sydney opera house`,
 
-  // food
-  `apple`,
-  `cherry`,
-  `peach`,
-  `pineapple`,
-  `strawberry`,
-  `pizza`,
-
-  // animals
-  `bear`,
-  `cat`,
-  `dog`,
-  `elephant`,
-  `fox`,
-  `gorilla`,
-  `horse`,
-  `kangaroo`,
-  `lion`,
-  `monkey`,
-  `owl`,
-  `penguin`,
-  `pig`,
-  `rabbit`,
-  `sheep`,
-  `tiger`,
-  `whale`,
-  `wolf`,
-
-  // fantasy
-  `dragon`,
-  // `unicorn`,
-  // `mermaid`,
-  `fairy`,
-  `elf`,
-  `dwarf`,
-  `goblin`,
-  `gnome`,
-  // `ogre`,
-  // `troll`,
-  `wizard`,
-  `witch`,
-  `vampire`,
-  // `werewolf`,
-
-  // places
-  ...MOCK_PLACES,
+  // sites
+  `a sunset`,
+  `the beach`,
+  `the ocean`,
+  `a fire`,
+  `the mountains`,
 ]

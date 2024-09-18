@@ -2,15 +2,14 @@ import React from 'react'
 
 import { rotatePointAroundCenter } from '@/logic/rotatePointAroundCenter'
 import { useStore } from '@/state/gen-state'
-import type { CanvasData } from '@/state/items'
 import type { WindowType } from '@/state/windows'
 import { WINDOW_ATTRS } from '@/state/windows'
 import { joinClasses } from '@/utils/joinClasses'
 
-import { DEFAULT_PINNED_WINDOW_ZOOM } from '../Window/PinnedWindow/PinnedWindow'
+import { DEFAULT_PINNED_WINDOW_ZOOM } from '../PinnedWindow/PinnedWindow'
 import style from './Canvas.module.scss'
 
-const returnAttributes = (
+export const returnCanvasAttributes = (
   window: WindowType,
   zoom: number,
   isFullScreen: boolean,
@@ -53,25 +52,25 @@ const returnContext = (ref: React.RefObject<HTMLCanvasElement>) => {
 
 export const Canvas_Internal: React.FC<{
   window: WindowType
-  contentId: string
-  content: CanvasData
+  content: string
   isPinned: boolean
-}> = ({ window, contentId, content, isPinned }) => {
+}> = ({ window, content, isPinned }) => {
   const state = useStore([
     `zoom`,
     `drawColor`,
     `drawSize`,
     `fullScreenWindow`,
     `editItemContent`,
-    `generatedCanvas`,
     `setState`,
     `selectedWindow`,
     `isResizingWindow`,
+    `fetchRealtimeImage`,
   ])
 
   const isFullScreen = state.fullScreenWindow === window.id
   const counterRef = React.useRef<HTMLDivElement>(null)
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
+  const isDrawing = React.useRef(false)
   const lastPosition = React.useRef({ x: 0, y: 0 })
 
   React.useEffect(() => {
@@ -81,23 +80,27 @@ export const Canvas_Internal: React.FC<{
     img.onload = () => {
       ctx.drawImage(img, 0, 0)
     }
-    img.src = content.base64
+    img.src = content
     // only rewrite the canvas if the window size changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [window.width, window.height, content.base64])
+  }, [window.width, window.height, content])
 
-  const attributes = returnAttributes(window, state.zoom, isFullScreen, isPinned)
+  const attributes = returnCanvasAttributes(
+    window,
+    state.zoom,
+    isFullScreen,
+    isPinned,
+  )
 
-  const writeCanvas = () => {
+  const writeCanvas = async () => {
     if (!canvasRef.current) return
     if (state.isResizingWindow) return
+    if (!isDrawing.current) return
+    const base64 = canvasRef.current.toDataURL()
     state.editItemContent(window.id, {
-      content: {
-        base64: canvasRef.current.toDataURL(),
-      },
-      id: contentId,
-      type: `canvas`,
+      base64,
     })
+    await state.fetchRealtimeImage(window.id)
   }
 
   const calculateMousePosition = (e: React.PointerEvent) => {
@@ -145,11 +148,18 @@ export const Canvas_Internal: React.FC<{
         height={attributes.height}
         className={joinClasses(style.canvas, `canvas`)}
         ref={canvasRef}
-        onPointerLeave={() => {
-          writeCanvas()
+        onPointerLeave={async () => {
+          await writeCanvas()
+          isDrawing.current = false
         }}
-        onPointerUp={() => {
-          writeCanvas()
+        onPointerUp={async () => {
+          await writeCanvas()
+          isDrawing.current = false
+        }}
+        onPointerEnter={(e) => {
+          if (e.buttons === 1) {
+            isDrawing.current = true
+          }
         }}
         onPointerDown={(e) => {
           const ctx = returnContext(canvasRef)
@@ -164,6 +174,7 @@ export const Canvas_Internal: React.FC<{
             2 * Math.PI,
           )
           ctx.fill()
+          isDrawing.current = true
         }}
         onPointerMove={(e) => {
           const ctx = returnContext(canvasRef)

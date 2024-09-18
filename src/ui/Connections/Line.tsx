@@ -9,32 +9,11 @@ import {
   calculateDeltas,
 } from '@/logic/arrows'
 import type { Point2d } from '@/state'
-import { joinClasses } from '@/utils/joinClasses'
 
-import styles from './Arrow.module.scss'
+import styles from './Line.module.scss'
 
 const CONTROL_POINTS_RADIUS = 5
 const STRAIGHT_LINE_BEFORE_ARROW_HEAD = 5
-
-type ArrowConfig = {
-  arrowColor?: string
-  controlPointsColor?: string
-  dotEndingBackground?: string
-  dotEndingRadius?: number
-  arrowHeadEndingSize?: number
-  strokeWidth?: number
-}
-
-type Props = {
-  startPoint: Point2d
-  endPoint: Point2d
-  showDebugGuideLines?: boolean
-  onMouseEnter?: (e: React.MouseEvent) => void
-  onMouseLeave?: (e: React.MouseEvent) => void
-  onClick?: (e: React.MouseEvent) => void
-  config?: ArrowConfig
-  isGenerating?: boolean
-}
 
 const ControlPoints = ({
   p1,
@@ -91,12 +70,32 @@ const calculatePercent = (current: number, total: number) => {
 
 const DOT_SPEED = 200
 
-const Arrow_Internal: React.FC<Props> = ({
+const Line_Internal: React.FC<{
+  startPoint: Point2d
+  endPoint: Point2d
+  showDebugGuideLines?: boolean
+  onMouseEnter?: (e: React.MouseEvent) => void
+  onMouseLeave?: (e: React.MouseEvent) => void
+  onClick?: (e: React.MouseEvent) => void
+  config?: {
+    arrowColor?: string
+    controlPointsColor?: string
+    dotEndingBackground?: string
+    dotEndingRadius?: number
+    arrowHeadEndingSize?: number
+    strokeWidth?: number
+    dashArray?: [number, number]
+  }
+  isActive?: boolean
+  onContextMenu?: (e: React.MouseEvent) => void
+}> = ({
   startPoint,
   endPoint,
   showDebugGuideLines = false,
+  onContextMenu,
   config,
-  isGenerating = false,
+  isActive = false,
+  onClick,
 }) => {
   const defaultConfig = {
     arrowColor: `#bcc4cc`,
@@ -105,6 +104,7 @@ const Arrow_Internal: React.FC<Props> = ({
     dotEndingRadius: 3,
     arrowHeadEndingSize: 9,
     strokeWidth: 1,
+    dashArray: [0, 0],
   }
   const currentConfig = {
     ...defaultConfig,
@@ -118,9 +118,10 @@ const Arrow_Internal: React.FC<Props> = ({
     strokeWidth,
     dotEndingBackground,
     dotEndingRadius,
+    dashArray,
   } = currentConfig
 
-  const arrowHeadOffset = arrowHeadEndingSize / 2
+  // const arrowHeadOffset = arrowHeadEndingSize / 2
   const boundingBoxElementsBuffer =
     strokeWidth +
     arrowHeadEndingSize / 2 +
@@ -213,16 +214,36 @@ const Arrow_Internal: React.FC<Props> = ({
             </feMerge>
           </filter>
         </defs>
+
         <path
-          className={styles.renderedLine}
           d={curvedLinePath}
           strokeWidth={strokeWidth}
           stroke={arrowColor}
           fill="none"
-          strokeDasharray={isGenerating ? `5,15` : `0, 0`}
+          strokeDasharray={`${dashArray[0]}, ${dashArray[1]}`}
           strokeLinecap="round"
         />
-        {isGenerating && (
+        <path
+          onClick={(e) => {
+            e.preventDefault()
+            onClick?.(e)
+          }}
+          onContextMenu={(e) => {
+            e.preventDefault()
+            onContextMenu?.(e)
+          }}
+          style={{
+            zIndex: 10,
+            pointerEvents: `visibleStroke`,
+          }}
+          d={curvedLinePath}
+          strokeWidth={strokeWidth + 20}
+          stroke={`transparent`}
+          fill="none"
+          strokeLinecap="round"
+        />
+
+        {isActive && (
           <circle
             id="followingCircle"
             r={dotEndingRadius + 1}
@@ -245,38 +266,6 @@ const Arrow_Internal: React.FC<Props> = ({
             />
           </circle>
         )}
-      </svg>
-      <svg
-        className={joinClasses(styles.line, styles.endings)}
-        width={canvasWidth}
-        height={canvasHeight}
-        style={{
-          transform: `translate(${canvasXOffset}px, ${canvasYOffset}px)`,
-        }}
-      >
-        <circle
-          className={styles.dotEnding}
-          cx={p1.x}
-          cy={p1.y}
-          r={dotEndingRadius}
-          stroke={arrowColor}
-          strokeWidth={strokeWidth}
-          fill={dotEndingBackground}
-        />
-        <path
-          className={styles.arrowHeadEnding}
-          d={`
-          M ${(arrowHeadEndingSize / 5) * 2} 0
-          L ${arrowHeadEndingSize} ${arrowHeadEndingSize / 2}
-          L ${(arrowHeadEndingSize / 5) * 2} ${arrowHeadEndingSize}`}
-          fill="none"
-          stroke={arrowColor}
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
-          style={{
-            transform: `translate(${p4.x - arrowHeadOffset * 2}px, ${p4.y - arrowHeadOffset}px)`,
-          }}
-        />
 
         {showDebugGuideLines && (
           <ControlPoints
@@ -292,4 +281,4 @@ const Arrow_Internal: React.FC<Props> = ({
   )
 }
 
-export const Arrow = React.memo(Arrow_Internal)
+export const Line = React.memo(Line_Internal)

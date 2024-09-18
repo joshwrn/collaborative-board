@@ -8,7 +8,11 @@ import style from '../DropDownMenu.module.scss'
 import { FalSettingsModalGuard } from '../Modals/FalSettingsModal'
 
 export const AIMenu = () => {
-  const state = useStore([`fal_num_inference_steps`, `setState`])
+  const state = useStore([
+    `setState`,
+    `createFalSettingsNode`,
+    `centerSpaceAroundWindow`,
+  ])
   return (
     <div className={style.item}>
       <Dropdown.Menu
@@ -16,15 +20,22 @@ export const AIMenu = () => {
         SelectedOption={() => <p>AI</p>}
         Options={[
           <Dropdown.Item
-            Icon={() => <PiGearLight size={22} fill="var(--white)" />}
             onClick={() => {
               state.setState((draft) => {
                 draft.showFalSettingsModal = true
               })
             }}
-            key={`Create (Custom)`}
-            label1="Settings"
-          ></Dropdown.Item>,
+            key={`Global Settings`}
+            label1="Global Settings"
+          />,
+          <Dropdown.Item
+            onClick={() => {
+              const id = state.createFalSettingsNode()
+              state.centerSpaceAroundWindow(id)
+            }}
+            key={`New AI Settings Node`}
+            label1="New AI Settings Node"
+          />,
         ]}
       />
       <FalSettingsModalGuard />

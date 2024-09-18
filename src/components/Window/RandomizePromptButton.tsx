@@ -8,25 +8,23 @@ import style from './RandomizePromptButton.module.scss'
 
 export const RandomizePromptButton: React.FC<{
   windowId: string
-  contentId: string
   textRef: React.MutableRefObject<string>
-}> = ({ windowId, contentId, textRef }) => {
-  const state = useStore([`editItemContent`, `editItem`])
+}> = ({ windowId, textRef }) => {
+  const state = useStore([`editItemContent`, `editItem`, `fetchRealtimeImage`])
   return (
     <button
       className={style.wrapper}
       title="Randomize prompt"
-      onClick={() => {
+      onClick={async () => {
         const prompt = createMockPrompt()
         textRef.current = prompt
         state.editItem(windowId, {
-          subject: prompt,
+          title: prompt,
         })
         state.editItemContent(windowId, {
-          type: `text`,
-          content: prompt,
-          id: contentId,
+          prompt,
         })
+        await state.fetchRealtimeImage(windowId)
       }}
     >
       <LuRefreshCcw className={style.icon} />

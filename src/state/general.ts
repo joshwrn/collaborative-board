@@ -1,6 +1,9 @@
 import { z } from 'zod'
 
+import { formatDateForFileName } from '@/utils/formatDateForFileName'
+
 import { connectionSchema } from './connections'
+import { falSettingsNodeSchema } from './fal'
 import type { Store } from './gen-state'
 import { itemSchema } from './items'
 import type { AppStateCreator } from './state'
@@ -10,7 +13,9 @@ import { windowSchema } from './windows'
 export const saveStateSchema = z.object({
   windows: z.array(windowSchema),
   items: z.array(itemSchema),
-  connections: z.array(connectionSchema),
+  itemConnections: z.array(connectionSchema),
+  falSettingsConnections: z.array(connectionSchema),
+  falSettingsNodes: z.array(falSettingsNodeSchema),
 })
 
 export type SavedState = z.infer<typeof saveStateSchema>
@@ -49,7 +54,9 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
     const savedState: SavedState = {
       windows: state.windows,
       items: state.items,
-      connections: state.connections,
+      itemConnections: state.itemConnections,
+      falSettingsConnections: state.falSettingsConnections,
+      falSettingsNodes: state.falSettingsNodes,
     }
     const blob = new Blob([JSON.stringify(savedState)], {
       type: `application/json`,
@@ -57,7 +64,7 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
     const url = URL.createObjectURL(blob)
     const link = document.createElement(`a`)
     link.href = url
-    link.download = `ai-sketch-app-${new Date().toISOString()}.json`
+    link.download = `ai_sketch_app__${formatDateForFileName()}.json`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -73,7 +80,9 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
         produceState(set, (draft) => {
           draft.windows = saveObject.windows
           draft.items = saveObject.items
-          draft.connections = saveObject.connections
+          draft.itemConnections = saveObject.itemConnections
+          draft.falSettingsConnections = saveObject.falSettingsConnections
+          draft.falSettingsNodes = saveObject.falSettingsNodes
         })
       } catch (error) {
         console.error(error)

@@ -51,6 +51,7 @@ const MenuItems = () => {
     `openAllWindows`,
     `closeAllWindows`,
     `promiseNotification`,
+    `createFalSettingsNode`,
   ])
   if (state.contextMenu === null) return null
   const close = () =>
@@ -63,11 +64,11 @@ const MenuItems = () => {
         <div
           className={styles.item}
           onClick={() => {
-            state.removeConnection(value.id)
+            state.removeConnection(value.id, `falSettingsConnections`)
             close()
           }}
         >
-          <p>Delete</p>
+          <p>Remove</p>
           <TrashIcon />
         </div>
       )
@@ -102,6 +103,20 @@ const MenuItems = () => {
             }}
           >
             <p>New Window</p>
+          </div>
+          <div
+            className={styles.item}
+            onClick={() => {
+              const id = state.createFalSettingsNode()
+              state.setOneWindow(id, {
+                x: value.data.x,
+                y: value.data.y,
+              })
+
+              close()
+            }}
+          >
+            <p>New Settings Node</p>
           </div>
           <div
             className={styles.item}

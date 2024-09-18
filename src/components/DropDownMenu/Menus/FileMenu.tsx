@@ -68,7 +68,7 @@ export const FileMenu: React.FC = () => {
               state.setState((draft) => {
                 draft.windows = []
                 draft.items = []
-                draft.connections = []
+                draft.itemConnections = []
               })
             }
             isChecked={false}

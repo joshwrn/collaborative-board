@@ -15,6 +15,7 @@ const TOAST_COLORS = {
   error: `#ff3030db`,
   success: `#32ff73db`,
   info: `#0070f3`,
+  warning: `#ff9f00db`,
 }
 
 export const itemVariants: Variants = {
@@ -53,6 +54,16 @@ const Toast_Internal: React.FC<{ notification: Notification }> = ({
       />
     )
   }
+  if (notification.type === `warning`) {
+    Icon = (
+      <ErrorIcon
+        size={22}
+        style={{
+          fill: TOAST_COLORS.warning,
+        }}
+      />
+    )
+  }
   if (notification.type === `success`) {
     Icon = (
       <CheckIcon
@@ -75,7 +86,12 @@ const Toast_Internal: React.FC<{ notification: Notification }> = ({
       exit={`exit`}
     >
       <div className={style.iconContainer}>{Icon}</div>
-      {notification.message}
+      <div className={style.textWrapper}>
+        <p className={style.message}>{notification.message}</p>
+        {notification.subText && (
+          <p className={style.subText}>{notification.subText}</p>
+        )}
+      </div>
       <motion.div
         className={style.progress}
         transition={{ type: `spring`, stiffness: 1000, damping: 50 }}

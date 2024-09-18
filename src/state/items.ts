@@ -4,79 +4,69 @@ import { z } from 'zod'
 import type { AppStateCreator } from './state'
 import { produceState } from './state'
 
-export interface Iframe {
-  [key: string]: string
-  src: string
-}
-
-export interface CanvasData {
-  base64: string
-}
-
 const itemBodySchema = z.union([
   z.object({
-    content: z.string(),
-    id: z.string(),
-    type: z.literal(`text`),
+    prompt: z.string(),
+    base64: z.string(),
+    type: z.literal(`generator`),
   }),
   z.object({
-    content: z.object({
-      base64: z.string(),
-    }),
-    id: z.string(),
-    type: z.literal(`canvas`),
-  }),
-  z.object({
-    content: z.object({
-      src: z.string(),
-    }),
-    id: z.string(),
-    type: z.literal(`iframe`),
+    modifier: z.string(),
+    base64: z.string(),
+    activatedAt: z.string().nullable(),
+    type: z.literal(`generated`),
   }),
 ])
 
 export type ItemBody = z.infer<typeof itemBodySchema>
+export type ItemBodyType = ItemBody[`type`]
 
 export const itemSchema = z.object({
   id: z.string(),
-  subject: z.string(),
-  body: z.array(itemBodySchema),
-  members: z.array(z.string()),
+  title: z.string(),
+  body: itemBodySchema,
 })
 
-export const ItemBodyTypes = [`text`, `iframe`, `canvas`] as const
-export type ItemBodyType = (typeof ItemBodyTypes)[number]
+export type Item = z.infer<typeof itemSchema>
 
-export interface ItemBodyText {
-  content: string
-  id: string
-  type: `text`
-}
-
-export interface Item {
-  id: string
-  subject: string
-  body: ItemBody[]
-  members: string[]
+export type ItemWithSpecificBody<T extends ItemBody[`type`]> = Item & {
+  body: Extract<ItemBody, { type: T }>
 }
 
 export const DEFAULT_ITEM: Item = {
   id: `default_id`,
-  subject: `default_subject`,
-  body: [],
-  members: [],
+  title: `default_title`,
+  body: {
+    prompt: `default_prompt`,
+    base64: `default_base64`,
+    type: `generator`,
+  },
 }
+
+export const findGeneratorItems = (items: Item[]) =>
+  items.filter(
+    (i) => i.body.type === `generator`,
+  ) as ItemWithSpecificBody<`generator`>[]
+
+export const findGeneratedItems = (items: Item[]) =>
+  items.filter(
+    (i) => i.body.type === `generated`,
+  ) as ItemWithSpecificBody<`generated`>[]
 
 export interface ItemListStore {
   items: Item[]
   editItem: (id: string, content: Partial<Omit<Item, `body`>>) => void
   deleteItem: (id: string) => void
   createItem: (item: Partial<Item>) => void
-
+  findGeneratedItems: () => ItemWithSpecificBody<`generated`>[]
+  findGeneratorItems: () => ItemWithSpecificBody<`generator`>[]
+  findParentItem: (id: string) => Item
   hoveredItem: string | null
-
-  addContentToItem: (id: string, content: ItemBody | ItemBody[]) => void
-  editItemContent: (id: string, content: ItemBody) => void
+  editItemContent: <T extends ItemBodyType>(
+    id: string,
+    content: Partial<Extract<ItemBody, { type: T }>>,
+  ) => void
+  toggleItemActive: (id: string) => void
   showItemList: boolean
 }
 
@@ -90,6 +80,53 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
       }
     })
   },
+  findGeneratedItems: () => {
+    const state = get()
+    return findGeneratedItems(state.items)
+  },
+  findGeneratorItems: () => {
+    const state = get()
+    return findGeneratorItems(state.items)
+  },
+  findParentItem: (id) => {
+    const state = get()
+    const item = state.items.find((i) => i.id === id)
+    if (!item) {
+      throw new Error(`item not found - id: ${id}`)
+    }
+    const connection = state.itemConnections.find((c) => c.to === id)
+    const parentId = connection?.from
+    const parent = state.items.find((i) => i.id === parentId)
+    if (!parent) {
+      throw new Error(`parent not found - id: ${parentId}`)
+    }
+    return parent
+  },
+  toggleItemActive: (id) => {
+    const state = get()
+    const item = state.findGeneratedItems().find((i) => i.id === id)
+    if (!item) {
+      throw new Error(`item not found - id: ${id}`)
+    }
+    const connection = state.itemConnections.find((c) => c.to === id)
+    const relatedConnections = state.itemConnections
+      .filter((c) => c.from === connection?.from)
+      .map((c) => c.to)
+    // activate
+    if (!item.body.activatedAt) {
+      const prevActivatedItem = state
+        .findGeneratedItems()
+        .find((i) => relatedConnections.includes(i.id) && i.body.activatedAt)
+      if (prevActivatedItem) {
+        state.editItemContent(prevActivatedItem.id, {
+          activatedAt: null,
+        })
+      }
+      state.editItemContent(id, {
+        activatedAt: new Date().toISOString(),
+      })
+    }
+  },
   createItem: (item: Partial<Item>) => {
     produceState(set, (state) => {
       state.items.push({
@@ -100,36 +137,25 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
     })
   },
   deleteItem: (id) => {
-    set((state) => ({
+    const state = get()
+    set((s) => ({
       items: state.items.filter((item) => item.id !== id),
-      connections: state.connections.filter(
-        (connection) => !connection.id.includes(id),
-      ),
       windows: state.windows.filter((window) => window.id !== id),
     }))
+
+    state.removeManyConnections(id, `itemConnections`)
+    state.removeManyConnections(id, `falSettingsConnections`)
   },
 
   hoveredItem: null,
-  addContentToItem: (id, content) => {
-    produceState(set, (state) => {
-      const item = state.items.find((curItem) => curItem.id === id)
-      if (item) {
-        if (Array.isArray(content)) {
-          item.body.push(...content)
-        } else {
-          item.body.push(content)
-        }
-      }
-    })
-  },
 
   editItemContent: (id, content) => {
     produceState(set, (state) => {
       const item = state.items.find((curItem) => curItem.id === id)
       if (item) {
-        const body = item.body.find((curBody) => curBody.id === content.id)
-        if (body) {
-          body.content = content.content
+        item.body = {
+          ...item.body,
+          ...content,
         }
       }
     })

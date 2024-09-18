@@ -63,11 +63,11 @@ export const WindowBorderInternal: FC<{
   height: number
   isFullScreen: boolean
   isPinned: boolean
-  position: { x: number; y: number }
-}> = ({ width, height, id, position, isFullScreen, isPinned }) => {
+  x: number
+  y: number
+}> = ({ width, height, id, x, y, isFullScreen, isPinned }) => {
   const state = useStore([
     `resizeWindow`,
-    `activeConnection`,
     `hoveredItem`,
     `selectedWindow`,
     `setState`,
@@ -108,7 +108,7 @@ export const WindowBorderInternal: FC<{
     pos: BorderPosition,
   ) => {
     startSize.current = { width, height }
-    startPosition.current = { x: position.x, y: position.y }
+    startPosition.current = { x, y }
     setCursorStyle(cursorsForBorderPositions[pos])
     state.setState((draft) => {
       draft.isResizingWindow = true
@@ -127,12 +127,10 @@ export const WindowBorderInternal: FC<{
       draft.isResizingWindow = false
     })
   }
-  const isActive = state.activeConnection?.from === id
   return (
     <div
       className={joinClasses(
         styles.border,
-        isActive && styles.activeBorder,
         state.selectedWindow === id && !isFullScreen && styles.activeBorder,
         state.hoveredItem === id && !isFullScreen && styles.hoveredBorder,
       )}
