@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+import { formatDateForFileName } from '@/utils/formatDateForFileName'
+
 import { connectionSchema } from './connections'
 import { falSettingsNodeSchema } from './fal'
 import type { Store } from './gen-state'
@@ -62,7 +64,7 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
     const url = URL.createObjectURL(blob)
     const link = document.createElement(`a`)
     link.href = url
-    link.download = `ai-sketch-app-${new Date().toISOString()}.json`
+    link.download = `ai_sketch_app__${formatDateForFileName()}.json`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
