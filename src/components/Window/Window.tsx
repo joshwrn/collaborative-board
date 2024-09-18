@@ -62,6 +62,8 @@ const WindowInternal: FC<{
     [state.itemConnections, item.id],
   )
 
+  if (item.id === `default_id`) return null
+
   return (
     <DraggableWindowWrapper
       window={window}
