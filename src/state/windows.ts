@@ -2,10 +2,10 @@ import { nanoid } from 'nanoid'
 import { z } from 'zod'
 
 import { doRectanglesOverlap } from '@/logic/doRectanglesOverlap'
-import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
 import { createMockPrompt } from '@/mock/mock-items'
 
 import type { Point2d } from '.'
+import { SPACE_ATTRS } from './space'
 import type { AppStateCreator, Setter } from './state'
 import { stateSetter } from './state'
 
@@ -42,6 +42,7 @@ export interface OpenWindowsStore {
   selectedWindow: string | null
   moveWindowNextTo: (id: string, nextId: string) => WindowType
   createNewWindow: () => string
+  centerSpaceAroundWindow: (id: string) => void
 }
 
 export const WINDOW_ATTRS = {
@@ -156,7 +157,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       throw new Error(`No windows to organize`)
     }
     const windowIds = windows.map((w) => w.id)
-    const centerPoint = spaceCenterPoint(zoom, pan)
+    const centerPoint = state.findSpaceCenterPoint()
     const startPoint = {
       x: centerPoint.x - WINDOW_ATTRS.defaultSize.width / 2,
       y: centerPoint.y - WINDOW_ATTRS.defaultSize.height / 2,
@@ -216,7 +217,7 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       (highest, window) => Math.max(highest, window.zIndex),
       0,
     )
-    const centerPoint = spaceCenterPoint(state.zoom, state.pan)
+    const centerPoint = state.findSpaceCenterPoint()
     state.setState((draft) => {
       draft.windows.push({
         id,
@@ -424,6 +425,28 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
     state.setOneWindow(id, {
       ...newWindowSizeInBounds(newSize),
       ...newPosition,
+    })
+  },
+
+  centerSpaceAroundWindow: (id) => {
+    const state = get()
+    const window = state.windows.find((w) => w.id === id)
+    if (!window) {
+      throw new Error(`window ${id} not found`)
+    }
+
+    const newPosition = {
+      x: SPACE_ATTRS.size.default / 2 - window.x * state.zoom,
+      y: SPACE_ATTRS.size.default / 2 - window.y * state.zoom,
+    }
+    console.log({
+      newPosition,
+      window,
+      pan: state.pan,
+    })
+    state.setState((draft) => {
+      draft.pan.x = newPosition.x
+      draft.pan.y = newPosition.y
     })
   },
 

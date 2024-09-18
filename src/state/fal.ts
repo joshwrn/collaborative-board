@@ -2,7 +2,6 @@ import { nanoid } from 'nanoid'
 import { z } from 'zod'
 
 import type { LiveImageResult } from '@/fal/workflows/useRealtimeConnect'
-import { spaceCenterPoint } from '@/logic/spaceCenterPoint'
 
 import type { AppStateCreator } from './state'
 import type { WindowType } from './windows'
@@ -125,10 +124,11 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
       })
     })
     state.toggleOpenWindow(id)
-    const center = spaceCenterPoint(state.zoom, state.pan)
+    const center = state.findSpaceCenterPoint()
+    const newWindowPosition = createNextWindowPosition(state.windows, center, id)
     state.setOneWindow(id, {
       ...DEFAULT_FAL_SETTINGS_WINDOW,
-      ...createNextWindowPosition(state.windows, center, id),
+      ...newWindowPosition,
       ...falSettingsWindow,
     })
     return id

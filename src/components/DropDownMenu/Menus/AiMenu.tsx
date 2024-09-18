@@ -8,7 +8,11 @@ import style from '../DropDownMenu.module.scss'
 import { FalSettingsModalGuard } from '../Modals/FalSettingsModal'
 
 export const AIMenu = () => {
-  const state = useStore([`setState`, `createFalSettingsNode`])
+  const state = useStore([
+    `setState`,
+    `createFalSettingsNode`,
+    `centerSpaceAroundWindow`,
+  ])
   return (
     <div className={style.item}>
       <Dropdown.Menu
@@ -26,7 +30,8 @@ export const AIMenu = () => {
           />,
           <Dropdown.Item
             onClick={() => {
-              state.createFalSettingsNode()
+              const id = state.createFalSettingsNode()
+              state.centerSpaceAroundWindow(id)
             }}
             key={`New AI Settings Node`}
             label1="New AI Settings Node"
