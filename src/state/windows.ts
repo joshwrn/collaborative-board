@@ -439,11 +439,6 @@ export const openWindowsStore: AppStateCreator<OpenWindowsStore> = (
       x: SPACE_ATTRS.size.default / 2 - window.x * state.zoom,
       y: SPACE_ATTRS.size.default / 2 - window.y * state.zoom,
     }
-    console.log({
-      newPosition,
-      window,
-      pan: state.pan,
-    })
     state.setState((draft) => {
       draft.pan.x = newPosition.x
       draft.pan.y = newPosition.y
