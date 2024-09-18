@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 import { connectionSchema } from './connections'
+import { falSettingsNodeSchema } from './fal'
 import type { Store } from './gen-state'
 import { itemSchema } from './items'
 import type { AppStateCreator } from './state'
@@ -10,7 +11,9 @@ import { windowSchema } from './windows'
 export const saveStateSchema = z.object({
   windows: z.array(windowSchema),
   items: z.array(itemSchema),
-  connections: z.array(connectionSchema),
+  itemConnections: z.array(connectionSchema),
+  falSettingsConnections: z.array(connectionSchema),
+  falSettingsNodes: z.array(falSettingsNodeSchema),
 })
 
 export type SavedState = z.infer<typeof saveStateSchema>
@@ -49,7 +52,9 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
     const savedState: SavedState = {
       windows: state.windows,
       items: state.items,
-      connections: state.itemConnections,
+      itemConnections: state.itemConnections,
+      falSettingsConnections: state.falSettingsConnections,
+      falSettingsNodes: state.falSettingsNodes,
     }
     const blob = new Blob([JSON.stringify(savedState)], {
       type: `application/json`,
@@ -73,7 +78,9 @@ export const generalStore: AppStateCreator<GeneralStore> = (set, get) => ({
         produceState(set, (draft) => {
           draft.windows = saveObject.windows
           draft.items = saveObject.items
-          draft.itemConnections = saveObject.connections
+          draft.itemConnections = saveObject.itemConnections
+          draft.falSettingsConnections = saveObject.falSettingsConnections
+          draft.falSettingsNodes = saveObject.falSettingsNodes
         })
       } catch (error) {
         console.error(error)

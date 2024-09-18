@@ -29,8 +29,6 @@ export interface FalStore {
   makeFalSettingsConnection: (from: string, to: string) => void
 }
 
-export type FalSettingsNode = FalSettingsInput & { id: string }
-
 export const falSettingsSchema = z.object({
   image_url: z.string().describe(`The image to use as a base.`),
   num_inference_steps: z
@@ -98,6 +96,10 @@ const falSettingsInputSchema = falSettingsSchema.pick({
 type FalSettingsInput = z.infer<typeof falSettingsInputSchema>
 
 export type FalSettings = z.infer<typeof falSettingsSchema>
+export const falSettingsNodeSchema = falSettingsInputSchema.extend({
+  id: z.string(),
+})
+export type FalSettingsNode = z.infer<typeof falSettingsNodeSchema>
 
 const DEFAULT_FAL_SETTINGS: FalSettingsInput = {
   num_inference_steps: 4,
