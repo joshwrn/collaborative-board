@@ -2,7 +2,6 @@ import React from 'react'
 import { IoRadioButtonOff, IoRadioButtonOn } from 'react-icons/io5'
 
 import { useStore } from '@/state/gen-state'
-import type { ItemWithSpecificBody } from '@/state/items'
 import { joinClasses } from '@/utils/joinClasses'
 
 import style from './ActivateButton.module.scss'

@@ -10,13 +10,7 @@ import { useOutsideClick } from '@/utils/useOutsideClick'
 import style from './Toolbar.module.scss'
 
 export const Toolbar: React.FC = () => {
-  const state = useStore([
-    `drawColor`,
-    `tool`,
-    `drawSize`,
-    `setState`,
-    `selectedWindow`,
-  ])
+  const state = useStore([`drawColor`, `drawSize`, `setState`, `selectedWindow`])
 
   const [open, setOpen] = React.useState<boolean>(false)
   const brushSizeRef = React.useRef<HTMLInputElement>(null)

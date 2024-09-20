@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 import React from 'react'
 import { BsTrash3 as TrashIcon } from 'react-icons/bs'
 import { TiPinOutline as PinIcon } from 'react-icons/ti'

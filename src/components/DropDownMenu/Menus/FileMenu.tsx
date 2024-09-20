@@ -9,13 +9,7 @@ import style from '../DropDownMenu.module.scss'
 import { ImportModalGuard } from '../Modals/ImportModal'
 
 export const FileMenu: React.FC = () => {
-  const state = useStore([
-    `setState`,
-    `importState`,
-    `exportState`,
-    `promiseNotification`,
-    `showImportModal`,
-  ])
+  const state = useStore([`setState`, `exportState`, `promiseNotification`])
 
   return (
     <div className={style.item}>

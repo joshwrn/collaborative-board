@@ -11,7 +11,7 @@ import { usePreventScroll } from '@/utils/usePreventScroll'
 import styles from './ContextMenu.module.scss'
 
 export const ContextMenu: FC = () => {
-  const state = useStore([`contextMenu`, `setState`, `zoom`, `pan`])
+  const state = useStore([`contextMenu`, `setState`])
   const ref = React.useRef<HTMLDivElement>(null)
   usePreventScroll({ enabled: state.contextMenu !== null })
   useOutsideClick({
@@ -42,8 +42,6 @@ const MenuItems = () => {
     `contextMenu`,
     `removeConnection`,
     `deleteItem`,
-    `createItem`,
-    `toggleOpenWindow`,
     `setOneWindow`,
     `setState`,
     `createNewWindow`,

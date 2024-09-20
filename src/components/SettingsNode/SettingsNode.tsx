@@ -2,7 +2,6 @@ import React from 'react'
 
 import { type FalSettingsNode, falSettingsSchema } from '@/state/fal'
 import { useStore } from '@/state/gen-state'
-import type { WindowType } from '@/state/windows'
 import { DraggableWindowWrapper } from '@/ui/DraggableWindowWrapper'
 import { Slider } from '@/ui/Slider'
 import Modal from '@/ui/TopBarModal'

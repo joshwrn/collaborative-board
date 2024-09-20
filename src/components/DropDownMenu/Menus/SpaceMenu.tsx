@@ -14,9 +14,6 @@ export const SpaceMenu = () => {
     `setPan`,
     `setState`,
     `showItemList`,
-    `debug_showZustandDevTools`,
-    `debug_showFps`,
-    `showThemeModal`,
     `incrementZoom`,
   ])
   return (

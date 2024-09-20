@@ -61,7 +61,6 @@ export const Canvas_Internal: React.FC<{
     `drawSize`,
     `fullScreenWindow`,
     `editItemContent`,
-    `setState`,
     `selectedWindow`,
     `isResizingWindow`,
     `fetchRealtimeImage`,

@@ -28,7 +28,6 @@ const WindowInternal: FC<{
   const state = useStore(
     [
       `toggleOpenWindow`,
-      `setOneWindow`,
       `reorderWindows`,
       `itemConnections`,
       `setFullScreenWindow`,

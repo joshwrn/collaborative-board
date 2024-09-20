@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { createLineBetweenWindows } from '@/logic/createLineBetweenWindowSides'
-import { Connection } from '@/state/connections'
 import { useStore } from '@/state/gen-state'
 import type { WindowType } from '@/state/windows'
 import { Line } from '@/ui/Connections/Line'

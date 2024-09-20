@@ -23,13 +23,10 @@ export const useGestures = ({
   spaceRef: React.RefObject<HTMLDivElement>
 }) => {
   const state = useStore([
-    `contextMenu`,
     `zoom`,
     `pan`,
     `setZoom`,
     `setPan`,
-    `selectedWindow`,
-    `setState`,
     `updateSpaceMousePosition`,
   ])
 

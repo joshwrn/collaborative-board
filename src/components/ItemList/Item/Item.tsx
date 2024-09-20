@@ -1,10 +1,9 @@
 'use client'
 import type { FC } from 'react'
 import React from 'react'
-import { match, P } from 'ts-pattern'
 
 import { useStore } from '@/state/gen-state'
-import type { Item, ItemBody } from '@/state/items'
+import type { Item } from '@/state/items'
 import { joinClasses } from '@/utils/joinClasses'
 import { useIsInViewport } from '@/utils/useIsInViewport'
 

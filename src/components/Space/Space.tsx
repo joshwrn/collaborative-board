@@ -24,7 +24,6 @@ const Space_Internal: FC = () => {
     `pan`,
     `updateSpaceMousePosition`,
     `fullScreenWindow`,
-    `openContextMenu`,
     `pinnedWindow`,
     `setState`,
     `activeFalConnection`,

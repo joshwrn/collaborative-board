@@ -18,7 +18,6 @@ export const DraggableWindowWrapper: React.FC<{
   const state = useStore([
     `snapToWindows`,
     `setSnapLines`,
-    `setState`,
     `hasOrganizedWindows`,
   ])
   const realPosition = React.useRef({ x: window.x, y: window.y })
