@@ -10,7 +10,7 @@ import style from './PinnedWindow.module.scss'
 export const DEFAULT_PINNED_WINDOW_ZOOM = 0.5
 
 const PinnedWindow_Internal: React.FC = () => {
-  const state = useStore([`pinnedWindow`, `windows`])
+  const state = useStore([`pinnedWindow`, `windows`, `loadingItemId`])
 
   const window = React.useMemo(() => {
     return state.windows.find((w) => w.id === state.pinnedWindow)
@@ -28,7 +28,12 @@ const PinnedWindow_Internal: React.FC = () => {
           scale: DEFAULT_PINNED_WINDOW_ZOOM,
         }}
       >
-        <Window window={window} isFullScreen={false} isPinned={true} />
+        <Window
+          window={window}
+          isFullScreen={false}
+          isPinned={true}
+          isLoading={state.loadingItemId === window.id}
+        />
       </div>
     </FloatingPortal>
   )

@@ -7,7 +7,12 @@ import { Window } from '../Window'
 import style from './FullScreenWindow.module.scss'
 
 export const FullScreenWindow: React.FC = () => {
-  const state = useStore([`fullScreenWindow`, `setFullScreenWindow`, `windows`])
+  const state = useStore([
+    `fullScreenWindow`,
+    `setFullScreenWindow`,
+    `windows`,
+    `loadingItemId`,
+  ])
 
   const window = useMemo(() => {
     return state.windows.find((w) => w.id === state.fullScreenWindow)
@@ -22,7 +27,12 @@ export const FullScreenWindow: React.FC = () => {
           className={style.backdrop}
           onClick={() => state.setFullScreenWindow(null)}
         />
-        <Window window={window} isFullScreen={true} isPinned={false} />
+        <Window
+          window={window}
+          isFullScreen={true}
+          isPinned={false}
+          isLoading={state.loadingItemId === window.id}
+        />
       </div>
     </FloatingPortal>
   )
