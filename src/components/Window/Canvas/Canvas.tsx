@@ -1,10 +1,12 @@
 import React from 'react'
 
+import { useConvertSketchToImage } from '@/fal/workflows/convert-sketch-to-painting'
 import { rotatePointAroundCenter } from '@/logic/rotatePointAroundCenter'
 import { useStore } from '@/state/gen-state'
 import type { WindowType } from '@/state/windows'
 import { WINDOW_ATTRS } from '@/state/windows'
 import { joinClasses } from '@/utils/joinClasses'
+import { useWithRateLimit } from '@/utils/useWithRateLimit'
 
 import { DEFAULT_PINNED_WINDOW_ZOOM } from '../PinnedWindow/PinnedWindow'
 import style from './Canvas.module.scss'
@@ -63,7 +65,6 @@ export const Canvas_Internal: React.FC<{
     `editItemContent`,
     `selectedWindow`,
     `isResizingWindow`,
-    `fetchRealtimeImage`,
   ])
 
   const isFullScreen = state.fullScreenWindow === window.id
@@ -71,6 +72,11 @@ export const Canvas_Internal: React.FC<{
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const isDrawing = React.useRef(false)
   const lastPosition = React.useRef({ x: 0, y: 0 })
+
+  const [disabled, limit] = useWithRateLimit()
+  const generateImage = useConvertSketchToImage({
+    generatedFromItemId: window.id,
+  })
 
   React.useEffect(() => {
     const ctx = canvasRef.current?.getContext(`2d`)
@@ -99,7 +105,9 @@ export const Canvas_Internal: React.FC<{
     state.editItemContent(window.id, {
       base64,
     })
-    await state.fetchRealtimeImage(window.id)
+    if (!disabled) {
+      await limit(async () => generateImage.mutateAsync(), 1000)
+    }
   }
 
   const calculateMousePosition = (e: React.PointerEvent) => {

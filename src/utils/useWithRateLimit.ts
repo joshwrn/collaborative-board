@@ -2,11 +2,11 @@ import React from 'react'
 
 export const useWithRateLimit = (): [
   boolean,
-  (callback: () => void, delay: number) => void,
+  (callback: () => void, delay: number) => Promise<void>,
 ] => {
   const [disabled, setDisabled] = React.useState(false)
 
-  const limit = (callback: () => void, delay: number) => {
+  const limit = async (callback: () => Promise<void> | void, delay: number) => {
     if (disabled) {
       return
     }
@@ -15,7 +15,7 @@ export const useWithRateLimit = (): [
       setDisabled(false)
     }, delay)
 
-    callback()
+    await callback()
   }
 
   return [disabled, limit]

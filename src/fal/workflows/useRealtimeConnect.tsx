@@ -30,15 +30,6 @@ export const useFalRealtimeConnect = () => {
       throttleInterval: 1000,
       onError: (error) => {
         console.error(error)
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        // useFullStore.getState().timedNotification({
-        //   notification: {
-        //     id: `fal-realtime-error`,
-        //     type: `error`,
-        //     message: error.message,
-        //   },
-        //   timeout: Time.seconds(10),
-        // })
         // force re-connect
         setCount((c) => c + 1)
       },

@@ -61,6 +61,7 @@ export interface ItemListStore {
   findGeneratedItems: () => ItemWithSpecificBody<`generated`>[]
   findGeneratorItems: () => ItemWithSpecificBody<`generator`>[]
   findParentItem: (id: string) => Item
+  findItemToUpdate: (parentId: string) => Item
   hoveredItem: string | null
   editItemContent: <T extends ItemBodyType>(
     id: string,
@@ -101,6 +102,19 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
       throw new Error(`parent not found - id: ${parentId}`)
     }
     return parent
+  },
+  findItemToUpdate: (parentId) => {
+    const state = get()
+    const connectedIds = state.itemConnections
+      .filter((c) => c.from === parentId)
+      .map((c) => c.to)
+    const itemToUpdate = state
+      .findGeneratedItems()
+      .find((i) => connectedIds.includes(i.id) && i.body.activatedAt)
+    if (!itemToUpdate) {
+      throw new Error(`itemToUpdate not found`)
+    }
+    return itemToUpdate
   },
   toggleItemActive: (id) => {
     const state = get()

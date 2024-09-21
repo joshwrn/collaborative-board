@@ -38,11 +38,6 @@ export const falSettingsSchema = z.object({
     .describe(
       `The number of inference steps to use for generating the image. The more steps the better the image will be but it will also take longer to generate.`,
     ),
-  sync_mode: z
-    .boolean()
-    .describe(
-      `If set to true, the function will wait for the image to be generated and uploaded before returning the response. This will increase the latency of the function but it allows you to get the image directly in the response without going through the CDN.`,
-    ),
   guidance_scale: z
     .number()
     .min(0)
@@ -304,7 +299,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
       image_url: base64,
       seed: 42,
       enable_safety_checks: false,
-      sync_mode: true,
+      // sync_mode: true,
       ...falSettings,
     })
     state.editItemContent(itemToUpdate.id, {

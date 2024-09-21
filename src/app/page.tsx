@@ -11,7 +11,6 @@ import { ListGuard } from '@/components/ItemList/List/List'
 import { Space } from '@/components/Space/Space'
 import { StatsBar } from '@/components/StatsBar/StatsBar'
 import { Toolbar } from '@/components/Toolbar/Toolbar'
-import { useFalRealtimeConnect } from '@/fal/workflows/useRealtimeConnect'
 import { useInitialScene } from '@/mock/useInitialScene'
 import { useStore } from '@/state/gen-state'
 import { Toaster } from '@/ui/Toast'
@@ -34,7 +33,6 @@ export default function Home() {
   ])
 
   useInitialScene()
-  useFalRealtimeConnect()
 
   return (
     <QueryClientProvider client={queryClient}>
