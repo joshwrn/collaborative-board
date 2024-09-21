@@ -2,6 +2,7 @@ import Image from 'next/image'
 import React from 'react'
 import { match } from 'ts-pattern'
 
+import { useConvertSketchToImage } from '@/fal/workflows/convert-sketch-to-painting'
 import { useStore } from '@/state/gen-state'
 import type { Item, ItemWithSpecificBody } from '@/state/items'
 import type { WindowType } from '@/state/windows'
@@ -44,7 +45,8 @@ const Prompt: React.FC<{ value: string; windowId: string }> = ({
   windowId,
 }) => {
   const textRef = React.useRef(value)
-  const state = useStore([`editItemContent`, `editItem`, `fetchRealtimeImage`])
+  const state = useStore([`editItemContent`, `editItem`])
+  const generateImage = useConvertSketchToImage()
   return (
     <div className={styles.textContainer}>
       <header>
@@ -53,7 +55,9 @@ const Prompt: React.FC<{ value: string; windowId: string }> = ({
       </header>
       <Text
         onBlur={async (p) => {
-          await state.fetchRealtimeImage(windowId)
+          await generateImage({
+            generatedFromItemId: windowId,
+          })
         }}
         textRef={textRef}
         onInput={(e, p) => {
@@ -87,12 +91,8 @@ const Modifier: React.FC<{
   windowId: string
 }> = ({ value, windowId }) => {
   const textRef = React.useRef(value)
-  const state = useStore([
-    `editItemContent`,
-    `editItem`,
-    `findParentItem`,
-    `fetchRealtimeImage`,
-  ])
+  const state = useStore([`editItemContent`, `editItem`])
+  const generateImage = useConvertSketchToImage()
   return (
     <div className={styles.textContainer}>
       <header>
@@ -100,8 +100,9 @@ const Modifier: React.FC<{
       </header>
       <Text
         onBlur={async () => {
-          const parent = state.findParentItem(windowId)
-          await state.fetchRealtimeImage(parent.id)
+          await generateImage({
+            generatedFromItemId: windowId,
+          })
         }}
         textRef={textRef}
         onInput={(e, p) => {

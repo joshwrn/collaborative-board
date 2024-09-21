@@ -1,14 +1,11 @@
 import { useMutation } from '@tanstack/react-query'
 
 import { useStore } from '@/state/gen-state'
+import { useWithRateLimit } from '@/utils/useWithRateLimit'
 
 import { optimizedConsistentLatency } from '../optimized-consistent-latency'
 
-export const useConvertSketchToImage = ({
-  generatedFromItemId,
-}: {
-  generatedFromItemId: string
-}) => {
+export const useConvertSketchToImage = () => {
   const state = useStore([
     `setState`,
     `findGeneratorItems`,
@@ -17,13 +14,15 @@ export const useConvertSketchToImage = ({
     `findItemToUpdate`,
     `discoverFalSettings`,
     `timedNotification`,
+    `findParentItem`,
   ])
-  const generateImage = useMutation<
+  const [disabled, limit] = useWithRateLimit()
+  const generateImageMutation = useMutation<
     { image: string },
     Error,
-    { itemToUpdateId: string }
+    { itemToUpdateId: string; generatedFromItemId: string }
   >({
-    mutationFn: async ({ itemToUpdateId }) => {
+    mutationFn: async ({ itemToUpdateId, generatedFromItemId }) => {
       try {
         state.setState((draft) => {
           draft.loadingItemId = itemToUpdateId
@@ -65,7 +64,7 @@ export const useConvertSketchToImage = ({
         draft.loadingItemId = null
       })
     },
-    onError: (e) => {
+    onError: (e, { generatedFromItemId }) => {
       state.setState((draft) => {
         draft.loadingItemId = null
       })
@@ -80,6 +79,24 @@ export const useConvertSketchToImage = ({
       throw new Error(`Failed to generate image: ${e.message}`)
     },
   })
+
+  const generateImage = async ({
+    generatedFromItemId,
+  }: {
+    generatedFromItemId: string
+  }) => {
+    const itemToUpdateId = state.findItemToUpdate(generatedFromItemId).id
+    if (!disabled) {
+      await limit(
+        async () =>
+          generateImageMutation.mutateAsync({
+            itemToUpdateId: itemToUpdateId,
+            generatedFromItemId,
+          }),
+        1000,
+      )
+    }
+  }
 
   return generateImage
 }

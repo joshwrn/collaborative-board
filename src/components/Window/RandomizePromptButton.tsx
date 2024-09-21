@@ -1,6 +1,7 @@
 import React from 'react'
 import { LuRefreshCcw } from 'react-icons/lu'
 
+import { useConvertSketchToImage } from '@/fal/workflows/convert-sketch-to-painting'
 import { createMockPrompt } from '@/mock/mock-items'
 import { useStore } from '@/state/gen-state'
 
@@ -10,7 +11,8 @@ export const RandomizePromptButton: React.FC<{
   windowId: string
   textRef: React.MutableRefObject<string>
 }> = ({ windowId, textRef }) => {
-  const state = useStore([`editItemContent`, `editItem`, `fetchRealtimeImage`])
+  const state = useStore([`editItemContent`, `editItem`])
+  const generateImage = useConvertSketchToImage()
   return (
     <button
       className={style.wrapper}
@@ -24,7 +26,9 @@ export const RandomizePromptButton: React.FC<{
         state.editItemContent(windowId, {
           prompt,
         })
-        await state.fetchRealtimeImage(windowId)
+        await generateImage({
+          generatedFromItemId: windowId,
+        })
       }}
     >
       <LuRefreshCcw className={style.icon} />

@@ -74,10 +74,7 @@ export const Canvas_Internal: React.FC<{
   const isDrawing = React.useRef(false)
   const lastPosition = React.useRef({ x: 0, y: 0 })
 
-  const [disabled, limit] = useWithRateLimit()
-  const generateImage = useConvertSketchToImage({
-    generatedFromItemId: window.id,
-  })
+  const generateImage = useConvertSketchToImage()
 
   React.useEffect(() => {
     const ctx = canvasRef.current?.getContext(`2d`)
@@ -106,14 +103,9 @@ export const Canvas_Internal: React.FC<{
     state.editItemContent(window.id, {
       base64,
     })
-    if (!disabled) {
-      const itemToUpdate = state.findItemToUpdate(window.id)
-      await limit(
-        async () =>
-          generateImage.mutateAsync({ itemToUpdateId: itemToUpdate.id }),
-        1000,
-      )
-    }
+    await generateImage({
+      generatedFromItemId: window.id,
+    })
   }
 
   const calculateMousePosition = (e: React.PointerEvent) => {

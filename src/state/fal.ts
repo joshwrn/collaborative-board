@@ -1,8 +1,6 @@
 import { nanoid } from 'nanoid'
 import { z } from 'zod'
 
-import type { LiveImageResult } from '@/fal/workflows/useRealtimeConnect'
-
 import type { AppStateCreator } from './state'
 import type { WindowType } from './windows'
 import { createNextWindowPosition } from './windows'
@@ -12,9 +10,7 @@ export interface FalStore {
   globalFalSettings: FalSettingsInput
   resetFalSettings: () => void
   updateFalSettings: (settings: Partial<FalSettingsInput>) => void
-  generateInitialWindow: (itemId: string, skipFetch?: boolean) => Promise<void>
-  fetchRealtimeImage: (itemId: string) => Promise<void>
-  fetchRealtimeImageFn: ((req: FalSettings) => Promise<LiveImageResult>) | null
+  generateInitialWindow: (itemId: string, skipFetch?: boolean) => void
   falSettingsNodes: FalSettingsNode[]
   discoverFalSettings: (windowId: string) => FalSettingsInput
   updateFalSettingsNode: (
@@ -197,9 +193,7 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     })
   },
 
-  fetchRealtimeImageFn: null,
-
-  generateInitialWindow: async (itemId, skipFetch = false) => {
+  generateInitialWindow: (itemId) => {
     const state = get()
     const newItemId = nanoid()
     const item = state.items.find((i) => i.id === itemId)
@@ -237,9 +231,6 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
     )
     state.toggleOpenWindow(newItemId)
     state.moveWindowNextTo(item.id, newItemId)
-    if (!skipFetch) {
-      await state.fetchRealtimeImage(itemId)
-    }
   },
 
   discoverFalSettings: (windowId) => {
@@ -270,40 +261,5 @@ export const falStore: AppStateCreator<FalStore> = (set, get) => ({
       }
     }
     return state.globalFalSettings
-  },
-
-  fetchRealtimeImage: async (itemId) => {
-    const state = get()
-    if (!state.fetchRealtimeImageFn) {
-      return
-    }
-    const item = state.findGeneratorItems().find((i) => i.id === itemId)
-    if (!item) {
-      throw new Error(`item id: ${itemId} not found`)
-    }
-    const { prompt } = item.body
-    const { base64 } = item.body
-    const connectedIds = state.itemConnections
-      .filter((c) => c.from === item.id)
-      .map((c) => c.to)
-    const itemToUpdate = state
-      .findGeneratedItems()
-      .find((i) => connectedIds.includes(i.id) && i.body.activatedAt)
-    if (!itemToUpdate) {
-      console.warn(`itemToUpdate not found`)
-      return
-    }
-    const falSettings = state.discoverFalSettings(itemToUpdate.id)
-    const img = await state.fetchRealtimeImageFn({
-      prompt: `a ${itemToUpdate.body.modifier} of ${prompt}`,
-      image_url: base64,
-      seed: 42,
-      enable_safety_checks: false,
-      // sync_mode: true,
-      ...falSettings,
-    })
-    state.editItemContent(itemToUpdate.id, {
-      base64: img.url,
-    })
   },
 })

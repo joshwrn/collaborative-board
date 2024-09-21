@@ -1,6 +1,7 @@
 import React from 'react'
 import { IoGitBranchOutline } from 'react-icons/io5'
 
+import { useConvertSketchToImage } from '@/fal/workflows/convert-sketch-to-painting'
 import { useStore } from '@/state/gen-state'
 
 import style from './BranchButton.module.scss'
@@ -9,11 +10,15 @@ export const BranchButton_Internal: React.FC<{
   id: string
 }> = ({ id }) => {
   const state = useStore([`generateInitialWindow`])
+  const generateImage = useConvertSketchToImage()
   return (
     <section className={style.wrapper}>
       <button
         onClick={async () => {
-          await state.generateInitialWindow(id)
+          state.generateInitialWindow(id)
+          await generateImage({
+            generatedFromItemId: id,
+          })
         }}
       >
         <p>Branch</p>
