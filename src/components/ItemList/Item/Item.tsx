@@ -23,16 +23,6 @@ const ItemInternal: FC<{
       ref={ref}
       className={joinClasses(styles.wrapper, isOpen && styles.isOpenWrapper)}
       onClick={() => state.toggleOpenWindow(item.id)}
-      onMouseEnter={() =>
-        state.setState((draft) => {
-          draft.hoveredItem = item.id
-        })
-      }
-      onMouseLeave={() =>
-        state.setState((draft) => {
-          draft.hoveredItem = null
-        })
-      }
       onContextMenu={(e) => {
         e.preventDefault()
         state.openContextMenu({ elementType: `item`, id: item.id })

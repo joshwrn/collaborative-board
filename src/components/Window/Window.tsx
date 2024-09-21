@@ -13,6 +13,7 @@ import { useOutsideClick } from '@/utils/useOutsideClick'
 
 import { ActivateButton } from './ActivateButton'
 import { BranchButton } from './BranchButton'
+import { LoadingOverlay } from './LoadingOverlay'
 import { NodeConnections } from './NodeConnections'
 import { RotationPoints } from './RotationPoints'
 import styles from './Window.module.scss'
@@ -23,8 +24,9 @@ import { WindowMenu } from './WindowMenu/WindowMenu'
 const WindowInternal: FC<{
   window: WindowType
   isFullScreen: boolean
+  isLoading: boolean
   isPinned: boolean
-}> = ({ window, isFullScreen, isPinned }) => {
+}> = ({ window, isFullScreen, isPinned, isLoading }) => {
   const state = useStore(
     [
       `toggleOpenWindow`,
@@ -175,6 +177,7 @@ const WindowInternal: FC<{
           isFullScreen={isFullScreen}
           isPinned={isPinned}
         />
+        <LoadingOverlay isLoading={isLoading} />
       </div>
     </DraggableWindowWrapper>
   )
@@ -183,18 +186,18 @@ const WindowInternal: FC<{
 export const Window = React.memo(WindowInternal)
 
 const WindowsInternal: FC = () => {
-  const state = useStore([`windows`, `fullScreenWindow`])
+  const state = useStore([`windows`, `fullScreenWindow`, `loadingItemId`])
   return (
     <>
       {state.windows.map((window) => {
         if (state.fullScreenWindow === window.id) return null
-        // if (state.pinnedWindow === window.id) return null
         if (!window) return null
 
         return (
           <Window
             key={window.id}
             window={window}
+            isLoading={state.loadingItemId === window.id}
             isFullScreen={false}
             isPinned={false}
           />

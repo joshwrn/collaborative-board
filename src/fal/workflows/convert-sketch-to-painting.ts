@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { fetchImageUrlToBase64 } from '@/server/imageUrlToBase64/fetchImageUrlToBase64'
 import { useStore } from '@/state/gen-state'
 
 import { optimizedConsistentLatency } from '../optimized-consistent-latency'
@@ -19,17 +18,23 @@ export const useConvertSketchToImage = ({
     `discoverFalSettings`,
     `createNotification`,
   ])
-  const generateImage = useMutation<{ image: any }>({
-    mutationFn: async () => {
+  const generateImage = useMutation<
+    { image: string },
+    Error,
+    { itemToUpdateId: string }
+  >({
+    mutationFn: async ({ itemToUpdateId }) => {
       try {
+        state.setState((draft) => {
+          draft.loadingItemId = itemToUpdateId
+        })
         const generatedFromItem = state
           .findGeneratorItems()
           .find((i) => i.id === generatedFromItemId)
         if (!generatedFromItem) {
           throw new Error(`generatedFromItem not found`)
         }
-        const itemToUpdate = state.findItemToUpdate(generatedFromItemId)
-        const falSettings = state.discoverFalSettings(itemToUpdate.id)
+        const falSettings = state.discoverFalSettings(itemToUpdateId)
         const result = await optimizedConsistentLatency({
           seed: 42,
           enable_safety_checks: false,
@@ -44,21 +49,26 @@ export const useConvertSketchToImage = ({
         }
       } catch (e) {
         console.error(e)
-        state.createNotification({
-          id: `${generatedFromItemId}-error`,
-          type: `error`,
-          message: `Failed to generate image`,
-        })
         throw e
       }
     },
-    onSuccess: (data) => {
-      const itemToUpdate = state.findItemToUpdate(generatedFromItemId)
-      state.editItemContent(itemToUpdate.id, {
+    onSuccess: (data, { itemToUpdateId }) => {
+      state.editItemContent(itemToUpdateId, {
         base64: data.image,
+      })
+      state.setState((draft) => {
+        draft.loadingItemId = null
       })
     },
     onError: (e) => {
+      state.setState((draft) => {
+        draft.loadingItemId = null
+      })
+      state.createNotification({
+        id: `${generatedFromItemId}-error`,
+        type: `error`,
+        message: `Failed to generate image`,
+      })
       throw new Error(`Failed to generate image: ${e.message}`)
     },
   })

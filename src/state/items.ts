@@ -62,7 +62,7 @@ export interface ItemListStore {
   findGeneratorItems: () => ItemWithSpecificBody<`generator`>[]
   findParentItem: (id: string) => Item
   findItemToUpdate: (parentId: string) => Item
-  hoveredItem: string | null
+  loadingItemId: string | null
   editItemContent: <T extends ItemBodyType>(
     id: string,
     content: Partial<Extract<ItemBody, { type: T }>>,
@@ -161,7 +161,7 @@ export const itemListStore: AppStateCreator<ItemListStore> = (set, get) => ({
     state.removeManyConnections(id, `falSettingsConnections`)
   },
 
-  hoveredItem: null,
+  loadingItemId: null,
 
   editItemContent: (id, content) => {
     produceState(set, (state) => {

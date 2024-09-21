@@ -65,6 +65,7 @@ export const Canvas_Internal: React.FC<{
     `editItemContent`,
     `selectedWindow`,
     `isResizingWindow`,
+    `findItemToUpdate`,
   ])
 
   const isFullScreen = state.fullScreenWindow === window.id
@@ -106,7 +107,12 @@ export const Canvas_Internal: React.FC<{
       base64,
     })
     if (!disabled) {
-      await limit(async () => generateImage.mutateAsync(), 1000)
+      const itemToUpdate = state.findItemToUpdate(window.id)
+      await limit(
+        async () =>
+          generateImage.mutateAsync({ itemToUpdateId: itemToUpdate.id }),
+        1000,
+      )
     }
   }
 

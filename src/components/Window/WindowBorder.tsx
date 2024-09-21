@@ -66,12 +66,7 @@ export const WindowBorderInternal: FC<{
   x: number
   y: number
 }> = ({ width, height, id, x, y, isFullScreen, isPinned }) => {
-  const state = useStore([
-    `resizeWindow`,
-    `hoveredItem`,
-    `selectedWindow`,
-    `setState`,
-  ])
+  const state = useStore([`resizeWindow`, `selectedWindow`, `setState`])
 
   const nodeRef = React.useRef<HTMLDivElement>(null)
 
@@ -132,7 +127,6 @@ export const WindowBorderInternal: FC<{
       className={joinClasses(
         styles.border,
         state.selectedWindow === id && !isFullScreen && styles.activeBorder,
-        state.hoveredItem === id && !isFullScreen && styles.hoveredBorder,
       )}
       style={returnStyle(width, height, isFullScreen, isPinned)}
     >
