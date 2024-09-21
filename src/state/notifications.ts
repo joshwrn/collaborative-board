@@ -21,7 +21,9 @@ const NOTIFICATION_TIMEOUT = Time.seconds(3)
 export interface NotificationsStore {
   notifications: Notification[]
   setNotificationProgress: (id: string, progress: number) => void
-  createNotification: (notification: Partial<Notification>) => Notification
+  createNotification_internalState: (
+    notification: Partial<Notification>,
+  ) => Notification
   removeNotification: (id: string) => void
   updateNotification: (id: string, update: Partial<Notification>) => void
   timedNotification: (input: {
@@ -52,7 +54,7 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
   get,
 ) => ({
   notifications: [],
-  createNotification: (notification) => {
+  createNotification_internalState: (notification) => {
     const state = get()
     const newNotification = {
       type: `info` as const,
@@ -99,7 +101,8 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
   }) => {
     const state = get()
     try {
-      const newNotification = state.createNotification(notification)
+      const newNotification =
+        state.createNotification_internalState(notification)
       await mockProgress({
         onProgress: (progress) => {
           state.setNotificationProgress(newNotification.id, 100 - progress)
@@ -114,7 +117,8 @@ export const notificationsStore: AppStateCreator<NotificationsStore> = (
   },
   promiseNotification: async (promise, notificationPartial, options) => {
     const state = get()
-    const newNotification = state.createNotification(notificationPartial)
+    const newNotification =
+      state.createNotification_internalState(notificationPartial)
     try {
       await promise()
       produceState(set, (draft) => {

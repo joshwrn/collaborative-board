@@ -16,7 +16,7 @@ export const useConvertSketchToImage = ({
     `findGeneratedItems`,
     `findItemToUpdate`,
     `discoverFalSettings`,
-    `createNotification`,
+    `timedNotification`,
   ])
   const generateImage = useMutation<
     { image: string },
@@ -35,15 +35,20 @@ export const useConvertSketchToImage = ({
           throw new Error(`generatedFromItem not found`)
         }
         const falSettings = state.discoverFalSettings(itemToUpdateId)
-        const result = await optimizedConsistentLatency({
-          seed: 42,
-          enable_safety_checks: false,
-          image_url: generatedFromItem.body.base64,
-          prompt: generatedFromItem.body.prompt,
-          strength: falSettings.strength,
-          num_inference_steps: falSettings.num_inference_steps,
-          guidance_scale: falSettings.guidance_scale,
-        })
+        const result = await optimizedConsistentLatency(
+          {
+            seed: 42,
+            enable_safety_checks: false,
+            image_url: generatedFromItem.body.base64,
+            prompt: generatedFromItem.body.prompt,
+            strength: falSettings.strength,
+            num_inference_steps: falSettings.num_inference_steps,
+            guidance_scale: falSettings.guidance_scale,
+          },
+          (update) => {
+            console.log(`update`, update)
+          },
+        )
         return {
           image: result.images[0].url,
         }
@@ -64,10 +69,13 @@ export const useConvertSketchToImage = ({
       state.setState((draft) => {
         draft.loadingItemId = null
       })
-      state.createNotification({
-        id: `${generatedFromItemId}-error`,
-        type: `error`,
-        message: `Failed to generate image`,
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      state.timedNotification({
+        notification: {
+          id: `${generatedFromItemId}-error`,
+          type: `error`,
+          message: `Failed to generate image`,
+        },
       })
       throw new Error(`Failed to generate image: ${e.message}`)
     },
