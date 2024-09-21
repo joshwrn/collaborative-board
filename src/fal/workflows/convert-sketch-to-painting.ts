@@ -52,14 +52,10 @@ export const useConvertSketchToImage = ({
         throw e
       }
     },
-    onSuccess: async (data) => {
-      const res = await fetchImageUrlToBase64({
-        url: data.image,
-      })
-      const { base64 } = res
+    onSuccess: (data) => {
       const itemToUpdate = state.findItemToUpdate(generatedFromItemId)
       state.editItemContent(itemToUpdate.id, {
-        base64,
+        base64: data.image,
       })
     },
     onError: (e) => {
